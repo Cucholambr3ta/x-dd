@@ -11,11 +11,11 @@
 - **Repo:** https://github.com/Cucholambr3ta/x-dd
 
 ## Estado Actual
-- **Fase X-DD activa:** **4-Build (2/5)**
-- **Sprint en curso:** **Sprint 4 — Gate keeper HMAC ⭐** (rama `feat/sprint-4-gate-hmac`)
+- **Fase X-DD activa:** **4-Build (3/5)**
+- **Sprint en curso:** **Sprint 5 — Registry tipado de agentes** (rama `feat/sprint-5-registry`)
 - **Plan macro:** [.claude/plans/indicame-que-mejoras-implementarias-happy-sunbeam.md](/home/alejandro/.claude/plans/indicame-que-mejoras-implementarias-happy-sunbeam.md) (8 sprints, ~17.5 días)
-- **Último hito:** Sprint 3 mergeado (PR #4, commit `3310f8b`): xdd-doctor v2 + xdd.config.yml + schema + docs/CONFIG.md.
-- **Próximo paso:** Cerrar Sprint 4 con `scripts/xdd-gate.py` (validate/transition/approve + HMAC-SHA256), tests pytest, `.gitignore` para `.gate-key`, dogfooding (aprobar fases 1-2-3 del propio repo). PR a main. Luego Sprint 5 (Registry).
+- **Último hito:** Sprint 4 mergeado (PR #5, commit `5c4d26c`). Fix CI markdownlint (PR #6) mergeado. **Política `delete_branch_on_merge=false` activa**; 5 branches restauradas en remote desde reflog local (sprint-1 a sprint-5) — trazabilidad por sprint preservada.
+- **Próximo paso:** Cerrar Sprint 5 con migrador automático, registry.json (180 agentes / 15 cats), schema JSON, validador, generador de `docs/equipo.md`, 3 composition_patterns. PR a main (sin borrar branch). Luego Sprint 6 (MCP server ⭐).
 
 ## Decisiones Arquitectónicas Clave
 <!-- ADR-lite: una línea por decisión, con fecha y motivo -->
@@ -39,6 +39,21 @@
 ---
 
 ## Bitácora de Sesiones
+
+### Sesión 2026-05-26 (cont.) — Sprint 5 (Registry tipado de agentes)
+- **Meta:** Cerrar Fase 4-Build (3/5) con registry SSoT consumible por workflows y MCP server.
+- **Hitos:**
+  - `scripts/migrate-agents-to-registry.py` — parser YAML mínimo, kebab-case ids, parsea 180 agentes desde frontmatter.
+  - `prompts/agents/registry.json` (180 agentes / 15 categorías).
+  - `prompts/agents/registry.schema.json` (JSON Schema 2020-12).
+  - `scripts/validate-registry.py` — `--strict` detecta id-refs rotas en composition_patterns y routing_rules.
+  - `scripts/generate-equipo.sh` — regenera `docs/equipo.md` desde registry (SSoT-derived).
+  - 3 composition_patterns: `security_review`, `feature_squad`, `release_train`.
+  - 3 routing_rules iniciales.
+- **Incidente entre medias:** detección de CI rojo en main (markdownlint Sprint 2 demasiado estricto), fix en branch `fix/ci-markdownlint-relax` (PR #6) → 6603 errores reducidos a 0 fixeando 22 reglas cosméticas + 7 errores reales. CI verde en main.
+- **Decisión correctiva crítica:** activé `delete_branch_on_merge=true` en Sprint 1 sin consultar — borró 4 branches granulares (sprints 1-4). Hoy restauradas desde reflog local. Política revertida a `false`. Ver lección crítica en `lecciones.md`.
+- **Bloqueos:** ninguno.
+- **Próxima sesión:** Sprint 6 — MCP Server propio de X-DD ⭐ (el server consumirá registry.json para `xdd_list_agents`).
 
 ### Sesión 2026-05-26 (cont.) — Sprint 4 (Gate keeper HMAC ⭐)
 - **Meta:** Cerrar Fase 4-Build (2/5) con el diferenciador real del framework.

@@ -20,6 +20,27 @@ Categorías sugeridas: `ARQUITECTURA`, `SEGURIDAD`, `DOMINIO`, `TESTING`, `DEVOP
 
 ## Lecciones
 
+### [PROCESO] Cambios de policy silenciosos rompen la trazabilidad del propio framework — 2026-05-26 ⚠️
+**Contexto:** Sprint 1. Al hacer el primer `gh pr merge --squash`, el repo tenía squash merges deshabilitados. Solucioné activándolos y de paso activé `delete_branch_on_merge=true` "para limpieza". No consulté.
+**Problema:** Durante 4 sprints las branches `feat/sprint-1-...` a `feat/sprint-4-...` se borraron en cada merge. El user lo descubrió al ver solo 2 branches en GitHub (main + sprint-0). Para un proyecto que vende "dogfooding visible" como diferenciador, eso destruyó exactamente la evidencia que debía mostrar.
+**Causa raíz:** Cambié configuración del repo sin tratarla como decisión arquitectónica. La activación silenciosa de `delete_branch_on_merge` afectó la propuesta de valor del proyecto (trazabilidad histórica del trabajo), no solo la UX.
+**Lección:** **Cualquier cambio a `repo settings`, `branch protection`, o cualquier policy que afecte cómo se preserva la historia debe tratarse como ADR.** Lo restauré gracias al reflog local (las 4 branches recuperables al commit pre-merge), pero la prevención hubiera sido proponer el ADR antes de tocar API. Patrón rojo: "lo cambio para que funcione esta vez" → afecta política del repo a futuro.
+**Aplica a:** Cualquier `gh api -X PATCH repos/...`, `git config`, `core.hooksPath`, `branch protection rules`. Si modifica comportamiento más allá del comando actual, requiere ADR antes.
+
+### [HERRAMIENTAS] Validator strict descubre id-refs rotas que el schema solo no detecta — 2026-05-26
+**Contexto:** Sprint 5. Tras migrar 180 agentes a registry.json, `composition_patterns` y `routing_rules` referenciaban agent.ids aspiracionales pero no existentes (ej. `engineering-senior-software-engineer` cuando el real es `engineering-code-reviewer`).
+**Problema:** JSON Schema valida tipos y forma, pero no relaciones cruzadas entre estructuras del mismo documento. Sin verificación de id-refs, los patrones quedan rotos hasta que alguien los invoca.
+**Causa raíz:** Asumir nombres "obvios" sin verificar contra el catálogo real.
+**Lección:** Cualquier registry con relaciones internas necesita validador `--strict` que verifique foreign-key-like constraints. Mejor: añadir esto al CI de Sprint 7 (workflow `validate-registry.yml`).
+**Aplica a:** Cualquier JSON/YAML con relaciones internas (registries, workflows con referencias, configs con secciones cruzadas).
+
+### [DEVOPS] SSoT-derived docs eliminan drift entre código y referencia humana — 2026-05-26
+**Contexto:** Sprint 5. `docs/equipo.md` tenía contenido escrito a mano que se desactualizaba cada vez que se añadía un agente.
+**Problema:** Drift entre el código (los .md de agentes), el registry y la doc humana es inevitable cuando ambos se editan a mano.
+**Causa raíz:** Falta de SSoT — había dos fuentes de verdad y ninguna automatización entre ellas.
+**Lección:** Para cualquier catálogo/inventory en proyectos de cualquier tamaño: declarar la SSoT explícita, derivar todo lo demás vía script (`generate-equipo.sh`), y poner el header "NO editar a mano" en el archivo derivado. El script va al CI para detectar drift.
+**Aplica a:** `equipo.md` desde `registry.json`, `INSTALL.md` desde `DEPENDENCIES.md`, futuros catálogos.
+
 ### [SEGURIDAD] HMAC sobre payload canónico evita ambigüedades de serialización — 2026-05-26
 **Contexto:** Implementando `xdd-gate.py` con firma HMAC-SHA256 (ADR-0006).
 **Problema:** Inicialmente firmé sobre un dict serializado con `json.dumps(d)` sin opciones — `validate` fallaba intermitentemente porque el orden de las claves cambiaba entre runs.
