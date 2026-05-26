@@ -1,0 +1,45 @@
+{
+  "$schema": "https://raw.githubusercontent.com/devcontainers/spec/main/schemas/devContainer.schema.json",
+  "name": "X-DD Dev Environment",
+  "image": "mcr.microsoft.com/devcontainers/python:3.12-bookworm",
+
+  "features": {
+    "ghcr.io/devcontainers/features/node:1": { "version": "20" },
+    "ghcr.io/devcontainers/features/github-cli:1": {},
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {}
+  },
+
+  "postCreateCommand": "bash .devcontainer/postCreate.sh",
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "DavidAnson.vscode-markdownlint",
+        "redhat.vscode-yaml",
+        "timonwong.shellcheck",
+        "GitHub.vscode-github-actions",
+        "EditorConfig.EditorConfig"
+      ],
+      "settings": {
+        "files.eol": "\n",
+        "files.insertFinalNewline": true,
+        "files.trimTrailingWhitespace": true,
+        "shellcheck.enable": true,
+        "yaml.schemas": {
+          "./schemas/xdd.config.schema.json": "xdd.config.yml",
+          "./schemas/install-profiles.schema.json": "manifests/install-profiles.json",
+          "./schemas/install-modules.schema.json": "manifests/install-modules.json",
+          "./schemas/install-components.schema.json": "manifests/install-components.json",
+          "./schemas/hooks.schema.json": ".agent/hooks/hooks.json",
+          "./prompts/agents/registry.schema.json": "prompts/agents/registry.json"
+        }
+      }
+    }
+  },
+
+  "remoteUser": "vscode",
+  "containerEnv": {
+    "XDD_HOOK_PROFILE": "standard"
+  }
+}
