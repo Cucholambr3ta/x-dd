@@ -1,0 +1,38 @@
+X-DD — Cross-Driven Development System
+Copyright (c) 2026 Alejandro Placencia
+
+Licensed under the MIT License (see LICENSE).
+
+This product includes inspiration and architectural patterns from:
+
+1. ECC (Everything Claude Code)
+   Source: https://github.com/affaan-m/ECC
+   License: MIT
+   Used for: hook system event-driven design (Sprint 7),
+             manifest-driven install profiles (Sprint 7),
+             3-tier docs structure (Sprint 8),
+             instincts + /evolve concept (Sprint 9, planned),
+             skills SKILL.md format (Sprint 10, planned),
+             multi-agent orchestration patterns (Sprint 11, planned),
+             AgentShield-style security audits (Sprint 12, planned).
+   No code was copied verbatim; all implementations are independent.
+
+2. MemPalace
+   Source: https://github.com/MemPalace/mempalace
+   License: MIT
+   Used as: external dependency (recommended, not bundled).
+   Integration via CLI and MCP server (ADR-0004).
+
+3. Anthropic Claude Code
+   Source: https://claude.com/claude-code
+   License: Proprietary (used as supported orchestrator, not bundled).
+
+4. Conventions adopted from:
+   - Michael Nygard's ADR format (https://cognitect.com/blog/2011/11/15/...)
+   - Keep a Changelog (https://keepachangelog.com)
+   - Contributor Covenant 2.1 (https://www.contributor-covenant.org)
+   - JSON Schema Draft 2020-12 (https://json-schema.org)
+   - Model Context Protocol (https://spec.modelcontextprotocol.io)
+
+For details on what was inspired vs. independently designed, see:
+   docs/research/ECC-inspiration-analysis.md

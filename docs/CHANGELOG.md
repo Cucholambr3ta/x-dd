@@ -9,6 +9,47 @@
 
 ## [Unreleased] — main
 
+### Added — Sprint 8 (2026-05-26) — Gobernanza OSS + 3-tier docs + commitlint + agent.yaml + research/
+
+**Gobernanza OSS (Tarea 8.1):**
+- `CONTRIBUTING.md` — guía completa con reglas duras X-DD
+- `CODE_OF_CONDUCT.md` — Contributor Covenant 2.1
+- `SECURITY.md` — policy de divulgación, hardening, threat model summary
+- `NOTICE` — atribuciones a ECC, MemPalace, Anthropic, Nygard, Keep a Changelog, MCP
+- `.github/ISSUE_TEMPLATE/{bug,feature,ide-adapter,agent}.md` (4 templates)
+- `.github/PULL_REQUEST_TEMPLATE.md` con checklist X-DD obligatorio
+
+**Devcontainer 1-click:**
+- `.devcontainer/devcontainer.json` (Python 3.12 + Node 20 + gh + Docker-in-Docker)
+- `.devcontainer/postCreate.sh` (bats + pytest + jsonschema + pre-commit + MemPalace opcional)
+
+**3-tier docs (inspiración ECC):**
+- `the-shortform-guide.md` — Quickstart visual ~15 min
+- `the-longform-guide.md` — referencia exhaustiva por feature
+- `the-security-guide.md` — modelo de amenazas + SecDD + hardening
+
+**Manifesto plugin interop:**
+- `agent.yaml` — descriptor X-DD para futuro plugin marketplace (workflows, agents,
+  MCP, hooks, gate keeper, config, install, deps, dogfooding, testing, docs)
+
+**Commitlint enforced (Tarea 9.1 parcial):**
+- `commitlint.config.js` con conventional commits + scope sugerido
+- `.github/workflows/lint-commits.yml` valida commits del PR
+
+**Live state separado (inspiración ECC):**
+- `WORKING-CONTEXT.md` (raíz) — estado live del sprint actual, sobreescribible
+- `memoria.md` se mantiene como bitácora inmutable
+
+**Research:**
+- `docs/research/ECC-inspiration-analysis.md` — análisis comparativo X-DD vs ECC
+
+**Release infrastructure (Tarea 9.1):**
+- `.github/workflows/release.yml` — tag-triggered con validación de gates +
+  extracción de notas del CHANGELOG
+
+### Changed — Sprint 8
+- `memoria.md` — estado actualizado a Sprint 8 / Fase 6-Retro init.
+
 ### Added — Sprint 7 (2026-05-26) — Adapters + Hooks + Manifests + E2E
 
 **Adapter IDE (DRY pattern):**

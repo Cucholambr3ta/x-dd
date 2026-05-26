@@ -1,0 +1,165 @@
+# agent.yaml — manifesto de X-DD como plugin para orquestadores agénticos.
+# Formato inspirado en ECC v2 (agent.yaml). Provee interop para que cualquier
+# orquestador con soporte de plugins pueda descubrir las capacidades de X-DD
+# sin parsear el repo completo.
+#
+# Spec version: 0.1.0
+# Schema: TBD (post-v0.1.0).
+
+spec_version: "0.1.0"
+
+name: x-dd
+version: 0.1.0-dev
+description: |
+  Cross-Driven Development System — pipeline gated de 6 fases con metodologías
+  *-Driven (SDD, FDD, BDD, ATDD, DDD, TDD, STDD, SecDD, Threat-Driven) integradas,
+  gate keeper firmado HMAC-SHA256, registry tipado de 180 agentes, MCP server propio,
+  hooks event-driven, manifest-driven install y dogfooding visible.
+
+author: "Alejandro Placencia (Cucholambr3ta)"
+license: MIT
+homepage: https://github.com/Cucholambr3ta/x-dd
+repository: https://github.com/Cucholambr3ta/x-dd
+
+# === Modelos preferidos ===
+# El orquestador debería rutear según preferred / fallback.
+model:
+  preferred: claude-opus-4-7
+  fallback:
+    - claude-sonnet-4-6
+    - claude-haiku-4-5
+
+# === Capacidades expuestas ===
+
+# 1. Workflows (slash commands)
+workflows:
+  source: ".agent/workflows/"
+  catalog: "prompts/workflows/03_workflows_catalog.md"
+  count: 49
+  # Categorías clave
+  categories:
+    - orchestration   # /xdd, /xdd-build, /xdd-trace, /xdd-ingest
+    - planning        # /fase-requisitos, /plan-fases, /analisis-impacto
+    - qa              # /qa-review, /generate-unit-tests, /pruebas-humo, /pruebas-fuzz, /stress-test
+    - security        # /security-audit, /advanced-agentic-pentesting, /secure-isolation-ops
+    - deploy          # /deploy-prod, /ci-cd-setup, /incidente-ID, /rollback
+    - lifecycle       # /cierre-fase, /adr-new, /release-cut
+    - retrofit        # /ux-discovery, /api-contract, /privacy-review, /feature-flag, etc.
+
+# 2. Agentes especializados
+agents:
+  registry: "prompts/agents/registry.json"
+  schema: "prompts/agents/registry.schema.json"
+  count: 180
+  categories: 15
+
+# 3. MCP Server propio
+mcp:
+  enabled: true
+  package: "xdd-mcp-server"
+  entrypoint: "python3 -m xdd-mcp-server"
+  transport: stdio
+  tools:
+    - xdd_validate_phase
+    - xdd_transition_phase
+    - xdd_list_workflows
+    - xdd_invoke_workflow
+    - xdd_list_agents
+    - xdd_get_phase_artifacts
+  docs: "docs/MCP_INTEGRATION.md"
+
+# 4. Hook system
+hooks:
+  catalog: ".agent/hooks/hooks.json"
+  schema: "schemas/hooks.schema.json"
+  count: 8
+  events:
+    - PreToolUse
+    - PostToolUse
+    - SessionStart
+    - Stop
+  profiles: [minimal, standard, strict]
+
+# 5. Gate keeper (auditable con HMAC-SHA256)
+gate_keeper:
+  enabled: true
+  script: "scripts/xdd-gate.py"
+  signature_algorithm: HMAC-SHA256
+  key_path: ".xdd/.gate-key"  # gitignored
+  audit_trail: ".xdd/<phase>/.approvers"
+  docs: "docs/GATE.md"
+  threat_model_coverage: 11  # ver QA_REPORT.md
+
+# 6. Configuración
+config:
+  profile_file: "xdd.profile.yml"        # declarativo (qué soy)
+  config_file: "xdd.config.yml"          # operacional (cómo me ejecuto)
+  schemas:
+    - "schemas/xdd.config.schema.json"
+
+# 7. Install manifest
+install:
+  manifest: "manifests/install-profiles.json"
+  modules: "manifests/install-modules.json"
+  components: "manifests/install-components.json"
+  bootstrap_unix: "scripts/xdd-init.sh"
+  bootstrap_windows: "install.ps1"
+  profiles: [minimal, core, developer, security, research, full]
+
+# 8. IDE adapters
+ide_adapters:
+  primary: [claude-code, opencode]   # Sprint 7 (ADR-0007)
+  via_mcp: [cursor, continue, zed, cline, windsurf]  # consumen MCP server sin adapter
+  adapter_script: "scripts/xdd-adapt.sh"
+
+# === Dependencias ===
+dependencies:
+  required:
+    - {name: git, min: "2.30.0"}
+    - {name: bash, min: "4.0"}
+    - {name: python3, min: "3.9"}
+  recommended:
+    - {name: mempalace, min: "3.3.0", license: MIT, repo: "https://github.com/MemPalace/mempalace"}
+    - {name: node, min: "20.0.0"}
+  declared: "DEPENDENCIES.md"
+
+# === Dogfooding ===
+dogfooding:
+  visible: true                          # ADR-0001
+  artifacts: [".xdd/", "memoria.md", "lecciones.md", "docs/adr/", "PROJ-MASTER-PLAN.md", "docs/CHANGELOG.md", "RELEASES/"]
+  current_phases:
+    briefing: APPROVED
+    spec: APPROVED
+    plan: APPROVED
+    build: in_progress  # se actualiza al cerrar sprint actual
+
+# === Testing ===
+testing:
+  total_tests: 97
+  bats: 35
+  pytest: 50
+  e2e: 12
+
+# === Documentación ===
+docs:
+  shortform: "the-shortform-guide.md"
+  longform: "the-longform-guide.md"
+  security: "the-security-guide.md"
+  adrs: "docs/adr/"
+  integration:
+    mcp: "docs/MCP_INTEGRATION.md"
+    install_profiles: "docs/INSTALL_PROFILES.md"
+    hooks: "docs/HOOKS.md"
+    config: "docs/CONFIG.md"
+    gate: "docs/GATE.md"
+  research: "docs/research/"
+
+# === Compatibilidad cross-harness ===
+supported_orchestrators:
+  - claude-code
+  - opencode
+  - cursor       # via MCP
+  - continue     # via MCP
+  - zed          # via MCP
+  - cline        # via MCP
+  - windsurf     # via MCP
