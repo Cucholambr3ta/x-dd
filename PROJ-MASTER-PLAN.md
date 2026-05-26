@@ -47,8 +47,8 @@ gantt
 
 | Sprint | Estado | Fase X-DD | Inicio plan | Cierre plan | Inicio real | Cierre real | PR |
 |--------|--------|-----------|-------------|-------------|-------------|-------------|-----|
-| 0 Reconciliación | 🔄 En curso | F1 Briefing | 2026-05-26 | 2026-05-26 | 2026-05-26 | — | _pendiente_ |
-| 1 MemPalace externo + Quickstart | ⏳ | F2 Spec | 2026-05-27 | 2026-05-28 | — | — | — |
+| 0 Reconciliación | ✅ done | F1 Briefing | 2026-05-26 | 2026-05-26 | 2026-05-26 | 2026-05-26 | [#1](https://github.com/Cucholambr3ta/x-dd/pull/1) |
+| 1 MemPalace externo + Quickstart | 🔄 En curso | F2 Spec | 2026-05-27 | 2026-05-28 | 2026-05-26 | — | _pendiente_ |
 | 2 CI base + plan formal | ⏳ | F3 Plan | 2026-05-29 | 2026-05-29 | — | — | — |
 | 3 xdd-doctor v2 + xdd.config | ⏳ | F4 Build (1/5) | 2026-06-01 | 2026-06-02 | — | — | — |
 | 4 Gate keeper HMAC ⭐ | ⏳ | F4 Build (2/5) | 2026-06-03 | 2026-06-05 | — | — | — |
@@ -88,3 +88,4 @@ graph LR
 | Fecha | Cambio | Autor |
 |-------|--------|-------|
 | 2026-05-26 | Creación inicial al cerrar Sprint 0 | aplacencia |
+| 2026-05-26 | Sprint 0 mergeado (PR #1); Sprint 1 en curso | aplacencia |

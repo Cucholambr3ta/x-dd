@@ -20,6 +20,27 @@ Categorías sugeridas: `ARQUITECTURA`, `SEGURIDAD`, `DOMINIO`, `TESTING`, `DEVOP
 
 ## Lecciones
 
+### [HERRAMIENTAS] Edit en scripts requiere Read previo en la misma sesión — 2026-05-26
+**Contexto:** Auditando los 4 scripts shell para añadirles `--help` y `--version` (Sprint 1).
+**Problema:** El primer Edit sobre `xdd-init.sh` y `xdd-doctor.sh` falló con "File has not been read yet" pese a que ya estaban leídos en mensajes anteriores de la conversación.
+**Causa raíz:** El tracker de archivos del agente vincula Read↔Edit por sesión/contexto activo; tras compresión o turnos largos puede perder la asociación.
+**Lección:** Si un Edit falla con ese error, hacer un Read corto (10 líneas) del archivo target inmediatamente antes del Edit. Coste mínimo, evita el error y mantiene velocidad.
+**Aplica a:** Cualquier edición a archivos previamente vistos pero no editados en la sesión activa.
+
+### [DOMINIO] DOMAIN.md y THREATS.md del framework prueban su propia coherencia — 2026-05-26
+**Contexto:** Producción de `.xdd/spec/{DOMAIN,THREATS}.md` del propio X-DD aplicado a sí mismo.
+**Problema:** Al escribir DOMAIN.md emergieron entidades que el plan no había nombrado explícitamente: `Capability`, `CompositionPattern`, `MCPTool`, `Approval` como entidad separada de `Gate`. THREATS.md hizo visible que el `xdd-mcp-server` (Sprint 6) requiere whitelist explícita de paths — algo que el plan no detallaba.
+**Causa raíz:** Documentar el dominio formalmente fuerza completitud que la planificación táctica omite.
+**Lección:** Hacer DOMAIN + THREATS de cualquier proyecto antes de Build no es opcional: descubre entidades y mitigaciones que después serían costosas de retrofitear.
+**Aplica a:** Cualquier proyecto X-DD en Fase 2-Spec. Confirma valor de Constitución Art. 4.
+
+### [DEVOPS] Makefile como capa de UX uniforme antes de un CLI completo — 2026-05-26
+**Contexto:** Decisión de no consolidar scripts en `xdd` CLI Python aún ([ADR-0008](docs/adr/0008-consolidacion-xdd-cli-diferida.md)).
+**Problema:** Sin consolidación, 4+ scripts shell ofrecen UX heterogénea — el usuario necesita recordar nombres distintos.
+**Causa raíz:** Diferir refactor no implica aceptar mala UX.
+**Lección:** Un Makefile con targets bien nombrados (`make doctor|start|init|lint|test`) ofrece la UX uniforme que un CLI daría, sin el coste de reescribir. Ganamos tiempo manteniendo la calidad de uso.
+**Aplica a:** Cualquier conjunto de scripts shell antes de consolidación en CLI. Patrón reutilizable.
+
 ### [PROCESO] El gate "APROBADO" como string es seguridad de teatro — 2026-05-26
 **Contexto:** Diseñando el gate keeper del Sprint 4 según Tarea 2.2 de MEJORAS-X-DD.md v1.1.
 **Problema:** El plan original proponía escribir literal `"APROBADO"` en `.xdd/<fase>/.status`. Ese archivo es trivialmente editable; cualquiera (humano o agente) puede aprobar fases sin enforcement real.

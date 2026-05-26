@@ -9,6 +9,32 @@
 
 ## [Unreleased] — main
 
+### Added — Sprint 1 (2026-05-26)
+- **`DEPENDENCIES.md`** — matriz oficial de dependencias (núcleo, recomendado,
+  orquestadores, testing, seguridad) con versión mínima, distribución, licencia
+  y rol. Advertencia anti-impostores para MemPalace.
+- **`.editorconfig`** — convenciones consistentes (LF, UTF-8, 2-space, max 100,
+  4-space para py/sh, tab para Makefile).
+- **`.gitattributes`** — normalización a LF + linguist overrides para que GitHub
+  clasifique `templates/`, `docs/` y `prompts/agents/` como documentación.
+- **`Makefile`** — UX unificada: `make doctor|start|init|lint|test|trace|cierre|version`.
+- **`.xdd/spec/DOMAIN.md`** — modelo de dominio (DDD) con 5 bounded contexts,
+  15+ entidades, value objects, agregados, ubiquitous language y 7 reglas
+  invariantes. Diagrama Mermaid.
+- **`.xdd/spec/THREATS.md`** — modelo de amenazas STRIDE: 23 amenazas tipificadas
+  + 5 vectores específicos para sistemas IA-driven + plan de mitigación por
+  sprint.
+- **`--help` y `--version`** añadidos a `xdd-start.sh`, `xdd-init.sh`,
+  `xdd-doctor.sh`, `lint-workflows.sh` (todos `v0.1.0-dev`).
+
+### Changed — Sprint 1
+- **`README.md`** — badges (license, last-commit, ADRs, workflows, MemPalace);
+  framing corregido de MemPalace ("dependencia externa MIT" en lugar de "pieza
+  del ecosistema"); descripción técnica corregida ("ChromaDB + SQLite" en lugar
+  de "base de grafos"); nueva sección "Qué NO es X-DD"; principios de
+  gobernanza incluyen firma HMAC del gate y dogfooding visible.
+- **`memoria.md`** — estado actualizado a Sprint 1 / Fase 2.
+
 ### Added — Sprint 0 (2026-05-26)
 - **Dogfooding inicial** — directorio `.xdd/briefing/` con `SPEC.md` y `FEATURES.md`
   del propio X-DD como producto.
