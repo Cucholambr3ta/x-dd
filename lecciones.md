@@ -20,6 +20,20 @@ Categorías sugeridas: `ARQUITECTURA`, `SEGURIDAD`, `DOMINIO`, `TESTING`, `DEVOP
 
 ## Lecciones
 
+### [HERRAMIENTAS] `sort -V` es el comparador SemVer portable más simple — 2026-05-26
+**Contexto:** Sprint 3 reescribe `xdd-doctor.sh` con comparación de versiones real (no solo `command -v`).
+**Problema:** Comparar versiones en bash con `[ "$a" -gt "$b" ]` no funciona (strings); usar herramientas externas (vergleicher, sver) añade deps.
+**Causa raíz:** Bash no tiene SemVer nativo; cada solución artesanal con `awk`/regex es propensa a errores con sufijos (`-dev`, `-rc1`, `.post1`).
+**Lección:** `sort -V` (`--version-sort`) de coreutils está en todo Linux y macOS modernos. La función `semver_ge() { [ "$(printf '%s\n%s\n' "$min" "$ver" | sort -V | head -n1)" = "$min" ]; }` resuelve el 95% de los casos. Acepta `1.2.3`, `1.2`, sufijos pre-release. Sin deps.
+**Aplica a:** Cualquier comparación SemVer en scripts shell. Reutilizable.
+
+### [DEVOPS] `--json` desde el día 1 vale más que UI elegante — 2026-05-26
+**Contexto:** Decisión de añadir `--json` a `xdd-doctor.sh` (no estaba en plan v1.1).
+**Problema:** Salida solo humana ata el script a uso interactivo; integración con CI/dashboards requiere parseo frágil.
+**Causa raíz:** Subestimar futuros consumidores de la herramienta.
+**Lección:** Cualquier script de diagnóstico/estado debe ofrecer `--json` (o `--format=json`) desde el primer release. El esfuerzo extra es pequeño y abre integraciones que de otra forma requieren reescritura. Patrón: separar render humano vs JSON con flag temprano.
+**Aplica a:** `xdd-gate.py` (Sprint 4), futuras tools del MCP server (Sprint 6), métricas (Sprint 10+).
+
 ### [DEVOPS] Branch protection con squash merges deshabilitado bloquea el flujo — 2026-05-26
 **Contexto:** Tras pushear Sprint 1, `gh pr merge 2 --squash` falló con "Squash merges are not allowed on this repository".
 **Problema:** El repo se creó con configuración default que no permite squash merges; bloquea la convención que el user pidió ("commits + PR + --squash").
