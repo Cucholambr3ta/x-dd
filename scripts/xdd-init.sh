@@ -4,6 +4,35 @@
 #      Sin argumento, inicializa en $PWD.
 set -eu
 
+XDD_VERSION="0.1.0-dev"
+
+case "${1:-}" in
+  -h|--help)
+    cat <<'EOF'
+xdd-init — bootstrap portable de un proyecto X-DD nuevo.
+
+Uso:
+  bash scripts/xdd-init.sh [DEST]
+  bash scripts/xdd-init.sh --help | --version
+
+Copia (si no existen) en el destino:
+  .agent/  .claude/  prompts/  scripts/  templates/  CLAUDE.md
+  memoria.md  lecciones.md  xdd.profile.yml  (desde templates)
+
+Inicializa git si no es repo.
+
+Args:
+  DEST  Ruta del proyecto destino (default: $PWD).
+        El destino NO puede ser el repo X-DD mismo.
+EOF
+    exit 0
+    ;;
+  -v|--version)
+    echo "xdd-init v${XDD_VERSION}"
+    exit 0
+    ;;
+esac
+
 # Directorio del repo X-DD (donde vive este script)
 XDD_ROOT="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )/.." && pwd )"
 DEST="${1:-$PWD}"

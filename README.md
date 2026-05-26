@@ -1,6 +1,14 @@
 # X-DD — Cross-Driven Development System
 
-**Pipeline de desarrollo de alta calidad** que integra múltiples metodologías *-Driven Development* como capas sobre un Gated Pipeline de 6 fases, orquestado por **Claude Code** u **OpenCode** y una agencia de 77+ subagentes especializados.
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Last commit](https://img.shields.io/github/last-commit/Cucholambr3ta/x-dd)](https://github.com/Cucholambr3ta/x-dd/commits/main)
+[![ADRs](https://img.shields.io/badge/ADRs-10-blue)](docs/adr/)
+[![Workflows](https://img.shields.io/badge/workflows-49-green)](.agent/workflows/)
+[![MemPalace](https://img.shields.io/badge/MemPalace-%E2%89%A53.3.0-purple)](DEPENDENCIES.md)
+
+**Pipeline de desarrollo de alta calidad** que integra múltiples metodologías *-Driven Development* como capas sobre un Gated Pipeline de 6 fases, orquestado por **Claude Code**, **OpenCode** o cualquier IDE compatible con **MCP**, apoyado por una agencia de 77+ subagentes especializados.
+
+> 📌 X-DD se aplica a sí mismo: ver [.xdd/](.xdd/), [docs/adr/](docs/adr/), [PROJ-MASTER-PLAN.md](PROJ-MASTER-PLAN.md) y [docs/CHANGELOG.md](docs/CHANGELOG.md) para el dogfooding visible (ver [ADR-0001](docs/adr/0001-dogfooding-visible-commiteable.md)).
 
 ---
 
@@ -117,9 +125,14 @@ X-DD incluye un retrofit de capacidades activables vía `xdd.profile.yml`. Workf
 
 Ver [docs/RETROFIT_GUIDE.md](./docs/RETROFIT_GUIDE.md) para el detalle de los 19 workflows extendidos y 10 agentes nuevos.
 
-## MemPalace — Memoria Semántica Local
+## MemPalace — Memoria Semántica Local (dependencia externa)
 
-Una de las piezas más importantes del ecosistema X-DD. MemPalace es un sistema de memoria espacial que indexa semánticamente todo el codebase, documentación, decisiones y lecciones aprendidas del proyecto en una base de grafos local, sin enviar nada a la nube.
+> **MemPalace es un proyecto externo, no parte de X-DD.** Licencia MIT, distribuido vía PyPI (`pip install mempalace`). X-DD lo integra como dependencia recomendada — ver [DEPENDENCIES.md](DEPENDENCIES.md) y [ADR-0004](docs/adr/0004-mempalace-dep-externa-no-fork.md).
+> - Repo oficial: https://github.com/MemPalace/mempalace
+> - Sitio oficial: https://mempalaceofficial.com
+> - ⚠️ Cuidado con dominios impostores (ej. `mempalace.tech` no es oficial).
+
+MemPalace es un sistema de memoria semántica local-first: indexa el codebase, documentación, decisiones y lecciones del proyecto combinando **ChromaDB (vector store)** y **SQLite (knowledge graph temporal)**, sin enviar nada a la nube. Expone una CLI y un **MCP server con 29 tools** consumibles por cualquier cliente MCP.
 
 ### ¿Por qué es clave para el desarrollo con IA?
 
@@ -171,13 +184,23 @@ Nueva sesión          →  xdd-start.sh      →  mempalace mine → orquestado
 | Bugfix > 20 líneas | **MÍNIMO**: SDD + TDD |
 | Bugfix < 10 líneas | **DIRECTO**: sin pipeline (Art. 8) |
 
+## Qué NO es X-DD
+
+- **No es un framework de aplicación** — no reemplaza React/Express/Django/Rails.
+- **No es un test runner** — orquesta Vitest/Playwright/pytest, no los reemplaza.
+- **No es MemPalace** — lo consume como dep externa MIT ([DEPENDENCIES.md](DEPENDENCIES.md)).
+- **No requiere Claude Code** — funciona también con OpenCode, Cursor, Continue, Zed, Cline, Windsurf vía MCP ([ADR-0005](docs/adr/0005-mcp-preferido-y-server-propio.md), Sprint 6 del [plan v0.1.0](MEJORAS-X-DD.md)).
+- **No envía datos a la nube** — todo local-first, incluida la memoria semántica.
+- **No es compatible con monorepos sin adaptación** — en roadmap post-v0.1.0.
+
 ## Principios de gobernanza
 
 - **Ambigüedad Cero** — El sistema se detiene si hay parámetros indefinidos
-- **Gated Pipeline** — Se requiere `"APROBADO"` antes de pasar de fase
+- **Gated Pipeline** — Se requiere `"APROBADO"` antes de pasar de fase. A partir de v0.1.0 (Sprint 4), la aprobación está **firmada con HMAC-SHA256** (ver [ADR-0006](docs/adr/0006-gate-keeper-firma-hmac.md)).
 - **Spec First** — No existe `src/` sin `SPEC.md` previo aprobado
 - **TDD First** — No existe función de negocio sin su test previo
 - **Portabilidad Absoluta** — Sin rutas absolutas; todo relativo a `./`
+- **Dogfooding Visible** — El propio X-DD pasa por sus 6 fases en público ([ADR-0001](docs/adr/0001-dogfooding-visible-commiteable.md))
 
 ---
 

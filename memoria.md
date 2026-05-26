@@ -11,11 +11,11 @@
 - **Repo:** https://github.com/Cucholambr3ta/x-dd
 
 ## Estado Actual
-- **Fase X-DD activa:** **1-Briefing → 2-Spec (transición)**
-- **Sprint en curso:** **Sprint 0 — Reconciliación** (rama `feat/sprint-0-reconciliation`)
+- **Fase X-DD activa:** **2-Spec**
+- **Sprint en curso:** **Sprint 1 — MemPalace externo + Quickstart real** (rama `feat/sprint-1-mempalace-quickstart`)
 - **Plan macro:** [.claude/plans/indicame-que-mejoras-implementarias-happy-sunbeam.md](/home/alejandro/.claude/plans/indicame-que-mejoras-implementarias-happy-sunbeam.md) (8 sprints, ~17.5 días)
-- **Último hito:** Retrofit completo (commit `e840bd4`): 19 workflows + 10 agentes + 11 templates + xdd.profile.yml
-- **Próximo paso:** Cerrar Sprint 0 con 10 ADRs + briefing `.xdd/` + PR a main. Luego arrancar Sprint 1 (MemPalace externo + Quickstart real).
+- **Último hito:** Sprint 0 mergeado (PR #1, commit `af3241b`): 10 ADRs + briefing + Gantt + CHANGELOG.
+- **Próximo paso:** Cerrar Sprint 1 con `DEPENDENCIES.md`, README reescrito, `.xdd/spec/DOMAIN.md` + `.xdd/spec/THREATS.md`, Makefile, badges. PR a main. Luego Sprint 2 (CI base).
 
 ## Decisiones Arquitectónicas Clave
 <!-- ADR-lite: una línea por decisión, con fecha y motivo -->
@@ -39,6 +39,19 @@
 ---
 
 ## Bitácora de Sesiones
+
+### Sesión 2026-05-26 (cont.) — Sprint 1 (MemPalace externo + Quickstart real)
+- **Meta:** Cerrar Fase 2-Spec; corregir framing de MemPalace en README; producir DOMAIN.md + THREATS.md; añadir DX (Makefile, editorconfig, gitattributes); auditar scripts.
+- **Hitos:**
+  - `DEPENDENCIES.md` con matriz oficial (núcleo, recomendado, testing, seguridad).
+  - README reescrito: badges, sección MemPalace correcta, "Qué NO es X-DD", firma HMAC en gobernanza.
+  - `.editorconfig`, `.gitattributes`, `Makefile` (8 targets).
+  - `--help` y `--version` en los 4 scripts (`xdd-start`, `xdd-init`, `xdd-doctor`, `lint-workflows`).
+  - `.xdd/spec/DOMAIN.md` (15+ entidades, 5 bounded contexts, ubiquitous language).
+  - `.xdd/spec/THREATS.md` (23 amenazas STRIDE + 5 vectores IA-driven).
+- **Decisiones:** todas materializadas en commits con prefijo `feat(1.x)`/`docs(1.x)`/`chore(1.x)`.
+- **Bloqueos:** ninguno.
+- **Próxima sesión:** Sprint 2 — CI base + linters + `.xdd/plan/PLAN.md` formal.
 
 ### Sesión 2026-05-26 — Sprint 0 (Reconciliación)
 - **Meta:** Establecer las decisiones meta-arquitectónicas (10 ADRs) y poblar la fase 1 Briefing de X-DD aplicado a sí mismo.

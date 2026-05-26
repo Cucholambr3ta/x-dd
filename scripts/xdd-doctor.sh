@@ -3,6 +3,34 @@
 # No aborta al primer fallo: lista todo y reporta al final.
 set -u
 
+XDD_VERSION="0.1.0-dev"
+
+case "${1:-}" in
+  -h|--help)
+    cat <<'EOF'
+xdd-doctor — diagnóstico del entorno X-DD.
+
+Uso:
+  bash scripts/xdd-doctor.sh
+  bash scripts/xdd-doctor.sh --help | --version
+
+Comprueba núcleo, memoria, testing, seguridad y estructura del proyecto.
+Reporta ✓ / ⚠ / ✗ y resumen final.
+
+Salida:
+  - exit 0 si no hay faltantes críticos.
+  - exit 1 si falta alguna dep `required: yes`.
+
+NOTA: Sprint 3 reescribe este script con SemVer real y --json.
+EOF
+    exit 0
+    ;;
+  -v|--version)
+    echo "xdd-doctor v${XDD_VERSION}"
+    exit 0
+    ;;
+esac
+
 PASS=0; FAIL=0; WARN=0
 
 check () {
