@@ -13,6 +13,32 @@ Desarrollar software de alta calidad mediante el pipeline X-DD: la integración 
 ## 🛠️ Guías de Desarrollo
 - **Pipeline X-DD completo:** [docs/X-DD_Integration_Guide.md](./docs/X-DD_Integration_Guide.md)
 - **Instalación de herramientas:** [INSTALL.md](./INSTALL.md)
+- **Capacidades extendidas (retrofit):** [docs/RETROFIT_GUIDE.md](./docs/RETROFIT_GUIDE.md)
+
+## 📦 Artefactos del proyecto (cuando aplican)
+
+Los workflows producen artefactos versionables en la raíz del proyecto. Consulta el workflow correspondiente antes de modificarlos:
+
+| Artefacto | Producido por | Propósito |
+|-----------|---------------|-----------|
+| `memoria.md` | `/xdd`, `/cierre-fase` | Flight recorder (Art. 3) |
+| `lecciones.md` | `/cierre-fase` | Aprendizajes acumulados |
+| `DISCOVERY.md` | `/ux-discovery` | Validación de problema |
+| `SPEC.md` | `/project-architecture-gsd` | Especificación técnica |
+| `DOMAIN.md` | `/project-architecture-gsd` | Modelo de dominio (DDD) |
+| `THREATS.md` | `/project-architecture-gsd` | Modelo de amenazas (STRIDE) |
+| `PRIVACY.md` | `/privacy-review` | PII y bases legales (GDPR) |
+| `FEATURES.md` | `/fase-requisitos` | Catálogo FDD |
+| `PLAN.md` | `/plan-fases` | Plan por features |
+| `openapi.yaml` | `/api-contract` | Contrato API |
+| `FLAGS.md` | `/feature-flag` | Inventario de feature flags |
+| `events.schema.json` | `/analytics-instrument` | Schema de eventos |
+| `BUDGET.md` | `/finops-baseline` | Presupuesto cloud |
+| `DR_PLAN.md` | `/dr-drill` | Plan de DR |
+| `ONBOARDING.md` | `/onboard-dev` | Guía de onboarding |
+| `CHANGELOG.md` + `RELEASES/v*.md` | `/release-cut` | Trazabilidad de releases |
+| `docs/adr/NNNN-*.md` | `/adr-new` | Decisiones arquitectónicas |
+| `xdd.profile.yml` | `xdd-init.sh` | Perfil del proyecto |
 
 ## 💎 Directrices de Calidad
 1. **Portabilidad Absoluta:** Prohibido generar rutas absolutas del host. Toda ruta debe ser estrictamente relativa (`./` o `../`).

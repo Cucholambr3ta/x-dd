@@ -9,10 +9,11 @@ Este documento describe los **29 workflows operativos** configurados en `.agent/
 Los workflows son guías ejecutables en formato Markdown que definen flujos paso a paso para resolver tareas de desarrollo específicas. Se invocan mediante comandos o llamadas directas en la sesión del agente:
 
 ### 1. Orquestación y Construcción Principal
-*   **`/x-dd` (`x-dd.md`)**: El orquestador principal y Team Lead. Sincroniza el estado del proyecto actual, lee la memoria viva y prepara el plan del día.
-*   **`/x-dd-build` (`x-dd-build.md`)**: Workflow maestro para la fase de construcción. Implementa código siguiendo estándares inmutables de desarrollo.
-*   **`/x-dd-ingest` (`x-dd-ingest.md`)**: Ingesta universal de documentos técnicos para convertirlos a formato agnóstico legible por IA.
-*   **`/x-dd-trace` (`x-dd-trace.md`)**: Sincroniza y traza el progreso en el diagrama de Gantt del proyecto y el Changelog oficial.
+*   **`/xdd` (`xdd.md`)**: El orquestador principal y Team Lead. Sincroniza el estado del proyecto actual, lee la memoria viva y prepara el plan del día.
+*   **`/xdd-build` (`xdd-build.md`)**: Workflow maestro para la fase de construcción. Implementa código siguiendo estándares inmutables de desarrollo.
+*   **`/xdd-ingest` (`xdd-ingest.md`)**: Ingesta universal de documentos técnicos para convertirlos a formato agnóstico legible por IA.
+*   **`/xdd-trace` (`xdd-trace.md`)**: Sincroniza y traza el progreso en el diagrama de Gantt del proyecto y el Changelog oficial.
+*   **`/project-architecture-gsd` (`project-architecture-gsd.md`)**: Genera SPEC.md, DOMAIN.md y THREATS.md en Fase 2 (Spec + DDD + Threat Modeling).
 *   **`/cierre-fase` (`cierre-fase.md`)**: Ejecuta el cierre formal de una fase de desarrollo. Actualiza la memoria viva (`memoria.md`) y exporta las lecciones al palacio de memoria.
 
 ### 2. Planificación y Gestión de Requisitos
@@ -49,6 +50,37 @@ Los workflows son guías ejecutables en formato Markdown que definen flujos paso
 *   **`/skill-template-generator` (`skill-template-generator.md`)**: Plantillas y automatización para mantener la coherencia absoluta entre el código de las skills y su documentación (`SKILL.md`).
 *   **`/design-system-builder` (`design-system-builder.md`)**: Generación automatizada de tokens de diseño CSS para mantener la consistencia estética.
 *   **`/generar-flujo` (`generar-flujo.md`)**: Generador de archivos de flujos visuales `.canvas`.
+
+### 8. Retrofit — Producto, Operación y Calidad Extendida
+
+> Workflows añadidos para cerrar las brechas detectadas en el análisis del ecosistema. Ver [docs/RETROFIT_GUIDE.md](../../docs/RETROFIT_GUIDE.md).
+
+#### 8.1 Producto y descubrimiento
+*   **`/ux-discovery` (`ux-discovery.md`)**: Discovery pre-Fase 1. Valida problema, persona y JTBD antes de invertir en spec. Produce `DISCOVERY.md`.
+*   **`/feature-flag` (`feature-flag.md`)**: Gobierno de feature flags (release, experiment, kill switch, permissioning). Mantiene `FLAGS.md`.
+*   **`/analytics-instrument` (`analytics-instrument.md`)**: Plan de tracking + `events.schema.json` + wrapper validado en CI.
+*   **`/release-cut` (`release-cut.md`)**: Corte de release con semver, CHANGELOG automático y release notes user-facing.
+
+#### 8.2 Operación y resiliencia
+*   **`/observability-init` (`observability-init.md`)**: Bootstrap de SLI/SLO, logs estructurados, métricas, tracing distribuido.
+*   **`/dr-drill` (`dr-drill.md`)**: Plan de DR (`DR_PLAN.md`), drills calendarizados y chaos engineering gradual.
+*   **`/finops-baseline` (`finops-baseline.md`)**: Presupuesto cloud (`BUDGET.md`), tagging obligatorio, rightsizing mensual.
+*   **`/onboard-dev` (`onboard-dev.md`)**: Onboarding de developer nuevo. Tour, setup verificado y primer PR meaningful en ≤5 días.
+
+#### 8.3 Calidad técnica
+*   **`/api-contract` (`api-contract.md`)**: Define contrato API formal (OpenAPI/AsyncAPI/GraphQL/gRPC) en Fase 2.
+*   **`/contract-test` (`contract-test.md`)**: Contract testing consumer-driven (Pact) o schema (Spectral/openapi-diff).
+*   **`/db-migrate` (`db-migrate.md`)**: Migraciones reversibles, seed scripts, verificación de rollback.
+*   **`/perf-budget` (`perf-budget.md`)**: Presupuestos de performance (CWV, bundle size, latencias) verificados en CI.
+*   **`/a11y-audit` (`a11y-audit.md`)**: Auditoría WCAG 2.1 AA (automatizada + manual).
+*   **`/adr-new` (`adr-new.md`)**: Crea Architecture Decision Record numerado en `docs/adr/`.
+
+#### 8.4 Verticales (activación por perfil)
+*   **`/i18n-setup` (`i18n-setup.md`)**: Configura i18n del proyecto (extracción, pluralización CLDR, RTL).
+*   **`/privacy-review` (`privacy-review.md`)**: Inventario PII, bases legales, runbooks DSAR (GDPR/CCPA/LGPD). Produce `PRIVACY.md`.
+*   **`/mobile-release` (`mobile-release.md`)**: Release a App Store / Play Store. Signing, beta tracks, rollout escalonado.
+*   **`/data-pipeline` (`data-pipeline.md`)**: Pipeline de datos con contratos, SLAs, DLQ, calidad y lineage.
+*   **`/ml-eval` (`ml-eval.md`)**: Evaluación de modelos ML/LLM. Golden sets, drift detection, A/B con feature flags.
 
 ---
 

@@ -6,7 +6,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "mempalace mine \"$PWD\" 2>/dev/null &"
+            "command": "command -v mempalace >/dev/null 2>&1 && ( mempalace mine \"$PWD\" >>\"$HOME/.mempalace/mine.log\" 2>&1 & ) || true"
           }
         ]
       }

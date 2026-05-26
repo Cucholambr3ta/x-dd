@@ -13,8 +13,6 @@ X-DD es compatible con ambos. Elige uno:
 #### Opción A — Claude Code (oficial Anthropic)
 ```bash
 npm install -g @anthropic-ai/claude-code
-
-# Verificar
 claude --version
 ```
 Requiere cuenta en [claude.ai](https://claude.ai) con acceso a Claude Code.
@@ -22,11 +20,9 @@ Requiere cuenta en [claude.ai](https://claude.ai) con acceso a Claude Code.
 #### Opción B — OpenCode (open source, multi-proveedor)
 ```bash
 npm install -g opencode-ai
-
-# Verificar
 opencode --version
 ```
-Soporta Claude, GPT-4, Gemini y modelos locales vía Ollama. Ver [opencode.ai](https://opencode.ai) para configuración de proveedores.
+Soporta Claude, GPT-4, Gemini y modelos locales vía Ollama. Ver [opencode.ai](https://opencode.ai).
 
 > Los workflows en `.agent/workflows/` usan el formato `description:` en frontmatter, compatible con ambos orquestadores sin modificaciones.
 
@@ -58,7 +54,6 @@ curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | sh
 nvm install 20
 nvm use 20
 
-# Verificar
 node --version   # v20.x.x
 npm --version
 ```
@@ -71,15 +66,12 @@ Requerido para entornos de staging, DAST y servicios auxiliares.
 ```bash
 # Ubuntu / Mint
 sudo apt install docker.io docker-compose-plugin
-
-# Agregar usuario al grupo docker (evitar sudo)
 sudo usermod -aG docker $USER
 newgrp docker
 
 # macOS
 brew install --cask docker
 
-# Verificar
 docker --version
 docker compose version
 ```
@@ -97,16 +89,14 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 # Instalar MemPalace globalmente
 uv tool install mempalace
 
-# Verificar
 mempalace --version
 ```
 
+> X-DD degrada elegantemente si MemPalace no está instalado: el orquestador arranca igual, sin indexación semántica. Recomendado pero no bloqueante.
+
 **Inicializar en cada proyecto nuevo:**
 ```bash
-# Crear el wing de memoria del proyecto
 mempalace init "$PWD"
-
-# Indexar semánticamente código, docs y workflows
 mempalace mine "$PWD"
 ```
 Los datos se almacenan localmente en `~/.mempalace/` — sin dependencias en la nube.
@@ -115,23 +105,19 @@ Los datos se almacenan localmente en `~/.mempalace/` — sin dependencias en la 
 
 ## Testing (Pipeline X-DD)
 
-### 5. Vitest — Tests Unitarios (TDD) y Security Tests (STDD)
+### 6. Vitest — Tests Unitarios (TDD) y Security Tests (STDD)
 ```bash
-# Por proyecto
 npm install -D vitest
 ```
 
-### 6. Playwright — Tests E2E y BDD
+### 7. Playwright — Tests E2E y BDD
 ```bash
-# Por proyecto
 npm install -D @playwright/test
 npx playwright install
-
-# Para BDD con archivos .feature
 npm install -D playwright-bdd
 ```
 
-### 7. Cucumber (opcional, alternativa BDD pura)
+### 8. Cucumber (opcional, alternativa BDD pura)
 ```bash
 npm install -D @cucumber/cucumber
 ```
@@ -140,19 +126,14 @@ npm install -D @cucumber/cucumber
 
 ## Seguridad (Pipeline SecDD)
 
-### 8. Semgrep — SAST (Análisis Estático)
+### 9. Semgrep — SAST (Análisis Estático)
 ```bash
-# Python pip
-pip install semgrep
-
-# macOS
-brew install semgrep
-
-# Verificar
+pip install semgrep        # Python
+brew install semgrep       # macOS
 semgrep --version
 ```
 
-### 9. Gitleaks — Detección de Secretos en Código
+### 10. Gitleaks — Detección de Secretos en Código
 ```bash
 # Linux (binario)
 wget https://github.com/gitleaks/gitleaks/releases/latest/download/gitleaks_linux_x64.tar.gz
@@ -162,11 +143,10 @@ sudo mv gitleaks /usr/local/bin/
 # macOS
 brew install gitleaks
 
-# Verificar
 gitleaks version
 ```
 
-### 10. Trivy — SCA (Vulnerabilidades en Dependencias e Imágenes)
+### 11. Trivy — SCA (Vulnerabilidades en Dependencias e Imágenes)
 ```bash
 # Ubuntu / Mint
 sudo apt install wget apt-transport-https gnupg
@@ -177,21 +157,22 @@ sudo apt update && sudo apt install trivy
 # macOS
 brew install trivy
 
-# Verificar
 trivy --version
 ```
 
-### 11. OWASP ZAP — DAST (Análisis Dinámico en Staging)
-Se ejecuta mediante Docker, no requiere instalación directa:
+### 12. OWASP ZAP — DAST (Análisis Dinámico en Staging)
+Se ejecuta mediante Docker (imagen oficial actual `zaproxy/zap-stable`):
 ```bash
 # Baseline scan (Tier 2 QA)
-docker run -t owasp/zap2docker-stable zap-baseline.py -t http://tu-staging-url
+docker run -t zaproxy/zap-stable zap-baseline.py -t http://tu-staging-url
 
 # Full scan
-docker run -t owasp/zap2docker-stable zap-full-scan.py -t http://tu-staging-url
+docker run -t zaproxy/zap-stable zap-full-scan.py -t http://tu-staging-url
 ```
 
-### 12. Nuclei — Templates de Vulnerabilidades Conocidas
+> Nota: la imagen `owasp/zap2docker-stable` está deprecada desde 2024. Usa `zaproxy/zap-stable`.
+
+### 13. Nuclei — Templates de Vulnerabilidades Conocidas
 ```bash
 # Via Go
 go install -v github.com/projectdiscovery/nuclei/v3/cmd/nuclei@latest
@@ -199,10 +180,7 @@ go install -v github.com/projectdiscovery/nuclei/v3/cmd/nuclei@latest
 # macOS
 brew install nuclei
 
-# Actualizar templates
 nuclei -update-templates
-
-# Verificar
 nuclei -version
 ```
 
@@ -212,12 +190,8 @@ nuclei -version
 
 ### VS Code + Extensión Claude Code
 ```bash
-# Instalar VS Code
 sudo snap install code --classic
-
 # O descargar desde https://code.visualstudio.com
-
-# Extensión Claude Code: buscar "Claude Code" en el Marketplace
 ```
 
 ### Extensiones VS Code recomendadas
@@ -229,48 +203,34 @@ sudo snap install code --classic
 
 ---
 
-## Verificación de Instalación Completa
+## Verificación del entorno
+
+Usa el doctor incluido en el repo X-DD:
 
 ```bash
-echo "=== X-DD System Check ===" && \
-node --version && \
-git --version && \
-docker --version && \
-mempalace --version && \
-semgrep --version && \
-gitleaks version && \
-trivy --version && \
-echo "✓ Entorno X-DD listo"
+bash ./scripts/xdd-doctor.sh
 ```
+
+Reporta qué herramientas están instaladas y cuáles faltan, sin abortar al primer fallo.
 
 ---
 
-## Configuración del Proyecto
+## Bootstrap de un proyecto nuevo
 
-Al iniciar un proyecto nuevo con X-DD:
+X-DD incluye un script de inicialización portable. **No copies directorios manualmente** — usa:
 
 ```bash
-# 1. Clonar / inicializar el repositorio
-git init mi-proyecto
-cd mi-proyecto
-
-# 2. Copiar la estructura X-DD
-cp -r /ruta/a/x-dd/prompts ./prompts
-cp -r /ruta/a/x-dd/.agent ./.agent
-cp -r /ruta/a/x-dd/.claude ./.claude
-cp -r /ruta/a/x-dd/scripts ./scripts
-cp /ruta/a/x-dd/CLAUDE.md ./CLAUDE.md
-
-# 3. Crear archivo de memoria del proyecto
-echo "# memoria.md\n## Sesión inicial\nProyecto iniciado." > memoria.md
-
-# 4. Instalar dependencias de testing
-npm init -y
-npm install -D vitest @playwright/test playwright-bdd
-
-# 5. Arrancar X-DD (inicializa MemPalace, activa hooks y lanza el orquestador)
+# Desde el clon del repo x-dd
+bash ./scripts/xdd-init.sh /ruta/a/mi-proyecto-nuevo
+cd /ruta/a/mi-proyecto-nuevo
 bash ./scripts/xdd-start.sh
 ```
+
+El script `xdd-init.sh`:
+- Copia `.agent/`, `.claude/`, `prompts/`, `scripts/`, `CLAUDE.md` al destino
+- Crea `memoria.md` y `lecciones.md` a partir de plantillas
+- Inicializa git si no existe
+- Imprime los siguientes pasos
 
 ---
 
@@ -278,29 +238,15 @@ bash ./scripts/xdd-start.sh
 
 El ecosistema X-DD re-indexa MemPalace automáticamente en tres momentos:
 
-### A — Al arrancar la sesión (`scripts/xdd-start.sh`)
-Ejecuta `mempalace init` + `mempalace mine` antes de lanzar el orquestador. Garantiza que al iniciar una nueva sesión (por ejemplo, tras agotar tokens) el contexto esté completamente indexado.
+| Momento | Mecanismo | Archivo |
+|---------|-----------|---------|
+| Arranque de sesión | `xdd-start.sh` ejecuta `mempalace mine` antes del orquestador | [scripts/xdd-start.sh](./scripts/xdd-start.sh) |
+| Cada Write/Edit del agente | Hook `PostToolUse` dispara `mempalace mine` en background | [.claude/settings.json](./.claude/settings.json) |
+| Cada `git commit` | Hook `post-commit` re-indexa en background | [scripts/hooks/post-commit](./scripts/hooks/post-commit) |
 
-```bash
-bash ./scripts/xdd-start.sh
-```
-
-### B — Tras cada Write/Edit en Claude Code (`.claude/settings.json`)
-Hook `PostToolUse` que dispara `mempalace mine` en background cada vez que el agente crea o modifica un archivo. El índice se actualiza en tiempo real durante el desarrollo, sin bloquear la sesión.
-
-> Compatible con Claude Code y OpenCode. El archivo `.claude/settings.json` ya está incluido en la estructura X-DD.
-
-### C — Tras cada `git commit` (`scripts/hooks/post-commit`)
-Hook git que re-indexa MemPalace después de cada commit. El script `xdd-start.sh` lo activa automáticamente con `git config core.hooksPath ./scripts/hooks`.
-
-**El flujo completo:**
-```
-Edición de archivo → PostToolUse hook → mempalace mine (background)
-git commit         → post-commit hook → mempalace mine (background)
-Nueva sesión       → xdd-start.sh    → mempalace mine (foreground) → orquestador
-```
-
-Así, si se agotan los tokens y se abre una nueva sesión, MemPalace ya tiene el estado más reciente del proyecto indexado.
+Los tres mecanismos:
+- **Detectan automáticamente si MemPalace está instalado.** Si no, son no-op (no bloquean ni rompen nada).
+- **Loguean a `~/.mempalace/mine.log`** (no a `/dev/null`), para que puedas diagnosticar fallos silenciosos.
 
 ---
 
@@ -317,6 +263,31 @@ Así, si se agotan los tokens y se abre una nueva sesión, MemPalace ya tiene el
 | `/cierre-fase` | Fase 6 | Retro → lecciones.md + memoria.md actualizado |
 | `/security-audit` | Fase 5 | Auditoría de seguridad completa |
 | `/advanced-agentic-pentesting` | Demanda | Red Team ofensivo con SecOps |
+
+### Workflows del retrofit (capacidades extendidas)
+| Comando | Cuándo | Propósito |
+|---------|--------|-----------|
+| `/ux-discovery` | Pre-Fase 1 | Validar problema antes de spec |
+| `/api-contract` | Fase 2 | OpenAPI/GraphQL/gRPC formal |
+| `/db-migrate` | Fase 4 | Migración con rollback verificado |
+| `/feature-flag` | Fase 3-4 | Gobierno de flags |
+| `/i18n-setup` | Fase 4 | Internacionalización |
+| `/analytics-instrument` | Fase 4 | Product analytics + schema |
+| `/privacy-review` | Fase 2-5 | GDPR/CCPA + PII |
+| `/finops-baseline` | Fase 5-6 | Presupuesto cloud |
+| `/dr-drill` | Fase 5-6 | Plan y drills de DR |
+| `/release-cut` | Fase 5-6 | Release con semver + notes |
+| `/contract-test` | Fase 5 | Consumer-driven contracts |
+| `/onboard-dev` | On-demand | Onboarding de devs |
+| `/mobile-release` | On-demand | Release a stores |
+| `/observability-init` | Fase 2-4 | SLI/SLO + tracing |
+| `/perf-budget` | Fase 3-5 | Presupuesto performance |
+| `/a11y-audit` | Fase 5 | WCAG 2.1 AA |
+| `/adr-new` | Cualquier fase | ADR numerado |
+| `/data-pipeline` | Fase 3-4 | Pipeline de datos |
+| `/ml-eval` | Fase 4-5 | Eval de modelos ML/LLM |
+
+Ver [docs/RETROFIT_GUIDE.md](./docs/RETROFIT_GUIDE.md) para el detalle.
 
 ---
 *X-DD System — Instalación y configuración*

@@ -78,14 +78,44 @@ x-dd/
 
 ## Inicio rápido
 
-1. **Instalar herramientas** → ver [INSTALL.md](./INSTALL.md)
-2. **Copiar la estructura** al nuevo proyecto (`.agent/`, `.claude/`, `prompts/`, `scripts/`, `CLAUDE.md`)
-3. **Crear `memoria.md`** en la raíz del proyecto
-4. **Arrancar X-DD** — un solo comando inicializa MemPalace, activa los git hooks y lanza el orquestador:
+1. **Instalar herramientas** → ver [INSTALL.md](./INSTALL.md). Mínimo: Claude Code **u** OpenCode + Git + Node 20+. Recomendado: + MemPalace.
+2. **Verificar entorno:**
+   ```bash
+   bash ./scripts/xdd-doctor.sh
+   ```
+3. **Bootstrap del proyecto** (copia estructura, crea `memoria.md` y `lecciones.md` desde plantillas, inicializa git):
+   ```bash
+   bash ./scripts/xdd-init.sh /ruta/a/mi-proyecto
+   cd /ruta/a/mi-proyecto
+   ```
+4. **Arrancar X-DD** — indexa MemPalace, activa los git hooks y lanza el orquestador (Claude Code u OpenCode, el que esté instalado):
    ```bash
    bash ./scripts/xdd-start.sh
    ```
-5. **Ejecutar `/xdd`** para arrancar el orquestador principal
+5. **Ejecutar `/xdd`** para arrancar el orquestador principal.
+
+### Perfiles de instalación
+
+| Perfil | Cuándo usarlo | Qué incluye |
+|--------|---------------|-------------|
+| **Core** | Empezar rápido, scripts y tools internas | Claude Code/OpenCode + Git + Node + MemPalace |
+| **Standard** | Producto con tests E2E y BDD | Core + Vitest + Playwright |
+| **Full (SecDD)** | Producto cliente, compliance, producción | Standard + Semgrep + Gitleaks + Trivy + ZAP + Nuclei |
+
+`xdd-doctor.sh` te dice qué te falta para cada perfil.
+
+### Capacidades del producto (retrofit por tipo)
+
+X-DD incluye un retrofit de capacidades activables vía `xdd.profile.yml`. Workflows extendidos para:
+
+| Tipo de producto | Capacidades sugeridas |
+|------------------|------------------------|
+| **SaaS web** | i18n, feature flags, analytics, privacy, observability, FinOps, perf-budget, a11y, end-user docs |
+| **App móvil** | mobile-release, feature flags, analytics, privacy, perf-budget, observability, onboarding |
+| **Librería / SDK** | api-contract, contract-test, release-cut, end-user docs, adrs, perf-budget |
+| **Tool interna** | onboarding, adrs, observability (si persistente), db-migrations |
+
+Ver [docs/RETROFIT_GUIDE.md](./docs/RETROFIT_GUIDE.md) para el detalle de los 19 workflows extendidos y 10 agentes nuevos.
 
 ## MemPalace — Memoria Semántica Local
 

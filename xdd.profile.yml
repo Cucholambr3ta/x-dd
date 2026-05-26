@@ -1,0 +1,37 @@
+# xdd.profile.yml — Perfil del repo X-DD raíz
+# Este archivo es el perfil por defecto. Los proyectos clientes lo sobreescriben
+# con su propio xdd.profile.yml.
+
+profile: custom        # Repo del framework, no es un producto en sí
+version: 1
+
+capabilities:
+  # Todas las capacidades disponibles como referencia/inventario.
+  ux_discovery: true
+  feature_flags: true
+  product_analytics: true
+  release_management: true
+  observability: true
+  disaster_recovery: true
+  finops: true
+  onboarding: true
+  api_contract: true
+  contract_testing: true
+  db_migrations: true
+  perf_budget: true
+  a11y_audit: true
+  adrs: true
+  i18n: true
+  privacy_review: true
+  mobile_release: true
+  data_pipeline: true
+  ml_eval: true
+  end_user_docs: true
+
+stacks:
+  feature_flags: ""
+  analytics: ""
+  observability: ""
+  ci: ""
+  i18n: ""
+  cloud: ""

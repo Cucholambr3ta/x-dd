@@ -1,4 +1,4 @@
-# CONSTITUCIÓN X-DD — V1.1
+# CONSTITUCIÓN X-DD — V1.4
 
 **Jurisdicción:** Ecosistema X-DD
 **Rol del Usuario:** Desarrollador (Full-Stack / Solopreneur / Equipo)
@@ -62,4 +62,4 @@ Todo desarrollo sigue este flujo de 6 fases con checkpoints de aprobación human
 > **IMPORTANTE:** El incumplimiento de cualquier fase invalida la certificación de calidad del proyecto. El archivo `CLAUDE.md` es obligatorio para garantizar la interoperabilidad con Claude Code.
 
 ---
-**Versión:** 1.4.0 | **Sistema:** X-DD
+**Versión:** 1.4.0 | **Sistema:** X-DD | **Última revisión:** 2026-05-26

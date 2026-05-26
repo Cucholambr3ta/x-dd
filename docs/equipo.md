@@ -106,4 +106,23 @@ Para threat modeling:          ./prompts/agents/security/shannon-secops-expert.m
 ```
 
 ---
-**Versión:** 2.0 | **Estado:** 100% Consolidado Local & Portable | **Sistema:** X-DD
+
+## 🆕 Agentes del Retrofit (Capacidades Extendidas)
+
+Añadidos para cerrar brechas del ecosistema (ver [RETROFIT_GUIDE.md](./RETROFIT_GUIDE.md)):
+
+| Agente | Categoría | Workflow asociado |
+|--------|-----------|--------------------|
+| **I18n Engineer** | `engineering/` | `/i18n-setup` |
+| **Feature Flag Manager** | `engineering/` | `/feature-flag` |
+| **FinOps Architect** | `engineering/` | `/finops-baseline` |
+| **Chaos Engineer** | `engineering/` | `/dr-drill` |
+| **Product Analytics Architect** | `product/` | `/analytics-instrument` |
+| **Privacy Engineer** | `security/` | `/privacy-review` |
+| **Release Manager** | `project-management/` | `/release-cut`, `/mobile-release` |
+| **Dev Onboarding Coach** | `support/` | `/onboard-dev` |
+| **End-User Docs Writer** | `support/` | `/release-cut` (notes) |
+| **Contract Testing Engineer** | `testing/` | `/contract-test` |
+
+---
+**Versión:** 2.1 | **Estado:** 100% Consolidado Local & Portable + Retrofit Aplicado | **Sistema:** X-DD
