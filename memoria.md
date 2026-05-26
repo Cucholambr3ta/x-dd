@@ -11,11 +11,11 @@
 - **Repo:** https://github.com/Cucholambr3ta/x-dd
 
 ## Estado Actual
-- **Fase X-DD activa:** **4-Build (3/5)**
-- **Sprint en curso:** **Sprint 5 — Registry tipado de agentes** (rama `feat/sprint-5-registry`)
+- **Fase X-DD activa:** **4-Build (4/5)**
+- **Sprint en curso:** **Sprint 6 — MCP Server propio ⭐** (rama `feat/sprint-6-mcp-server`)
 - **Plan macro:** [.claude/plans/indicame-que-mejoras-implementarias-happy-sunbeam.md](/home/alejandro/.claude/plans/indicame-que-mejoras-implementarias-happy-sunbeam.md) (8 sprints, ~17.5 días)
-- **Último hito:** Sprint 4 mergeado (PR #5, commit `5c4d26c`). Fix CI markdownlint (PR #6) mergeado. **Política `delete_branch_on_merge=false` activa**; 5 branches restauradas en remote desde reflog local (sprint-1 a sprint-5) — trazabilidad por sprint preservada.
-- **Próximo paso:** Cerrar Sprint 5 con migrador automático, registry.json (180 agentes / 15 cats), schema JSON, validador, generador de `docs/equipo.md`, 3 composition_patterns. PR a main (sin borrar branch). Luego Sprint 6 (MCP server ⭐).
+- **Último hito:** Sprint 5 mergeado (PR #7, commit `b24582a`): registry.json (180 agentes), migrator, validator strict, generate-equipo, SSoT-derived docs/equipo.md.
+- **Próximo paso:** Cerrar Sprint 6 con `xdd-mcp-server/` (Python + JSON-RPC stdio sin deps PyPI), 6 tools (validate_phase / transition_phase / list_workflows / invoke_workflow / list_agents / get_phase_artifacts), tests pytest, `docs/MCP_INTEGRATION.md`. PR a main. Luego Sprint 7 (adapters + E2E).
 
 ## Decisiones Arquitectónicas Clave
 <!-- ADR-lite: una línea por decisión, con fecha y motivo -->
@@ -39,6 +39,21 @@
 ---
 
 ## Bitácora de Sesiones
+
+### Sesión 2026-05-26 (cont.) — Sprint 6 (MCP Server propio ⭐)
+- **Meta:** Cerrar Fase 4-Build (4/5) con MCP server nativo que reduzca el costo de soportar nuevos IDEs.
+- **Hitos:**
+  - `xdd-mcp-server/` package Python stdlib pura (sin deps PyPI).
+  - JSON-RPC 2.0 sobre stdio: `initialize`, `tools/list`, `tools/call`, `notifications/initialized`.
+  - 6 tools v0.1.0 (validate_phase, transition_phase, list_workflows, invoke_workflow, list_agents, get_phase_artifacts).
+  - Reuso de `scripts/xdd-gate.py` vía importlib (sin duplicar HMAC).
+  - Whitelist `.xdd/` en `get_phase_artifacts` (T4.3 mitigación).
+  - Sin `xdd_exec`/`xdd_shell` — `invoke_workflow` devuelve contenido para que el orquestador lo interprete (T6.3 mitigación).
+  - **34/34 tests verdes** (17 gate + 17 mcp).
+  - `docs/MCP_INTEGRATION.md` con setup para 6 IDEs.
+- **Decisiones:** sin SSE transport en v0.1.0 (solo stdio); sin Resources/Prompts (solo Tools); evaluable en v0.2.0.
+- **Bloqueos:** ninguno.
+- **Próxima sesión:** Sprint 7 — Adapters IDE (Claude Code + OpenCode, ADR-0007) + tests E2E del Quickstart.
 
 ### Sesión 2026-05-26 (cont.) — Sprint 5 (Registry tipado de agentes)
 - **Meta:** Cerrar Fase 4-Build (3/5) con registry SSoT consumible por workflows y MCP server.

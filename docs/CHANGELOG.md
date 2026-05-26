@@ -9,6 +9,30 @@
 
 ## [Unreleased] — main
 
+### Added — Sprint 6 (2026-05-26) — MCP Server propio ⭐
+
+- **`xdd-mcp-server/`** — Model Context Protocol server propio de X-DD.
+  Python ≥3.9 stdlib pura (sin deps PyPI: ni `fastmcp` ni `mcp-sdk`).
+  JSON-RPC 2.0 sobre stdio. Implementa subset necesario de MCP
+  (`initialize`, `tools/list`, `tools/call`, `notifications/initialized`).
+- **6 tools v0.1.0:**
+  - `xdd_validate_phase` — validación + firma HMAC (reusa `scripts/xdd-gate.py`)
+  - `xdd_transition_phase` — transición secuencial
+  - `xdd_list_workflows` — catálogo desde `.agent/workflows/`
+  - `xdd_invoke_workflow` — devuelve contenido (NO ejecuta — T6.3)
+  - `xdd_list_agents` — registry tipado (filtrable por categoría)
+  - `xdd_get_phase_artifacts` — whitelist `.xdd/` (T4.3)
+- **`tests/test_mcp_server.py`** — **17/17 pytest verdes** (dispatcher,
+  tools, error handling, security mitigations).
+- **`docs/MCP_INTEGRATION.md`** — setup por IDE: Claude Code, Cursor, Zed,
+  Continue, Cline, Windsurf. Cualquier IDE MCP-compat consume el mismo server
+  sin adapter dedicado.
+- **`.xdd/build/sprint-6/REPORT.md`** — Build (4/5).
+
+### Changed — Sprint 6
+- **`memoria.md`** — estado actualizado a Sprint 6 / Fase 4-Build (4/5).
+- **README.md** (pendiente próximo sprint) — anuncio "X-DD habla MCP nativo".
+
 ### Added — Sprint 5 (2026-05-26) — Registry tipado de agentes
 
 - **`prompts/agents/registry.json`** — catálogo machine-readable con
