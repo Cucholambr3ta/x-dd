@@ -11,11 +11,11 @@
 - **Repo:** https://github.com/Cucholambr3ta/x-dd
 
 ## Estado Actual
-- **Fase X-DD activa:** **3-Plan**
-- **Sprint en curso:** **Sprint 2 — CI base + linters + .xdd/plan/PLAN.md** (rama `feat/sprint-2-ci-base`)
+- **Fase X-DD activa:** **4-Build (1/5)**
+- **Sprint en curso:** **Sprint 3 — xdd-doctor v2 + xdd.config.yml + JSON Schema** (rama `feat/sprint-3-doctor-config`)
 - **Plan macro:** [.claude/plans/indicame-que-mejoras-implementarias-happy-sunbeam.md](/home/alejandro/.claude/plans/indicame-que-mejoras-implementarias-happy-sunbeam.md) (8 sprints, ~17.5 días)
-- **Último hito:** Sprint 1 mergeado (PR #2, commit `c5be687`): DEPENDENCIES, README reescrito, DX, scripts auditados, DOMAIN+THREATS.
-- **Próximo paso:** Cerrar Sprint 2 con `.github/workflows/`, pre-commit, Renovate, `.xdd/plan/PLAN.md`. PR a main. Luego Sprint 3 (xdd-doctor v2 + xdd.config.yml).
+- **Último hito:** Sprint 2 mergeado (PR #3, commit `ed9eed7`): 4 GitHub Actions + pre-commit + Renovate + .xdd/plan/PLAN.md.
+- **Próximo paso:** Cerrar Sprint 3 con `xdd-doctor.sh` v2 (SemVer real + --json), `xdd.config.yml` + `schemas/xdd.config.schema.json`, `docs/CONFIG.md`. PR a main. Luego Sprint 4 (Gate keeper HMAC ⭐).
 
 ## Decisiones Arquitectónicas Clave
 <!-- ADR-lite: una línea por decisión, con fecha y motivo -->
@@ -39,6 +39,18 @@
 ---
 
 ## Bitácora de Sesiones
+
+### Sesión 2026-05-26 (cont.) — Sprint 3 (xdd-doctor v2 + xdd.config.yml + schema)
+- **Meta:** Cerrar Fase 4-Build (1/5) con doctor real (SemVer) y config centralizada validable.
+- **Hitos:**
+  - `xdd-doctor.sh` v2 con comparación SemVer (`sort -V`), salida `--json`, secciones tipificadas.
+  - `xdd.config.yml` en raíz del repo (dogfooding) con directiva yaml-language-server.
+  - `schemas/xdd.config.schema.json` (JSON Schema 2020-12).
+  - `docs/CONFIG.md` referencia completa.
+  - `.xdd/build/sprint-3/REPORT.md`.
+- **Decisiones:** salida `--json` como sobre-mejora (no estaba en plan v1.1) habilita dashboards y CI gates.
+- **Bloqueos:** ninguno.
+- **Próxima sesión:** Sprint 4 — Gate keeper HMAC ⭐ (el diferenciador real del framework).
 
 ### Sesión 2026-05-26 (cont.) — Sprint 2 (CI base + plan formal)
 - **Meta:** Cerrar Fase 3-Plan con CI verde en cada PR y plan formalizado en el repo.

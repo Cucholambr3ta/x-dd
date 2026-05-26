@@ -1,0 +1,183 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/Cucholambr3ta/x-dd/raw/main/schemas/xdd.config.schema.json",
+  "title": "X-DD Project Configuration",
+  "description": "Configuración operacional del proyecto X-DD (cómo se ejecuta). Coexiste con xdd.profile.yml (qué es). Ver ADR-0002.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["xdd_version"],
+  "properties": {
+    "xdd_version": {
+      "type": "string",
+      "description": "Versión de la especificación de configuración. Sigue semver del framework.",
+      "pattern": "^\\d+\\.\\d+\\.\\d+(-[a-z0-9.-]+)?$"
+    },
+
+    "mempalace": {
+      "type": "object",
+      "description": "Integración con MemPalace (ver DEPENDENCIES.md y ADR-0004).",
+      "additionalProperties": false,
+      "properties": {
+        "enabled": { "type": "boolean", "default": true },
+        "version_constraint": {
+          "type": "string",
+          "description": "Constraint PEP440-style (ej. '>=3.3.0,<4.0').",
+          "default": ">=3.3.0"
+        },
+        "default_wing": {
+          "type": "string",
+          "description": "Wing por defecto (concepto MemPalace). Default: nombre del proyecto.",
+          "default": "${project_name}"
+        },
+        "index": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "paths": {
+              "type": "array",
+              "items": { "type": "string" },
+              "default": ["./src", "./docs", "./.xdd"]
+            },
+            "exclude": {
+              "type": "array",
+              "items": { "type": "string" },
+              "default": [
+                "node_modules/**",
+                ".git/**",
+                "dist/**",
+                "build/**",
+                "coverage/**",
+                "*.log",
+                ".env*",
+                ".aws/**"
+              ]
+            }
+          }
+        },
+        "triggers": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["event", "action"],
+            "properties": {
+              "event": {
+                "type": "string",
+                "enum": ["session_start", "file_write", "git_commit"]
+              },
+              "action": { "type": "string" },
+              "debounce_ms": { "type": "integer", "minimum": 0 },
+              "delay_ms": { "type": "integer", "minimum": 0 }
+            }
+          }
+        },
+        "fallback": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "on_failure": {
+              "type": "string",
+              "enum": ["warn", "block", "silent"],
+              "default": "warn"
+            },
+            "log_path": {
+              "type": "string",
+              "default": "~/.mempalace/mine.log"
+            }
+          }
+        },
+        "mcp": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "enabled": { "type": "boolean", "default": true },
+            "transport": {
+              "type": "string",
+              "enum": ["stdio", "sse"],
+              "default": "stdio"
+            }
+          }
+        }
+      }
+    },
+
+    "pipeline": {
+      "type": "object",
+      "description": "Configuración del Gated Pipeline de 6 fases.",
+      "additionalProperties": false,
+      "properties": {
+        "gates": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "enforce_artifacts": { "type": "boolean", "default": true },
+            "require_approval": { "type": "boolean", "default": true },
+            "require_signature": {
+              "type": "boolean",
+              "default": true,
+              "description": "Firma HMAC-SHA256 del gate (ADR-0006). Activable desde v0.1.0."
+            },
+            "block_on_missing_spec": { "type": "boolean", "default": true }
+          }
+        },
+        "phases": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id"],
+            "properties": {
+              "id": {
+                "type": "string",
+                "enum": ["briefing", "spec", "plan", "build", "qa", "retro"]
+              },
+              "artifacts": {
+                "type": "array",
+                "items": { "type": "string" }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "agents": {
+      "type": "object",
+      "description": "Configuración del registry tipado (llega en Sprint 5).",
+      "additionalProperties": false,
+      "properties": {
+        "registry": {
+          "type": "string",
+          "default": "./prompts/agents/registry.json"
+        },
+        "max_concurrent": { "type": "integer", "minimum": 1, "default": 5 },
+        "fallback_strategy": {
+          "type": "string",
+          "enum": ["escalate_to_senior", "fail_fast", "retry_with_other"],
+          "default": "escalate_to_senior"
+        },
+        "orchestration_pattern": {
+          "type": "string",
+          "enum": ["lead_plus_specialists", "round_robin", "parallel"],
+          "default": "lead_plus_specialists"
+        }
+      }
+    },
+
+    "ide_adapters": {
+      "type": "object",
+      "description": "Adapters IDE que se generan vía xdd-adapt.sh (Sprint 7).",
+      "additionalProperties": false,
+      "properties": {
+        "generate_for": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["claude-code", "opencode"]
+          },
+          "default": ["claude-code", "opencode"]
+        }
+      }
+    }
+  }
+}

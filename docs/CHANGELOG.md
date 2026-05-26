@@ -9,6 +9,26 @@
 
 ## [Unreleased] — main
 
+### Added — Sprint 3 (2026-05-26)
+- **`scripts/xdd-doctor.sh` v2** — reescrito con comparación SemVer real
+  (`semver_ge` + `sort -V`), salida `--json` opcional (sobre-mejora), checks
+  separados en Núcleo obligatorio / recomendado / Orquestadores / Testing /
+  Seguridad / Estructura / Configuración. Versiones mínimas declaradas:
+  git ≥2.30, bash ≥4.0, python3 ≥3.9, node ≥20, mempalace ≥3.3, bats ≥1.10,
+  gitleaks ≥8.18.
+- **`xdd.config.yml`** — configuración operacional del propio repo X-DD
+  (dogfooding); directiva `# yaml-language-server` para autocomplete.
+- **`schemas/xdd.config.schema.json`** — JSON Schema draft 2020-12; cubre
+  mempalace, pipeline (con `require_signature` para HMAC), agents (Sprint 5),
+  ide_adapters (Sprint 7).
+- **`docs/CONFIG.md`** — referencia completa de cada campo con defaults,
+  enums, ejemplos de validación.
+- **`.xdd/build/sprint-3/REPORT.md`** — sub-reporte de Build (1/5).
+
+### Changed — Sprint 3
+- **`xdd-doctor.sh`** ahora retorna `--json` machine-readable para CI/dashboards.
+- **`memoria.md`** — estado actualizado a Sprint 3 / Fase 4-Build (1/5).
+
 ### Added — Sprint 2 (2026-05-26)
 - **`.github/workflows/lint-shell.yml`** — ShellCheck en push/PR sobre `**.sh`.
 - **`.github/workflows/lint-markdown.yml`** — markdownlint-cli2 sobre `**.md`.

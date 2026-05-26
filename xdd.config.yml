@@ -1,0 +1,83 @@
+# yaml-language-server: $schema=./schemas/xdd.config.schema.json
+#
+# X-DD operational config — applied to the X-DD repo itself (dogfooding).
+# Doc: ./docs/CONFIG.md
+# Schema: ./schemas/xdd.config.schema.json
+#
+# Coexiste con xdd.profile.yml (declarativo). Ver ADR-0002.
+
+xdd_version: "0.1.0-dev"
+
+mempalace:
+  enabled: true
+  version_constraint: ">=3.3.0"
+  default_wing: "x-dd"
+  index:
+    paths:
+      - "./.agent"
+      - "./.xdd"
+      - "./docs"
+      - "./prompts"
+      - "./scripts"
+      - "./templates"
+      - "./schemas"
+      - "./CLAUDE.md"
+      - "./README.md"
+      - "./memoria.md"
+      - "./lecciones.md"
+    exclude:
+      - "node_modules/**"
+      - ".git/**"
+      - "dist/**"
+      - "build/**"
+      - "coverage/**"
+      - "*.log"
+      - ".env*"
+      - ".aws/**"
+      - ".xdd/.gate-key"
+  triggers:
+    - event: session_start
+      action: "mempalace wake-up --wing x-dd"
+    - event: file_write
+      action: "mempalace mine --incremental --wing x-dd"
+      debounce_ms: 5000
+    - event: git_commit
+      action: "mempalace mine --incremental --wing x-dd"
+      delay_ms: 1000
+  fallback:
+    on_failure: warn
+    log_path: "~/.mempalace/mine.log"
+  mcp:
+    enabled: true
+    transport: stdio
+
+pipeline:
+  gates:
+    enforce_artifacts: true
+    require_approval: true
+    require_signature: true   # HMAC-SHA256 activable desde Sprint 4 (ADR-0006)
+    block_on_missing_spec: true
+  phases:
+    - id: briefing
+      artifacts: [".xdd/briefing/SPEC.md", ".xdd/briefing/FEATURES.md"]
+    - id: spec
+      artifacts: [".xdd/spec/DOMAIN.md", ".xdd/spec/THREATS.md"]
+    - id: plan
+      artifacts: [".xdd/plan/PLAN.md"]
+    - id: build
+      artifacts: [".xdd/build/"]
+    - id: qa
+      artifacts: [".xdd/qa/QA_REPORT.md"]
+    - id: retro
+      artifacts: [".xdd/retro/lecciones.md"]
+
+agents:
+  registry: "./prompts/agents/registry.json"
+  max_concurrent: 5
+  fallback_strategy: escalate_to_senior
+  orchestration_pattern: lead_plus_specialists
+
+ide_adapters:
+  generate_for:
+    - claude-code
+    - opencode
