@@ -9,6 +9,41 @@
 
 ## [Unreleased] — main
 
+### Added — Sprint 4 (2026-05-26) — Gate keeper HMAC ⭐
+
+- **`scripts/xdd-gate.py`** — gate keeper programático con 5 subcomandos
+  (`init`, `validate`, `transition`, `approve`, `status`) + salida `--json`.
+  Implementa firma **HMAC-SHA256** sobre `(phase, sorted_checksums, approver,
+  timestamp_utc_iso)` por cada aprobación. Cualquier alteración manual de
+  artefactos / status / approvers / clave invalida la firma y `validate` lo
+  detecta. Python ≥3.9, stdlib pura (sin deps PyPI).
+- **`tests/test_gate.py`** — 17 tests pytest, todos verdes:
+  init idempotente, approve con/sin key/approver, validate detecta tampering
+  de artefactos / firma corrupta / clave rotada, transition no-secuencial,
+  status reporta todas las fases.
+- **`docs/GATE.md`** — referencia completa: setup, comandos, flujo típico,
+  artefactos por fase, integración en workflows, rotación de clave,
+  cobertura de amenazas (T1-T3 + V4 del threat model).
+- **`.gitignore`** — `.xdd/.gate-key` explícito como secreto + Python/Node/IDE
+  caches y env files (ADR-0009).
+- **`.xdd/build/sprint-4/REPORT.md`** — Build (2/5).
+
+### Dogfooding — Sprint 4
+
+Las 3 fases ya completadas de X-DD aplicado a sí mismo están **APROBADAS y FIRMADAS**:
+
+```
+✓ briefing  APROBADO  (firma cffaf210…)
+✓ spec      APROBADO  (firma 4fc4d8e6…)
+✓ plan      APROBADO  (firma 232d9368…)
+```
+
+Transiciones validadas: `briefing→spec`, `spec→plan`, `plan→build` ✓.
+
+### Changed — Sprint 4
+
+- **`memoria.md`** — estado actualizado a Sprint 4 / Fase 4-Build (2/5).
+
 ### Added — Sprint 3 (2026-05-26)
 - **`scripts/xdd-doctor.sh` v2** — reescrito con comparación SemVer real
   (`semver_ge` + `sort -V`), salida `--json` opcional (sobre-mejora), checks
