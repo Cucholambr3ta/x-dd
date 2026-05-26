@@ -20,4 +20,37 @@ Categorías sugeridas: `ARQUITECTURA`, `SEGURIDAD`, `DOMINIO`, `TESTING`, `DEVOP
 
 ## Lecciones
 
-_(vacío — añadir entradas vía `/cierre-fase`)_
+### [PROCESO] El gate "APROBADO" como string es seguridad de teatro — 2026-05-26
+**Contexto:** Diseñando el gate keeper del Sprint 4 según Tarea 2.2 de MEJORAS-X-DD.md v1.1.
+**Problema:** El plan original proponía escribir literal `"APROBADO"` en `.xdd/<fase>/.status`. Ese archivo es trivialmente editable; cualquiera (humano o agente) puede aprobar fases sin enforcement real.
+**Causa raíz:** Confundir "convención" con "control". Una vez que el gate keeper existe como código, los stakeholders asumen integridad — pero un string plano no la ofrece.
+**Lección:** Cualquier "gate" o "approval" en un sistema agéntico requiere mecanismo criptográfico de integridad (HMAC mínimo). Si la decisión vive en un archivo de texto, debe firmarse contra una clave fuera del control del agente.
+**Aplica a:** Cualquier mecanismo de aprobación en X-DD, en proyectos generados por X-DD y en general en frameworks de proceso para sistemas IA. Materializado en [ADR-0006](docs/adr/0006-gate-keeper-firma-hmac.md).
+
+### [ARQUITECTURA] "MCP preferido" sin server propio es solo discurso — 2026-05-26
+**Contexto:** Revisión de la sección 0.1 del plan v1.1 ("MCP es la vía preferida de integración").
+**Problema:** El plan declaraba MCP como preferido pero solo consumía el server de MemPalace; no exponía X-DD vía MCP. Sin server propio, cada IDE nuevo necesitaba su adapter dedicado (9 adapters).
+**Causa raíz:** Hueco entre intención declarada y mecanismo implementado.
+**Lección:** Si un sistema declara un protocolo como preferido, debe ofrecerlo, no solo consumirlo. Auditar siempre la coherencia entre declaraciones de arquitectura y el código que las implementa.
+**Aplica a:** Toda decisión de protocolo/estándar en X-DD. Materializado en [ADR-0005](docs/adr/0005-mcp-preferido-y-server-propio.md).
+
+### [PROCESO] Mini-ciclos X-DD por sprint generan más burocracia que valor — 2026-05-26
+**Contexto:** Decidiendo cómo aplicar X-DD a la implementación de MEJORAS.
+**Problema:** La opción de "cada sprint = ciclo X-DD completo" (8 sprints × 6 fases = 48 SPEC/PLAN/QA) habría producido decenas de artefactos duplicados sin valor incremental.
+**Causa raíz:** Confundir "más X-DD" con "mejor X-DD". La Constitución Art. 9 prohíbe agregar fases, pero no exige multiplicarlas innecesariamente.
+**Lección:** Para releases de tamaño medio (≤8 sprints), una sola pasada por las 6 fases es coherente y suficiente. El dogfooding gana por calidad de artefactos, no por cantidad.
+**Aplica a:** Cualquier planificación con X-DD sobre un release. Materializado en [ADR-0000](docs/adr/0000-mapeo-mejoras-pipeline-xdd.md).
+
+### [DOMINIO] Confusión de ownership cuando una dep externa se presenta como interna — 2026-05-26
+**Contexto:** README anterior describía MemPalace como "pieza del ecosistema X-DD".
+**Problema:** Lectores asumían que MemPalace era parte de X-DD; expectativa errónea de soporte, ownership y roadmap unificado.
+**Causa raíz:** Lenguaje impreciso sobre límites de sistema. Falta de `DEPENDENCIES.md` explícito.
+**Lección:** Cualquier dependencia externa relevante debe declararse en `DEPENDENCIES.md` con versión, licencia, repo y rol. La descripción en README debe usar "integra" o "consume", no "incluye".
+**Aplica a:** Todas las deps externas de X-DD y proyectos generados. Materializado en [ADR-0004](docs/adr/0004-mempalace-dep-externa-no-fork.md). Acción en Sprint 1.
+
+### [HERRAMIENTAS] El número de scripts dispersos es señal pero no urgencia — 2026-05-26
+**Contexto:** Discusión sobre consolidar 6-8 scripts en `xdd` CLI Python único.
+**Problema:** Tentación de "limpiar todo de una vez" reescribiendo todo en Click/Typer ahora.
+**Causa raíz:** Sesgo de orden — la dispersión es visible, la consolidación es satisfactoria, pero no agrega valor demostrable a usuarios v0.1.0.
+**Lección:** Diferir consolidaciones puramente estéticas hasta tener señal de demanda real (issues de usuarios externos). Un `Makefile` es suficiente para uniformar UX sin reescribir.
+**Aplica a:** Decisiones de refactor en X-DD. Materializado en [ADR-0008](docs/adr/0008-consolidacion-xdd-cli-diferida.md).
