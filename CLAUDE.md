@@ -11,8 +11,7 @@ Este manifiesto define el contexto operativo y gobernanza para **Claude Code** y
 Desarrollar software de alta calidad mediante el pipeline X-DD: la integración de múltiples metodologías *-Driven Development* (SDD, FDD, BDD, ATDD, DDD, TDD, STDD, SecDD, Threat-Driven) como capas sobre un Gated Pipeline de 6 fases.
 
 ## 🛠️ Guías de Desarrollo
-- **Guía SDD (Pipeline Elite):** [docs/SDD_GUIDE.md](./docs/SDD_GUIDE.md)
-- **Integración X-DD completa:** [docs/X-DD_Integration_Guide.md](./docs/X-DD_Integration_Guide.md)
+- **Pipeline X-DD completo:** [docs/X-DD_Integration_Guide.md](./docs/X-DD_Integration_Guide.md)
 - **Instalación de herramientas:** [INSTALL.md](./INSTALL.md)
 
 ## 💎 Directrices de Calidad
