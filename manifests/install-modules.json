@@ -1,0 +1,133 @@
+{
+  "$schema": "../schemas/install-modules.schema.json",
+  "version": "0.1.0",
+  "description": "Módulos instalables de X-DD. Cada módulo agrupa archivos coherentes para una capacidad específica.",
+  "modules": {
+    "core": {
+      "description": "Núcleo: scripts (doctor, init, start, adapt), templates, CLAUDE.md, MEJORAS, configs base.",
+      "files": [
+        "CLAUDE.md",
+        "MEJORAS-X-DD.md",
+        "DEPENDENCIES.md",
+        "Makefile",
+        ".editorconfig",
+        ".gitattributes",
+        "scripts/xdd-doctor.sh",
+        "scripts/xdd-init.sh",
+        "scripts/xdd-start.sh",
+        "scripts/xdd-adapt.sh",
+        "scripts/lint-workflows.sh",
+        "scripts/hooks/post-commit",
+        "templates/"
+      ],
+      "required": true
+    },
+    "workflows-core": {
+      "description": "Catálogo de 49 workflows X-DD (.agent/workflows/).",
+      "files": [
+        ".agent/workflows/",
+        "prompts/workflows/"
+      ],
+      "required": true
+    },
+    "agents-core": {
+      "description": "Registry tipado de 180 agentes especializados.",
+      "files": [
+        "prompts/agents/registry.json",
+        "prompts/agents/registry.schema.json",
+        "prompts/agents/",
+        "scripts/validate-registry.py",
+        "scripts/generate-equipo.sh",
+        "scripts/migrate-agents-to-registry.py"
+      ],
+      "required": false
+    },
+    "hooks-runtime": {
+      "description": "Hook system event-driven (PreToolUse, PostToolUse, SessionStart, Stop). 8 hooks bash.",
+      "files": [
+        ".agent/hooks/",
+        "schemas/hooks.schema.json"
+      ],
+      "required": false,
+      "requires": ["core"]
+    },
+    "mcp-server": {
+      "description": "MCP server propio de X-DD (Python stdlib pura, 6 tools).",
+      "files": [
+        "xdd-mcp-server/",
+        "docs/MCP_INTEGRATION.md"
+      ],
+      "required": false,
+      "requires": ["core", "agents-core"]
+    },
+    "gate-keeper": {
+      "description": "Gate keeper programático con HMAC-SHA256.",
+      "files": [
+        "scripts/xdd-gate.py",
+        "docs/GATE.md"
+      ],
+      "required": false,
+      "requires": ["core"]
+    },
+    "platform-configs": {
+      "description": "Configs por IDE (.claude/, .opencode/, MCP configs).",
+      "files": [
+        ".claude/settings.json"
+      ],
+      "required": false
+    },
+    "ci-runtime": {
+      "description": "GitHub Actions workflows + pre-commit + Renovate.",
+      "files": [
+        ".github/workflows/",
+        ".github/renovate.json",
+        ".pre-commit-config.yaml",
+        ".markdownlint.yaml"
+      ],
+      "required": false
+    },
+    "memory": {
+      "description": "Plantillas de memoria viva (memoria.md, lecciones.md).",
+      "files": [
+        "templates/memoria.template.md",
+        "templates/lecciones.template.md"
+      ],
+      "required": false
+    },
+    "eval-harness": {
+      "description": "Eval-harness con grader types (Sprint 10).",
+      "files": [
+        "scripts/xdd-eval.py",
+        "evals/"
+      ],
+      "required": false,
+      "available_from": "0.1.0-sprint10"
+    },
+    "continuous-learning": {
+      "description": "Continuous learning con instincts + /evolve (Sprint 9).",
+      "files": [
+        "scripts/xdd-state.py",
+        ".xdd/state.db"
+      ],
+      "required": false,
+      "available_from": "0.1.0-sprint9"
+    },
+    "orchestration": {
+      "description": "Multi-agent orchestration runtime /orchestrate (Sprint 11).",
+      "files": [
+        "scripts/xdd-orchestrate.py"
+      ],
+      "required": false,
+      "available_from": "0.1.0-sprint11"
+    },
+    "agent-shield": {
+      "description": "AgentShield: security audit estática del framework (Sprint 12).",
+      "files": [
+        "scripts/xdd-shield.py",
+        "docs/AGENT_SHIELD.md"
+      ],
+      "required": false,
+      "available_from": "0.1.0-sprint12"
+    }
+  }
+}

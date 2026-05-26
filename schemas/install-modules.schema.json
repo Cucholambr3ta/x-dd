@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/Cucholambr3ta/x-dd/raw/main/schemas/install-modules.schema.json",
+  "title": "X-DD Install Modules Manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "modules"],
+  "properties": {
+    "$schema": {"type": "string"},
+    "version": {"type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$"},
+    "description": {"type": "string"},
+    "modules": {
+      "type": "object",
+      "additionalProperties": {"$ref": "#/$defs/module"}
+    }
+  },
+  "$defs": {
+    "module": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["description", "files"],
+      "properties": {
+        "description": {"type": "string"},
+        "files": {
+          "type": "array",
+          "items": {"type": "string"},
+          "minItems": 1
+        },
+        "required": {"type": "boolean"},
+        "requires": {
+          "type": "array",
+          "items": {"type": "string"}
+        },
+        "available_from": {"type": "string"}
+      }
+    }
+  }
+}

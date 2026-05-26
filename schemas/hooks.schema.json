@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/Cucholambr3ta/x-dd/raw/main/schemas/hooks.schema.json",
+  "title": "X-DD Hooks Catalog",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "hooks"],
+  "properties": {
+    "$schema": {"type": "string"},
+    "version": {"type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$"},
+    "description": {"type": "string"},
+    "hooks": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "PreToolUse":   {"type": "array", "items": {"$ref": "#/$defs/hook"}},
+        "PostToolUse":  {"type": "array", "items": {"$ref": "#/$defs/hook"}},
+        "SessionStart": {"type": "array", "items": {"$ref": "#/$defs/hook"}},
+        "SessionEnd":   {"type": "array", "items": {"$ref": "#/$defs/hook"}},
+        "Stop":         {"type": "array", "items": {"$ref": "#/$defs/hook"}},
+        "PreCompact":   {"type": "array", "items": {"$ref": "#/$defs/hook"}}
+      }
+    }
+  },
+  "$defs": {
+    "hook": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "matcher", "description", "script"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^[a-z][a-z0-9:_-]+$"},
+        "matcher": {"type": "string"},
+        "description": {"type": "string"},
+        "script": {"type": "string"},
+        "profile": {
+          "type": "array",
+          "items": {"type": "string", "enum": ["minimal", "standard", "strict"]}
+        },
+        "exit_on_match": {"type": "integer", "enum": [0, 1, 2]},
+        "async": {"type": "boolean"},
+        "timeout": {"type": "integer", "minimum": 1}
+      }
+    }
+  }
+}

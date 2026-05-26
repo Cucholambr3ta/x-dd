@@ -20,6 +20,20 @@ Categorías sugeridas: `ARQUITECTURA`, `SEGURIDAD`, `DOMINIO`, `TESTING`, `DEVOP
 
 ## Lecciones
 
+### [DEVOPS] `set -eu` + `[ cond ] && cmd` al final = exit code 1 sorpresa — 2026-05-26
+**Contexto:** Sprint 7.1, `xdd-adapt.sh` terminaba con `[ $DRY_RUN -eq 1 ] && echo "..."` como última línea.
+**Problema:** Cuando `DRY_RUN=0`, el comando `[ 0 -eq 1 ]` retorna exit 1. Si es la última línea del script, el script entero termina con exit 1 — pero los tests bats detectaron esto, no la ejecución manual (porque manualmente el output parecía correcto y `$?` no se chequeaba).
+**Causa raíz:** El idioma `[ cond ] && cmd` es atajo común en bash pero peligroso al final de scripts con `set -e`. La construcción equivalente `if [ cond ]; then cmd; fi` no tiene el side effect.
+**Lección:** En scripts shell production-quality, NUNCA usar `[ ] && ...` como última línea ejecutable. Usar `if; then; fi` siempre, o terminar con `exit 0` explícito. Los tests bats (que sí chequean `$?`) son críticos para atrapar esto — la inspección manual no.
+**Aplica a:** Todo script bash con `set -eu`. Patrón reutilizable.
+
+### [TESTING] Tampering detection valida con cambios legítimos también — 2026-05-26
+**Contexto:** Sprint 7.6, test E2E "fases briefing/spec/plan APROBADAS" falló con `Checksum mismatch en .xdd/spec/DOMAIN.md`.
+**Problema:** El PR #6 (fix markdownlint) modificó legítimamente DOMAIN.md (reemplazó `|` literal en tabla por `/`). El gate keeper detectó el cambio post-aprobación e invalidó la firma — exactamente lo que debe hacer. Pero el test E2E asumía aprobación permanente.
+**Causa raíz:** El gate distingue cambios autorizados de no autorizados solo si hay re-aprobación explícita. El test inicial no contemplaba el ciclo "cambio legítimo → re-aprobación → re-firma".
+**Lección:** El modelo "approve & lock" debe documentar que cualquier cambio legítimo (incluyendo lint fixes, refactors menores) requiere `xdd-gate.py approve` nuevamente. Esto es feature, no bug — proporciona auditoría completa. Los tests E2E deben re-aprobar antes de validar O excluir validate de fases viejas.
+**Aplica a:** Cualquier uso del gate keeper en CI. Workflow: PR modifica artefacto → desarrollador re-aprueba → gate firma → CI valida. Documentar en `docs/GATE.md`.
+
 ### [ARQUITECTURA] MCP stdlib pura > FastMCP cuando el subset es chico — 2026-05-26
 **Contexto:** Sprint 6. Necesitaba implementar MCP server propio (ADR-0005).
 **Problema:** La tentación inicial era usar `fastmcp` o `mcp-sdk` de PyPI — librerías oficiales/populares para MCP servers.

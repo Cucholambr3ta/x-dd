@@ -1,0 +1,61 @@
+{
+  "$schema": "../schemas/install-components.schema.json",
+  "version": "0.1.0",
+  "description": "Componentes individuales activables independientemente. Granularidad más fina que módulos.",
+  "components": {
+    "doctor": {
+      "module": "core",
+      "files": ["scripts/xdd-doctor.sh"]
+    },
+    "init": {
+      "module": "core",
+      "files": ["scripts/xdd-init.sh"]
+    },
+    "adapt": {
+      "module": "core",
+      "files": ["scripts/xdd-adapt.sh"]
+    },
+    "start": {
+      "module": "core",
+      "files": ["scripts/xdd-start.sh", "scripts/hooks/post-commit"]
+    },
+    "lint-workflows": {
+      "module": "core",
+      "files": ["scripts/lint-workflows.sh"]
+    },
+    "registry": {
+      "module": "agents-core",
+      "files": [
+        "prompts/agents/registry.json",
+        "prompts/agents/registry.schema.json",
+        "scripts/validate-registry.py",
+        "scripts/migrate-agents-to-registry.py",
+        "scripts/generate-equipo.sh"
+      ]
+    },
+    "gate": {
+      "module": "gate-keeper",
+      "files": ["scripts/xdd-gate.py", "tests/test_gate.py"]
+    },
+    "mcp": {
+      "module": "mcp-server",
+      "files": ["xdd-mcp-server/", "tests/test_mcp_server.py"]
+    },
+    "hooks-dangerous-command": {
+      "module": "hooks-runtime",
+      "files": [".agent/hooks/scripts/pre-bash-dangerous-command.sh"]
+    },
+    "hooks-config-protection": {
+      "module": "hooks-runtime",
+      "files": [".agent/hooks/scripts/pre-edit-config-protection.sh"]
+    },
+    "hooks-context-load": {
+      "module": "hooks-runtime",
+      "files": [".agent/hooks/scripts/session-start-context-load.sh"]
+    },
+    "hooks-git-check": {
+      "module": "hooks-runtime",
+      "files": [".agent/hooks/scripts/stop-git-check.sh"]
+    }
+  }
+}

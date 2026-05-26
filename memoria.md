@@ -11,11 +11,11 @@
 - **Repo:** https://github.com/Cucholambr3ta/x-dd
 
 ## Estado Actual
-- **Fase X-DD activa:** **4-Build (4/5)**
-- **Sprint en curso:** **Sprint 6 — MCP Server propio ⭐** (rama `feat/sprint-6-mcp-server`)
-- **Plan macro:** [.claude/plans/indicame-que-mejoras-implementarias-happy-sunbeam.md](/home/alejandro/.claude/plans/indicame-que-mejoras-implementarias-happy-sunbeam.md) (8 sprints, ~17.5 días)
-- **Último hito:** Sprint 5 mergeado (PR #7, commit `b24582a`): registry.json (180 agentes), migrator, validator strict, generate-equipo, SSoT-derived docs/equipo.md.
-- **Próximo paso:** Cerrar Sprint 6 con `xdd-mcp-server/` (Python + JSON-RPC stdio sin deps PyPI), 6 tools (validate_phase / transition_phase / list_workflows / invoke_workflow / list_agents / get_phase_artifacts), tests pytest, `docs/MCP_INTEGRATION.md`. PR a main. Luego Sprint 7 (adapters + E2E).
+- **Fase X-DD activa:** **4-Build (5/5) + F5 QA inicial**
+- **Sprint en curso:** **Sprint 7 ampliado — Adapters + Hook system rich + Manifest install + tests E2E** (rama `feat/sprint-7-adapters-hooks-install`)
+- **Plan macro:** [.claude/plans/indicame-que-mejoras-implementarias-happy-sunbeam.md](/home/alejandro/.claude/plans/indicame-que-mejoras-implementarias-happy-sunbeam.md) — **estrategia MAXIMALISTA (Sprints 7-12 para v0.1.0)**, ~23 días extra.
+- **Último hito:** Sprint 6 mergeado (PR #8, commit `572326f`): xdd-mcp-server (Python stdlib pura, 6 tools, 17 tests).
+- **Próximo paso:** Cerrar Sprint 7 con xdd-adapt.sh (claude-code+opencode), `.agent/hooks/` con ~8 hooks ECC-style, `manifests/install-*.json` + schemas, `install.ps1`, suite bats + pytest manifests, test E2E del Quickstart, `.xdd/qa/QA_REPORT.md`. PR a main (branch preservada). Luego Sprints 8-12 para v0.1.0.
 
 ## Decisiones Arquitectónicas Clave
 <!-- ADR-lite: una línea por decisión, con fecha y motivo -->
@@ -39,6 +39,26 @@
 ---
 
 ## Bitácora de Sesiones
+
+### Sesión 2026-05-26 (cont.) — Sprint 7 ampliado (Adapters + Hooks + Manifests + E2E)
+- **Meta:** Cerrar Fase 4-Build (5/5) + Fase 5-QA con paridad funcional ECC en hooks, manifests, adapters, E2E. Es el sprint más extenso del plan maximalista.
+- **Hitos:**
+  - `scripts/xdd-adapt.sh` con DRY pattern (symlinks SSoT) — claude-code + opencode + all + dry-run.
+  - `.agent/hooks/` con 8 hooks bash cross-platform + schema + docs/HOOKS.md + .agent/hooks/README.md.
+  - `manifests/install-{profiles,modules,components}.json` + 3 schemas + xdd-init.sh extendido con `--profile`.
+  - `install.ps1` paridad Windows.
+  - `tests/bats/{xdd-doctor,xdd-init,xdd-adapt,hooks}.bats` (35 tests) + `tests/test_manifests.py` (13).
+  - `tests/e2e/test_quickstart.bats` (12 escenarios).
+  - **97 tests totales verdes** (35 bats + 50 pytest + 12 E2E).
+  - `.xdd/qa/QA_REPORT.md` + `.xdd/build/sprint-7/REPORT.md`.
+  - **Re-aprobación legítima de fase spec** post-cambio markdownlint del PR #6 (caso real que valida el modelo de tampering detection).
+- **Decisiones:**
+  - Hooks en Bash (no Node) por auditabilidad + ADR-0003.
+  - Symlinks en adapter (DRY) vs duplicar workflows.
+  - `available_from` en modules para Sprints 9-12 sin romper instalador.
+  - AGENTS.md auto-generado desde registry (coherente con SSoT-derived).
+- **Bloqueos:** ninguno.
+- **Próxima sesión:** Sprint 8 ampliado — Gobernanza OSS + 3-tier docs + commitlint + WORKING-CONTEXT + agent.yaml + research/.
 
 ### Sesión 2026-05-26 (cont.) — Sprint 6 (MCP Server propio ⭐)
 - **Meta:** Cerrar Fase 4-Build (4/5) con MCP server nativo que reduzca el costo de soportar nuevos IDEs.
