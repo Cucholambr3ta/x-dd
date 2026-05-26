@@ -42,8 +42,7 @@ x-dd/
 ├── docs/
 │   ├── constitucion.md          ← Ley suprema del ecosistema (9 artículos)
 │   ├── equipo.md                ← Directorio de 77+ agentes especializados
-│   ├── SDD_GUIDE.md             ← Guía completa del Pipeline Elite SDD
-│   └── X-DD_Integration_Guide.md ← Integración de todas las metodologías
+│   └── X-DD_Integration_Guide.md ← Pipeline completo + todas las metodologías
 │
 ├── .agent/
 │   └── workflows/               ← 29 workflows slash commands (Claude Code / OpenCode)
@@ -88,9 +87,37 @@ x-dd/
    ```
 5. **Ejecutar `/xdd`** para arrancar el orquestador principal
 
-## Automatización de MemPalace
+## MemPalace — Memoria Semántica Local
 
-MemPalace se re-indexa automáticamente en tres momentos para preservar el contexto entre sesiones — especialmente útil al agotar tokens:
+Una de las piezas más importantes del ecosistema X-DD. MemPalace es un sistema de memoria espacial que indexa semánticamente todo el codebase, documentación, decisiones y lecciones aprendidas del proyecto en una base de grafos local, sin enviar nada a la nube.
+
+### ¿Por qué es clave para el desarrollo con IA?
+
+El mayor problema al desarrollar con agentes de IA es la **pérdida de contexto**: cuando se agotan los tokens, se cierra la sesión o se cambia de herramienta, el agente "olvida" todo lo que se discutió, decidió y construyó. MemPalace resuelve esto:
+
+| Sin MemPalace | Con MemPalace |
+|---------------|---------------|
+| Cada sesión empieza desde cero | El agente retoma donde se dejó, con contexto completo |
+| Hay que re-explicar decisiones técnicas en cada sesión | Las decisiones de arquitectura, dominio y seguridad están indexadas |
+| El agente no conoce el historial del proyecto | El agente consulta lecciones aprendidas antes de proponer soluciones |
+| Tokens desperdiciados re-cargando contexto | Contexto cargado eficientemente desde el índice semántico |
+| Los errores se repiten entre sesiones | `lecciones.md` indexado evita repetir los mismos "gotchas" |
+
+### Ventajas concretas en el desarrollo
+
+**Continuidad entre sesiones** — Al agotar tokens o reabrir el proyecto días después, `xdd-start.sh` re-indexa y el orquestador tiene acceso inmediato al estado real del proyecto: qué se construyó, qué decisiones se tomaron, qué errores se evitaron.
+
+**RAG sobre el codebase propio** — Los agentes pueden consultar semánticamente el código, specs y docs del proyecto. Preguntás "¿cómo manejamos la autenticación en este proyecto?" y el agente encuentra la respuesta en el código real, no en su entrenamiento genérico.
+
+**Trazabilidad de decisiones** — Cada decisión arquitectónica, cada bounded context definido en `DOMAIN.md`, cada amenaza en `THREATS.md` queda indexada. El agente puede justificar por qué el código es como es.
+
+**Acumulación de inteligencia** — Con cada sesión el índice crece. Un proyecto de 3 meses tiene indexadas sus lecciones, patrones y anti-patrones. El agente que llega a la sesión 50 es significativamente más útil que el de la sesión 1.
+
+**Local-first y privado** — Todo se almacena en `~/.mempalace/` en la máquina local. El código, las decisiones y el contexto del proyecto nunca salen del equipo.
+
+### Automatización en X-DD
+
+MemPalace se re-indexa automáticamente en tres momentos clave, sin intervención manual:
 
 | Momento | Mecanismo | Archivo |
 |---------|-----------|---------|
