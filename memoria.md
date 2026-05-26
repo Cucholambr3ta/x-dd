@@ -11,11 +11,11 @@
 - **Repo:** https://github.com/Cucholambr3ta/x-dd
 
 ## Estado Actual
-- **Fase X-DD activa:** **4-Build (1/5)**
-- **Sprint en curso:** **Sprint 3 — xdd-doctor v2 + xdd.config.yml + JSON Schema** (rama `feat/sprint-3-doctor-config`)
+- **Fase X-DD activa:** **4-Build (2/5)**
+- **Sprint en curso:** **Sprint 4 — Gate keeper HMAC ⭐** (rama `feat/sprint-4-gate-hmac`)
 - **Plan macro:** [.claude/plans/indicame-que-mejoras-implementarias-happy-sunbeam.md](/home/alejandro/.claude/plans/indicame-que-mejoras-implementarias-happy-sunbeam.md) (8 sprints, ~17.5 días)
-- **Último hito:** Sprint 2 mergeado (PR #3, commit `ed9eed7`): 4 GitHub Actions + pre-commit + Renovate + .xdd/plan/PLAN.md.
-- **Próximo paso:** Cerrar Sprint 3 con `xdd-doctor.sh` v2 (SemVer real + --json), `xdd.config.yml` + `schemas/xdd.config.schema.json`, `docs/CONFIG.md`. PR a main. Luego Sprint 4 (Gate keeper HMAC ⭐).
+- **Último hito:** Sprint 3 mergeado (PR #4, commit `3310f8b`): xdd-doctor v2 + xdd.config.yml + schema + docs/CONFIG.md.
+- **Próximo paso:** Cerrar Sprint 4 con `scripts/xdd-gate.py` (validate/transition/approve + HMAC-SHA256), tests pytest, `.gitignore` para `.gate-key`, dogfooding (aprobar fases 1-2-3 del propio repo). PR a main. Luego Sprint 5 (Registry).
 
 ## Decisiones Arquitectónicas Clave
 <!-- ADR-lite: una línea por decisión, con fecha y motivo -->
@@ -39,6 +39,19 @@
 ---
 
 ## Bitácora de Sesiones
+
+### Sesión 2026-05-26 (cont.) — Sprint 4 (Gate keeper HMAC ⭐)
+- **Meta:** Cerrar Fase 4-Build (2/5) con el diferenciador real del framework.
+- **Hitos:**
+  - `scripts/xdd-gate.py` con 5 subcomandos + HMAC-SHA256 + `--json`.
+  - 17/17 tests pytest verdes (`tests/test_gate.py`).
+  - `.gitignore` con `.xdd/.gate-key` gitignored (ADR-0009).
+  - `docs/GATE.md` con setup, rotación, modelo de amenazas mitigadas.
+  - **Dogfooding:** fases 1-2-3 del propio X-DD APROBADAS y FIRMADAS.
+  - 3 transiciones validadas (briefing→spec, spec→plan, plan→build).
+- **Decisiones:** approver requiere `--approver` o `XDD_APPROVER` env (T6.1 mitigación: humano explícito, no agente).
+- **Bloqueos:** ninguno.
+- **Próxima sesión:** Sprint 5 — Registry tipado de agentes (alimenta workflows y MCP server).
 
 ### Sesión 2026-05-26 (cont.) — Sprint 3 (xdd-doctor v2 + xdd.config.yml + schema)
 - **Meta:** Cerrar Fase 4-Build (1/5) con doctor real (SemVer) y config centralizada validable.

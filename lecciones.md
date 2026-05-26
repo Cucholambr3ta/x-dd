@@ -20,6 +20,20 @@ Categorías sugeridas: `ARQUITECTURA`, `SEGURIDAD`, `DOMINIO`, `TESTING`, `DEVOP
 
 ## Lecciones
 
+### [SEGURIDAD] HMAC sobre payload canónico evita ambigüedades de serialización — 2026-05-26
+**Contexto:** Implementando `xdd-gate.py` con firma HMAC-SHA256 (ADR-0006).
+**Problema:** Inicialmente firmé sobre un dict serializado con `json.dumps(d)` sin opciones — `validate` fallaba intermitentemente porque el orden de las claves cambiaba entre runs.
+**Causa raíz:** `json.dumps()` no garantiza orden estable de keys; en Python 3.7+ es por orden de inserción, pero la fuente del dict puede variar (lectura de archivo vs construcción in-memory).
+**Lección:** Para HMAC sobre estructuras, siempre serializar con `json.dumps(d, sort_keys=True, separators=(',', ':'))`. Sin esto, dos representaciones equivalentes producen firmas diferentes y validación falsamente falla. Patrón llamado "canonical JSON" o "JCS" (RFC 8785).
+**Aplica a:** Cualquier firma criptográfica sobre datos estructurados. Reutilizable más allá de X-DD.
+
+### [TESTING] Tests del gate deben atacar el gate, no validarlo cortésmente — 2026-05-26
+**Contexto:** Suite pytest del `xdd-gate.py` (Sprint 4).
+**Problema:** Mi primer borrador tenía 6 tests "felices" (init OK, approve OK, validate OK). Insuficiente — el valor del gate no es que funcione cuando todo va bien, sino que **falle cuando algo se altera**.
+**Causa raíz:** Sesgo a probar el camino feliz.
+**Lección:** Los tests de seguridad/integridad deben atacar primero: alterar el artefacto, corromper la firma, rotar la clave, intentar transición no-secuencial, omitir el approver. Solo después validar el camino feliz. Resultado: 17 tests con cobertura real (no decorativa).
+**Aplica a:** Cualquier test de mecanismos de control (gates, locks, ACLs, signatures, JWTs). Patrón "fuzzing dirigido en tests unitarios".
+
 ### [HERRAMIENTAS] `sort -V` es el comparador SemVer portable más simple — 2026-05-26
 **Contexto:** Sprint 3 reescribe `xdd-doctor.sh` con comparación de versiones real (no solo `command -v`).
 **Problema:** Comparar versiones en bash con `[ "$a" -gt "$b" ]` no funciona (strings); usar herramientas externas (vergleicher, sver) añade deps.

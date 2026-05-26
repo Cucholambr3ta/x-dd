@@ -1,0 +1,41 @@
+# X-DD gate keeper secret — NUNCA commitear (ADR-0006 + ADR-0009).
+.xdd/.gate-key
+
+# Logs locales de MemPalace
+~/.mempalace/
+*.log
+
+# Python build & cache
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+env/
+
+# Node / build outputs
+node_modules/
+dist/
+build/
+coverage/
+# Excepción: .xdd/build/ son artefactos X-DD (dogfooding visible, ADR-0001).
+!.xdd/build/
+!.xdd/build/**
+
+# IDE / OS
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
+
+# Local env files
+.env
+.env.*
+!.env.example
+
+# CI/CD local runs
+.github/local-test-output/
