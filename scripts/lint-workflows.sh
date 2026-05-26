@@ -5,6 +5,34 @@
 # - Reporta workflows sin documentar en prompts/workflows/03_workflows_catalog.md
 set -u
 
+XDD_VERSION="0.1.0-dev"
+
+case "${1:-}" in
+  -h|--help)
+    cat <<'EOF'
+lint-workflows — linter de los workflows X-DD.
+
+Uso:
+  bash scripts/lint-workflows.sh
+  bash scripts/lint-workflows.sh --help | --version
+
+Comprueba en .agent/workflows/*.md:
+  - frontmatter con campo `description:`.
+  - sin rutas absolutas del host (viola CLAUDE.md).
+  - entrada en prompts/workflows/03_workflows_catalog.md.
+
+Salida:
+  - exit 0 si 0 errores.
+  - exit 1 si hay errores (warnings no bloquean).
+EOF
+    exit 0
+    ;;
+  -v|--version)
+    echo "lint-workflows v${XDD_VERSION}"
+    exit 0
+    ;;
+esac
+
 ROOT="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )/.." && pwd )"
 WF_DIR="$ROOT/.agent/workflows"
 CATALOG="$ROOT/prompts/workflows/03_workflows_catalog.md"

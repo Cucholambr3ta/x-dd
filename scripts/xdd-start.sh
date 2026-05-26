@@ -2,6 +2,37 @@
 # X-DD Start — inicializa MemPalace (si está disponible) y lanza el orquestador
 set -eu
 
+XDD_VERSION="0.1.0-dev"
+
+case "${1:-}" in
+  -h|--help)
+    cat <<'EOF'
+xdd-start — arranca X-DD en el proyecto actual.
+
+Uso:
+  bash scripts/xdd-start.sh [PROJECT_DIR]
+  bash scripts/xdd-start.sh --help | --version
+
+Hace:
+  1. Re-indexa MemPalace (si está instalado; log en ~/.mempalace/mine.log).
+  2. Activa el git hook post-commit (idempotente).
+  3. Lanza el orquestador (claude > opencode, primero disponible).
+
+Args:
+  PROJECT_DIR  Ruta del proyecto a iniciar (default: $PWD).
+
+Salida:
+  - exit 0 si el orquestador inicia.
+  - exit 1 si no encuentra ni claude ni opencode.
+EOF
+    exit 0
+    ;;
+  -v|--version)
+    echo "xdd-start v${XDD_VERSION}"
+    exit 0
+    ;;
+esac
+
 PROJECT_DIR="${1:-$PWD}"
 cd "$PROJECT_DIR"
 
