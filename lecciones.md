@@ -20,6 +20,20 @@ Categorías sugeridas: `ARQUITECTURA`, `SEGURIDAD`, `DOMINIO`, `TESTING`, `DEVOP
 
 ## Lecciones
 
+### [PROCESO] 3-tier docs (shortform/longform/security) cubren audiencias distintas sin canibalizar — 2026-05-26
+**Contexto:** Sprint 8 ampliado, inspiración ECC. Producir 3 guías separadas de longitudes y propósitos distintos.
+**Problema:** Tentación inicial: hacer un README grande y "completo". Resultado típico: nadie lo lee entero, los avanzados pierden tiempo en lo básico y los principiantes se asustan con detalles.
+**Causa raíz:** Cada audiencia (developer nuevo / power user / security auditor) tiene tolerancia distinta de longitud y nivel de detalle.
+**Lección:** Para repos OSS de framework, dividir docs por audiencia desde el día 1: (a) shortform 15 min visual con quickstart, (b) longform referencia por feature, (c) security-guide específico. README como índice + linkea a las 3. Patrón ECC reusable.
+**Aplica a:** Cualquier framework OSS publicable. Pequeño costo extra (3 archivos vs 1), gran ganancia de adopción.
+
+### [INTEROP] `agent.yaml` como manifesto plugin = "tarjeta de presentación" del framework — 2026-05-26
+**Contexto:** Sprint 8, agregar manifesto plugin interop estilo ECC.
+**Problema:** Cualquier orquestador o plugin marketplace que quiera descubrir las capacidades de X-DD tiene que parsear el repo entero (workflows, agentes, MCP, hooks, schemas, etc.). Caro y frágil.
+**Causa raíz:** Falta de un manifesto único que declare "esto es X-DD, esto ofrece, esto requiere".
+**Lección:** Para cualquier framework distribuible, mantener un `agent.yaml` (o `plugin.yaml` o `manifest.yaml`) en raíz que declare: workflows, agents, MCP server, hooks, gate, config, install, dependencies, supported_orchestrators. Es la "tarjeta de presentación" leíble por máquinas. Es a `agent systems` lo que `package.json` es a npm.
+**Aplica a:** Frameworks que aspiran a ser instalables como plugins de orquestadores agénticos (Claude Code, OpenCode, Cursor, etc.).
+
 ### [DEVOPS] `set -eu` + `[ cond ] && cmd` al final = exit code 1 sorpresa — 2026-05-26
 **Contexto:** Sprint 7.1, `xdd-adapt.sh` terminaba con `[ $DRY_RUN -eq 1 ] && echo "..."` como última línea.
 **Problema:** Cuando `DRY_RUN=0`, el comando `[ 0 -eq 1 ]` retorna exit 1. Si es la última línea del script, el script entero termina con exit 1 — pero los tests bats detectaron esto, no la ejecución manual (porque manualmente el output parecía correcto y `$?` no se chequeaba).

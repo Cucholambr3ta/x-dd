@@ -11,11 +11,11 @@
 - **Repo:** https://github.com/Cucholambr3ta/x-dd
 
 ## Estado Actual
-- **Fase X-DD activa:** **4-Build (5/5) + F5 QA inicial**
-- **Sprint en curso:** **Sprint 7 ampliado — Adapters + Hook system rich + Manifest install + tests E2E** (rama `feat/sprint-7-adapters-hooks-install`)
-- **Plan macro:** [.claude/plans/indicame-que-mejoras-implementarias-happy-sunbeam.md](/home/alejandro/.claude/plans/indicame-que-mejoras-implementarias-happy-sunbeam.md) — **estrategia MAXIMALISTA (Sprints 7-12 para v0.1.0)**, ~23 días extra.
-- **Último hito:** Sprint 6 mergeado (PR #8, commit `572326f`): xdd-mcp-server (Python stdlib pura, 6 tools, 17 tests).
-- **Próximo paso:** Cerrar Sprint 7 con xdd-adapt.sh (claude-code+opencode), `.agent/hooks/` con ~8 hooks ECC-style, `manifests/install-*.json` + schemas, `install.ps1`, suite bats + pytest manifests, test E2E del Quickstart, `.xdd/qa/QA_REPORT.md`. PR a main (branch preservada). Luego Sprints 8-12 para v0.1.0.
+- **Fase X-DD activa:** **F6 Retro + Release init**
+- **Sprint en curso:** **Sprint 8 ampliado — Gobernanza OSS + 3-tier docs + commitlint + WORKING-CONTEXT + agent.yaml + research/** (rama `feat/sprint-8-governance-3tier-release`)
+- **Plan macro:** [.claude/plans/indicame-que-mejoras-implementarias-happy-sunbeam.md](/home/alejandro/.claude/plans/indicame-que-mejoras-implementarias-happy-sunbeam.md) — **estrategia MAXIMALISTA (Sprints 7-12 para v0.1.0)**.
+- **Último hito:** Sprint 7 ampliado mergeado (PR #9, commit `b6669a4`): adapter + 8 hooks + 6 profiles + install.ps1 + **97 tests verdes**.
+- **Próximo paso:** Cerrar Sprint 8 con `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`, `SECURITY.md`, `NOTICE`, `devcontainer.json`, 3-tier guides (shortform/longform/security), `commitlint.config.js`, `WORKING-CONTEXT.md`, `agent.yaml`, `docs/research/ECC-inspiration-analysis.md`. PR. Luego Sprints 9-12 + release v0.1.0.
 
 ## Decisiones Arquitectónicas Clave
 <!-- ADR-lite: una línea por decisión, con fecha y motivo -->
@@ -39,6 +39,23 @@
 ---
 
 ## Bitácora de Sesiones
+
+### Sesión 2026-05-26 (cont.) — Sprint 8 ampliado (Gobernanza OSS + 3-tier docs + commitlint + WORKING-CONTEXT + agent.yaml + research/)
+- **Meta:** Cerrar Fase 6-Retro initialization. Preparar el repo para release v0.1.0 con paridad de gobernanza OSS profesional + inspiración ECC.
+- **Hitos:**
+  - 4 archivos gobernanza OSS: `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`, `SECURITY.md`, `NOTICE`.
+  - 5 GitHub templates: `bug`, `feature`, `ide-adapter`, `agent`, `PULL_REQUEST_TEMPLATE`.
+  - `.devcontainer/devcontainer.json` + `postCreate.sh` (1-click en Codespaces).
+  - 3-tier docs: `the-shortform-guide.md` (15 min), `the-longform-guide.md` (referencia), `the-security-guide.md` (SecDD + threat model).
+  - `agent.yaml` manifesto plugin interop (spec_version 0.1.0).
+  - `commitlint.config.js` + `.github/workflows/lint-commits.yml`.
+  - `WORKING-CONTEXT.md` (live state) separado de `memoria.md` (bitácora).
+  - `docs/research/ECC-inspiration-analysis.md` (comparativo X-DD vs ECC).
+  - `.github/workflows/release.yml` (tag-triggered con validación de gates).
+  - `.xdd/build/sprint-8/REPORT.md`.
+- **Decisiones:** 3-tier docs en raíz (no en docs/) por convención ECC + SEO; commitlint scope-empty=warn (no bloquea); release.yml valida gates antes de release.
+- **Bloqueos:** ninguno.
+- **Próxima sesión:** Sprint 9 — Continuous Learning (instincts + `/evolve` + SQLite state-store).
 
 ### Sesión 2026-05-26 (cont.) — Sprint 7 ampliado (Adapters + Hooks + Manifests + E2E)
 - **Meta:** Cerrar Fase 4-Build (5/5) + Fase 5-QA con paridad funcional ECC en hooks, manifests, adapters, E2E. Es el sprint más extenso del plan maximalista.
