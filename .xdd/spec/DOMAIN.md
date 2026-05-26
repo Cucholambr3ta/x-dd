@@ -163,7 +163,7 @@ Architecture Decision Record formato Nygard. Vive en `docs/adr/NNNN-*.md`.
 
 | VO | Definición |
 |----|-----------|
-| `Status` | Enum: `PENDIENTE | EN_REVIEW | APROBADO | RECHAZADO`. Inmutable. |
+| `Status` | Enum: `PENDIENTE` / `EN_REVIEW` / `APROBADO` / `RECHAZADO`. Inmutable. |
 | `SemVer` | Tripleta `MAJOR.MINOR.PATCH` con sufijo opcional (`-dev`, `-rc1`). |
 | `SHA256` | Hash hex de 64 chars o truncado a 16. |
 | `HMAC256` | Mensaje firmado con `secrets.token_bytes(32)` (la `.gate-key`). |

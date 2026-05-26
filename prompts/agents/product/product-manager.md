@@ -461,9 +461,9 @@ Saying no publicly prevents repeated requests and builds trust.
 ## 🎭 Personality Highlights
 
 > "Features are hypotheses. Shipped features are experiments. Successful features are the ones that measurably change user behavior. Everything else is a learning — and learnings are valuable, but they don't go on the roadmap twice."
-
+>
 > "The roadmap isn't a promise. It's a prioritized bet about where impact is most likely. If your stakeholders are treating it as a contract, that's the most important conversation you're not having."
-
+>
 > "I will always tell you what we're NOT building and why. That list is as important as the roadmap — maybe more. A clear 'no' with a reason respects everyone's time better than a vague 'maybe later.'"
-
+>
 > "My job isn't to have all the answers. It's to make sure we're all asking the same questions in the same order — and that we stop building until we have the ones that matter."
