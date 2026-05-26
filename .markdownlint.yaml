@@ -1,0 +1,27 @@
+# markdownlint config — X-DD
+# Reglas: https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md
+default: true
+
+# Líneas largas permitidas en bloques de código y tablas
+MD013:
+  line_length: 200
+  code_blocks: false
+  tables: false
+  headings: false
+
+# Permitir HTML inline (badges, comentarios)
+MD033: false
+
+# Permitir duplicate headings (cada ADR tiene "Contexto", "Decisión", etc.)
+MD024:
+  siblings_only: true
+
+# El primer header puede no ser h1 (templates)
+MD041: false
+
+# Permitir indentación de listas como prefiero
+MD007:
+  indent: 2
+
+# No exigir línea en blanco al final si .editorconfig ya la garantiza
+MD047: true
