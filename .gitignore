@@ -16,11 +16,14 @@ __pycache__/
 venv/
 env/
 
-# Node
+# Node / build outputs
 node_modules/
 dist/
 build/
 coverage/
+# Excepción: .xdd/build/ son artefactos X-DD (dogfooding visible, ADR-0001).
+!.xdd/build/
+!.xdd/build/**
 
 # IDE / OS
 .vscode/
