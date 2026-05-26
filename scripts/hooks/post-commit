@@ -1,0 +1,3 @@
+#!/bin/sh
+# X-DD: re-indexa MemPalace después de cada commit para preservar contexto
+mempalace mine "$PWD" 2>/dev/null &

@@ -257,6 +257,8 @@ cd mi-proyecto
 # 2. Copiar la estructura X-DD
 cp -r /ruta/a/x-dd/prompts ./prompts
 cp -r /ruta/a/x-dd/.agent ./.agent
+cp -r /ruta/a/x-dd/.claude ./.claude
+cp -r /ruta/a/x-dd/scripts ./scripts
 cp /ruta/a/x-dd/CLAUDE.md ./CLAUDE.md
 
 # 3. Crear archivo de memoria del proyecto
@@ -266,12 +268,39 @@ echo "# memoria.md\n## Sesión inicial\nProyecto iniciado." > memoria.md
 npm init -y
 npm install -D vitest @playwright/test playwright-bdd
 
-# 5. Inicializar MemPalace
-mempalace init "$PWD" && mempalace mine "$PWD"
-
-# 6. Iniciar el orquestador (Claude Code u OpenCode)
-claude   # o: opencode
+# 5. Arrancar X-DD (inicializa MemPalace, activa hooks y lanza el orquestador)
+bash ./scripts/xdd-start.sh
 ```
+
+---
+
+## Automatización de MemPalace
+
+El ecosistema X-DD re-indexa MemPalace automáticamente en tres momentos:
+
+### A — Al arrancar la sesión (`scripts/xdd-start.sh`)
+Ejecuta `mempalace init` + `mempalace mine` antes de lanzar el orquestador. Garantiza que al iniciar una nueva sesión (por ejemplo, tras agotar tokens) el contexto esté completamente indexado.
+
+```bash
+bash ./scripts/xdd-start.sh
+```
+
+### B — Tras cada Write/Edit en Claude Code (`.claude/settings.json`)
+Hook `PostToolUse` que dispara `mempalace mine` en background cada vez que el agente crea o modifica un archivo. El índice se actualiza en tiempo real durante el desarrollo, sin bloquear la sesión.
+
+> Compatible con Claude Code y OpenCode. El archivo `.claude/settings.json` ya está incluido en la estructura X-DD.
+
+### C — Tras cada `git commit` (`scripts/hooks/post-commit`)
+Hook git que re-indexa MemPalace después de cada commit. El script `xdd-start.sh` lo activa automáticamente con `git config core.hooksPath ./scripts/hooks`.
+
+**El flujo completo:**
+```
+Edición de archivo → PostToolUse hook → mempalace mine (background)
+git commit         → post-commit hook → mempalace mine (background)
+Nueva sesión       → xdd-start.sh    → mempalace mine (foreground) → orquestador
+```
+
+Así, si se agotan los tokens y se abre una nueva sesión, MemPalace ya tiene el estado más reciente del proyecto indexado.
 
 ---
 

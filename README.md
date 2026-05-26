@@ -1,6 +1,6 @@
 # X-DD — Cross-Driven Development System
 
-**Pipeline de desarrollo de alta calidad** que integra múltiples metodologías *-Driven Development* como capas sobre un Gated Pipeline de 6 fases, orquestado por Claude Code y una agencia de 77+ subagentes especializados.
+**Pipeline de desarrollo de alta calidad** que integra múltiples metodologías *-Driven Development* como capas sobre un Gated Pipeline de 6 fases, orquestado por **Claude Code** u **OpenCode** y una agencia de 77+ subagentes especializados.
 
 ---
 
@@ -46,13 +46,21 @@ x-dd/
 │   └── X-DD_Integration_Guide.md ← Integración de todas las metodologías
 │
 ├── .agent/
-│   └── workflows/               ← 29 workflows slash commands para Claude Code
+│   └── workflows/               ← 29 workflows slash commands (Claude Code / OpenCode)
 │       ├── xdd.md               ← /xdd — Orquestador principal
 │       ├── xdd-build.md         ← /xdd-build — Build con TDD/STDD
 │       ├── qa-review.md         ← /qa-review — QA completo (3 Tiers)
 │       ├── fase-requisitos.md   ← /fase-requisitos — Briefing
 │       ├── security-audit.md    ← /security-audit
 │       └── ...                  (25 workflows adicionales)
+│
+├── .claude/
+│   └── settings.json            ← Hook PostToolUse: re-indexa MemPalace tras cada Write/Edit
+│
+├── scripts/
+│   ├── xdd-start.sh             ← Arranque unificado: MemPalace + git hooks + orquestador
+│   └── hooks/
+│       └── post-commit          ← Git hook: re-indexa MemPalace tras cada commit
 │
 └── prompts/
     ├── agents/                  ← 77+ subagentes especializados (16 categorías)
@@ -72,10 +80,29 @@ x-dd/
 ## Inicio rápido
 
 1. **Instalar herramientas** → ver [INSTALL.md](./INSTALL.md)
-2. **Copiar la estructura** al nuevo proyecto
+2. **Copiar la estructura** al nuevo proyecto (`.agent/`, `.claude/`, `prompts/`, `scripts/`, `CLAUDE.md`)
 3. **Crear `memoria.md`** en la raíz del proyecto
-4. **Abrir Claude Code** con `claude` en el directorio del proyecto
-5. **Ejecutar `/xdd`** para arrancar el orquestador
+4. **Arrancar X-DD** — un solo comando inicializa MemPalace, activa los git hooks y lanza el orquestador:
+   ```bash
+   bash ./scripts/xdd-start.sh
+   ```
+5. **Ejecutar `/xdd`** para arrancar el orquestador principal
+
+## Automatización de MemPalace
+
+MemPalace se re-indexa automáticamente en tres momentos para preservar el contexto entre sesiones — especialmente útil al agotar tokens:
+
+| Momento | Mecanismo | Archivo |
+|---------|-----------|---------|
+| Arranque de sesión | `xdd-start.sh` ejecuta `mempalace mine` antes del orquestador | `scripts/xdd-start.sh` |
+| Cada Write/Edit del agente | Hook `PostToolUse` dispara `mempalace mine` en background | `.claude/settings.json` |
+| Cada `git commit` | Hook `post-commit` re-indexa en background | `scripts/hooks/post-commit` |
+
+```
+Agente edita archivo  →  PostToolUse hook  →  mempalace mine (background)
+git commit            →  post-commit hook  →  mempalace mine (background)
+Nueva sesión          →  xdd-start.sh      →  mempalace mine → orquestador
+```
 
 ## Árbol de decisión — ¿qué metodologías usar?
 
