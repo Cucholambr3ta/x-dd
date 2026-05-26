@@ -9,6 +9,58 @@
 
 ## [Unreleased] — main
 
+### Added — Sprint 7 (2026-05-26) — Adapters + Hooks + Manifests + E2E
+
+**Adapter IDE (DRY pattern):**
+- `scripts/xdd-adapt.sh` con targets `claude-code`, `opencode`, `all` + `--dry-run`/`--list` —
+  genera config IDE-específica desde SSoT (.agent/workflows/) vía symlinks.
+- Cobertura: 8 tests bats `tests/bats/xdd-adapt.bats`.
+
+**Hook system event-driven (inspiración ECC):**
+- `.agent/hooks/hooks.json` con 8 hooks bash cross-platform.
+- Eventos: 3 PreToolUse (`dangerous-command`, `config-protection`, `doc-file-warning`)
+  + 2 PostToolUse (`mempalace-index`, `pr-logger`) + 1 SessionStart (`context-load`)
+  + 2 Stop (`git-check`, `pattern-extraction` stub Sprint 9).
+- Profiles: minimal / standard / strict. Runtime control vía
+  `XDD_HOOK_PROFILE`, `XDD_DISABLED_HOOKS`, `XDD_ALLOW_CONFIG_EDIT`.
+- `schemas/hooks.schema.json` valida estructura.
+- `.agent/hooks/README.md` + `docs/HOOKS.md` con recetas, threat model coverage,
+  diferencias vs ECC.
+- Cobertura: 12 tests bats `tests/bats/hooks.bats`.
+
+**Manifest-driven install + profiles:**
+- `manifests/install-modules.json` (13 módulos) + `install-profiles.json` (6 perfiles:
+  minimal/core/developer/security/research/full) + `install-components.json` (componentes finos).
+- 3 schemas JSON Schema draft 2020-12 en `schemas/install-*.schema.json`.
+- `scripts/xdd-init.sh` extendido con `--profile=NAME`, `--modules=csv`, `--list-profiles`.
+  Mantiene fallback legacy si Python no disponible.
+- `docs/INSTALL_PROFILES.md` referencia completa.
+- Módulos futuros (Sprints 9-12) declarados con `available_from` — instalador no se rompe.
+- Cobertura: 9 tests bats `tests/bats/xdd-init.bats` + 13 tests pytest `tests/test_manifests.py`.
+
+**install.ps1 cross-platform:**
+- Paridad con `xdd-init.sh` para Windows (PowerShell 5.1+/7+).
+- Soporta `-Profile`, `-Modules`, `-Dest`, `-ListProfiles`, `-Help`, `-Version`.
+- Usa Python3 para resolver manifests.
+
+**Tests E2E del Quickstart:**
+- `tests/e2e/test_quickstart.bats`: 12 escenarios end-to-end.
+- Doctor + lint + validate-registry + gate + MCP + init + adapt + dogfooding.
+
+**Trazabilidad:**
+- `.xdd/build/sprint-7/REPORT.md` + `.xdd/qa/QA_REPORT.md` (cierre Fase 5-QA).
+- Re-aprobación legítima de fase `spec` post-cambio markdownlint (caso real Sprint 7).
+
+### Changed — Sprint 7
+- `scripts/xdd-init.sh` reescrito con resolver manifest-driven.
+- `.agent/hooks/scripts/pre-write-doc-warning.sh` matchea paths sin prefijo `./`.
+- `.xdd/spec/.signature` re-firmada (cambio legítimo de DOMAIN.md tras PR #6).
+
+### Stats — Sprint 7
+- **97 tests totales** verdes (35 bats + 50 pytest + 12 E2E).
+- **26 archivos nuevos**, 3 modificados, ~2100 LOC añadidas.
+- **8 hooks**, **6 profiles**, **13 modules**, **4 schemas JSON**.
+
 ### Added — Sprint 6 (2026-05-26) — MCP Server propio ⭐
 
 - **`xdd-mcp-server/`** — Model Context Protocol server propio de X-DD.
