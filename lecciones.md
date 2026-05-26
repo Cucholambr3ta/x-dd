@@ -20,6 +20,20 @@ Categorías sugeridas: `ARQUITECTURA`, `SEGURIDAD`, `DOMINIO`, `TESTING`, `DEVOP
 
 ## Lecciones
 
+### [ARQUITECTURA] MCP stdlib pura > FastMCP cuando el subset es chico — 2026-05-26
+**Contexto:** Sprint 6. Necesitaba implementar MCP server propio (ADR-0005).
+**Problema:** La tentación inicial era usar `fastmcp` o `mcp-sdk` de PyPI — librerías oficiales/populares para MCP servers.
+**Causa raíz:** Asumir que "librería oficial = mejor" sin medir el alcance real.
+**Lección:** Para el subset MCP de X-DD (4 métodos JSON-RPC: initialize, tools/list, tools/call, notifications/initialized) la implementación stdlib pura cabe en ~80 líneas. Añadir una dep PyPI obligatoria habría violado ADR-0003 (Python stdlib pura) y bloqueado usuarios con políticas restrictivas de deps. Regla: medir alcance antes de añadir deps; si el subset cabe en <100 líneas y no se necesitan features avanzadas, stdlib gana.
+**Aplica a:** Cualquier integración con un protocolo abierto donde solo se usa un subset pequeño (MCP, JSON-RPC, OpenAPI cliente mínimo, OAuth2 client minimal, etc.).
+
+### [SEGURIDAD] Whitelist explícita de paths antes de exponer FS via API — 2026-05-26
+**Contexto:** Sprint 6, tool `xdd_get_phase_artifacts` del MCP server.
+**Problema:** Primera versión devolvía cualquier archivo que `Path.rglob` encontrara bajo el directorio de fase. Una corrupción de `.xdd/` o un symlink hostil podría haber filtrado contenido fuera del scope esperado.
+**Causa raíz:** Pensar en términos de "feliz" (Path bajo `.xdd/<phase>/`) sin considerar el ataque (symlink, traversal, .xdd corrupto apuntando fuera).
+**Lección:** Cualquier tool que devuelve contenido del filesystem via API debe tener **whitelist explícita de prefijos** en código (`ALLOWED_ARTIFACT_PREFIXES`), no inferida del path raíz. Defense in depth: validar dos veces (path está bajo dir esperado AND path matches whitelist).
+**Aplica a:** Tools MCP futuras, cualquier endpoint REST que sirva archivos, integraciones MemPalace, plugins que leen FS del usuario.
+
 ### [PROCESO] Cambios de policy silenciosos rompen la trazabilidad del propio framework — 2026-05-26 ⚠️
 **Contexto:** Sprint 1. Al hacer el primer `gh pr merge --squash`, el repo tenía squash merges deshabilitados. Solucioné activándolos y de paso activé `delete_branch_on_merge=true` "para limpieza". No consulté.
 **Problema:** Durante 4 sprints las branches `feat/sprint-1-...` a `feat/sprint-4-...` se borraron en cada merge. El user lo descubrió al ver solo 2 branches en GitHub (main + sprint-0). Para un proyecto que vende "dogfooding visible" como diferenciador, eso destruyó exactamente la evidencia que debía mostrar.
