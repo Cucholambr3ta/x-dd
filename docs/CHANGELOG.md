@@ -9,6 +9,50 @@
 
 ## [Unreleased] — main
 
+### Added — Sprint 5 (2026-05-26) — Registry tipado de agentes
+
+- **`prompts/agents/registry.json`** — catálogo machine-readable con
+  **180 agentes / 15 categorías** + **3 composition_patterns**
+  (security_review, feature_squad, release_train) + **3 routing_rules**.
+- **`prompts/agents/registry.schema.json`** — JSON Schema 2020-12 que define
+  la estructura: agent (id, name, category, prompt_file, ide_compat,
+  constraints, triggers, fallback_agent), composition_pattern y routing_rule.
+- **`scripts/migrate-agents-to-registry.py`** — migrador automático.
+  Parser YAML mínimo (no requiere PyYAML), genera ids kebab-case y atributos
+  desde frontmatter. Re-ejecutable cuando se añaden agentes nuevos.
+- **`scripts/validate-registry.py`** — valida schema + existencia de
+  `prompt_file`. Modo `--strict` detecta id-refs rotas en composition_patterns
+  y routing_rules.
+- **`scripts/generate-equipo.sh`** — regenera `docs/equipo.md` desde el
+  registry. SSoT-derived: elimina drift entre código y docs.
+- **`.xdd/build/sprint-5/REPORT.md`** — Build (3/5).
+
+### Changed — Sprint 5
+- **`docs/equipo.md`** — ahora auto-generado desde registry. Header explícito:
+  "NO editar a mano". Tablas por categoría con emoji/nombre/descripción/path.
+- **`memoria.md`** — estado actualizado a Sprint 5 / Fase 4-Build (3/5).
+
+### Fixed — entre sprints (2026-05-26) — PR #6
+
+- **`.markdownlint.yaml`** — reescrito con 22 reglas cosméticas desactivadas
+  (line-length, single-h1, blanks-around-*, table-column-style, bare-urls,
+  list-marker-space). Mantiene solo reglas que detectan errores reales
+  (estructura, links rotos, fenced code, encoding).
+- **`.xdd/spec/DOMAIN.md`**, **`docs/GATE.md`**, **`prompts/agents/product/product-manager.md`**,
+  **`prompts/agents/specialized/specialized-developer-advocate.md`** — 7 errores
+  reales corregidos (tablas con `|` literal, blockquotes mal unidos, heading
+  parseado mal).
+- **CI `lint-markdown`** — pasó de 6603 errores en 295 archivos a **0 errores**.
+
+### Operational — entre sprints (2026-05-26)
+
+- **Política del repo cambiada a `delete_branch_on_merge=false`** —
+  preserva las branches de cada sprint en GitHub para trazabilidad pública del
+  trabajo realizado.
+- **5 branches restauradas** desde reflog local y pusheadas:
+  `feat/sprint-1-mempalace-quickstart`, `feat/sprint-2-ci-base`,
+  `feat/sprint-3-doctor-config`, `feat/sprint-4-gate-hmac`, `feat/sprint-5-registry`.
+
 ### Added — Sprint 4 (2026-05-26) — Gate keeper HMAC ⭐
 
 - **`scripts/xdd-gate.py`** — gate keeper programático con 5 subcomandos

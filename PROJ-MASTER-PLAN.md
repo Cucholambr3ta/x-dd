@@ -51,8 +51,8 @@ gantt
 | 1 MemPalace externo + Quickstart | ✅ done | F2 Spec | 2026-05-27 | 2026-05-28 | 2026-05-26 | 2026-05-26 | [#2](https://github.com/Cucholambr3ta/x-dd/pull/2) |
 | 2 CI base + plan formal | ✅ done | F3 Plan | 2026-05-29 | 2026-05-29 | 2026-05-26 | 2026-05-26 | [#3](https://github.com/Cucholambr3ta/x-dd/pull/3) |
 | 3 xdd-doctor v2 + xdd.config | ✅ done | F4 Build (1/5) | 2026-06-01 | 2026-06-02 | 2026-05-26 | 2026-05-26 | [#4](https://github.com/Cucholambr3ta/x-dd/pull/4) |
-| 4 Gate keeper HMAC ⭐ | 🔄 En curso | F4 Build (2/5) | 2026-06-03 | 2026-06-05 | 2026-05-26 | — | _pendiente_ |
-| 5 Registry agentes tipado | ⏳ | F4 Build (3/5) | 2026-06-08 | 2026-06-09 | — | — | — |
+| 4 Gate keeper HMAC ⭐ | ✅ done | F4 Build (2/5) | 2026-06-03 | 2026-06-05 | 2026-05-26 | 2026-05-26 | [#5](https://github.com/Cucholambr3ta/x-dd/pull/5) |
+| 5 Registry agentes tipado | 🔄 En curso | F4 Build (3/5) | 2026-06-08 | 2026-06-09 | 2026-05-26 | — | _pendiente_ |
 | 6 MCP server propio ⭐ | ⏳ | F4 Build (4/5) | 2026-06-10 | 2026-06-12 | — | — | — |
 | 7 Adapters + tests E2E | ⏳ | F4-5 | 2026-06-15 | 2026-06-16 | — | — | — |
 | 8 Gobernanza OSS + v0.1.0 | ⏳ | F6 Retro + Release | 2026-06-17 | 2026-06-18 | — | — | — |
@@ -92,3 +92,5 @@ graph LR
 | 2026-05-26 | Sprint 1 mergeado (PR #2, squash c5be687); Sprint 2 en curso | aplacencia |
 | 2026-05-26 | Sprint 2 mergeado (PR #3, squash ed9eed7); Sprint 3 en curso | aplacencia |
 | 2026-05-26 | Sprint 3 mergeado (PR #4, squash 3310f8b); Sprint 4 en curso (gate ⭐) | aplacencia |
+| 2026-05-26 | Sprint 4 mergeado (PR #5, squash 5c4d26c); Sprint 5 en curso | aplacencia |
+| 2026-05-26 | Fix PR #6 (CI markdownlint relax) mergeado; política cambiada a `delete_branch_on_merge=false` para preservar trazabilidad por sprint | aplacencia |
