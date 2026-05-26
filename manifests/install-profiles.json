@@ -1,0 +1,79 @@
+{
+  "$schema": "../schemas/install-profiles.schema.json",
+  "version": "0.1.0",
+  "description": "Perfiles de instalación X-DD. Cada perfil agrupa módulos coherentes para un caso de uso.",
+  "profiles": {
+    "minimal": {
+      "description": "Mínima viable: solo núcleo + workflows + memoria. Sin agentes, sin hooks, sin MCP.",
+      "modules": ["core", "workflows-core", "memory"]
+    },
+    "core": {
+      "description": "Recomendada para empezar: núcleo + workflows + agentes + gate + memoria + CI.",
+      "modules": [
+        "core",
+        "workflows-core",
+        "agents-core",
+        "gate-keeper",
+        "memory",
+        "ci-runtime"
+      ]
+    },
+    "developer": {
+      "description": "Perfil completo de desarrollo: incluye hooks runtime + MCP server.",
+      "modules": [
+        "core",
+        "workflows-core",
+        "agents-core",
+        "gate-keeper",
+        "hooks-runtime",
+        "mcp-server",
+        "platform-configs",
+        "memory",
+        "ci-runtime"
+      ]
+    },
+    "security": {
+      "description": "Énfasis en SecDD: núcleo + hooks strict + AgentShield + gate firmado.",
+      "modules": [
+        "core",
+        "workflows-core",
+        "agents-core",
+        "gate-keeper",
+        "hooks-runtime",
+        "agent-shield",
+        "memory",
+        "ci-runtime"
+      ]
+    },
+    "research": {
+      "description": "Investigación: núcleo + eval-harness + continuous learning + memoria.",
+      "modules": [
+        "core",
+        "workflows-core",
+        "agents-core",
+        "gate-keeper",
+        "eval-harness",
+        "continuous-learning",
+        "memory"
+      ]
+    },
+    "full": {
+      "description": "Todo (incluyendo capacidades de v0.1.0 sprint 9-12 cuando estén disponibles).",
+      "modules": [
+        "core",
+        "workflows-core",
+        "agents-core",
+        "gate-keeper",
+        "hooks-runtime",
+        "mcp-server",
+        "platform-configs",
+        "memory",
+        "ci-runtime",
+        "eval-harness",
+        "continuous-learning",
+        "orchestration",
+        "agent-shield"
+      ]
+    }
+  }
+}
