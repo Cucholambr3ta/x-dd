@@ -11,11 +11,11 @@
 - **Repo:** https://github.com/Cucholambr3ta/x-dd
 
 ## Estado Actual
-- **Fase X-DD activa:** **2-Spec**
-- **Sprint en curso:** **Sprint 1 — MemPalace externo + Quickstart real** (rama `feat/sprint-1-mempalace-quickstart`)
+- **Fase X-DD activa:** **3-Plan**
+- **Sprint en curso:** **Sprint 2 — CI base + linters + .xdd/plan/PLAN.md** (rama `feat/sprint-2-ci-base`)
 - **Plan macro:** [.claude/plans/indicame-que-mejoras-implementarias-happy-sunbeam.md](/home/alejandro/.claude/plans/indicame-que-mejoras-implementarias-happy-sunbeam.md) (8 sprints, ~17.5 días)
-- **Último hito:** Sprint 0 mergeado (PR #1, commit `af3241b`): 10 ADRs + briefing + Gantt + CHANGELOG.
-- **Próximo paso:** Cerrar Sprint 1 con `DEPENDENCIES.md`, README reescrito, `.xdd/spec/DOMAIN.md` + `.xdd/spec/THREATS.md`, Makefile, badges. PR a main. Luego Sprint 2 (CI base).
+- **Último hito:** Sprint 1 mergeado (PR #2, commit `c5be687`): DEPENDENCIES, README reescrito, DX, scripts auditados, DOMAIN+THREATS.
+- **Próximo paso:** Cerrar Sprint 2 con `.github/workflows/`, pre-commit, Renovate, `.xdd/plan/PLAN.md`. PR a main. Luego Sprint 3 (xdd-doctor v2 + xdd.config.yml).
 
 ## Decisiones Arquitectónicas Clave
 <!-- ADR-lite: una línea por decisión, con fecha y motivo -->
@@ -39,6 +39,18 @@
 ---
 
 ## Bitácora de Sesiones
+
+### Sesión 2026-05-26 (cont.) — Sprint 2 (CI base + plan formal)
+- **Meta:** Cerrar Fase 3-Plan con CI verde en cada PR y plan formalizado en el repo.
+- **Hitos:**
+  - 4 GitHub Actions: `lint-shell`, `lint-markdown`, `gitleaks`, `validate-prompts`.
+  - `.markdownlint.yaml` adaptado al estilo del repo.
+  - `.pre-commit-config.yaml` con 5 repos + hook local de X-DD.
+  - `.github/renovate.json` con automerge minor/patch y MemPalace bajo review.
+  - `.xdd/plan/PLAN.md` (espejo formal del plan macro en el repo).
+- **Decisiones:** Squash merges habilitados en el repo (Sprint 1 cierre); commits firmados pendientes para Sprint 8.
+- **Bloqueos:** ninguno (los workflows se validan en GitHub al hacer push).
+- **Próxima sesión:** Sprint 3 — `xdd-doctor.sh` v2 + `xdd.config.yml` + JSON Schema.
 
 ### Sesión 2026-05-26 (cont.) — Sprint 1 (MemPalace externo + Quickstart real)
 - **Meta:** Cerrar Fase 2-Spec; corregir framing de MemPalace en README; producir DOMAIN.md + THREATS.md; añadir DX (Makefile, editorconfig, gitattributes); auditar scripts.

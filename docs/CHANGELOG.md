@@ -9,6 +9,19 @@
 
 ## [Unreleased] — main
 
+### Added — Sprint 2 (2026-05-26)
+- **`.github/workflows/lint-shell.yml`** — ShellCheck en push/PR sobre `**.sh`.
+- **`.github/workflows/lint-markdown.yml`** — markdownlint-cli2 sobre `**.md`.
+- **`.github/workflows/gitleaks.yml`** — escaneo de secretos en cada PR y push a main.
+- **`.github/workflows/validate-prompts.yml`** — 3 jobs: lint-workflows + smoke-doctor + verify --help/--version en scripts.
+- **`.markdownlint.yaml`** — reglas alineadas al estilo del repo (línea ≤200, HTML inline, headings duplicados siblings-only).
+- **`.pre-commit-config.yaml`** — hooks pre-commit: trailing whitespace, end-of-file, check-yaml/json, large files, mixed line ending, shellcheck, gitleaks, markdownlint, lint-xdd-workflows.
+- **`.github/renovate.json`** — config Renovate con preset OSS, automerge minor/patch, MemPalace con review requerido, security alerts habilitados.
+- **`.xdd/plan/PLAN.md`** — espejo formal del plan macro en el repo (Fase 3-Plan dogfooded).
+
+### Changed — Sprint 2
+- **`memoria.md`** — estado actualizado a Sprint 2 / Fase 3.
+
 ### Added — Sprint 1 (2026-05-26)
 - **`DEPENDENCIES.md`** — matriz oficial de dependencias (núcleo, recomendado,
   orquestadores, testing, seguridad) con versión mínima, distribución, licencia

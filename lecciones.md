@@ -20,6 +20,20 @@ Categorías sugeridas: `ARQUITECTURA`, `SEGURIDAD`, `DOMINIO`, `TESTING`, `DEVOP
 
 ## Lecciones
 
+### [DEVOPS] Branch protection con squash merges deshabilitado bloquea el flujo — 2026-05-26
+**Contexto:** Tras pushear Sprint 1, `gh pr merge 2 --squash` falló con "Squash merges are not allowed on this repository".
+**Problema:** El repo se creó con configuración default que no permite squash merges; bloquea la convención que el user pidió ("commits + PR + --squash").
+**Causa raíz:** GitHub repos heredan `allow_squash_merge` según preferencias del owner, no necesariamente del workflow elegido.
+**Lección:** Al crear repo nuevo para X-DD, configurar de inmediato vía API: `allow_squash_merge=true`, `allow_merge_commit=true`, `allow_rebase_merge=false`, `delete_branch_on_merge=true`. Documentar en `INSTALL.md` o `CONTRIBUTING.md` (Sprint 8).
+**Aplica a:** Todo repo X-DD nuevo. Considerar añadir a `xdd-init.sh` un paso opcional si hay `gh` + remote configurado.
+
+### [PROCESO] CI primero, refactor después — 2026-05-26
+**Contexto:** Sprint 2 añade 4 GitHub Actions antes de implementar el gate keeper (Sprint 4) o el MCP server (Sprint 6).
+**Problema:** Tentación de "primero hago el feature, después le pongo CI". Resultado típico: features llegan rotas o sin cobertura.
+**Causa raíz:** El CI cuesta poco y atrapa regresiones desde el commit 1. Diferirlo invierte la ecuación.
+**Lección:** En todo release público nuevo, los 4 linters básicos (shell + markdown + secrets + custom) van en el sprint 2-3 máximo. Antes de cualquier feature compleja. Las features se construyen sobre CI verde, no al revés.
+**Aplica a:** Cualquier proyecto OSS / framework. Reutilizable.
+
 ### [HERRAMIENTAS] Edit en scripts requiere Read previo en la misma sesión — 2026-05-26
 **Contexto:** Auditando los 4 scripts shell para añadirles `--help` y `--version` (Sprint 1).
 **Problema:** El primer Edit sobre `xdd-init.sh` y `xdd-doctor.sh` falló con "File has not been read yet" pese a que ya estaban leídos en mensajes anteriores de la conversación.
