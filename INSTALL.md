@@ -6,17 +6,29 @@ Esta guía cubre todos los programas necesarios para operar el ecosistema X-DD c
 
 ## Núcleo Obligatorio
 
-### 1. Claude Code (Orquestador de Agentes)
-El CLI que ejecuta los workflows y agentes del sistema.
+### 1. Orquestador de Agentes — Claude Code u OpenCode
 
+X-DD es compatible con ambos. Elige uno:
+
+#### Opción A — Claude Code (oficial Anthropic)
 ```bash
-# macOS / Linux
 npm install -g @anthropic-ai/claude-code
 
-# Verificar instalación
+# Verificar
 claude --version
 ```
 Requiere cuenta en [claude.ai](https://claude.ai) con acceso a Claude Code.
+
+#### Opción B — OpenCode (open source, multi-proveedor)
+```bash
+npm install -g opencode-ai
+
+# Verificar
+opencode --version
+```
+Soporta Claude, GPT-4, Gemini y modelos locales vía Ollama. Ver [opencode.ai](https://opencode.ai) para configuración de proveedores.
+
+> Los workflows en `.agent/workflows/` usan el formato `description:` en frontmatter, compatible con ambos orquestadores sin modificaciones.
 
 ---
 
@@ -71,6 +83,33 @@ brew install --cask docker
 docker --version
 docker compose version
 ```
+
+---
+
+### 5. MemPalace — Memoria Semántica del Proyecto
+
+Sistema de memoria espacial local-first. Indexa el codebase, workflows y decisiones del proyecto para que los agentes tengan contexto persistente entre sesiones.
+
+```bash
+# Instalar uv (gestor de paquetes Rust, ultra-rápido)
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# Instalar MemPalace globalmente
+uv tool install mempalace
+
+# Verificar
+mempalace --version
+```
+
+**Inicializar en cada proyecto nuevo:**
+```bash
+# Crear el wing de memoria del proyecto
+mempalace init "$PWD"
+
+# Indexar semánticamente código, docs y workflows
+mempalace mine "$PWD"
+```
+Los datos se almacenan localmente en `~/.mempalace/` — sin dependencias en la nube.
 
 ---
 
@@ -197,6 +236,7 @@ echo "=== X-DD System Check ===" && \
 node --version && \
 git --version && \
 docker --version && \
+mempalace --version && \
 semgrep --version && \
 gitleaks version && \
 trivy --version && \
@@ -226,8 +266,11 @@ echo "# memoria.md\n## Sesión inicial\nProyecto iniciado." > memoria.md
 npm init -y
 npm install -D vitest @playwright/test playwright-bdd
 
-# 5. Iniciar Claude Code
-claude
+# 5. Inicializar MemPalace
+mempalace init "$PWD" && mempalace mine "$PWD"
+
+# 6. Iniciar el orquestador (Claude Code u OpenCode)
+claude   # o: opencode
 ```
 
 ---
