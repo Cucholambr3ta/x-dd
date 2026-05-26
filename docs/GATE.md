@@ -65,9 +65,9 @@ python3 scripts/xdd-gate.py validate --phase briefing
 | Archivo | Propósito | Commiteable | Origen |
 |---------|-----------|-------------|--------|
 | `<documentos>.md` | Artefactos de la fase | ✅ | Workflows X-DD |
-| `.status` | `PENDIENTE | EN_REVIEW | APROBADO | RECHAZADO` | ✅ | `approve` lo escribe |
+| `.status` | `PENDIENTE` / `EN_REVIEW` / `APROBADO` / `RECHAZADO` | ✅ | `approve` lo escribe |
 | `.checksums` | SHA-256 (16 hex) por artefacto, snapshot al aprobar | ✅ | `approve` |
-| `.approvers` | `name | timestamp_iso` por línea, append-only | ✅ | `approve` |
+| `.approvers` | `name / timestamp_iso` por línea, append-only | ✅ | `approve` |
 | `.signature` | HMAC-SHA256 hex del payload canónico | ✅ | `approve` |
 | `.gate-key` (raíz `.xdd/`) | Clave HMAC 256-bit | ❌ gitignored | `init` (`secrets.token_bytes(32)`) |
 

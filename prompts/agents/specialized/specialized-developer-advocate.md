@@ -197,8 +197,8 @@ Let me know if the workaround doesn't work for your case.
 
 ---
 <!-- For feature requests -->
-This is a great use case, and you're not the first to ask — #[related-issue] and
-#[related-issue] are related.
+This is a great use case, and you're not the first to ask — `#[related-issue]` and
+`#[related-issue]` are related.
 
 I've added this to our [public roadmap board / backlog] with the context from this thread.
 I can't commit to a timeline, but I want to be transparent: [honest assessment of
