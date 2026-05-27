@@ -56,7 +56,8 @@ gantt
 | 6 MCP server propio ⭐ | ✅ done | F4 Build (4/5) | 2026-06-10 | 2026-06-12 | 2026-05-26 | 2026-05-26 | [#8](https://github.com/Cucholambr3ta/x-dd/pull/8) |
 | 7 Adapters + Hooks + Manifests + E2E ⭐ | ✅ done | F4 Build (5/5) + F5 QA | 2026-06-15 | 2026-06-17 | 2026-05-26 | 2026-05-26 | [#9](https://github.com/Cucholambr3ta/9) |
 | 8 Gobernanza OSS + 3-tier docs + agent.yaml ⭐ | ✅ done | F6 Retro init | 2026-06-17 | 2026-06-19 | 2026-05-26 | 2026-05-26 | [#10](https://github.com/Cucholambr3ta/x-dd/pull/10) |
-| 9 Continuous Learning (instincts + /evolve + SQLite) | 🔄 En curso | F4 ext | 2026-06-20 | 2026-06-23 | 2026-05-26 | — | _pendiente_ |
+| 9 Continuous Learning (instincts + /evolve + SQLite) | ✅ done | F4 ext | 2026-06-20 | 2026-06-23 | 2026-05-26 | 2026-05-26 | [#11](https://github.com/Cucholambr3ta/x-dd/pull/11) |
+| 10 Skills + Eval-harness + xdd-talk-compact | 🔄 En curso | F4 ext | 2026-06-24 | 2026-06-29 | 2026-05-26 | — | _pendiente_ |
 
 Leyenda: 🔄 en curso · ✅ done · ⏳ pendiente · ❌ blocked
 
