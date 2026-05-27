@@ -12,6 +12,44 @@
     },
     "capabilities": {"type": "object", "additionalProperties": {"type": "boolean"}},
     "stacks": {"type": "object"},
+    "monorepo": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Monorepo mode (Sprint 15 + ADR-0013). 3 modos: isolated/shared/hybrid.",
+      "required": ["mode"],
+      "properties": {
+        "mode": {
+          "type": "string",
+          "enum": ["isolated", "shared", "hybrid"],
+          "description": "isolated=cada package su .xdd/ ; shared=un .xdd/ raíz ; hybrid=meta-fases en raíz, build/qa per-package"
+        },
+        "tool": {
+          "type": "string",
+          "enum": ["nx", "turborepo", "pnpm-workspaces", "yarn-workspaces", "lerna", "rush", "bazel", "cargo-workspaces", "go-workspaces", "custom"],
+          "description": "Tool de monorepo detectado o declarado"
+        },
+        "root": {"type": "string"},
+        "packages_dir": {"type": "string", "default": "packages", "description": "Convención del dir donde viven los packages"},
+        "packages": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["name", "path"],
+            "properties": {
+              "name": {"type": "string", "pattern": "^[a-z@][a-z0-9@/_-]*$"},
+              "path": {"type": "string"},
+              "profile": {"type": "string", "enum": ["minimal", "core", "developer", "security", "research", "full"]},
+              "owns_phases": {
+                "type": "array",
+                "items": {"type": "string", "enum": ["briefing", "spec", "plan", "build", "qa", "retro"]},
+                "description": "Hybrid mode: fases que el package controla (vs raíz)"
+              }
+            }
+          }
+        }
+      }
+    },
     "workspace": {
       "type": "object",
       "additionalProperties": false,
