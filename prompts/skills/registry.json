@@ -1,0 +1,24 @@
+{
+  "$schema": "../../schemas/skills.schema.json",
+  "version": "1.0.0",
+  "skills": [
+    {
+      "name": "xdd-talk-compact",
+      "path": "skills/xdd-talk-compact/SKILL.md",
+      "origin": "x-dd",
+      "inspired_by": "juliusbrussee/caveman (MIT)",
+      "category": "output-optimization",
+      "triggers": ["XDD_OUTPUT_COMPACT", "compact mode", "be brief", "short answer"],
+      "evals": "evals/xdd-talk-compact/"
+    },
+    {
+      "name": "agent-eval",
+      "path": "skills/agent-eval/SKILL.md",
+      "origin": "x-dd",
+      "inspired_by": "ECC agent-eval skill (MIT)",
+      "category": "quality-gate",
+      "triggers": ["/eval", "run evals", "test skill"],
+      "evals": null
+    }
+  ]
+}

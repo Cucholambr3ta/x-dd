@@ -1,0 +1,36 @@
+{
+  "suite": "xdd-talk-compact",
+  "grader_type": "token_count_reduction",
+  "total": 5,
+  "passed": 5,
+  "failed": 0,
+  "all_passed": true,
+  "results": [
+    {
+      "input": "explain react re-render",
+      "passed": true,
+      "reason": "reduction 70.8% (≥50%)"
+    },
+    {
+      "input": "explain database connection pooling",
+      "passed": true,
+      "reason": "reduction 50.0% (≥50%)"
+    },
+    {
+      "input": "why is my test flaky",
+      "passed": true,
+      "reason": "reduction 62.1% (≥50%)"
+    },
+    {
+      "input": "explain HMAC",
+      "passed": true,
+      "reason": "reduction 57.4% (≥50%)"
+    },
+    {
+      "input": "what is dependency injection",
+      "passed": true,
+      "reason": "reduction 67.9% (≥50%)"
+    }
+  ],
+  "timestamp": "2026-05-27T00:56:47Z"
+}
