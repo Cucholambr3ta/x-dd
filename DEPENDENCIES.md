@@ -17,6 +17,14 @@ Matriz oficial de dependencias del ecosistema X-DD. Mantenida manualmente; verif
 | **MemPalace** | `>=3.3.0` | `pip install mempalace` ([GitHub](https://github.com/MemPalace/mempalace)) | MIT | Memoria semántica local (ChromaDB + SQLite) + MCP server con 29 tools. Ver [ADR-0004](docs/adr/0004-mempalace-dep-externa-no-fork.md). |
 | **Node.js** | `>=20` | nodejs.org / nvm / asdf | MIT | Runtime para Vitest/Playwright/markdownlint cuando aplica |
 
+## Pentesting (opcional, ADR-0010)
+
+| Dependencia | Versión | Distribución | Licencia | Rol |
+|---|---|---|---|---|
+| **Shannon** (KeygraphHQ/shannon) | latest | `npx @keygraph/shannon` o clone | **AGPL-3.0** ⚠️ | Dynamic pentest (white-box), exploits sandboxed, verify findings. Wrapper híbrido en `scripts/xdd-pentest.sh`. Sin Shannon X-DD degrada elegantemente a STRIDE + source review estático |
+
+> ⚠️ **Shannon es AGPL-3.0**. Instalar Shannon en tu equipo está bien (uso libre). Pero: modificarlo + redistribuir/SaaS → AGPL aplica. **X-DD nunca bundle Shannon** — tu proyecto X-DD NO se contamina con AGPL. Decisión de instalar/usar Shannon es tuya. Ver `docs/PENTEST.md` y `ADR-0010`.
+
 ## Orquestadores de agentes (al menos uno)
 
 | Dependencia | Versión | Distribución | Licencia | Rol |

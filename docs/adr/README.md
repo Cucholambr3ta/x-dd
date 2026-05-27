@@ -22,6 +22,7 @@
 | [0007](./0007-adapters-iniciales-claude-opencode-mcp.md) | Adapters iniciales: Claude Code + OpenCode + MCP | Aceptado | Integración |
 | [0008](./0008-consolidacion-xdd-cli-diferida.md) | Consolidación `xdd` CLI Python — diferida a post-v0.1.0 | Propuesto (diferido) | Roadmap |
 | [0009](./0009-politica-versionado-xdd-directorio.md) | Política de versionado de `.xdd/` (qué se commitea) | Aceptado | Repo |
+| [0010](./0010-shannon-external-dep-pentest-operator-naming.md) | Shannon como dep externa AGPL + rename a security-pentest-operator | Aceptado | Seguridad + naming |
 
 ## Cómo añadir un ADR
 
