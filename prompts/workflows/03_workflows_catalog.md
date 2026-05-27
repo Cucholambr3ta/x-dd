@@ -82,6 +82,9 @@ Los workflows son guías ejecutables en formato Markdown que definen flujos paso
 *   **`/data-pipeline` (`data-pipeline.md`)**: Pipeline de datos con contratos, SLAs, DLQ, calidad y lineage.
 *   **`/ml-eval` (`ml-eval.md`)**: Evaluación de modelos ML/LLM. Golden sets, drift detection, A/B con feature flags.
 
+### 9. Continuous Learning (Sprint 9)
+*   **`/evolve` (`evolve.md`)**: Cluster instincts acumulados en SQLite (`~/.xdd/state.db`) → propone skills/agents/commands nuevos. Humano aprueba (T6.1) antes de promover. Inspirado en ECC `/evolve`.
+
 ---
 
 ## 🛠️ Ejecución y Orquestación de Workflows por Hermes Agent
