@@ -15,7 +15,7 @@
 7. [Manifest-driven install](#7-manifest-driven-install)
 8. [IDE adapters](#8-ide-adapters)
 9. [Trazabilidad y dogfooding](#9-trazabilidad-y-dogfooding)
-10. [Configuración (profile + config)](#10-configuracion-profile--config)
+10. [Configuración (profile + config)](#10-configuración-profile--config)
 11. [Testing del propio framework](#11-testing-del-propio-framework)
 12. [Roadmap post-v0.1.0](#12-roadmap-post-v010)
 
@@ -318,5 +318,5 @@ bats tests/e2e/test_quickstart.bats
 
 - [Plan vigente](MEJORAS-X-DD.md) — task tracking
 - [10 ADRs](docs/adr/) — decisiones arquitectónicas
-- [SOUL del proyecto](#) — (futuro: pendiente como en ECC)
+- SOUL del proyecto — futuro pendiente como en ECC
 - [Inspiración ECC analizada](docs/research/ECC-inspiration-analysis.md)
