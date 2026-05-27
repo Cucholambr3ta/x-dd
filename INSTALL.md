@@ -6,25 +6,51 @@ Esta guía cubre todos los programas necesarios para operar el ecosistema X-DD c
 
 ## Núcleo Obligatorio
 
-### 1. Orquestador de Agentes — Claude Code u OpenCode
+### 1. Orquestador de Agentes / IDE compatible
 
-X-DD es compatible con ambos. Elige uno:
+X-DD funciona con **cualquier orquestador agéntico** que soporte MCP, slash commands markdown, o `AGENTS.md` / `CLAUDE.md`. Elige al menos uno:
 
-#### Opción A — Claude Code (oficial Anthropic)
+#### Adapters dedicados (sin requerir MCP)
+
+##### Opción A — Claude Code (oficial Anthropic)
 ```bash
 npm install -g @anthropic-ai/claude-code
 claude --version
+# Activar X-DD:
+bash scripts/xdd-adapt.sh claude-code
 ```
-Requiere cuenta en [claude.ai](https://claude.ai) con acceso a Claude Code.
 
-#### Opción B — OpenCode (open source, multi-proveedor)
+##### Opción B — OpenCode (open source, multi-proveedor — Claude/GPT/Gemini/Ollama)
 ```bash
 npm install -g opencode-ai
 opencode --version
+bash scripts/xdd-adapt.sh opencode
 ```
-Soporta Claude, GPT-4, Gemini y modelos locales vía Ollama. Ver [opencode.ai](https://opencode.ai).
 
-> Los workflows en `.agent/workflows/` usan el formato `description:` en frontmatter, compatible con ambos orquestadores sin modificaciones.
+#### Via MCP server propio (sin adapter dedicado)
+
+Cualquiera de estos IDE/asistentes consume X-DD vía `xdd-mcp-server` (6 tools). Setup en [docs/MCP_INTEGRATION.md](./docs/MCP_INTEGRATION.md):
+
+| Asistente | Distribución | Host IDE |
+|---|---|---|
+| **Cursor** | cursor.sh | standalone IDE |
+| **Continue.dev** | extension | VSCode, JetBrains |
+| **Cline / Roo Code** | extension | VSCode |
+| **Zed AI** | zed.dev | standalone |
+| **Windsurf** | codeium.com | standalone |
+| **Google Antigravity** | google.com/antigravity | standalone |
+| **Codex** (OpenAI) | extension | various |
+| **Gemini** (Google) | various | various |
+| **Qwen** (Alibaba) | various | various |
+| **Kiro, Trae, otros MCP-compat** | propios | varios |
+
+#### Casos especiales
+
+- **GitHub Copilot:** parcial vía `.github/copilot-instructions.md` (limitado — adapter completo en roadmap v0.2.0).
+- **Hermes Agent** (Nous Research): lee `prompts/agents/` directo + slash commands parciales.
+
+> X-DD expone capacidades vía MCP server propio ([ADR-0005](docs/adr/0005-mcp-preferido-y-server-propio.md)) — reduce 9+ adapters a 1 server compartido.
+> Los workflows en `.agent/workflows/` usan formato `description:` en frontmatter compatible con todos los orquestadores sin modificaciones.
 
 ---
 

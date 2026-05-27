@@ -232,10 +232,30 @@ docs:
 
 # === Compatibilidad cross-harness ===
 supported_orchestrators:
-  - claude-code
-  - opencode
-  - cursor       # via MCP
-  - continue     # via MCP
-  - zed          # via MCP
-  - cline        # via MCP
-  - windsurf     # via MCP
+  # Adapters dedicados (Sprint 7, ADR-0007)
+  - {name: claude-code, mechanism: "slash_commands + CLAUDE.md", adapter: "xdd-adapt claude-code"}
+  - {name: opencode, mechanism: "AGENTS.md + .agent/workflows/", adapter: "xdd-adapt opencode"}
+  # Via MCP server propio (Sprint 6) — sin adapter dedicado
+  - {name: cursor, mechanism: "MCP + .cursor/rules", adapter: "via MCP"}
+  - {name: continue, mechanism: "MCP + ~/.continue/config.json", adapter: "via MCP", host_ides: ["VSCode", "JetBrains"]}
+  - {name: zed, mechanism: "MCP context_servers", adapter: "via MCP"}
+  - {name: cline, mechanism: "MCP in VSCode settings", adapter: "via MCP", host_ide: "VSCode"}
+  - {name: roo-code, mechanism: "MCP in VSCode settings", adapter: "via MCP", host_ide: "VSCode"}
+  - {name: windsurf, mechanism: "MCP + Codeium", adapter: "via MCP"}
+  - {name: antigravity, mechanism: "MCP (Google IDE)", adapter: "via MCP"}
+  - {name: codex, mechanism: "MCP TOML config", adapter: "via MCP", vendor: "OpenAI"}
+  - {name: gemini, mechanism: "MCP", adapter: "via MCP", vendor: "Google"}
+  - {name: qwen, mechanism: "MCP", adapter: "via MCP", vendor: "Alibaba"}
+  - {name: kiro, mechanism: "MCP", adapter: "via MCP"}
+  - {name: trae, mechanism: "MCP", adapter: "via MCP"}
+  # Parcial / roadmap
+  - {name: github-copilot, mechanism: ".github/copilot-instructions.md (limited)", adapter: "partial", roadmap: "v0.2.0 full adapter"}
+  - {name: hermes, mechanism: "local agent reads prompts/agents/", adapter: "partial (slash commands)", vendor: "Nous Research"}
+  # Universal fallback
+  - {name: "any-mcp-compatible", mechanism: "MCP stdio via xdd-mcp-server", adapter: "via MCP"}
+
+compatibility_philosophy: |
+  X-DD funciona con CUALQUIER orquestador agéntico que cumpla al menos uno de:
+  (1) MCP (Model Context Protocol) stdio, (2) slash commands markdown,
+  (3) lectura de AGENTS.md / CLAUDE.md. El MCP server propio reduce 9+ adapters
+  IDE-específicos a 1 server compartido. Ver ADR-0005 + ADR-0007.

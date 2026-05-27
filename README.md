@@ -7,10 +7,43 @@
 [![Agents](https://img.shields.io/badge/agents-180-orange)](docs/equipo.md)
 [![Tests](https://img.shields.io/badge/tests-160%2B%20green-brightgreen)](tests/)
 [![MemPalace](https://img.shields.io/badge/MemPalace-%E2%89%A53.3.0-purple)](DEPENDENCIES.md)
+[![Shannon](https://img.shields.io/badge/Shannon-optional%20AGPL--3.0-red)](docs/PENTEST.md)
 
-**Pipeline de desarrollo de alta calidad** que integra múltiples metodologías *-Driven Development* como capas sobre un Gated Pipeline de 6 fases, orquestado por **Claude Code**, **OpenCode** o cualquier IDE compatible con **MCP**, apoyado por una agencia de 180 subagentes especializados.
+**Pipeline de desarrollo de alta calidad** que integra múltiples metodologías *-Driven Development* como capas sobre un Gated Pipeline de 6 fases. Orquestable desde **cualquier asistente IA/IDE** que soporte MCP o slash commands markdown (lista completa abajo). Apoyado por agencia de 180 subagentes + 51 workflows + 8 hooks + AgentShield.
 
 > 📌 X-DD se aplica a sí mismo: ver [.xdd/](.xdd/), [docs/adr/](docs/adr/), [PROJ-MASTER-PLAN.md](PROJ-MASTER-PLAN.md) y [docs/CHANGELOG.md](docs/CHANGELOG.md) para el dogfooding visible (ver [ADR-0001](docs/adr/0001-dogfooding-visible-commiteable.md)).
+
+## Compatibilidad universal IDE / Asistentes IA
+
+X-DD funciona con **cualquier orquestador agéntico** que cumpla al menos uno de estos protocolos: MCP (Model Context Protocol), slash commands markdown, o lectura de `AGENTS.md` / `CLAUDE.md`. Probado/documentado con:
+
+| Asistente / IDE | Mecanismo | Adapter dedicado | Doc |
+|---|---|---|---|
+| **Claude Code** (Anthropic CLI) | slash commands `.claude/commands/` | ✅ `xdd-adapt claude-code` | [INSTALL.md](INSTALL.md) |
+| **OpenCode** (multi-proveedor OSS) | `AGENTS.md` + `.agent/workflows/` | ✅ `xdd-adapt opencode` | [INSTALL.md](INSTALL.md) |
+| **Cursor** | MCP server + `.cursor/rules` | vía MCP | [docs/MCP_INTEGRATION.md](docs/MCP_INTEGRATION.md) |
+| **Continue.dev** (VSCode/JetBrains extension) | MCP server en `~/.continue/config.json` | vía MCP | [docs/MCP_INTEGRATION.md](docs/MCP_INTEGRATION.md) |
+| **Zed AI** | MCP `context_servers` | vía MCP | [docs/MCP_INTEGRATION.md](docs/MCP_INTEGRATION.md) |
+| **Cline / Roo Code** (VSCode extension) | MCP server settings | vía MCP | [docs/MCP_INTEGRATION.md](docs/MCP_INTEGRATION.md) |
+| **Windsurf** (Codeium) | MCP server | vía MCP | [docs/MCP_INTEGRATION.md](docs/MCP_INTEGRATION.md) |
+| **Google Antigravity** | MCP server | vía MCP | [docs/MCP_INTEGRATION.md](docs/MCP_INTEGRATION.md) |
+| **VSCode** (cualquier extensión que use MCP) | Continue/Cline/Claude Code extension | vía MCP | [docs/MCP_INTEGRATION.md](docs/MCP_INTEGRATION.md) |
+| **GitHub Copilot** | `.github/copilot-instructions.md` (limitado) | parcial | (roadmap v0.2.0) |
+| **Hermes Agent** (Nous Research) | local agent, lee `prompts/agents/` | parcial (slash commands) | (ver Hermes docs) |
+| **Codex** (OpenAI) / **Gemini** / **Qwen** | TOML/JSON config con MCP | vía MCP | [docs/MCP_INTEGRATION.md](docs/MCP_INTEGRATION.md) |
+| **Cualquier IDE futuro MCP-compat** | MCP stdio | vía `xdd-mcp-server` | [docs/MCP_INTEGRATION.md](docs/MCP_INTEGRATION.md) |
+
+**Filosofía:** ([ADR-0005](docs/adr/0005-mcp-preferido-y-server-propio.md)) X-DD expone capacidades vía MCP server propio (6 tools: `xdd_validate_phase`, `xdd_transition_phase`, `xdd_list_workflows`, `xdd_invoke_workflow`, `xdd_list_agents`, `xdd_get_phase_artifacts`). Reduce de N adapters a 1 server compartido. Adapters dedicados solo para Claude Code + OpenCode ([ADR-0007](docs/adr/0007-adapters-iniciales-claude-opencode-mcp.md)).
+
+## Integraciones externas opcionales
+
+| Producto | Tipo | Licencia | Rol | Doc |
+|---|---|---|---|---|
+| **MemPalace** ([repo](https://github.com/MemPalace/mempalace)) | Memoria semántica local | MIT | Persistencia + RAG codebase + MCP server con 29 tools | [DEPENDENCIES.md](DEPENDENCIES.md), [ADR-0004](docs/adr/0004-mempalace-dep-externa-no-fork.md) |
+| **Shannon CLI** ([repo](https://github.com/KeygraphHQ/shannon)) | Pentest dinámico white-box | **AGPL-3.0** ⚠️ | Sandbox exploits + verify findings. Wrapper híbrido `xdd-pentest.sh` degrada sin él (STRIDE + source review estático funcionan) | [docs/PENTEST.md](docs/PENTEST.md), [ADR-0010](docs/adr/0010-shannon-external-dep-pentest-operator-naming.md) |
+| **Caveman** ([repo](https://github.com/juliusbrussee/caveman)) | Token compression skill global | MIT | Reducción ~75% tokens output. X-DD tiene `xdd-talk-compact` propio inspirado en él | [skills/xdd-talk-compact](skills/xdd-talk-compact/SKILL.md) |
+
+> ⚠️ **Shannon AGPL-3.0:** X-DD **NO** bundle Shannon. Instalarlo en tu equipo = uso libre. Modificarlo + redistribuir/SaaS = AGPL aplica. Tu proyecto X-DD NO se contamina por usar Shannon vía wrapper. Decisión es tuya. Ver disclaimer en `docs/PENTEST.md`.
 
 ---
 
