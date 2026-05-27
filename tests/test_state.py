@@ -207,3 +207,84 @@ def test_stats_reports_correctly(db_path, capsys):
     assert rc == 0
     assert out["total_instincts"] == 1
     assert out["by_category"]["user_action"] == 1
+
+
+# ---------- Sprint 16: TF-IDF clustering ----------
+
+def test_tokenize_removes_stopwords_and_short():
+    toks = xdd_state._tokenize("The quick brown fox jumps over the lazy dog")
+    assert "the" not in toks
+    assert "fox" in toks
+    assert "quick" in toks
+
+
+def test_tfidf_vectors_dimensions():
+    docs = ["fix bug auth login", "fix bug api endpoint", "refactor readme docs"]
+    vecs = xdd_state._tfidf_vectors(docs)
+    assert len(vecs) == 3
+    # Common term "fix" + "bug" should have weight in vec[0] and vec[1]
+    assert "fix" in vecs[0] and "fix" in vecs[1]
+    # vec[2] has none of those
+    assert "fix" not in vecs[2]
+
+
+def test_cosine_similarity_extremes():
+    v1 = {"a": 1.0, "b": 1.0}
+    v2 = {"a": 1.0, "b": 1.0}
+    v3 = {"c": 1.0, "d": 1.0}
+    assert abs(xdd_state._cosine(v1, v2) - 1.0) < 0.01
+    assert xdd_state._cosine(v1, v3) == 0.0
+
+
+def test_tfidf_cluster_groups_similar():
+    rows = [
+        {"category": "error", "pattern": "fix auth bug login", "context": "middleware"},
+        {"category": "error", "pattern": "fix auth bug session", "context": "middleware"},
+        {"category": "docs", "pattern": "update readme", "context": ""},
+    ]
+    clusters = xdd_state._tfidf_cluster(rows, similarity_threshold=0.15)
+    # Esperamos 2 clusters: auth bugs juntos + docs aparte
+    assert len(clusters) == 2
+    sizes = sorted([len(c) for c in clusters])
+    assert sizes == [1, 2]
+
+
+def test_evolve_tfidf_default_mode(db_path):
+    xdd_state.cmd_init(_args(db=db_path))
+    for i, (p, c) in enumerate([
+        ("fix auth bug login flow", "error_pattern"),
+        ("fix auth bug session expire", "error_pattern"),
+        ("fix auth bug token refresh", "error_pattern"),
+        ("update readme docs", "user_action"),
+    ]):
+        xdd_state.cmd_record(_args(db=db_path, pattern=p, category=c,
+            context=None, session_id=None, json=False))
+    # Force confidence ≥ 0.5
+    conn = sqlite3.connect(db_path)
+    conn.execute("UPDATE instincts SET confidence = 0.8")
+    conn.commit()
+    conn.close()
+    capsys = None  # not needed for return code
+    rc = xdd_state.cmd_evolve(_args(db=db_path, min_confidence=0.5,
+        min_cluster_size=3, similarity_threshold=0.1, category_only=False,
+        generate=False, json=False))
+    assert rc == 0
+
+
+def test_evolve_category_only_legacy_mode(db_path, capsys):
+    xdd_state.cmd_init(_args(db=db_path))
+    for i in range(4):
+        xdd_state.cmd_record(_args(db=db_path, pattern=f"p{i}",
+            category="user_action", context=None, session_id=None, json=False))
+    conn = sqlite3.connect(db_path)
+    conn.execute("UPDATE instincts SET confidence = 0.7")
+    conn.commit()
+    conn.close()
+    capsys.readouterr()
+    rc = xdd_state.cmd_evolve(_args(db=db_path, min_confidence=0.5,
+        min_cluster_size=3, similarity_threshold=0.3, category_only=True,
+        generate=False, json=True))
+    out = json.loads(capsys.readouterr().out)
+    assert rc == 0
+    assert len(out["proposals"]) == 1
+    assert out["proposals"][0]["instinct_count"] == 4

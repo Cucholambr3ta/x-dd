@@ -19,6 +19,15 @@
       "category": "quality-gate",
       "triggers": ["/eval", "run evals", "test skill"],
       "evals": null
+    },
+    {
+      "name": "xdd-ai-review",
+      "path": "skills/xdd-ai-review/SKILL.md",
+      "origin": "x-dd",
+      "inspired_by": "gentleman-guardian-angel (provider-agnostic)",
+      "category": "quality-gate",
+      "triggers": ["pre-commit", "/ai-review", "review my diff with AI"],
+      "evals": null
     }
   ]
 }
