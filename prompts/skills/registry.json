@@ -46,6 +46,15 @@
       "category": "context-engineering",
       "triggers": ["/fs-context", "mount as filesystem", "treat as files"],
       "evals": null
+    },
+    {
+      "name": "xdd-sandbox",
+      "path": "skills/xdd-sandbox/SKILL.md",
+      "origin": "x-dd",
+      "inspired_by": "E2B + Daytona + Microsandbox + ai-boost/Picrew sandbox enumeration",
+      "category": "security",
+      "triggers": ["/sandbox", "run in sandbox", "XDD_AUTO_SANDBOX"],
+      "evals": null
     }
   ]
 }
