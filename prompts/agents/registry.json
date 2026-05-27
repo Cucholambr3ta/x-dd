@@ -2189,14 +2189,14 @@
       "fallback_agent": null
     },
     {
-      "id": "shannon-secops-expert",
-      "name": "Shannon SecOps Expert",
+      "id": "security-pentest-operator",
+      "name": "Security Pentest Operator",
       "category": "security",
-      "description": "Autonomous PenTesting, Threat Modeling, and Security Auditing agent. Methodical adversarial thinker that validates vulnerability findings with Zero False Positives and initiates automated self-healing patches.",
+      "description": "Autonomous offensive-security agent (PenTesting, Threat Modeling, Security Auditing). Adversarial mindset, Zero False Positives policy, self-healing patches. Identity X-DD propia; capacidades dinámicas (exploits sandboxed, verify) delegan a Shannon CLI (`shn`) si está instalado (dep externa AGPL-3.0 opcional, ADR-0010).",
       "emoji": "🛡️",
       "color": "red",
-      "vibe": "Thinks like an attacker, models STRIDE threats, audits source sinks, runs sandboxed exploits, and certifies security patches with absolute surgical precision.",
-      "prompt_file": "prompts/agents/security/shannon-secops-expert.md",
+      "vibe": "Thinks like attacker, models STRIDE, audits source sinks, delegates sandboxed exploits to shn when available, certifies patches with surgical precision.",
+      "prompt_file": "prompts/agents/security/security-pentest-operator.md",
       "ide_compat": [
         "claude-code",
         "opencode",

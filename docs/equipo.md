@@ -4,7 +4,7 @@
 > `scripts/generate-equipo.sh`. **NO editar a mano** — modificá el `.md`
 > del agente o el registry y re-ejecutá el script.
 
-- **Generado:** `2026-05-26T20:48:07Z`
+- **Generado:** `2026-05-27T01:08:38Z`
 - **Total agentes:** 180
 - **Categorías:** 15
 - **Composition patterns:** 3
@@ -199,7 +199,7 @@
 | Agente | Descripción | Prompt file |
 |--------|-------------|-------------|
 | **🔐 Privacy Engineer** | Privacy by design. Inventario PII, bases legales, DSAR runbooks, minimización. GDPR/CCPA/LGPD operacional, no solo PDF. | [`prompts/agents/security/privacy-engineer.md`](prompts/agents/security/privacy-engineer.md) |
-| **🛡️ Shannon SecOps Expert** | Autonomous PenTesting, Threat Modeling, and Security Auditing agent. Methodical adversarial thinker that validates vulnerability findings… | [`prompts/agents/security/shannon-secops-expert.md`](prompts/agents/security/shannon-secops-expert.md) |
+| **🛡️ Security Pentest Operator** | Autonomous offensive-security agent (PenTesting, Threat Modeling, Security Auditing). Adversarial mindset, Zero False Positives policy, s… | [`prompts/agents/security/security-pentest-operator.md`](prompts/agents/security/security-pentest-operator.md) |
 
 ## spatial-computing
 
