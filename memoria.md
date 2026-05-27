@@ -11,11 +11,11 @@
 - **Repo:** https://github.com/Cucholambr3ta/x-dd
 
 ## Estado Actual
-- **Fase X-DD activa:** **F6 Retro + Release init**
-- **Sprint en curso:** **Sprint 8 ampliado — Gobernanza OSS + 3-tier docs + commitlint + WORKING-CONTEXT + agent.yaml + research/** (rama `feat/sprint-8-governance-3tier-release`)
-- **Plan macro:** [.claude/plans/indicame-que-mejoras-implementarias-happy-sunbeam.md](/home/alejandro/.claude/plans/indicame-que-mejoras-implementarias-happy-sunbeam.md) — **estrategia MAXIMALISTA (Sprints 7-12 para v0.1.0)**.
-- **Último hito:** Sprint 7 ampliado mergeado (PR #9, commit `b6669a4`): adapter + 8 hooks + 6 profiles + install.ps1 + **97 tests verdes**.
-- **Próximo paso:** Cerrar Sprint 8 con `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`, `SECURITY.md`, `NOTICE`, `devcontainer.json`, 3-tier guides (shortform/longform/security), `commitlint.config.js`, `WORKING-CONTEXT.md`, `agent.yaml`, `docs/research/ECC-inspiration-analysis.md`. PR. Luego Sprints 9-12 + release v0.1.0.
+- **Fase X-DD:** F4 Build extensión post-Sprint 8 (Sprints 9-14 ampliados)
+- **Sprint en curso:** **Sprint 9 — Continuous Learning** (rama `feat/sprint-9-continuous-learning`)
+- **Plan macro:** MAXIMALISTA + 2 sprints nuevos (13 White-labeling, 14 Workspace). Total v0.1.0: ~36d, 22.5d restantes.
+- **Último hito:** Sprint 8 ampliado mergeado (PR #10, commit `adede3b`): gobernanza OSS + 3-tier docs + commitlint + agent.yaml + research/ + release.yml.
+- **Próximo paso:** scripts/xdd-state.py (SQLite) + stop-pattern-extraction real + /evolve workflow + tests pytest.
 
 ## Decisiones Arquitectónicas Clave
 <!-- ADR-lite: una línea por decisión, con fecha y motivo -->
@@ -39,6 +39,17 @@
 ---
 
 ## Bitácora de Sesiones
+
+### Sesión 2026-05-26 (cont.) — Sprint 9 (Continuous Learning) + caveman global
+- **Meta:** Habilitar auto-extracción de patterns + `/evolve` para promover a artefactos.
+- **Hitos:** xdd-state.py SQLite (6 cmds), /evolve workflow con T6.1 (aprobación humana), hook stop-pattern-extraction real, 12 tests pytest verdes (62 total).
+- **Decisiones tomadas en esta sesión (planificación expandida):**
+  - Sprints 13 (White-labeling: branding+personas+rename trigger) y 14 (Workspace mode + wizard interactivo) agregados al plan v0.1.0
+  - Shannon → recomendado dep externa AGPL (NO reimpl); Sprint 12 simplificado a wrapper híbrido
+  - Caveman → user instaló globalmente; X-DD tendrá `xdd-talk-compact` propio en Sprint 10
+  - **Modo caveman ON** en esta sesión (ahorro ~75% tokens)
+  - Plan total v0.1.0: ~36d, restantes 22.5d (Sprints 10-14 + release)
+- **Próxima sesión:** Sprint 10 — Skills (SKILL.md) + Eval-harness + xdd-talk-compact.
 
 ### Sesión 2026-05-26 (cont.) — Sprint 8 ampliado (Gobernanza OSS + 3-tier docs + commitlint + WORKING-CONTEXT + agent.yaml + research/)
 - **Meta:** Cerrar Fase 6-Retro initialization. Preparar el repo para release v0.1.0 con paridad de gobernanza OSS profesional + inspiración ECC.

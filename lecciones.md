@@ -20,6 +20,18 @@ Categorías sugeridas: `ARQUITECTURA`, `SEGURIDAD`, `DOMINIO`, `TESTING`, `DEVOP
 
 ## Lecciones
 
+### [TESTING] `capsys.readouterr()` necesita limpieza previa cuando hay output mezclado — 2026-05-26
+**Contexto:** Sprint 9. Tests pytest de xdd-state.py invocaban init() + record() (con print "[state] ✓") + cmd_list(json=True). `capsys.readouterr().out` capturaba TODO acumulado, y `json.loads()` fallaba con "Extra data".
+**Causa:** capsys es FIFO acumulativo. Sin limpieza, retorna todo desde el último readouterr().
+**Lección:** Antes de capturar output del comando bajo prueba, llamar `capsys.readouterr()` sin asignar para limpiar buffer. O usar subprocess separado.
+**Aplica a:** todos los tests pytest que parsean JSON de funciones que también imprimen logs humanos.
+
+### [ARQUITECTURA] Heurística confidence +0.1/occ con cap 1.0 es MVP suficiente — 2026-05-26
+**Contexto:** Sprint 9 xdd-state.py. Cómo asignar confidence a instincts.
+**Decisión:** +0.1 por occurrence, cap 1.0. Simple, predecible.
+**Lección:** Para v0.1.0 de feature nueva, heurística simple > algoritmo sofisticado. Sofisticación cuando hay datos para tunear. Sprint 11 puede agregar TF-IDF clustering; cluster-by-category basta como MVP.
+**Aplica a:** cualquier feature nueva con espacio amplio de algoritmos. Simple > clever.
+
 ### [PROCESO] 3-tier docs (shortform/longform/security) cubren audiencias distintas sin canibalizar — 2026-05-26
 **Contexto:** Sprint 8 ampliado, inspiración ECC. Producir 3 guías separadas de longitudes y propósitos distintos.
 **Problema:** Tentación inicial: hacer un README grande y "completo". Resultado típico: nadie lo lee entero, los avanzados pierden tiempo en lo básico y los principiantes se asustan con detalles.
