@@ -129,6 +129,31 @@ Los datos se almacenan localmente en `~/.mempalace/` — sin dependencias en la 
 
 ---
 
+### 5b. GitNexus — Code Intelligence (recomendado, opt-in)
+
+Knowledge graph del codebase via Tree-sitter AST + LadybugDB. 14 lenguajes. 16 MCP tools (impact analysis, hybrid search BM25+semantic+RRF, Cypher queries, multi-file rename).
+
+```bash
+# Instalación global
+npm install -g gitnexus
+
+# o ad-hoc sin install
+npx gitnexus
+
+gitnexus --version
+```
+
+> ⚠️ **License PolyForm Noncommercial 1.0.0.** Uso personal/research/educational/non-profit = gratis. Uso **comercial** (SaaS, consultoría, internal corporate tools) requiere paid license → [akonlabs.com](https://akonlabs.com). X-DD nunca lo bundle. Tu proyecto X-DD MIT NO se contamina por consumir su MCP server client-side. Detalles en [ADR-0033](docs/adr/0033-gitnexus-tier1-companion.md) + [DEPENDENCIES.md](DEPENDENCIES.md).
+
+**Inicializar en cada proyecto nuevo:**
+```bash
+gitnexus index "$PWD"
+```
+
+`xdd-start.sh` indexa GitNexus + MemPalace automáticamente si CLIs disponibles. Sin GitNexus instalado → X-DD usa `xdd-fs-context` (Sprint 19, zero-dep baseline) como fallback.
+
+---
+
 ## Testing (Pipeline X-DD)
 
 ### 6. Vitest — Tests Unitarios (TDD) y Security Tests (STDD)

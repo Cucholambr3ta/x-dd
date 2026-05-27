@@ -314,27 +314,52 @@ bats tests/e2e/test_quickstart.bats
 | 11 | Multi-agent orchestration runtime (`/orchestrate`) | #13 | ✅ |
 | 12 | AgentShield + Shannon dep AGPL híbrida + rename + ADR-0010 | #14 | ✅ |
 | 13 | White-labeling + 4 personas + ADR-0011 | #15 | ✅ |
+| 14 | Workspace mode + Wizard interactivo + ADR-0012 | #20 | ✅ |
+| 15 | Monorepo 3 modos (isolated/shared/hybrid) + ADR-0013 | #21 | ✅ |
+| 16 | SDD parity (`/clarify` + `/cross-validate` + constitution.md) + AI review + community skills voting + TF-IDF clustering + ADRs 14/15/20 | #22 | ✅ |
+| 17 | Party Mode + Brainstorm + Web bundles spec + HITL checkpoints + Multi-provider router + ADRs 16/17/18/19 | #23 | ✅ |
+| 18 | Observability Triad — OTel Gen AI spans + session replay + per-call cost + 6-stage middleware + ADRs 21/22 | #24 | ✅ |
+| 19 | Context Engineering — budget metering + compact skill + fs-context + code-as-tool + ADRs 23/24 | #25 | ✅ |
+| 20 | Eval benchmarks externos — Inspect AI + Terminal-Bench 2 + SWE-bench + LongMemEval + meta-eval + ADRs 25/26 | #26 | ✅ |
+| 21 | Sandbox + Permissions hardening — intent + authz <100ms + 6-step governance + constitution YAML + ADRs 27/28 | #27 | ✅ |
+| 22 | AHE-style /evolve — 3-layer observability + trace summarize + frozen transfer + ADR 29 | #28 | ✅ |
+| 23 | Protocols + Skills ecosystem — A2A + AG-UI + bundle.py + plan_and_act + adapt_orch + ADRs 30/31/32 | #29 | ✅ |
+| Add | GitNexus tier-1 companion paralelo MemPalace + ADR-0033 | #32 | ✅ |
 
 ### Pendientes para v0.1.0
 
 | # | Trabajo | Días |
 |---|---|---|
-| Sprint 14 | Workspace mode (symlinks) + Wizard interactivo (`xdd-new.sh`) + ADR-0012 | ~3 |
 | Release | tag firmado v0.1.0 + RELEASES/v0.1.0.md + Template Repository | ~0.5 |
+
+### Stack MCP recomendado (3 servers paralelos)
+
+`xdd-start.sh` activa MemPalace + GitNexus automáticamente si CLI instalados:
+
+| MCP Server | License | Tools | Función |
+|---|---|---|---|
+| **xdd-mcp-server** | MIT | 6 | Pipeline X-DD: gates HMAC + workflows + agents + phase artifacts |
+| **MemPalace** | MIT | 29 | Memoria semántica (ChromaDB + SQLite) |
+| **GitNexus** | PolyForm Noncomm ⚠️ | 16 | Code intelligence (AST grafo 14 langs, impact analysis, hybrid search BM25+semantic+RRF) |
+
+Sin MemPalace/GitNexus instalados → X-DD degrada con `xdd-fs-context` baseline portable (Sprint 19).
 
 ### Post-v0.1.0 (v0.2.0 hipotético)
 
 - Crecimiento autónomo Nivel 3 (auto-aprobación con clave delegada + audit retroactivo)
-- SSE transport para MCP server
+- SSE/HTTP transport para MCP server (hoy stdio)
 - Multi-machine collaboration con `.gate-key` compartida
 - Plantillas por industria (fintech, e-commerce, SaaS B2B)
-- Internacionalización del README (English)
-- TF-IDF clustering en `/evolve` (Sprint 11 usa cluster-by-category simple como MVP)
+- Web bundles MVP completo CLI (ADR-0017 spec ya en Sprint 23)
+- Backend-impl per-sandbox (E2B/Daytona/Microsandbox runtime real, Sprint 21 ya tiene skill spec)
+- A2A HTTP server real (Sprint 23 stub)
 
 ## Referencias
 
 - [Plan vigente](MEJORAS-X-DD.md) — task tracking
-- [11 ADRs](docs/adr/) — decisiones arquitectónicas (incluyendo 0010 Shannon + 0011 white-labeling)
-- [Inspiración ECC analizada](docs/research/ECC-inspiration-analysis.md)
-- [White-labeling guía](docs/BRANDING.md)
-- [Pentest híbrido guía](docs/PENTEST.md)
+- [33 ADRs](docs/adr/) — decisiones arquitectónicas (10 + 23 post-S13)
+- [Research notes](docs/research/) — ECC + awesome-harness-engineering + agents-best-practices analysis
+- [docs/BRANDING.md](docs/BRANDING.md), [docs/PENTEST.md](docs/PENTEST.md), [docs/WORKSPACE.md](docs/WORKSPACE.md), [docs/MONOREPO.md](docs/MONOREPO.md)
+- [docs/OBSERVABILITY.md](docs/OBSERVABILITY.md), [docs/CONTEXT_ENGINEERING.md](docs/CONTEXT_ENGINEERING.md)
+- [docs/EXTERNAL_BENCHMARKS.md](docs/EXTERNAL_BENCHMARKS.md), [docs/PERMISSIONS.md](docs/PERMISSIONS.md), [docs/SANDBOXING.md](docs/SANDBOXING.md)
+- [docs/AHE_EVOLVE.md](docs/AHE_EVOLVE.md), [docs/SKILLS_INTEROP.md](docs/SKILLS_INTEROP.md)

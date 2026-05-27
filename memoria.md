@@ -11,21 +11,25 @@
 - **Repo:** https://github.com/Cucholambr3ta/x-dd
 
 ## Estado Actual
-- **Fase X-DD:** F4 Build extensión completa (Sprints 9-13 done); pendiente S14 + release
-- **Sprint en curso:** **fix/docs-sync-s9-s13** (hotfix doc drift post-S13)
-- **Plan macro:** MAXIMALISTA. 13.5d (S0-8) + ~10d (S9-13) = ~23.5d invertidos. Restan ~3.5d (S14 + release).
-- **Último hito:** Sprint 13 mergeado (PR #15, commit `4abfb58`): white-labeling + 4 personas + xdd-brand.sh + ADR-0011.
-- **Próximo paso:** sync docs (9 files), luego Sprint 14 (Workspace+Wizard) + release v0.1.0.
+- **Fase X-DD:** F4 Build COMPLETO (Sprints 0-23 done + GitNexus tier-1); pendiente solo release v0.1.0
+- **Sprint en curso:** **docs/sync-post-gitnexus** (sync docs post-S14-23 + GitNexus)
+- **Plan macro:** MAXIMALISTA EXTENDIDO. 23.5d (S0-13) + ~34d (S14-23) = ~57.5d invertidos. Restan ~0.5d (release).
+- **Último hito:** GitNexus tier-1 companion mergeado (PR #32) — paralelo MemPalace en xdd-doctor + xdd-start + ADR-0033.
+- **Workspace global:** instalado en `/home/alejandro/Documentos/Desarrollos/` (post-purga ANMAX legacy). Backup tar.gz en `~/Desarrollos-anmax-backup-2026-05-27-1025.tar.gz`.
+- **Próximo paso:** sync docs (este branch) → Release v0.1.0 cuando user autorice.
 
-## Stats actuales (post-S13)
-- **160+ tests verdes** (102 pytest + 45 bats + 12 E2E + 1 manifests)
-- **15 PRs cerrados** todos preservados
-- **51 workflows** X-DD
+## Stats actuales (post-S23 + GitNexus)
+- **~300+ tests verdes** (~95 nuevos S14-23 sobre 160 base S13)
+- **27+ PRs cerrados** todos preservados (delete_branch_on_merge=false estricto)
+- **55 workflows** X-DD (+brainstorm, clarify, cross-validate, code-as-tool)
 - **180 agentes** (1 renombrado security-pentest-operator)
-- **2 skills** propios (xdd-talk-compact, agent-eval)
-- **8 hooks** event-driven
+- **5 composition_patterns** (+plan_and_act, +adapt_orch Sprint 23)
+- **6 skills** propios (xdd-talk-compact, agent-eval, xdd-ai-review, xdd-compact, xdd-fs-context, xdd-sandbox)
+- **14 hooks** event-driven (8 base + 6 stage middleware S18)
 - **6 install profiles** + 13 modules
-- **11 ADRs** Nygard
+- **33 ADRs** Nygard (10 base + 12 + 11 S14-23 + 0033 GitNexus)
+- **23 scripts ejecutables** (S14-23 +12 nuevos)
+- **3 MCP companion servers** (xdd-mcp + MemPalace + GitNexus)
 - **AgentShield** audit propio: 0 crit/high con `--severity=high`
 
 ## Decisiones Arquitectónicas Clave
@@ -50,6 +54,36 @@
 ---
 
 ## Bitácora de Sesiones
+
+### Sesión 2026-05-27 (cont.) — Workspace global Desarrollos/ + GitNexus tier-1 + docs sync
+- **Meta:** (1) Instalar X-DD en workspace raíz Desarrollos/ post-purga ANMAX legacy. (2) Integrar GitNexus tier-1 paralelo MemPalace. (3) Sincronizar toda la documentación post-S14-23 + GitNexus.
+- **Hitos:**
+  - Backup ANMAX `~/Desarrollos-anmax-backup-2026-05-27-1025.tar.gz` (3.9MB, 713 files)
+  - Purga selectiva: CLAUDE.md + docs/ + .agent/ + prompts/ + scripts/ + templates/ + .claude/ + setup_skills.sh (preservados Docker/MemPalace/hijos)
+  - Install X-DD core en workspace: `bash scripts/xdd-init.sh /home/alejandro/Documentos/Desarrollos --profile=core`
+  - GitNexus tier-1 (PR #32): xdd-doctor detect + xdd-start indexa + DEPENDENCIES + agent.yaml.companions + ADR-0033
+  - PR #30 fix CI lint: 4 workflows S16/S17/S19 sin `description:` frontmatter
+  - 12 archivos doc sincronizados: shortform, longform, security, INSTALL, agent.yaml, CHANGELOG, README en/pt-BR, WORKING-CONTEXT
+- **Decisiones:** GitNexus PolyForm Noncomm = "tier-1 con disclaimer" (no tier-2 como Shannon AGPL). Justificación: PolyForm permite uso research/personal sin restricción (más permisivo que AGPL para non-prod).
+- **Bloqueos:** Release v0.1.0 pausado por decisión user (lo activa cuando quiera).
+- **Próxima sesión:** Release v0.1.0 (tag firmado + RELEASES/v0.1.0.md + Template Repo).
+
+### Sesión 2026-05-27 — Sprints 14-23 ejecutados autónomos
+- **Meta:** Cerrar 6 sprints adicionales pre-release v0.1.0 con paridad SOTA harness engineering 2026.
+- **Sprints cerrados:**
+  - S14 (PR #20): Workspace mode + Wizard interactivo + ADR-0012
+  - S15 (PR #21): Monorepo 3 modos isolated/shared/hybrid + xdd-monorepo.sh 9 tools + ADR-0013
+  - S16 (PR #22): SDD parity (/clarify + /cross-validate + constitution.md) + AI review skill + community skills voting + TF-IDF clustering + ADRs 14/15/20
+  - S17 (PR #23): Party Mode + Brainstorm + Web bundles spec + HITL checkpoints + Multi-provider router + ADRs 16/17/18/19
+  - S18 (PR #24): Observability Triad — xdd-otel + xdd-replay + xdd-cost + 6-stage middleware + ADRs 21/22
+  - S19 (PR #25): Context Engineering — xdd-context budget + xdd-compact + fs-context + code-as-tool + ADRs 23/24
+  - S20 (PR #26): Eval benchmarks externos — Inspect AI + TB2 + SWE-bench + LongMemEval + xdd-meta-eval + ADRs 25/26
+  - S21 (PR #27): Sandbox + Permissions — xdd-intent + xdd-authz <100ms + sandbox skill + AutoHarness 6-step + constitution YAML + ADRs 27/28
+  - S22 (PR #28): AHE-style /evolve — 3-layer obs + xdd-trace-summarize + xdd-frozen-transfer + ADR 29
+  - S23 (PR #29): Protocols + Skills — xdd-a2a + xdd-agui + xdd-bundle MVP + plan_and_act + adapt_orch + ADRs 30/31/32
+- **Decisiones:** Maximalista extendido por research deep dive (walkinglabs + ai-boost + Picrew + AutoHarness + NexAU-AHE). 33 ADRs total. ~95 tests nuevos.
+- **Bloqueos:** ninguno durante ejecución. PR #30 fix CI lint emergente.
+- **Próxima sesión:** Workspace global + GitNexus + docs sync (descrita arriba).
 
 ### Sesión 2026-05-26 (cont.) — Sprint 9 (Continuous Learning) + caveman global
 - **Meta:** Habilitar auto-extracción de patterns + `/evolve` para promover a artefactos.

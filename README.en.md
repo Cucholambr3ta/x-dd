@@ -138,7 +138,7 @@ flowchart LR
 # Linux / macOS / WSL
 bash scripts/xdd-doctor.sh                              # 1) verify environment
 bash scripts/xdd-init.sh /your/project --profile=core   # 2) bootstrap
-cd /your/project && bash scripts/xdd-start.sh           # 3) start MemPalace + orchestrator
+cd /your/project && bash scripts/xdd-start.sh           # 3) start MemPalace + GitNexus + orchestrator
 # 4) in your IDE/assistant: run the /xdd command        # 4) pipeline begins
 
 # Windows
@@ -438,6 +438,7 @@ flowchart TB
     XDD["🧠 X-DD core<br/>MIT pure"]
 
     XDD -.->|"semantic memory"| MP["🏛️ MemPalace<br/>MIT · 52.8k ⭐<br/>96-99% recall benchmarks<br/>29 MCP tools"]
+    XDD -.->|"code intelligence<br/>recommended"| GN["🧬 GitNexus<br/>PolyForm Noncomm ⚠️ · 40.5k ⭐<br/>AST graph 14 langs<br/>16 MCP tools"]
     XDD -.->|"dynamic pentest<br/>optional"| SH["🛡️ Shannon CLI<br/>AGPL-3.0 ⚠️ · 43k ⭐<br/>White-box sandboxed exploits"]
 
     classDef core fill:#ffd54f,stroke:#f57f17,color:#000,stroke-width:3px
@@ -445,9 +446,12 @@ flowchart TB
     classDef warn fill:#ffebee,stroke:#c62828,color:#000,stroke-width:2px
     class XDD core
     class MP ext
+    class GN warn
     class SH warn
 ```
 
+> ⚠️ **GitNexus is PolyForm Noncommercial 1.0.0.** Personal/research/non-profit use is free. Commercial use requires paid license. X-DD never bundles it. Disclaimer in [ADR-0033](docs/adr/0033-gitnexus-tier1-companion.md) + [DEPENDENCIES.md](DEPENDENCIES.md).
+>
 > ⚠️ **Shannon is AGPL-3.0.** Your X-DD project is **NOT contaminated** by using Shannon via the hybrid wrapper. X-DD never bundles it. The decision is yours. Full disclaimer in [docs/PENTEST.md](docs/PENTEST.md).
 
 ---

@@ -170,12 +170,40 @@ branding:
 bash scripts/xdd-brand.sh /tu/proyecto
 ```
 
+### Capacidades v0.1.0 avanzadas (Sprints 14-23 ya done)
+
+| Sprint | Aporta |
+|---|---|
+| 14 | Workspace mode + Wizard interactivo (ADR-0012) |
+| 15 | Monorepo 3 modos isolated/shared/hybrid (ADR-0013) |
+| 16 | SDD parity (/clarify + /cross-validate + constitution.md template) + AI review + community skills voting + TF-IDF clustering (ADRs 14/15/20) |
+| 17 | Party Mode + Brainstorm + Web bundles spec + HITL checkpoints + Multi-provider router (ADRs 16/17/18/19) |
+| 18 | Observability Triad — OTel Gen AI spans + session replay + per-call cost + 6-stage middleware (ADRs 21/22) |
+| 19 | Context Engineering — budget metering + compact skill + fs-context + code-as-tool workflow (ADRs 23/24) |
+| 20 | Eval benchmarks externos — Inspect AI + Terminal-Bench 2 + SWE-bench + LongMemEval + meta-eval (ADRs 25/26) |
+| 21 | Sandbox + Permissions hardening — intent + authz <100ms + 6-step governance + constitution YAML (ADRs 27/28) |
+| 22 | AHE-style /evolve — 3-layer observability + trace summarize + frozen transfer (ADR 29) |
+| 23 | Protocols + Skills ecosystem — A2A + AG-UI + bundle.py + plan_and_act + adapt_orch (ADRs 30/31/32) |
+| Add | GitNexus tier-1 companion paralelo MemPalace (ADR-0033) |
+
+### Stack MCP recomendado (3 servers paralelos)
+
+```bash
+# xdd-start.sh activa automáticamente MemPalace + GitNexus si instalados
+bash scripts/xdd-start.sh
+
+# Instalar dep recommended
+pip install mempalace                   # memoria semántica (MIT, 29 MCP tools)
+npm i -g gitnexus                       # code intelligence (PolyForm Noncomm, 16 MCP tools)
+```
+
+> ⚠️ **GitNexus** PolyForm Noncomm: personal/research/non-profit gratis; comercial paid. Ver [ADR-0033](docs/adr/0033-gitnexus-tier1-companion.md).
+
 ## Roadmap pendiente para v0.1.0
 
 | # | Capacidad | Estado |
 |---|---|---|
-| Sprint 14 | Workspace mode + Wizard interactivo + ADR-0012 | ⏳ pausado |
-| Release | tag firmado v0.1.0 + RELEASES/v0.1.0.md | ⏳ |
+| Release | tag firmado v0.1.0 + RELEASES/v0.1.0.md + Template Repo | ⏳ |
 
 ## Para saber más
 

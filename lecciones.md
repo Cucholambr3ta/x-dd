@@ -20,6 +20,31 @@ Categorías sugeridas: `ARQUITECTURA`, `SEGURIDAD`, `DOMINIO`, `TESTING`, `DEVOP
 
 ## Lecciones
 
+### [PROCESO] Workspace global = purga selectiva ANMAX legacy + preserve hijos infra — 2026-05-27
+**Contexto:** Workspace raíz `/home/alejandro/Documentos/Desarrollos/` tenía setup ANMAX (predecessor X-DD). User pidió instalar X-DD global. ANMAX es superset funcional inferior (15 categorías agents vs 180 X-DD; workflows `anmax-*` vs `xdd-*` renombrados; sin registry tipado; sin gate keeper HMAC). NO git repo → backup tar.gz crítico antes de tocar.
+**Problema:** Colisiones directas (CLAUDE.md, .agent/, prompts/, scripts/, templates/, .claude/) requieren DELETE. Pero workspace también contiene non-ANMAX (Docker/MemPalace yaml, .hermes/, hermes-companion/, openwhispr/, personal/) que NO debe tocarse.
+**Causa raíz:** Workspace mixed = product hijos + legacy bootstrap. Purga ciega corrompería productos.
+**Lección:** Para install X-DD en workspace existente con framework legacy:
+1. SIEMPRE backup tar.gz (workspace puede NO ser git repo).
+2. Enumerar archivos colision-vs-preserve antes de tocar.
+3. `tar -czf ~/Desarrollos-anmax-backup-$(date).tar.gz CLAUDE.md docs/ .agent/ prompts/ scripts/ templates/ .claude/ setup_skills.sh` (solo lo a purgar, no toda la carpeta de 2.7GB).
+4. `rm -rf` selectivo de paths X-DD-colliding.
+5. `xdd-init.sh /path --profile=core` sobre workspace limpio.
+6. Re-validar con `xdd-doctor.sh`.
+**Aplica a:** Cualquier adopción X-DD sobre workspaces con frameworks legacy preinstalados. Patrón reusable para futuras migraciones ECC/Spec-Kit/BMAD adopters.
+
+### [ARQUITECTURA] License tier-1 vs tier-2 según permisividad — GitNexus PolyForm Noncomm = tier-1 — 2026-05-27
+**Contexto:** User pidió integrar GitNexus paralelo a MemPalace (tier-1 companion). GitNexus license = PolyForm Noncommercial 1.0.0. Decisión: ¿tratar igual que MemPalace (MIT, sin disclaimer pesado) o como Shannon (AGPL-3.0, external opt-in con disclaimer prominente)?
+**Problema:** Default reflexivo era "GitNexus PolyForm = igual de restrictivo que Shannon AGPL → tier-2 external opt-in".
+**Causa raíz:** Confundir restricción de **redistribución/modificación** (AGPL) con restricción de **uso comercial** (PolyForm). PolyForm permite uso research/personal/non-profit/educational sin restricción — más permisivo que AGPL para escenarios non-commercial.
+**Lección:** Clasificar deps externas por licencia con matrix:
+- MIT/Apache/BSD → tier-1 (sin disclaimer pesado)
+- PolyForm Noncomm / similar source-available → tier-1 con disclaimer focalizado en "uso comercial requiere paid"
+- AGPL → tier-2 external opt-in con disclaimer prominente (contamina si modificas + redistribuyes/SaaS)
+- Proprietary → no recomendar
+X-DD MIT NO se contamina por consumir client-side (MCP, CLI, API) cualquiera de las anteriores. Contaminación solo por bundlear código o redistribuir modificado.
+**Aplica a:** Decisiones futuras de integración deps externas. Documentar matrix license en CONTRIBUTING.md (post-release).
+
 ### [PROCESO] ⚠️ Doc drift entre sprints rápidos — auditar README/CLAUDE/WORKING-CONTEXT/agent.yaml cada N sprints — 2026-05-27
 **Contexto:** Tras correr Sprints 9-13 en secuencia rápida (4 sprints consecutivos sin pausa), el user preguntó "¿toda la documentación está actualizada?". Audit reveló drift significativo en 9 files macro: README sin badges/capacidades nuevas, CLAUDE.md sin scripts nuevos, WORKING-CONTEXT decía "Sprint 8 en curso", PROJ-MASTER-PLAN con S10 "🔄 En curso" (ya done), CHANGELOG sin entries S10/11/12/13, agent.yaml con workflows count viejo, INSTALL.md sin nuevos scripts/disclaimer Shannon, 3-tier guides sin secciones nuevas.
 **Problema:** `/cierre-fase` + `/xdd-trace` se aplicaron por sprint pero **solo tocan** memoria.md + lecciones.md + PROJ-MASTER-PLAN + CHANGELOG. Files macro (README/CLAUDE/WORKING-CONTEXT/agent.yaml/INSTALL/guides) **NO están en el flujo automático** y solo se actualizan ad-hoc.
