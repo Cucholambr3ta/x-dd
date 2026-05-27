@@ -88,6 +88,12 @@ Los workflows son guías ejecutables en formato Markdown que definen flujos paso
 ### 10. Multi-Agent Orchestration (Sprint 11)
 *   **`/orchestrate` (`orchestrate.md`)**: Runtime que ejecuta composition_patterns del registry (sequential/parallel/parallel_then_sync). Modo dry-run + exec. Reusa MCP server (Sprint 6) para invocaciones reales.
 
+### 11. SDD parity + Context engineering (Sprints 16-19, ADRs 14/23)
+*   **`/clarify` (`clarify.md`)**: Detecta ambigüedad (4 niveles severidad) en SPEC/DOMAIN/PLAN. Bloquea gate si CRÍTICAS pendientes. Inspirado en Spec-Kit /clarify.
+*   **`/cross-validate` (`cross-validate.md`)**: Detecta drift entre pares de artefactos (MISSING/CONFLICT/ORPHAN). Bloquea gate si MISSING o CONFLICT.
+*   **`/brainstorm` (`brainstorm.md`)**: Genera ideas sin filtrar para problem space exploration. Invoca party mode (Sprint 17). Inspirado en BMAD.
+*   **`/code-as-tool` (`code-as-tool.md`)**: Pattern Code Execution with MCP. Wrap N tool calls homogéneos en 1 script (98%+ reducción tokens).
+
 ---
 
 ## 🛠️ Ejecución y Orquestación de Workflows por Hermes Agent

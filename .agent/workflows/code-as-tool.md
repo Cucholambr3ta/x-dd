@@ -1,6 +1,7 @@
 ---
 name: code-as-tool
 title: "/code-as-tool — Reduce N MCP tool calls a 1 code execution"
+description: Pattern Code Execution with MCP. Wrap N tool calls homogéneos en 1 script (98%+ reducción tokens). Stdlib first, output JSON, idempotent.
 phase: any
 category: context-engineering
 ssot: true

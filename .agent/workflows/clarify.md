@@ -1,6 +1,7 @@
 ---
 name: clarify
 title: "/clarify — Detectar y resolver ambigüedad antes de avanzar"
+description: Detecta ambigüedad (4 niveles severidad) en SPEC/DOMAIN/PLAN y bloquea gate si CRÍTICAS pendientes. Inspirado en Spec-Kit /clarify.
 phase: any
 category: planning
 ssot: true
