@@ -68,6 +68,10 @@ mcp:
     - xdd_list_agents
     - xdd_get_phase_artifacts
   docs: "docs/MCP_INTEGRATION.md"
+  # 3-server stack recomendado: xdd-mcp-server + MemPalace (29 tools) + GitNexus (16 tools)
+  companions:
+    - {name: mempalace, tier: 1, license: MIT, tools: 29, purpose: "Memoria semántica"}
+    - {name: gitnexus, tier: 1, license: "PolyForm-Noncommercial-1.0.0", tools: 16, purpose: "Code intelligence AST grafo", adr: "docs/adr/0033-gitnexus-tier1-companion.md"}
 
 # 4. Hook system
 hooks:
@@ -121,6 +125,8 @@ dependencies:
     - {name: python3, min: "3.9"}
   recommended:
     - {name: mempalace, min: "3.3.0", license: MIT, repo: "https://github.com/MemPalace/mempalace"}
+    - {name: gitnexus, license: "PolyForm-Noncommercial-1.0.0", repo: "https://github.com/abhigyanpatwari/GitNexus",
+        purpose: "Code intelligence (AST grafo + 16 MCP tools). Personal/research/non-profit gratis; comercial paid (akonlabs.com). ADR-0033."}
     - {name: node, min: "20.0.0"}
   optional:
     - {name: shannon, license: AGPL-3.0, repo: "https://github.com/KeygraphHQ/shannon",

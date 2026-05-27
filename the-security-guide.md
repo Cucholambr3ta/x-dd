@@ -146,8 +146,15 @@ X-DD se audita a sí mismo:
 | Gate keeper firmado | 4 | ✅ |
 | 97 tests verdes | 7 | ✅ |
 | QA_REPORT con 11/11 mitigaciones | 7 | ✅ |
-| AgentShield (audit estático del agente) | 12 | ⏳ próximo |
+| AgentShield (audit estático del agente, 13 reglas) | 12 | ✅ done |
 | SAST en CI sobre el repo | (Renovate + gitleaks) | ✅ parcial |
+| Sandbox provider-agnostic (E2B/Daytona/Microsandbox/docker) | 21 | ✅ skill spec |
+| Intent taxonomy (8 intents nah-style) | 21 | ✅ done |
+| OAP-style authz <100ms (xdd-authz) | 21 | ✅ done |
+| AutoHarness 6-step governance integrado | 21 | ✅ done |
+| Constitution YAML machine-readable | 21 | ✅ template |
+| AI pre-commit review (xdd-ai-review skill) | 16 | ✅ done |
+| HITL checkpoints (composition_patterns) | 17 | ✅ done |
 
 ## Cómo reportar vulnerabilidades
 
@@ -168,11 +175,27 @@ Cualquier PR debe:
 4. Si añade hook: validar contra `schemas/hooks.schema.json` + test bats.
 5. Si modifica el threat model: actualizar `THREATS.md` + ADR si es decisión nueva.
 
+## Disclaimers license deps externas
+
+X-DD core es **MIT pure**. Estos opcionales tienen license diferente:
+
+| Dep | License | Restricción |
+|---|---|---|
+| **Shannon** (KeygraphHQ/shannon) | AGPL-3.0 ⚠️ | Modificar + redistribuir o SaaS → AGPL aplica. **X-DD nunca bundle**. Consumirlo client-side no contamina tu MIT |
+| **GitNexus** (abhigyanpatwari/GitNexus) | PolyForm Noncommercial 1.0.0 ⚠️ | Personal/research/educational/non-profit = gratis. Comercial = paid license (akonlabs.com). **X-DD nunca bundle**. Consumir su MCP server client-side no contamina tu MIT |
+| **MemPalace** | MIT | Sin restricción especial |
+
+Ver [DEPENDENCIES.md](DEPENDENCIES.md) + [ADR-0010](docs/adr/0010-shannon-external-dep-pentest-operator-naming.md) (Shannon) + [ADR-0033](docs/adr/0033-gitnexus-tier1-companion.md) (GitNexus).
+
 ## Referencias
 
 - [`SECURITY.md`](SECURITY.md) — Policy de divulgación
 - [`.xdd/spec/THREATS.md`](.xdd/spec/THREATS.md) — STRIDE completo
 - [`docs/GATE.md`](docs/GATE.md) — Gate keeper detalles
 - [`docs/HOOKS.md`](docs/HOOKS.md) — Hooks system
-- [ADR-0006](docs/adr/0006-gate-keeper-firma-hmac.md) — Firma HMAC
+- [`docs/PERMISSIONS.md`](docs/PERMISSIONS.md) — Permission model (Sprint 21)
+- [`docs/SANDBOXING.md`](docs/SANDBOXING.md) — Sandbox provider abstraction
+- [ADR-0006](docs/adr/0006-gate-keeper-firma-hmac.md) — Firma HMAC gates
 - [ADR-0009](docs/adr/0009-politica-versionado-xdd-directorio.md) — Qué se commitea de `.xdd/`
+- [ADR-0027](docs/adr/0027-sandbox-provider-abstraction.md), [ADR-0028](docs/adr/0028-permission-model-intent-authz.md) — Sandbox + Permissions
+- [ADR-0033](docs/adr/0033-gitnexus-tier1-companion.md) — GitNexus tier-1 companion

@@ -34,13 +34,33 @@ gantt
     Sprint 6 MCP server propio ⭐        :crit, s6, after s5, 3d
     Sprint 7 Adapters + tests E2E        :s7, after s6, 2d
 
-    section F5-F6 QA + Retro + Release
-    Sprint 8 Gobernanza OSS + v0.1.0     :crit, s8, after s7, 2d
+    section F5-F6 QA + Retro
+    Sprint 8 Gobernanza OSS + 3-tier     :s8, after s7, 2d
+    Sprint 9 Continuous Learning         :s9, after s8, 4d
+    Sprint 10 Skills + Eval-harness      :s10, after s9, 5d
+    Sprint 11 Multi-agent orchestration  :s11, after s10, 4d
+    Sprint 12 AgentShield + Shannon dep  :s12, after s11, 4d
+    Sprint 13 White-labeling             :s13, after s12, 3d
+    Sprint 14 Workspace + Wizard         :s14, after s13, 3d
+    Sprint 15 Monorepo 3 modos           :s15, after s14, 4d
+    Sprint 16 SDD parity + AI review + TFIDF :s16, after s15, 6d
+    Sprint 17 Party + HITL + Router      :s17, after s16, 6d
+    Sprint 18 Observability Triad        :s18, after s17, 5d
+    Sprint 19 Context Engineering        :s19, after s18, 5d
+    Sprint 20 Eval benchmarks externos   :s20, after s19, 6d
+    Sprint 21 Sandbox + Permissions      :s21, after s20, 6d
+    Sprint 22 AHE evolve refactor        :s22, after s21, 5d
+    Sprint 23 Protocols + Skills ecosys  :s23, after s22, 6d
+    GitNexus tier-1 companion            :gn, after s23, 1d
+
+    section Release
+    Release v0.1.0                       :crit, rel, after gn, 1d
 
     section Hitos
     Hito Gate firmado funcionando        :milestone, after s4, 0d
     Hito MCP server público              :milestone, after s6, 0d
-    Hito Release v0.1.0                  :milestone, after s8, 0d
+    Hito 3 MCP stack completo            :milestone, after gn, 0d
+    Hito Release v0.1.0                  :milestone, after rel, 0d
 ```
 
 ## Estado por sprint
@@ -61,8 +81,18 @@ gantt
 | 11 Multi-agent orchestration runtime | ✅ done | F4 ext | 2026-06-30 | 2026-07-03 | 2026-05-26 | 2026-05-26 | [#13](https://github.com/Cucholambr3ta/x-dd/pull/13) |
 | 12 AgentShield + Shannon dep + rename | ✅ done | F4 ext + F5 audit | 2026-07-04 | 2026-07-05 | 2026-05-26 | 2026-05-26 | [#14](https://github.com/Cucholambr3ta/x-dd/pull/14) |
 | 13 White-labeling (branding + 4 personas) | ✅ done | F6 ext | 2026-07-06 | 2026-07-08 | 2026-05-26 | 2026-05-26 | [#15](https://github.com/Cucholambr3ta/x-dd/pull/15) |
-| **14** Workspace mode + Wizard interactivo | ⏳ pendiente | F6 ext | 2026-07-09 | 2026-07-11 | — | — | — |
-| **Release** v0.1.0 tag firmado | ⏳ pendiente | Release | 2026-07-12 | 2026-07-12 | — | — | — |
+| 14 Workspace mode + Wizard interactivo | ✅ done | F6 ext | 2026-07-09 | 2026-07-11 | 2026-05-27 | 2026-05-27 | [#20](https://github.com/Cucholambr3ta/x-dd/pull/20) |
+| 15 Monorepo 3 modos (isolated/shared/hybrid) | ✅ done | F6 ext | 2026-07-12 | 2026-07-15 | 2026-05-27 | 2026-05-27 | [#21](https://github.com/Cucholambr3ta/x-dd/pull/21) |
+| 16 SDD parity + AI review + TF-IDF | ✅ done | F6 ext | 2026-07-16 | 2026-07-21 | 2026-05-27 | 2026-05-27 | [#22](https://github.com/Cucholambr3ta/x-dd/pull/22) |
+| 17 Party + Brainstorm + HITL + Router | ✅ done | F6 ext | 2026-07-22 | 2026-07-27 | 2026-05-27 | 2026-05-27 | [#23](https://github.com/Cucholambr3ta/x-dd/pull/23) |
+| 18 Observability Triad (OTel+replay+cost+6-stage) | ✅ done | F6 ext | 2026-07-28 | 2026-08-01 | 2026-05-27 | 2026-05-27 | [#24](https://github.com/Cucholambr3ta/x-dd/pull/24) |
+| 19 Context Engineering (budget+compact+fs+code-as-tool) | ✅ done | F6 ext | 2026-08-02 | 2026-08-06 | 2026-05-27 | 2026-05-27 | [#25](https://github.com/Cucholambr3ta/x-dd/pull/25) |
+| 20 Eval benchmarks externos (Inspect AI+TB2+SWE-bench) | ✅ done | F6 ext | 2026-08-07 | 2026-08-12 | 2026-05-27 | 2026-05-27 | [#26](https://github.com/Cucholambr3ta/x-dd/pull/26) |
+| 21 Sandbox + Permissions (intent+authz+6-step gov) | ✅ done | F6 ext | 2026-08-13 | 2026-08-18 | 2026-05-27 | 2026-05-27 | [#27](https://github.com/Cucholambr3ta/x-dd/pull/27) |
+| 22 AHE /evolve (3-layer obs + frozen transfer) | ✅ done | F6 ext | 2026-08-19 | 2026-08-23 | 2026-05-27 | 2026-05-27 | [#28](https://github.com/Cucholambr3ta/x-dd/pull/28) |
+| 23 Protocols + Skills (A2A+AG-UI+bundle+plan_and_act) | ✅ done | F6 ext | 2026-08-24 | 2026-08-29 | 2026-05-27 | 2026-05-27 | [#29](https://github.com/Cucholambr3ta/x-dd/pull/29) |
+| Add GitNexus tier-1 companion | ✅ done | F6 ext | 2026-08-30 | 2026-08-30 | 2026-05-27 | 2026-05-27 | [#32](https://github.com/Cucholambr3ta/x-dd/pull/32) |
+| **Release** v0.1.0 tag firmado + RELEASES/v0.1.0.md + Template Repo | ⏳ pendiente | Release | 2026-08-31 | 2026-08-31 | — | — | — |
 
 Leyenda: 🔄 en curso · ✅ done · ⏳ pendiente · ❌ blocked
 
@@ -113,3 +143,8 @@ graph LR
 | 2026-05-26 | Sprint 12 mergeado (PR #14, 4f9a165); Sprint 13 en curso (white-labeling) | aplacencia |
 | 2026-05-26 | Sprint 13 mergeado (PR #15, 4abfb58). Pendiente S14 + release v0.1.0 | aplacencia |
 | 2026-05-27 | fix/docs-sync-s9-s13 — sync doc drift detectado en 9 files post-S13 | aplacencia |
+| 2026-05-27 | Sprints 14-23 ejecutados autónomos (PRs #20-29). 10 sprints, 33 ADRs total, ~95 tests nuevos | aplacencia |
+| 2026-05-27 | fix CI lint workflows description (PR #30) | aplacencia |
+| 2026-05-27 | Workspace global Desarrollos/ instalado X-DD core post-purga ANMAX. Backup tar.gz preservado | aplacencia |
+| 2026-05-27 | GitNexus tier-1 companion mergeado (PR #32) paralelo MemPalace + ADR-0033 | aplacencia |
+| 2026-05-27 | docs/sync-post-gitnexus — sync 12 files post-S14-23 + GitNexus | aplacencia |

@@ -9,6 +9,107 @@
 
 ## [Unreleased] — main
 
+### Added — GitNexus tier-1 integration (2026-05-27) — PR #32
+- **`scripts/xdd-doctor.sh`** — detect `gitnexus` CLI en sección Núcleo recomendado (paralelo a `mempalace`).
+- **`scripts/xdd-start.sh`** — bloque idéntico a MemPalace: indexa GitNexus si CLI disponible (log `~/.gitnexus/index.log`), warn + continúa si falta.
+- **`DEPENDENCIES.md`** — entrada GitNexus en Núcleo recomendado + disclaimer PolyForm Noncommercial 1.0.0.
+- **`templates/xdd.profile.template.yml`** — capability nueva `code_intelligence: true` default.
+- **`docs/MCP_INTEGRATION.md`** — sección "Stack MCP completo recomendado X-DD (3 servers)": xdd-mcp + MemPalace + GitNexus.
+- **`README.md`** — diagrama integraciones externas incluye GitNexus + disclaimer license.
+- **`agent.yaml`** — `mcp.companions` declara MemPalace + GitNexus tier-1; `dependencies.recommended` añade GitNexus.
+- **`docs/adr/0033-gitnexus-tier1-companion.md`** — política integración + license analysis + alternativas + consecuencias.
+
+### Added — Sprint 23 (2026-05-27) — Protocols + Skills ecosystem (PR #29)
+- **`scripts/xdd-a2a.py`** — Google A2A Protocol compat stub: agent-card emisor + list-patterns + invoke + serve stub.
+- **`scripts/xdd-agui.py`** — AG-UI event-driven streaming spec (6 event types validados).
+- **`scripts/xdd-bundle.py`** — Web bundles MVP (ADR-0017 impl): pack/verify/install/inspect + HMAC signature + license whitelist.
+- **`bundles/security-bundle.xddbundle`** — demo bundle empaquetando xdd-sandbox + xdd-ai-review + security agents.
+- 2 composition_patterns nuevos en registry: `plan_and_act` (sequential gated) + `adapt_orch` (parallel adaptive).
+- **`docs/SKILLS_INTEROP.md`** — mapping X-DD ↔ Microsoft Skills Framework + agents-best-practices.
+- **`docs/research/agents-best-practices-integration.md`** — notas adopción patterns provider-neutral.
+- ADRs 0030 A2A, 0031 AG-UI, 0032 Skills migration policy.
+- Tests: 20 nuevos verde (test_protocols_bundle.py).
+
+### Added — Sprint 22 (2026-05-27) — AHE-style /evolve refactor (PR #28)
+- **`scripts/xdd-trace-summarize.py`** — Experience layer: 3 depths (summary/detail/full), comprime traces N-million → layered markdown.
+- **`scripts/xdd-frozen-transfer.py`** — Component layer: experiments transferring skills source → target.
+- **Refactor `cmd_evolve` (xdd-state.py)**: autopopula `rationale_evidence` + `predicted_impact` + `falsification_metric`.
+- **Schema migration idempotente**: `_migrate_evolutions()` ALTER TABLE +4 cols AHE.
+- **`docs/AHE_EVOLVE.md`** — flujo end-to-end + política T6.1.
+- ADR-0029 AHE-style evolve 3-layer observability.
+- Tests: 10 nuevos verde (test_ahe.py).
+
+### Added — Sprint 21 (2026-05-27) — Sandbox + Permissions hardening (PR #27)
+- **`scripts/xdd-intent.py`** — nah-style intent taxonomy (8 intents + severity classifier).
+- **`scripts/xdd-authz.py`** — OAP-style deterministic authz <100ms (4 actions: allow/require_approval/mask/deny).
+- **`skills/xdd-sandbox/SKILL.md`** — provider-agnostic sandbox (E2B/Daytona/Microsandbox/docker/none).
+- **`.agent/hooks/scripts/pre-tool-authz.sh`** — hook PreToolUse que bloquea si authz deny.
+- **`templates/constitution.template.yml`** — machine-readable adapter del constitution.md humano (AutoHarness-style).
+- ADRs 0027 Sandbox provider abstraction, 0028 Permission model (intent + 5-layer + OAP).
+- AutoHarness 6-step governance integrado via combinación de scripts.
+- Tests: 20 nuevos verde (test_intent.py + test_authz.py).
+
+### Added — Sprint 20 (2026-05-27) — Eval benchmarks externos + meta-eval (PR #26)
+- **Graders nuevos en xdd-eval.py**: `inspect_ai_compat` (match/includes/regex) + `pass_at_one_external` (universal).
+- **4 suite scaffolds en `evals/external/`**: terminal-bench-2, swe-bench-verified, promptfoo-compat, longmemeval.
+- **`scripts/xdd-meta-eval.py`** — compare/trend/baseline (detecta regresión ciclo a ciclo, NexAU-AHE pattern).
+- **`docs/EXTERNAL_BENCHMARKS.md`** — política integración + workflow.
+- ADRs 0025 Inspect AI compatibility, 0026 External benchmark integration.
+- Tests: 13 nuevos verde (test_eval_external.py).
+
+### Added — Sprint 19 (2026-05-27) — Context Engineering Stack (PR #25)
+- **`scripts/xdd-context.py`** — budget metering (estimate/check/budget), thresholds warn 80% / block 95%.
+- **`.agent/hooks/scripts/pre-llm-budget.sh`** — hook PreToolUse para budget check.
+- **`skills/xdd-compact/SKILL.md`** — provider-agnostic compaction (LLMLingua/Claude API/truncate/auto).
+- **`skills/xdd-fs-context/SKILL.md`** — filesystem-paradigm context curation (3 modes).
+- **`.agent/workflows/code-as-tool.md`** — pattern Code Execution with MCP (98%+ reducción tokens).
+- ADRs 0023 Context budget policy, 0024 Compaction skill provider-agnostic.
+- **`docs/CONTEXT_ENGINEERING.md`** — guía completa.
+- Tests: 10 nuevos verde (test_context.py).
+
+### Added — Sprint 18 (2026-05-27) — Observability Triad (PR #24)
+- **`scripts/xdd-otel.py`** — OpenTelemetry Gen AI spans (span-start/end/emit/list/export). Compat OpenLLMetry/OpenInference.
+- **`scripts/xdd-replay.py`** — session reconstruction (record/list/show/replay --step/diff).
+- **`scripts/xdd-cost.py`** — per-call LLM cost tracker SQLite + 11 models pricing default.
+- **6 nuevos event types en hooks.json**: before_agent / before_model / wrap_model_call / wrap_tool_call / after_model / after_agent (deepagents-style middleware).
+- ADRs 0021 Observability stack + OTel + replay, 0022 Per-call cost tracking.
+- **`docs/OBSERVABILITY.md`** — guía 3 herramientas + 6-stage middleware.
+- Tests: 20 nuevos verde (test_otel.py + test_replay.py + test_cost.py).
+
+### Added — Sprint 17 (2026-05-27) — Party + Brainstorm + HITL + Router + retry/cond (PR #23)
+- **Party Mode** en xdd-orchestrate.py (pattern sin lead, participantes paralelos).
+- **`.agent/workflows/brainstorm.md`** — workflow exploratorio invoca party.
+- **`scripts/xdd-router.py`** — multi-provider router (5 task types × 4 providers + fallback chain).
+- **HITL checkpoints** en composition_patterns (hitl_after/hitl_prompt/hitl_required).
+- **maybe_retry + evaluate_conditional** helpers en orchestrate.
+- ADRs 0016 Party Mode, 0017 Web bundles spec, 0018 HITL checkpoints, 0019 Multi-provider router.
+- Tests: 16 nuevos verde (test_orchestrate.py +9, test_router.py +7).
+
+### Added — Sprint 16 (2026-05-27) — SDD parity + AI review + community skills + TF-IDF (PR #22)
+- **`.agent/workflows/clarify.md`** + **`.agent/workflows/cross-validate.md`** — SDD parity inspired Spec-Kit MIT.
+- **`templates/constitution.template.md`** — 10 artículos per-project (governance YAML).
+- **`skills/xdd-ai-review/SKILL.md`** — AI pre-commit review provider-agnostic (4 providers).
+- **TF-IDF clustering refactor** de cmd_evolve en xdd-state.py (stdlib pure, no sklearn dep).
+- ADRs 0014 SDD parity, 0015 AI pre-commit review, 0020 Community skills voting policy (7-day window).
+- Tests: 6 nuevos verde TF-IDF (test_state.py).
+
+### Added — Sprint 15 (2026-05-27) — Monorepo 3 modos (PR #21)
+- **`scripts/xdd-monorepo.sh`** — detect 9 tools (nx/turborepo/pnpm/yarn/lerna/rush/bazel/cargo/go) + suggest mode.
+- **3 modos**: `isolated` (cada package independiente), `shared` (un gate raíz), `hybrid` (meta-fases raíz + build/qa per-package).
+- **`docs/MONOREPO.md`** — guía completa + tabla decisión.
+- **Schema xdd.profile.yml**: añade sección `monorepo:`.
+- **`docs/research/awesome-harness-engineering-analysis.md`** — research note (3 gaps OTel/context/replay → Sprint 18-19).
+- ADR-0013 Monorepo 3 modos.
+- Tests: 12 nuevos verde (xdd-monorepo.bats).
+
+### Added — Sprint 14 (2026-05-27) — Workspace mode + Wizard (PR #20)
+- **`scripts/xdd-wizard.sh`** — 7-step interactive bootstrap wizard.
+- **Schema xdd.profile.yml**: añade sección `workspace:` (enabled, root, projects, shared_memory, shared_gate_key).
+- **`docs/WORKSPACE.md`** — guía + tabla decisión.
+- ADR-0012 Workspace mode + Wizard.
+- Tests: 5 nuevos verde (xdd-wizard.bats).
+
+
 ### Added — Sprint 13 (2026-05-26) — White-labeling (branding + 4 personas + rename trigger)
 - **`scripts/xdd-brand.sh`** — aplica white-labeling al destino. Lee sección
   `branding` de `xdd.profile.yml`, genera `.claude/commands/<trigger>.md`
