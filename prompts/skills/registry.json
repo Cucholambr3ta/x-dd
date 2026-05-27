@@ -28,6 +28,24 @@
       "category": "quality-gate",
       "triggers": ["pre-commit", "/ai-review", "review my diff with AI"],
       "evals": null
+    },
+    {
+      "name": "xdd-compact",
+      "path": "skills/xdd-compact/SKILL.md",
+      "origin": "x-dd",
+      "inspired_by": "LLMLingua-2 + Claude Compaction API + ByteRover",
+      "category": "context-engineering",
+      "triggers": ["/compact", "compact context", "reduce tokens", "XDD_AUTO_COMPACT"],
+      "evals": "evals/xdd-compact/"
+    },
+    {
+      "name": "xdd-fs-context",
+      "path": "skills/xdd-fs-context/SKILL.md",
+      "origin": "x-dd",
+      "inspired_by": "Mirage MCP + OpenViking + Azure SRE Case Study + Token Savior",
+      "category": "context-engineering",
+      "triggers": ["/fs-context", "mount as filesystem", "treat as files"],
+      "evals": null
     }
   ]
 }
