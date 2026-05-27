@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/Cucholambr3ta/x-dd/raw/main/schemas/skills.schema.json",
+  "title": "X-DD Skills Registry",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "skills"],
+  "properties": {
+    "$schema": {"type": "string"},
+    "version": {"type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$"},
+    "skills": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/skill"}
+    }
+  },
+  "$defs": {
+    "skill": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "path", "origin", "category"],
+      "properties": {
+        "name": {"type": "string", "pattern": "^[a-z][a-z0-9-]+$"},
+        "path": {"type": "string"},
+        "origin": {"type": "string", "enum": ["x-dd", "evolved", "community", "external"]},
+        "inspired_by": {"type": ["string", "null"]},
+        "category": {"type": "string"},
+        "triggers": {"type": "array", "items": {"type": "string"}},
+        "evals": {"type": ["string", "null"]}
+      }
+    }
+  }
+}
