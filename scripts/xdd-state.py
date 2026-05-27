@@ -68,9 +68,25 @@ CREATE TABLE IF NOT EXISTS evolutions (
   status TEXT DEFAULT 'proposed',
   created_at TEXT NOT NULL,
   approved_by TEXT,
-  approved_at TEXT
+  approved_at TEXT,
+  -- Sprint 22 AHE Decision Observability layer:
+  rationale_evidence TEXT,         -- JSON: refs a instinct IDs + trace excerpts
+  predicted_impact TEXT,           -- Texto: qué metric esperás mejorar
+  falsification_metric TEXT,       -- Texto: cómo medirás si funcionó
+  falsification_outcome TEXT       -- null | passed | failed (next iter lo llena)
 );
 """
+
+
+def _migrate_evolutions(conn):
+    """Idempotent ALTER para añadir columnas AHE Sprint 22 a DBs preexistentes."""
+    existing_cols = {row[1] for row in conn.execute(
+        "PRAGMA table_info(evolutions)").fetchall()}
+    for col in ("rationale_evidence", "predicted_impact",
+                "falsification_metric", "falsification_outcome"):
+        if col not in existing_cols:
+            conn.execute(f"ALTER TABLE evolutions ADD COLUMN {col} TEXT")
+    conn.commit()
 
 
 def utcnow() -> str:
@@ -88,6 +104,7 @@ def db(path: Path = None) -> sqlite3.Connection:
     conn = sqlite3.connect(str(p))
     conn.row_factory = sqlite3.Row
     conn.executescript(SCHEMA)
+    _migrate_evolutions(conn)
     return conn
 
 
@@ -281,10 +298,27 @@ def cmd_evolve(args):
         seed = f"{cluster_label}-{dominant_cat}"
         cluster_id = f"clu_{hashlib.sha256(seed.encode()).hexdigest()[:12]}"
         proposed_name = f"{dominant_cat}-auto-{cluster_id[-6:]}"
+        avg_conf = sum(i['confidence'] for i in items) / len(items)
         rationale = (
             f"Cluster {len(items)} instincts (dominant category: '{dominant_cat}') with avg confidence "
-            f"{sum(i['confidence'] for i in items) / len(items):.2f}. "
+            f"{avg_conf:.2f}. "
             f"Top pattern: {items[0]['pattern'][:80]}"
+        )
+        # Sprint 22 AHE Decision Observability: evidence + predicted_impact + falsification
+        rationale_evidence = json.dumps({
+            "instinct_count": len(items),
+            "avg_confidence": round(avg_conf, 3),
+            "instinct_ids_sample": [i["id"] for i in items[:5]],
+            "top_patterns": [i["pattern"][:80] for i in items[:3]],
+            "categories_distribution": dict(cats),
+        })
+        predicted_impact = (
+            f"Expect ≥10% improvement in pass_rate of workflows touching "
+            f"category '{dominant_cat}' (baseline: current eval-harness runs)."
+        )
+        falsification_metric = (
+            f"meta-eval compare (next 3 runs) of suites involving '{dominant_cat}' "
+            f"should show delta ≥ +0.10 vs baseline. If <0.10, mark outcome=failed."
         )
         proposals.append({
             "cluster_id": cluster_id,
@@ -293,16 +327,22 @@ def cmd_evolve(args):
             "instinct_ids": [i["id"] for i in items],
             "rationale": rationale,
             "instinct_count": len(items),
+            "rationale_evidence": rationale_evidence,
+            "predicted_impact": predicted_impact,
+            "falsification_metric": falsification_metric,
         })
 
     if args.generate:
         for p in proposals:
             conn.execute(
                 "INSERT OR REPLACE INTO evolutions (cluster_id, proposed_type, "
-                "proposed_name, instinct_ids, rationale, status, created_at) "
-                "VALUES (?, ?, ?, ?, ?, 'proposed', ?)",
+                "proposed_name, instinct_ids, rationale, status, created_at, "
+                "rationale_evidence, predicted_impact, falsification_metric) "
+                "VALUES (?, ?, ?, ?, ?, 'proposed', ?, ?, ?, ?)",
                 (p["cluster_id"], p["proposed_type"], p["proposed_name"],
-                 json.dumps(p["instinct_ids"]), p["rationale"], utcnow()),
+                 json.dumps(p["instinct_ids"]), p["rationale"], utcnow(),
+                 p["rationale_evidence"], p["predicted_impact"],
+                 p["falsification_metric"]),
             )
         conn.commit()
     conn.close()
