@@ -1,6 +1,7 @@
 ---
 name: brainstorm
 title: "/brainstorm — Exploración divergente sin convergencia forzada"
+description: Genera muchas ideas sin filtrar para exploración inicial (problem space, root cause). Invoca party mode (Sprint 17). Inspirado en BMAD /brainstorm.
 phase: briefing
 category: planning
 ssot: true

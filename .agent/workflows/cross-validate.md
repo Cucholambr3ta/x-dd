@@ -1,6 +1,7 @@
 ---
 name: cross-validate
 title: "/cross-validate — Verificar consistencia entre artefactos"
+description: Detecta drift entre pares de artefactos (MISSING/CONFLICT/ORPHAN). Bloquea gate si MISSING o CONFLICT. Inspirado en Spec-Kit /cross-validate.
 phase: any
 category: planning
 ssot: true
