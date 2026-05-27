@@ -129,10 +129,87 @@ def run_parallel_then_sync(pattern: dict, reg: dict, run_id: str, exec_mode: boo
     return results
 
 
+def run_party(pattern: dict, reg: dict, run_id: str, exec_mode: bool) -> list:
+    """Party mode (Sprint 17, ADR-0016, inspirado en BMAD): N agentes sin lead,
+    todos hablan, contribuciones libres. Mejor para brainstorm/exploración.
+    Sin sync_point, sin orden."""
+    invoker = invoke_agent_exec if exec_mode else invoke_agent_dry
+    participants = [find_agent(reg, sp) for sp in pattern.get("participants",
+                                                                pattern.get("specialists", []))]
+    participants = [p for p in participants if p]
+    results = []
+    with ThreadPoolExecutor(max_workers=min(len(participants) or 1, 8)) as ex:
+        futs = {ex.submit(invoker, p, run_id): p for p in participants}
+        for fut in as_completed(futs):
+            results.append({"role": "participant", "result": fut.result()})
+    results.append({
+        "role": "party_metadata",
+        "mode": "party",
+        "consensus_required": pattern.get("consensus_required", False),
+        "moderator": pattern.get("moderator"),
+        "note": "Party mode: contribuciones libres, no hay lead. Consenso opcional via moderator.",
+    })
+    return results
+
+
+def maybe_retry(fn, max_attempts: int = 3, backoff: float = 1.5) -> dict:
+    """Helper retry exponencial (Sprint 17). Devuelve dict con attempt + result."""
+    last_err = None
+    for attempt in range(1, max_attempts + 1):
+        try:
+            return {"attempt": attempt, "ok": True, "result": fn()}
+        except Exception as e:
+            last_err = str(e)
+            if attempt < max_attempts:
+                time.sleep(backoff ** attempt)
+    return {"attempt": max_attempts, "ok": False, "error": last_err}
+
+
+def evaluate_conditional(pattern: dict, results_so_far: list) -> bool:
+    """Sprint 17: pattern puede tener {conditional: {requires: 'role=lead;ok=true'}}
+    sintaxis simple: campo=valor;campo=valor (AND)."""
+    cond = pattern.get("conditional")
+    if not cond:
+        return True
+    requires = cond.get("requires", "")
+    if not requires:
+        return True
+    rules = [r.strip() for r in requires.split(";") if r.strip()]
+    for r in rules:
+        if "=" not in r:
+            continue
+        field, expected = r.split("=", 1)
+        match = False
+        for item in results_so_far:
+            if str(item.get(field) or item.get("role")) == expected:
+                match = True
+                break
+        if not match:
+            return False
+    return True
+
+
+def has_hitl_checkpoint(pattern: dict, after_role: str) -> dict | None:
+    """Sprint 17 + ADR-0018: HITL checkpoint definido en pattern como
+    {hitl_after: 'lead', prompt: '...', required: true}."""
+    cp = pattern.get("hitl_after")
+    if cp and cp == after_role:
+        return {
+            "role": "hitl_checkpoint",
+            "after": after_role,
+            "prompt": pattern.get("hitl_prompt", "Continuar?"),
+            "required": pattern.get("hitl_required", True),
+            "blocked_until": "human_approval",
+            "note": "Pause sintética; orquestador real (Claude Code/OpenCode) prompts al humano.",
+        }
+    return None
+
+
 ORCHESTRATIONS = {
     "sequential": run_sequential,
     "parallel": run_parallel,
     "parallel_then_sync": run_parallel_then_sync,
+    "party": run_party,
 }
 
 

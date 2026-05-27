@@ -106,3 +106,76 @@ def test_cmd_list_includes_3_patterns(capsys):
     assert rc == 0
     out = json.loads(capsys.readouterr().out)
     assert len(out["patterns"]) == 3
+
+
+# ---------- Sprint 17: party, retry, conditional, HITL ----------
+
+def test_run_party_no_lead_required():
+    reg = xo.load_registry()
+    # Constructir pattern party ad-hoc
+    p = {
+        "name": "brainstorm_party",
+        "orchestration": "party",
+        "participants": [a["id"] for a in reg["agents"][:3]],
+        "consensus_required": False,
+    }
+    results = xo.run_party(p, reg, "run_party_test", exec_mode=False)
+    # 3 participants + 1 metadata
+    assert len(results) == 4
+    roles = [r["role"] for r in results]
+    assert roles.count("participant") == 3
+    assert roles.count("party_metadata") == 1
+
+
+def test_maybe_retry_succeeds_first_attempt():
+    counter = {"n": 0}
+    def fn():
+        counter["n"] += 1
+        return "ok"
+    r = xo.maybe_retry(fn, max_attempts=3, backoff=1.01)
+    assert r["ok"] is True
+    assert r["attempt"] == 1
+    assert counter["n"] == 1
+
+
+def test_maybe_retry_fails_after_max():
+    def fn():
+        raise ValueError("boom")
+    r = xo.maybe_retry(fn, max_attempts=2, backoff=1.01)
+    assert r["ok"] is False
+    assert r["attempt"] == 2
+    assert "boom" in r["error"]
+
+
+def test_evaluate_conditional_with_no_condition():
+    assert xo.evaluate_conditional({}, []) is True
+
+
+def test_evaluate_conditional_matches():
+    pattern = {"conditional": {"requires": "role=lead"}}
+    results = [{"role": "lead", "agent_id": "x"}]
+    assert xo.evaluate_conditional(pattern, results) is True
+
+
+def test_evaluate_conditional_no_match():
+    pattern = {"conditional": {"requires": "role=lead"}}
+    results = [{"role": "specialist", "agent_id": "x"}]
+    assert xo.evaluate_conditional(pattern, results) is False
+
+
+def test_has_hitl_checkpoint_returns_dict_when_match():
+    pattern = {"hitl_after": "lead", "hitl_prompt": "approve?", "hitl_required": True}
+    cp = xo.has_hitl_checkpoint(pattern, "lead")
+    assert cp is not None
+    assert cp["role"] == "hitl_checkpoint"
+    assert cp["prompt"] == "approve?"
+
+
+def test_has_hitl_checkpoint_returns_none_when_no_match():
+    pattern = {"hitl_after": "lead"}
+    cp = xo.has_hitl_checkpoint(pattern, "specialist")
+    assert cp is None
+
+
+def test_orchestrations_dict_includes_party():
+    assert "party" in xo.ORCHESTRATIONS
