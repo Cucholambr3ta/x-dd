@@ -439,13 +439,12 @@ flowchart TB
 
     XDD -.->|"semantic memory"| MP["🏛️ MemPalace<br/>MIT · 52.8k ⭐<br/>96-99% recall benchmarks<br/>29 MCP tools"]
     XDD -.->|"dynamic pentest<br/>optional"| SH["🛡️ Shannon CLI<br/>AGPL-3.0 ⚠️ · 43k ⭐<br/>White-box sandboxed exploits"]
-    XDD -.->|"inspiration<br/>token compression"| CV["🪨 Caveman<br/>MIT · 65k ⭐<br/>X-DD ships its own<br/>xdd-talk-compact"]
 
     classDef core fill:#ffd54f,stroke:#f57f17,color:#000,stroke-width:3px
     classDef ext fill:#e8f5e9,stroke:#388e3c,color:#000,stroke-width:2px
     classDef warn fill:#ffebee,stroke:#c62828,color:#000,stroke-width:2px
     class XDD core
-    class MP,CV ext
+    class MP ext
     class SH warn
 ```
 

@@ -173,3 +173,22 @@ xdd-mcp-server/
 ```
 
 El server NO necesita un proceso permanente; el orquestador lo arranca en stdio cuando lo necesita y lo cierra al terminar.
+
+## Stack MCP completo recomendado X-DD (3 servers complementarios)
+
+X-DD recomienda 3 MCP servers paralelos según necesidad:
+
+| MCP Server | Origen | License | Tools | Función |
+|---|---|---|---|---|
+| **xdd-mcp-server** | X-DD propio (Sprint 6) | MIT | 6 | Gates HMAC + workflows + agents + phase artifacts |
+| **MemPalace** | dep externa (ADR-0004) | MIT | 29 | Memoria semántica (ChromaDB + SQLite) + wings/rooms/drawers |
+| **GitNexus** | dep externa (ADR-0033) | PolyForm Noncomm ⚠️ | 16 | Code intelligence (AST grafo, impact analysis, hybrid search BM25+semantic+RRF, 14 langs) |
+
+**3 sirven en paralelo sin conflicto**: cada uno tiene namespace propio + responsabilidad distinta.
+- xdd-mcp-server = pipeline/process intelligence
+- MemPalace = semantic memory across sessions
+- GitNexus = structural code knowledge
+
+`xdd-start.sh` activa automáticamente MemPalace + GitNexus si CLI instalados. Sin ellos, X-DD degrada (xdd-fs-context Sprint 19 sirve como baseline portable zero-dep para code context).
+
+⚠️ **GitNexus license**: PolyForm Noncommercial 1.0.0. Uso personal/research/non-profit = gratis. Comercial = paid license. Ver [ADR-0033](adr/0033-gitnexus-tier1-companion.md) + [DEPENDENCIES.md](../DEPENDENCIES.md).

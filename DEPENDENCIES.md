@@ -15,7 +15,10 @@ Matriz oficial de dependencias del ecosistema X-DD. Mantenida manualmente; verif
 | Dependencia | Versión mínima | Distribución | Licencia | Rol |
 |---|---|---|---|---|
 | **MemPalace** | `>=3.3.0` | `pip install mempalace` ([GitHub](https://github.com/MemPalace/mempalace)) | MIT | Memoria semántica local (ChromaDB + SQLite) + MCP server con 29 tools. Ver [ADR-0004](docs/adr/0004-mempalace-dep-externa-no-fork.md). |
-| **Node.js** | `>=20` | nodejs.org / nvm / asdf | MIT | Runtime para Vitest/Playwright/markdownlint cuando aplica |
+| **GitNexus** | latest | `npm i -g gitnexus` o `npx gitnexus` ([GitHub](https://github.com/abhigyanpatwari/GitNexus)) | **PolyForm Noncommercial 1.0.0** ⚠️ | Code intelligence: knowledge graph del codebase (AST + 14 langs) + 16 MCP tools (impact analysis, hybrid search BM25+semantic+RRF). Ver [ADR-0033](docs/adr/0033-gitnexus-tier1-companion.md). |
+| **Node.js** | `>=20` | nodejs.org / nvm / asdf | MIT | Runtime para Vitest/Playwright/markdownlint + GitNexus CLI |
+
+> ⚠️ **GitNexus es PolyForm Noncommercial 1.0.0**. Uso personal/research/educational/non-profit gratuito sin restricciones. Uso **comercial** requiere license paid (ver [akonlabs.com](https://akonlabs.com)). X-DD nunca bundle GitNexus — tu proyecto X-DD MIT NO se contamina por consumir su MCP server. Decisión de instalar/pagar es tuya. Detalles en [ADR-0033](docs/adr/0033-gitnexus-tier1-companion.md).
 
 ## Pentesting (opcional, ADR-0010)
 

@@ -26,7 +26,7 @@ Opciones:
 
 Comprueba:
   - Núcleo obligatorio: git, bash, python3 (ver DEPENDENCIES.md).
-  - Núcleo recomendado: node, npm, docker, mempalace.
+  - Núcleo recomendado: node, npm, docker, mempalace, gitnexus.
   - Orquestadores: claude, opencode.
   - Testing: vitest, playwright, bats, pytest.
   - Seguridad: semgrep, gitleaks, trivy, nuclei.
@@ -220,6 +220,7 @@ check "node"       node       no   "20.0.0"
 check "npm"        npm        no   ""
 check "docker"     docker     no   ""
 check "mempalace"  mempalace  no   "3.3.0"
+check "gitnexus"   gitnexus   no   ""
 
 if [ $JSON_OUTPUT -eq 0 ]; then echo; echo "[Orquestadores (≥1 esperado)]"; fi
 check_orchestrator
