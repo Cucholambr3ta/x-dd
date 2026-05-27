@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/Cucholambr3ta/x-dd/raw/main/schemas/xdd.profile.schema.json",
+  "title": "X-DD Project Profile",
+  "description": "Declarativo: qué es el proyecto + opcionalmente branding (Sprint 13).",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "profile": {
+      "type": "string",
+      "enum": ["saas", "mobile", "lib", "internal", "custom"]
+    },
+    "capabilities": {"type": "object", "additionalProperties": {"type": "boolean"}},
+    "stacks": {"type": "object"},
+    "branding": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "White-labeling (Sprint 13 + ADR-0011). Default sin sección = X-DD identity.",
+      "properties": {
+        "ecosystem_name": {"type": "string", "default": "X-DD", "minLength": 1, "maxLength": 64},
+        "ecosystem_slug": {"type": "string", "default": "xdd", "pattern": "^[a-z][a-z0-9-]+$"},
+        "orchestrator_trigger": {"type": "string", "default": "xdd", "pattern": "^[a-z][a-z0-9-]+$"},
+        "rename_subworkflows": {"type": "boolean", "default": false},
+        "orchestrator_persona": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "tone": {"type": "string", "enum": ["technical", "friendly", "casual", "formal", "custom"]},
+            "custom_prompt": {"type": ["string", "null"]}
+          }
+        },
+        "output": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "compact": {"type": "string", "enum": ["off", "lite", "standard", "ultra"]}
+          }
+        },
+        "attribution_required": {"type": "boolean", "default": true}
+      }
+    }
+  }
+}
