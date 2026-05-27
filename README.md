@@ -2,11 +2,13 @@
 
 # 🚀 X-DD
 
-## Ship code AI-powered con disciplina formal — sin sacrificar velocidad
+<sub>🌐 **Idiomas:** [🇪🇸 Español](README.md) · [🇺🇸 English](README.en.md) · [🇧🇷 Português](README.pt-BR.md)</sub>
+
+## Desarrollo AI-powered con disciplina formal — sin sacrificar velocidad
 
 **Pipeline gated · Firma criptográfica · Multi-IDE · Dogfooding visible**
 
-Para equipos que ya usan Claude Code, Cursor u OpenCode y quieren **deuda técnica zero** + **audit trail criptográfico** + **agentes que se mejoran solos**.
+Para equipos que ya usan Claude Code, Cursor u OpenCode y buscan **cero deuda técnica** + **audit trail criptográfico** + **agentes que aprenden solos**.
 
 <br/>
 
@@ -18,27 +20,26 @@ Para equipos que ya usan Claude Code, Cursor u OpenCode y quieren **deuda técni
 
 <br/>
 
-### 🎯 [**Empezá en 4 minutos →**](#-4-minutos-y-estás-shippeando)
+### 🎯 [**Comienza en 4 minutos →**](#-4-minutos-para-comenzar)
 
-<sub>Compatible con **13+ IDEs/asistentes IA**. Ningún vendor lock-in. Sin trampas.</sub>
+<sub>Compatible con **13+ IDEs/asistentes IA**. Sin vendor lock-in. Sin trampas ocultas.</sub>
 
 </div>
 
 ---
 
-## 💔 El problema que ya conocés
+## 💔 El problema conocido
 
-```
+```text
 ❌ Vibe-coding puro                    ❌ Proceso pesado tradicional
-   "code first, ask questions never"      "12-week Scrum sprints"
-                                          
+
    ⚡ velocidad inicial alta             🐌 burocracia anti-IA
    💸 deuda técnica explota mes 3        🥱 no aprovecha velocidad agentes
    🔍 decisiones inauditables             📋 friction sin valor
-   🐛 bugs en prod                        ⏰ time-to-ship lento
+   🐛 bugs en producción                  ⏰ time-to-ship lento
 ```
 
-### **¿Resultado?** Equipos atrapados entre velocidad y calidad.
+**Resultado:** equipos atrapados entre velocidad y calidad.
 
 ---
 
@@ -46,16 +47,16 @@ Para equipos que ya usan Claude Code, Cursor u OpenCode y quieren **deuda técni
 
 **Pipeline gated de 6 fases con firma criptográfica HMAC.** Velocidad agéntica + auditabilidad enterprise.
 
-> *"Brain still big. Process formal. Mouth small."*
+> *"Cerebro grande. Proceso formal. Salida concisa."*
 
 ```mermaid
 flowchart LR
-    B[📋 Briefing] -->|🔒 HMAC| S[🎨 Spec]
-    S -->|🔒 HMAC| P[📊 Plan]
-    P -->|🔒 HMAC| BUILD[⚙️ Build]
-    BUILD -->|🔒 HMAC| Q[🛡️ QA]
-    Q -->|🔒 HMAC| R[📚 Retro]
-    R -.->|🧠 Learning Loop| B
+    B["📋 Briefing"] -->|"🔒 HMAC"| S["🎨 Spec"]
+    S -->|"🔒 HMAC"| P["📊 Plan"]
+    P -->|"🔒 HMAC"| BUILD["⚙️ Build"]
+    BUILD -->|"🔒 HMAC"| Q["🛡️ QA"]
+    Q -->|"🔒 HMAC"| R["📚 Retro"]
+    R -.->|"🧠 Learning Loop"| B
 
     classDef fase fill:#e1f5ff,stroke:#0066cc,stroke-width:3px,color:#000
     class B,S,P,BUILD,Q,R fase
@@ -65,7 +66,7 @@ Cada flecha = **transición firmada HMAC-SHA256**. Sin firma = sin paso. **Audit
 
 ---
 
-## 🎁 Lo que te llevás a casa
+## 🎁 Lo que obtienes
 
 <table>
 <tr>
@@ -73,7 +74,7 @@ Cada flecha = **transición firmada HMAC-SHA256**. Sin firma = sin paso. **Audit
 
 ### 🔒 Audit trail<br/>**criptográfico**
 
-Cada gate firmado HMAC-SHA256.<br/>"APROBADO" auditable, no editable.<br/>**Único en su clase.**
+Cada gate firmado HMAC-SHA256.<br/>"APROBADO" auditable, no editable.<br/>**Único en el espacio.**
 
 *Ningún competidor lo tiene.*
 
@@ -82,7 +83,7 @@ Cada gate firmado HMAC-SHA256.<br/>"APROBADO" auditable, no editable.<br/>**Úni
 
 ### 🚀 Velocidad<br/>**sin caos**
 
-180 agentes especializados.<br/>51 workflows production-ready.<br/>**Vibe-coding con barandas.**
+180 agentes especializados.<br/>51 workflows production-ready.<br/>**Disciplina con velocidad agéntica.**
 
 *De idea a release con firma.*
 
@@ -121,13 +122,13 @@ Cada gate firmado HMAC-SHA256.<br/>"APROBADO" auditable, no editable.<br/>**Úni
 
 ---
 
-## ⚡ 4 minutos y estás shippeando
+## ⚡ 4 minutos para comenzar
 
 ```mermaid
 flowchart LR
-    A[🔍 1. doctor<br/>30s] --> B[📦 2. init<br/>1 min]
-    B --> C[🚀 3. start<br/>30s]
-    C --> D[💬 4. /xdd<br/>arranca]
+    A["🔍 1. doctor (30s)"] --> B["📦 2. init (1 min)"]
+    B --> C["🚀 3. start (30s)"]
+    C --> D["💬 4. comando /xdd (arranca)"]
 
     classDef step fill:#fff4e1,stroke:#cc8800,color:#000,stroke-width:2px
     class A,B,C,D step
@@ -135,58 +136,58 @@ flowchart LR
 
 ```bash
 # Linux / macOS / WSL
-bash scripts/xdd-doctor.sh                              # ① verifica entorno
-bash scripts/xdd-init.sh /tu/proyecto --profile=core    # ② bootstrap
-cd /tu/proyecto && bash scripts/xdd-start.sh            # ③ arranca MemPalace + orquestador
-# → en tu IDE/asistente: /xdd                           # ④ pipeline empieza
+bash scripts/xdd-doctor.sh                              # 1) verifica entorno
+bash scripts/xdd-init.sh /tu/proyecto --profile=core    # 2) bootstrap
+cd /tu/proyecto && bash scripts/xdd-start.sh            # 3) arranca MemPalace + orquestador
+# 4) en tu IDE/asistente: escribir el comando /xdd      # 4) pipeline empieza
 
 # Windows
 .\install.ps1 -Dest C:\proyectos\mi-app -Profile core
 ```
 
-**¿Stuck?** El doctor te dice exactamente qué te falta.
+**¿Bloqueado?** El doctor indica exactamente qué falta.
 
 ---
 
 ## 🎬 Casos de uso reales (no slides)
 
 <details open>
-<summary><b>🚀 Caso 1: Shipping una feature de checkout (3 días → 1 día con X-DD)</b></summary>
+<summary><b>🚀 Caso 1: Publicar una feature de checkout (3 días → 1 día con X-DD)</b></summary>
 
 ```mermaid
 flowchart TD
-    U[👤 PM: 'agregar checkout v2'] --> CMD[/xdd]
-    CMD --> F1[Fase 1: /fase-requisitos<br/>📄 SPEC.md + FEATURES.md<br/>+ .feature stubs BDD]
-    F1 -->|🔒| F2[Fase 2: /project-architecture-gsd<br/>📐 DOMAIN.md + 🛡️ THREATS.md STRIDE]
-    F2 -->|🔒| F3[Fase 3: /plan-fases<br/>📊 PLAN.md vertical FDD]
-    F3 -->|🔒| F4[Fase 4: /xdd-build<br/>🔴→🟢→🔵 TDD + STDD]
-    F4 -->|🔒| F5[Fase 5: /qa-review<br/>SAST + DAST + BDD ejecutable]
-    F5 -->|🔒| F6[Fase 6: /cierre-fase<br/>📚 lecciones.md + /release-cut]
+    U["👤 PM: agregar checkout v2"] --> CMD["comando /xdd"]
+    CMD --> F1["Fase 1: comando /fase-requisitos<br/>📄 SPEC.md + FEATURES.md<br/>+ .feature stubs BDD"]
+    F1 -->|"🔒"| F2["Fase 2: comando /project-architecture-gsd<br/>📐 DOMAIN.md + 🛡️ THREATS.md STRIDE"]
+    F2 -->|"🔒"| F3["Fase 3: comando /plan-fases<br/>📊 PLAN.md vertical FDD"]
+    F3 -->|"🔒"| F4["Fase 4: comando /xdd-build<br/>🔴→🟢→🔵 TDD + STDD"]
+    F4 -->|"🔒"| F5["Fase 5: comando /qa-review<br/>SAST + DAST + BDD ejecutable"]
+    F5 -->|"🔒"| F6["Fase 6: comando /cierre-fase<br/>📚 lecciones.md + comando /release-cut"]
 
-    F5 -.->|si falla| F4
+    F5 -.->|"si falla"| F4
 
     classDef phase fill:#e8f4f8,stroke:#2c6e91,color:#000,stroke-width:2px
     class F1,F2,F3,F4,F5,F6 phase
 ```
 
-**Outcome:** código + tests 80%+ coverage + THREATS modelado + audit trail criptográfico + release notes user-facing. **Cero deuda técnica acumulada.**
+**Resultado:** código + tests 80%+ coverage + THREATS modelado + audit trail criptográfico + release notes user-facing. **Cero deuda técnica acumulada.**
 
 </details>
 
 <details>
-<summary><b>🛡️ Caso 2: Pentest híbrido — encontrá vulns que tu QA no ve</b></summary>
+<summary><b>🛡️ Caso 2: Pentest híbrido — encuentra vulnerabilidades que el QA tradicional no ve</b></summary>
 
 ```mermaid
 flowchart TD
-    U[👤 Sec Engineer<br/>/advanced-agentic-pentesting] --> CHK{🔍 ¿Shannon instalado?}
+    U["👤 Sec Engineer<br/>comando /advanced-agentic-pentesting"] --> CHK{"🔍 ¿Shannon instalado?"}
 
-    CHK -->|✅ Sí| FULL[💥 Full pentest:<br/>STRIDE + source review +<br/>dynamic fuzz + verify exploits sandboxed]
-    CHK -->|⚪ No| DEG[🛡️ Degraded mode:<br/>STRIDE + source review estático<br/>⚠️ skip: fuzz/verify avisado]
+    CHK -->|"✅ Sí"| FULL["💥 Full pentest:<br/>STRIDE + source review +<br/>dynamic fuzz + verify exploits sandboxed"]
+    CHK -->|"⚪ No"| DEG["🛡️ Modo degradado:<br/>STRIDE + source review estático<br/>⚠️ skip: fuzz/verify avisado"]
 
-    FULL --> REP1[📊 Findings + PoC + patch propuesto]
-    DEG --> REP2[📊 Report parcial + how-to-enable]
+    FULL --> REP1["📊 Findings + PoC + patch propuesto"]
+    DEG --> REP2["📊 Report parcial + how-to-enable"]
 
-    REP1 --> AS[🔍 xdd-shield: AgentShield audit framework]
+    REP1 --> AS["🔍 xdd-shield: AgentShield audit framework"]
     REP2 --> AS
 
     classDef ok fill:#d4edda,stroke:#28a745,color:#000,stroke-width:2px
@@ -197,21 +198,21 @@ flowchart TD
     class REP1,REP2 report
 ```
 
-**Outcome:** apps con SAST + DAST + threat model + exploits sandbox + parches verificados. Shannon CLI es **opcional** (AGPL-3.0 user opt-in). Sin Shannon X-DD degrada elegantemente.
+**Resultado:** apps con SAST + DAST + threat model + exploits sandbox + parches verificados. Shannon CLI es **opcional** (AGPL-3.0 con consentimiento del usuario). Sin Shannon, X-DD degrada elegantemente.
 
 </details>
 
 <details>
-<summary><b>🎨 Caso 3: White-labeling — vendé X-DD como tu producto interno</b></summary>
+<summary><b>🎨 Caso 3: White-labeling — distribuye X-DD como tu producto interno</b></summary>
 
 ```mermaid
 flowchart LR
-    YML[xdd.profile.yml<br/>branding:<br/>  ecosystem_name: 'Helios'<br/>  orchestrator_trigger: 'helios'<br/>  persona.tone: 'formal'] --> BRAND[bash scripts/xdd-brand.sh]
-    BRAND --> SYM[.claude/commands/helios.md<br/>symlink xdd.md]
-    BRAND --> PER[.claude/orchestrator-persona.md<br/>persona formal]
-    BRAND --> CFG[.claude/branding.json<br/>config activa]
+    YML["xdd.profile.yml<br/>branding:<br/>  ecosystem_name: Helios<br/>  orchestrator_trigger: helios<br/>  persona.tone: formal"] --> BRAND["bash scripts/xdd-brand.sh"]
+    BRAND --> SYM[".claude/commands/helios.md<br/>symlink xdd.md"]
+    BRAND --> PER[".claude/orchestrator-persona.md<br/>persona formal"]
+    BRAND --> CFG[".claude/branding.json<br/>config activa"]
 
-    SYM --> USE[💬 'Helios, ship esta feature'<br/>tono corporativo formal]
+    SYM --> USE["💬 Helios, publica esta feature<br/>tono corporativo formal"]
 
     classDef config fill:#f3e5f5,stroke:#6a1b9a,color:#000,stroke-width:2px
     classDef out fill:#e0f7fa,stroke:#006064,color:#000,stroke-width:2px
@@ -219,7 +220,7 @@ flowchart LR
     class USE out
 ```
 
-**Outcome:** tu org tiene "Helios" (o como quieras). Atribución X-DD upstream automática. 4 personas presets: technical / friendly / casual / formal. **Una organización = una identidad.**
+**Resultado:** tu organización tiene "Helios" (o el nombre que elijas). Atribución X-DD upstream automática. 4 personas presets: technical / friendly / casual / formal. **Una organización = una identidad.**
 
 </details>
 
@@ -228,19 +229,19 @@ flowchart LR
 
 ```mermaid
 flowchart TD
-    SES[💻 Sesión agéntica activa] -->|hook Stop| EXT[stop-pattern-extraction]
-    EXT --> DB[(🗄️ ~/.xdd/state.db<br/>SQLite instincts)]
-    DB -->|tras N sesiones| ACC[Instincts con<br/>confidence ↑0.1/occ]
+    SES["💻 Sesión agéntica activa"] -->|"hook Stop"| EXT["stop-pattern-extraction"]
+    EXT --> DB[("🗄️ ~/.xdd/state.db<br/>SQLite instincts")]
+    DB -->|"tras N sesiones"| ACC["Instincts con<br/>confidence +0.1/occ"]
 
-    ACC --> EVOL[/evolve workflow]
-    EVOL --> CLUST[🧬 TF-IDF clustering<br/>cosine similarity]
-    CLUST --> PROP[💡 Propuestas:<br/>command/skill/agent nuevos]
+    ACC --> EVOL["comando /evolve workflow"]
+    EVOL --> CLUST["🧬 TF-IDF clustering<br/>cosine similarity"]
+    CLUST --> PROP["💡 Propuestas:<br/>command/skill/agent nuevos"]
 
-    PROP --> HUM{👤 Aprobación humana<br/>T6.1 mitigación}
-    HUM -->|✅ Aprobado| GEN[Genera artefacto<br/>en .agent/workflows o skills/]
-    HUM -->|❌ Rechazado| REJ[Marca rejected en SQLite]
+    PROP --> HUM{"👤 Aprobación humana<br/>T6.1 mitigación"}
+    HUM -->|"✅ Aprobado"| GEN["Genera artefacto<br/>en .agent/workflows o skills/"]
+    HUM -->|"❌ Rechazado"| REJ["Marca rejected en SQLite"]
 
-    GEN --> COMMIT[Commit + /cierre-fase<br/>Sistema crece]
+    GEN --> COMMIT["Commit + cierre-fase<br/>Sistema crece"]
 
     classDef hook fill:#fff0e6,stroke:#cc6600,color:#000,stroke-width:2px
     classDef human fill:#ffe6e6,stroke:#cc0000,color:#000,stroke-width:2px
@@ -248,7 +249,7 @@ flowchart TD
     class HUM human
 ```
 
-**Outcome:** después de 50 sesiones, X-DD aprendió tus patrones y te sugiere skills/agents nuevos. **NUNCA auto-promueve. Humano firma cada decisión.**
+**Resultado:** después de 50 sesiones, X-DD aprendió tus patrones y sugiere skills/agents nuevos. **NUNCA auto-promueve. El humano firma cada decisión.**
 
 </details>
 
@@ -257,14 +258,14 @@ flowchart TD
 
 ```mermaid
 flowchart TD
-    CMD[/orchestrate --pattern=feature_squad] --> LEAD[👔 Lead:<br/>product-manager]
-    LEAD -->|parallel_then_sync| P1[🏗️ engineering-backend-architect]
-    LEAD -->|parallel_then_sync| P2[🎨 design-ui-designer]
-    LEAD -->|parallel_then_sync| P3[🧪 testing-test-results-analyzer]
-    P1 --> SYNC{🤝 sync_point:<br/>spec_approval}
+    CMD["comando /orchestrate --pattern=feature_squad"] --> LEAD["👔 Lead:<br/>product-manager"]
+    LEAD -->|"parallel_then_sync"| P1["🏗️ engineering-backend-architect"]
+    LEAD -->|"parallel_then_sync"| P2["🎨 design-ui-designer"]
+    LEAD -->|"parallel_then_sync"| P3["🧪 testing-test-results-analyzer"]
+    P1 --> SYNC{"🤝 sync_point:<br/>spec_approval"}
     P2 --> SYNC
     P3 --> SYNC
-    SYNC --> DONE[✅ Spec consensuado]
+    SYNC --> DONE["✅ Spec consensuado"]
 
     classDef lead fill:#e1bee7,stroke:#6a1b9a,color:#000,stroke-width:2px
     classDef spec fill:#bbdefb,stroke:#1565c0,color:#000,stroke-width:2px
@@ -272,7 +273,7 @@ flowchart TD
     class P1,P2,P3 spec
 ```
 
-**Outcome:** PM + Backend + UI + QA colaborando en paralelo. Sync formal. **Reemplaza standup de 30 min por workflow ejecutable.**
+**Resultado:** PM + Backend + UI + QA colaborando en paralelo. Sync formal. **Reemplaza standup de 30 min por workflow ejecutable.**
 
 </details>
 
@@ -310,7 +311,7 @@ flowchart TD
 
 ---
 
-## 🎨 Persona × Compresión — adaptá X-DD a tu cultura
+## 🎨 Persona × Compresión — adapta X-DD a tu cultura
 
 White-labeling (Sprint 13) + xdd-talk-compact (Sprint 10) = matriz 4×4 combinable:
 
@@ -329,14 +330,14 @@ White-labeling (Sprint 13) + xdd-talk-compact (Sprint 10) = matriz 4×4 combinab
 
 ```mermaid
 flowchart LR
-    XDD[🧠 X-DD] --> MCP[📡 xdd-mcp-server<br/>6 tools]
-    XDD --> A1[xdd-adapt claude-code]
-    XDD --> A2[xdd-adapt opencode]
+    XDD["🧠 X-DD"] --> MCP["📡 xdd-mcp-server<br/>6 tools"]
+    XDD --> A1["xdd-adapt claude-code"]
+    XDD --> A2["xdd-adapt opencode"]
 
-    A1 --> CC[💻 Claude Code]
-    A2 --> OC[💻 OpenCode]
+    A1 --> CC["💻 Claude Code"]
+    A2 --> OC["💻 OpenCode"]
 
-    MCP --> IDES[💎 Cursor / Continue / Zed /<br/>Cline / Windsurf / Antigravity /<br/>Codex / Gemini / Qwen /<br/>Hermes / VSCode / cualquier MCP-compat]
+    MCP --> IDES["💎 Cursor / Continue / Zed /<br/>Cline / Roo Code / Windsurf /<br/>Antigravity / Codex / Gemini /<br/>Qwen / Hermes / VSCode /<br/>cualquier IDE MCP-compatible"]
 
     classDef core fill:#ffd54f,stroke:#f57f17,color:#000,stroke-width:3px
     classDef bridge fill:#90caf9,stroke:#1565c0,color:#000,stroke-width:2px
@@ -350,7 +351,7 @@ flowchart LR
 
 ---
 
-## 📦 Elegí tu nivel — escala con tu necesidad
+## 📦 Elige tu nivel — escala con la necesidad
 
 <table>
 <tr>
@@ -363,7 +364,7 @@ flowchart LR
 </tr>
 <tr>
 <td><b>⭐ core</b></td>
-<td><b>Recomendado para empezar</b></td>
+<td><b>Recomendado para comenzar</b></td>
 <td><code>--profile=core</code></td>
 </tr>
 <tr>
@@ -394,11 +395,11 @@ flowchart LR
 
 ```mermaid
 flowchart TD
-    START{Tipo de cambio} -->|Bugfix < 10 líneas| DIR[⚡ DIRECTO<br/>sin pipeline]
-    START -->|Bugfix > 20 líneas| MIN[📋 MÍNIMO<br/>SDD + TDD]
-    START -->|Tool interna / script| AGI[🛠️ ÁGIL<br/>FDD + SDD + TDD]
-    START -->|Feature con cliente| STD[📦 ESTÁNDAR<br/>FDD + SDD + ATDD + BDD + TDD + SecDD]
-    START -->|Módulo con lógica compleja| FULL[🏛️ COMPLETO<br/>FDD + DDD + SDD + BDD + ATDD<br/>+ TDD + Threat + STDD + SecDD]
+    START{"Tipo de cambio"} -->|"Bugfix menos de 10 líneas"| DIR["⚡ DIRECTO<br/>sin pipeline"]
+    START -->|"Bugfix más de 20 líneas"| MIN["📋 MÍNIMO<br/>SDD + TDD"]
+    START -->|"Tool interna / script"| AGI["🛠️ ÁGIL<br/>FDD + SDD + TDD"]
+    START -->|"Feature con cliente"| STD["📦 ESTÁNDAR<br/>FDD + SDD + ATDD + BDD + TDD + SecDD"]
+    START -->|"Módulo con lógica compleja"| FULL["🏛️ COMPLETO<br/>FDD + DDD + SDD + BDD + ATDD<br/>+ TDD + Threat + STDD + SecDD"]
 
     classDef path fill:#fff9c4,stroke:#f57f17,color:#000,stroke-width:2px
     class DIR,MIN,AGI,STD,FULL path
@@ -408,20 +409,20 @@ flowchart TD
 
 ---
 
-## ⚠️ Lo que X-DD NO es (sé honesto)
+## ⚠️ Lo que X-DD NO es (honestidad)
 
 - ❌ **No es un framework de aplicación.** No reemplaza React/Express/Django.
 - ❌ **No es un test runner.** Orquesta Vitest/Playwright/pytest.
 - ❌ **No es MemPalace.** Lo consume como dep externa MIT opcional.
 - ❌ **No requiere Claude Code.** Funciona con 13+ asistentes vía MCP.
-- ❌ **No envía datos a la nube.** Local-first. Tu código no sale de tu equipo.
+- ❌ **No envía datos a la nube.** Local-first. El código no sale del equipo.
 - ❌ **No es compatible con monorepos sin adaptación** (roadmap Sprint 15).
 
 ---
 
-## 🛡️ Principios de gobernanza (la "letra chica" que importa)
+## 🛡️ Principios de gobernanza
 
-- 🎯 **Ambigüedad Cero** — sistema se detiene si hay parámetros indefinidos
+- 🎯 **Ambigüedad Cero** — el sistema se detiene si hay parámetros indefinidos
 - 🔒 **Gated Pipeline** — `"APROBADO"` firmado HMAC-SHA256 ([ADR-0006](docs/adr/0006-gate-keeper-firma-hmac.md))
 - 📐 **Spec First** — no existe `src/` sin `SPEC.md` previo aprobado
 - 🧪 **TDD First** — no existe función de negocio sin su test previo
@@ -430,15 +431,15 @@ flowchart TD
 
 ---
 
-## 🔗 Integraciones opcionales (con full disclosure)
+## 🔗 Integraciones externas opcionales
 
 ```mermaid
 flowchart TB
-    XDD[🧠 X-DD core<br/>MIT pure]
+    XDD["🧠 X-DD core<br/>MIT pure"]
 
-    XDD -.->|memoria semántica| MP[🏛️ MemPalace<br/>MIT · 52.8k ⭐<br/>96-99% recall benchmarks<br/>29 MCP tools]
-    XDD -.->|pentest dinámico<br/>opt-in| SH[🛡️ Shannon CLI<br/>AGPL-3.0 ⚠️ · 43k ⭐<br/>White-box exploits sandboxed]
-    XDD -.->|inspiración<br/>compresión tokens| CV[🪨 Caveman<br/>MIT · 65k ⭐<br/>X-DD tiene<br/>xdd-talk-compact propio]
+    XDD -.->|"memoria semántica"| MP["🏛️ MemPalace<br/>MIT · 52.8k ⭐<br/>96-99% recall benchmarks<br/>29 MCP tools"]
+    XDD -.->|"pentest dinámico<br/>opcional"| SH["🛡️ Shannon CLI<br/>AGPL-3.0 ⚠️ · 43k ⭐<br/>White-box exploits sandboxed"]
+    XDD -.->|"inspiración<br/>compresión tokens"| CV["🪨 Caveman<br/>MIT · 65k ⭐<br/>X-DD tiene<br/>xdd-talk-compact propio"]
 
     classDef core fill:#ffd54f,stroke:#f57f17,color:#000,stroke-width:3px
     classDef ext fill:#e8f5e9,stroke:#388e3c,color:#000,stroke-width:2px
@@ -448,7 +449,7 @@ flowchart TB
     class SH warn
 ```
 
-> ⚠️ **Shannon es AGPL-3.0.** Tu proyecto X-DD **NO se contamina** por usar Shannon vía wrapper híbrido. X-DD nunca lo bundle. Decisión es tuya. Disclaimer completo en [docs/PENTEST.md](docs/PENTEST.md).
+> ⚠️ **Shannon es AGPL-3.0.** Tu proyecto X-DD **NO se contamina** por usar Shannon vía wrapper híbrido. X-DD nunca lo bundle. La decisión es tuya. Disclaimer completo en [docs/PENTEST.md](docs/PENTEST.md).
 
 ---
 
@@ -456,8 +457,8 @@ flowchart TB
 
 <table>
 <tr>
-<th>Sos...</th>
-<th>Empezá acá</th>
+<th>Si eres...</th>
+<th>Comienza aquí</th>
 </tr>
 <tr>
 <td>🆕 <b>Developer nuevo</b></td>
@@ -495,50 +496,50 @@ flowchart TB
 
 ---
 
-## 🚀 Empezá ahora mismo
+## 🚀 Comienza ahora
 
 ```bash
-# 1. Verificá entorno
+# 1) Verifica entorno
 make doctor
 
-# 2. Bootstrap tu primer proyecto
+# 2) Bootstrap tu primer proyecto
 bash scripts/xdd-init.sh /ruta/mi-proyecto --profile=core
 
-# 3. Arrancá
+# 3) Arranca
 cd /ruta/mi-proyecto && bash scripts/xdd-start.sh
 
-# 4. En tu IDE/asistente IA: /xdd
+# 4) En tu IDE/asistente IA: escribir el comando /xdd
 ```
 
-**¿Querés ver X-DD aplicado a sí mismo?** Mirá [`.xdd/`](.xdd/) — 6 fases firmadas, públicas, auditables.
+**¿Quieres ver X-DD aplicado a sí mismo?** Revisa [`.xdd/`](.xdd/) — 6 fases firmadas, públicas, auditables.
 
 ---
 
 <div align="center">
 
-### 🌟 X-DD es para vos si...
+### 🌟 X-DD es para ti si...
 
-✅ Querés **velocidad agéntica** + **disciplina formal**
-✅ Necesitás **audit trail criptográfico** para compliance
-✅ Trabajás en **equipo multi-IDE** (Claude Code + Cursor + ...)
+✅ Quieres **velocidad agéntica** + **disciplina formal**
+✅ Necesitas **audit trail criptográfico** para compliance
+✅ Trabajas en **equipo multi-IDE** (Claude Code + Cursor + ...)
 ✅ Te importa **dogfooding visible** sobre marketing
-✅ Preferís **MIT puro** sobre licencias ambiguas
-✅ Querés un framework **que mejora solo** (instincts + /evolve)
+✅ Prefieres **MIT puro** sobre licencias ambiguas
+✅ Quieres un framework **que mejora solo** (instincts + /evolve)
 
 <br/>
 
-### 🚫 X-DD NO es para vos si...
+### 🚫 X-DD NO es para ti si...
 
-❌ Querés **vibe-coding sin disciplina** (usá Claude Code directo)
-❌ Tu org **rechaza disciplina formal** de proceso
-❌ Necesitás **dashboard web** ya hoy (roadmap v0.2.0)
-❌ Querés **lock-in en un solo IDE** (X-DD es multi-IDE por diseño)
+❌ Quieres **vibe-coding sin disciplina** (usa Claude Code directo)
+❌ Tu organización **rechaza disciplina formal** de proceso
+❌ Necesitas **dashboard web** hoy (roadmap v0.2.0)
+❌ Quieres **lock-in en un solo IDE** (X-DD es multi-IDE por diseño)
 
 <br/>
 
 ---
 
-<sub>**X-DD** · *Cross-Driven Development System* · MIT · Built with discipline, shipped with speed.</sub>
+<sub>**X-DD** · *Cross-Driven Development System* · MIT · Build with discipline, ship with speed.</sub>
 
 [⭐ Star en GitHub](https://github.com/Cucholambr3ta/x-dd) ·
 [📖 Quickstart 15min](the-shortform-guide.md) ·
