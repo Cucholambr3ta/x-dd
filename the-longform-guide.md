@@ -310,7 +310,7 @@ bats tests/e2e/test_quickstart.bats
 | 7 | Adapters + 8 hooks + Manifests + install.ps1 | #9 | ✅ |
 | 8 | Gobernanza OSS + 3-tier docs + commitlint + agent.yaml | #10 | ✅ |
 | 9 | Continuous Learning (instincts + `/evolve` + SQLite) | #11 | ✅ |
-| 10 | Skills + Eval-harness + xdd-talk-compact (caveman MIT) | #12 | ✅ |
+| 10 | Skills + Eval-harness + xdd-talk-compact (compresión tokens propia) | #12 | ✅ |
 | 11 | Multi-agent orchestration runtime (`/orchestrate`) | #13 | ✅ |
 | 12 | AgentShield + Shannon dep AGPL híbrida + rename + ADR-0010 | #14 | ✅ |
 | 13 | White-labeling + 4 personas + ADR-0011 | #15 | ✅ |

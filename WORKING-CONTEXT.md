@@ -28,7 +28,7 @@
 | 7 | Adapters + Hooks + Manifests | #9 | 8 hooks + 6 profiles + install.ps1 + 97 tests |
 | 8 | Gobernanza OSS + 3-tier | #10 | CONTRIBUTING/COC/SECURITY + 3 guides + agent.yaml |
 | 9 | Continuous Learning | #11 | xdd-state.py SQLite + /evolve workflow |
-| 10 | Skills + Eval-harness | #12 | xdd-talk-compact (caveman MIT) + 5 grader types |
+| 10 | Skills + Eval-harness | #12 | xdd-talk-compact (compresión tokens propia) + 5 grader types |
 | 11 | Multi-agent orchestration | #13 | xdd-orchestrate.py stdlib pura |
 | 12 | AgentShield + Shannon dep | #14 | 13 reglas SAST + wrapper shn híbrido + rename + ADR-0010 |
 | 13 | White-labeling | #15 | 4 personas + xdd-brand.sh + ADR-0011 |

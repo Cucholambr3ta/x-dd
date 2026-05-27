@@ -129,8 +129,8 @@ python3 scripts/xdd-state.py evolve --generate  # propuestas en evolutions table
 
 ### Skills + Eval-harness (Sprint 10)
 Sistema `skills/<name>/SKILL.md`. 5 grader types (structural/behavioral/output_match/pass_at_k/token_count_reduction).
-Skill `xdd-talk-compact` reduce ~50-75% tokens del orquestador (inspirado en
-[caveman](https://github.com/juliusbrussee/caveman) MIT).
+Skill `xdd-talk-compact` reduce ~50-75% tokens del orquestador (sistema propio
+de compresión, 3 niveles lite/standard/ultra).
 
 ```bash
 python3 scripts/xdd-eval.py list
