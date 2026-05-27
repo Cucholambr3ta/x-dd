@@ -57,7 +57,12 @@ gantt
 | 7 Adapters + Hooks + Manifests + E2E ⭐ | ✅ done | F4 Build (5/5) + F5 QA | 2026-06-15 | 2026-06-17 | 2026-05-26 | 2026-05-26 | [#9](https://github.com/Cucholambr3ta/9) |
 | 8 Gobernanza OSS + 3-tier docs + agent.yaml ⭐ | ✅ done | F6 Retro init | 2026-06-17 | 2026-06-19 | 2026-05-26 | 2026-05-26 | [#10](https://github.com/Cucholambr3ta/x-dd/pull/10) |
 | 9 Continuous Learning (instincts + /evolve + SQLite) | ✅ done | F4 ext | 2026-06-20 | 2026-06-23 | 2026-05-26 | 2026-05-26 | [#11](https://github.com/Cucholambr3ta/x-dd/pull/11) |
-| 10 Skills + Eval-harness + xdd-talk-compact | 🔄 En curso | F4 ext | 2026-06-24 | 2026-06-29 | 2026-05-26 | — | _pendiente_ |
+| 10 Skills + Eval-harness + xdd-talk-compact | ✅ done | F4 ext | 2026-06-24 | 2026-06-29 | 2026-05-26 | 2026-05-26 | [#12](https://github.com/Cucholambr3ta/x-dd/pull/12) |
+| 11 Multi-agent orchestration runtime | ✅ done | F4 ext | 2026-06-30 | 2026-07-03 | 2026-05-26 | 2026-05-26 | [#13](https://github.com/Cucholambr3ta/x-dd/pull/13) |
+| 12 AgentShield + Shannon dep + rename | ✅ done | F4 ext + F5 audit | 2026-07-04 | 2026-07-05 | 2026-05-26 | 2026-05-26 | [#14](https://github.com/Cucholambr3ta/x-dd/pull/14) |
+| 13 White-labeling (branding + 4 personas) | ✅ done | F6 ext | 2026-07-06 | 2026-07-08 | 2026-05-26 | 2026-05-26 | [#15](https://github.com/Cucholambr3ta/x-dd/pull/15) |
+| **14** Workspace mode + Wizard interactivo | ⏳ pendiente | F6 ext | 2026-07-09 | 2026-07-11 | — | — | — |
+| **Release** v0.1.0 tag firmado | ⏳ pendiente | Release | 2026-07-12 | 2026-07-12 | — | — | — |
 
 Leyenda: 🔄 en curso · ✅ done · ⏳ pendiente · ❌ blocked
 
@@ -102,3 +107,9 @@ graph LR
 | 2026-05-26 | Sprint 7 ampliado mergeado (PR #9, squash b6669a4); Sprint 8 en curso (gobernanza + 3-tier docs) | aplacencia |
 | 2026-05-26 | Sprint 8 ampliado mergeado (PR #10, squash adede3b); Sprint 9 en curso (continuous learning) | aplacencia |
 | 2026-05-26 | Sprints 13 (White-labeling) y 14 (Workspace+Wizard) nuevos agregados al plan v0.1.0; total ~36d | aplacencia |
+| 2026-05-26 | Sprint 9 mergeado (PR #11, 88d87ce); Sprint 10 en curso (Skills + Eval + caveman MIT) | aplacencia |
+| 2026-05-26 | Sprint 10 mergeado (PR #12); Sprint 11 en curso (orchestration runtime) | aplacencia |
+| 2026-05-26 | Sprint 11 mergeado (PR #13, 16c856c); Sprint 12 en curso (AgentShield + Shannon dep) | aplacencia |
+| 2026-05-26 | Sprint 12 mergeado (PR #14, 4f9a165); Sprint 13 en curso (white-labeling) | aplacencia |
+| 2026-05-26 | Sprint 13 mergeado (PR #15, 4abfb58). Pendiente S14 + release v0.1.0 | aplacencia |
+| 2026-05-27 | fix/docs-sync-s9-s13 — sync doc drift detectado en 9 files post-S13 | aplacencia |

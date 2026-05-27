@@ -9,46 +9,73 @@
 
 ## Estado actual
 
-- **Sprint:** Sprint 8 ampliado (Gobernanza OSS + 3-tier docs + commitlint + WORKING-CONTEXT + agent.yaml + research/)
-- **Branch:** `feat/sprint-8-governance-3tier-release`
-- **Fase X-DD:** F6 Retro + Release initialization
-- **Plan vigente:** maximalista (Sprints 7-12 todos para v0.1.0)
-- **Próximos sprints:** 9 (Continuous Learning), 10 (Skills + Eval), 11 (Orchestration), 12 (AgentShield), Release v0.1.0
+- **Branch:** `fix/docs-sync-s9-s13` (hotfix de doc drift post-S13)
+- **Fase X-DD:** F4 Build ext done (Sprints 9-13). Próximo: S14 + release v0.1.0
+- **Plan vigente:** Maximalista (S0-13 done, S14 pausado tras docs sync, luego release)
+- **Caveman mode:** ON (full) — ahorro tokens ~60% en respuestas al user
 
-## Tarea inmediata
+## Sprints cerrados (15 PRs)
 
-- Crear archivos de gobernanza OSS (CONTRIBUTING/CODE_OF_CONDUCT/SECURITY/NOTICE) ✅
-- Issue/PR templates en `.github/ISSUE_TEMPLATE/` ✅
-- `devcontainer.json` + `postCreate.sh` ✅
-- `agent.yaml` (manifesto plugin interop) ✅
-- `commitlint.config.js` + workflow CI ✅
-- `WORKING-CONTEXT.md` (este archivo) ✅
-- 3-tier docs: `the-shortform-guide.md` / `the-longform-guide.md` / `the-security-guide.md` 🔄
-- `docs/research/ECC-inspiration-analysis.md` 🔄
-- Trazabilidad + commits + PR + merge
-
-## Blockers
-
-(ninguno actualmente)
+| # | Sprint | PR | Highlight |
+|---|---|---|---|
+| 0 | Reconciliación | #1 | 10 ADRs + briefing dogfooded |
+| 1 | MemPalace externo + Quickstart | #2 | DEPENDENCIES.md, README reescrito, DOMAIN+THREATS |
+| 2 | CI + plan formal | #3 | 4 GitHub Actions + Renovate + pre-commit |
+| 3 | doctor v2 + xdd.config | #4 | SemVer real + --json + schema |
+| 4 | Gate keeper HMAC ⭐ | #5 | 17 tests pytest + dogfooding firmado |
+| 5 | Registry agentes tipado | #7 | 180 agentes auto-migrados + SSoT-derived equipo.md |
+| 6 | MCP server propio ⭐ | #8 | 6 tools stdlib pura + docs 6 IDEs |
+| 7 | Adapters + Hooks + Manifests | #9 | 8 hooks + 6 profiles + install.ps1 + 97 tests |
+| 8 | Gobernanza OSS + 3-tier | #10 | CONTRIBUTING/COC/SECURITY + 3 guides + agent.yaml |
+| 9 | Continuous Learning | #11 | xdd-state.py SQLite + /evolve workflow |
+| 10 | Skills + Eval-harness | #12 | xdd-talk-compact (caveman MIT) + 5 grader types |
+| 11 | Multi-agent orchestration | #13 | xdd-orchestrate.py stdlib pura |
+| 12 | AgentShield + Shannon dep | #14 | 13 reglas SAST + wrapper shn híbrido + rename + ADR-0010 |
+| 13 | White-labeling | #15 | 4 personas + xdd-brand.sh + ADR-0011 |
+| -- | fix CI markdownlint | #6 | (entre S5/S6) |
 
 ## Métricas live
 
 | Métrica | Valor |
 |---------|-------|
-| Tests totales | 97 (post-Sprint 7) |
-| Branches en GitHub | 10 (main + 9 sprints/fixes) |
-| Sprints cerrados | 7 de 12 (58%) |
-| PRs cerrados | 9 |
-| ADRs | 10 |
-| Workflows X-DD | 49 |
+| Tests totales verdes | **160+** (102 pytest + 45 bats + 12 E2E) |
+| Workflows X-DD | **51** (+/evolve +/orchestrate) |
 | Agentes registry | 180 / 15 categorías |
+| Skills propias | 2 (xdd-talk-compact, agent-eval) |
 | Hooks event-driven | 8 |
 | Install profiles | 6 |
+| Install modules | 13 |
+| ADRs Nygard | **11** (added 0010 Shannon, 0011 white-labeling) |
+| Scripts ejecutables | 11 (doctor/init/start/adapt/gate/state/eval/orchestrate/shield/pentest/brand) + install.ps1 |
+| AgentShield rules | 13 |
+| Branches preservadas en remote | 16 |
+| AgentShield audit | **0 crit/high/warning** con `--severity=high` ✓ |
 
-## Decisión pendiente (si aplica)
+## Tarea inmediata
 
-(ninguna actualmente)
+Sync doc drift detectado:
+- README ✅
+- CLAUDE.md ✅
+- WORKING-CONTEXT.md ✅ (este archivo)
+- PROJ-MASTER-PLAN.md (pendiente)
+- docs/CHANGELOG.md (pendiente entries S10-13)
+- agent.yaml (pendiente)
+- INSTALL.md (pendiente)
+- 3-tier guides shortform/longform (pendiente)
+- lecciones.md (agregar lección de drift)
+
+## Pendiente para v0.1.0
+
+| # | Trabajo | Días | Bloquea release |
+|---|---|---|---|
+| docs-sync | (este branch) | ~1h | Sí (calidad pública) |
+| Sprint 14 | Workspace mode + Wizard interactivo + ADR-0012 | ~3 | Sí |
+| Release | tag firmado v0.1.0 + RELEASES/v0.1.0.md + Template Repo activado | ~0.5 | — |
+
+## Blockers
+
+(ninguno)
 
 ## Última actualización
 
-2026-05-26 — Sprint 8 en progreso. Próxima actualización al cerrar.
+2026-05-27 — Branch fix/docs-sync-s9-s13 en curso (~1h trabajo).

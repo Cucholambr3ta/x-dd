@@ -296,27 +296,45 @@ bats tests/e2e/test_quickstart.bats
 
 ## 12. Roadmap post-v0.1.0
 
-### Sprints aún en v0.1.0 (maximalista)
+### Sprints completados en v0.1.0 (estado post-S13)
 
-| Sprint | Capacidad | Días estimados |
-|--------|-----------|----------------|
-| 9 | Continuous Learning (instincts + `/evolve` + SQLite state-store) | 4 |
-| 10 | Skills (SKILL.md) + Eval-harness | 5 |
-| 11 | Multi-agent orchestration runtime | 4 |
-| 12 | AgentShield (security audit del framework) | 4 |
+| Sprint | Capacidad | PR | Estado |
+|--------|-----------|----|----|
+| 0 | Reconciliación + 10 ADRs | #1 | ✅ |
+| 1 | MemPalace externo + Quickstart | #2 | ✅ |
+| 2 | CI base + plan formal | #3 | ✅ |
+| 3 | xdd-doctor v2 + xdd.config.yml | #4 | ✅ |
+| 4 | Gate keeper HMAC ⭐ | #5 | ✅ |
+| 5 | Registry tipado de 180 agentes | #7 | ✅ |
+| 6 | MCP Server propio ⭐ | #8 | ✅ |
+| 7 | Adapters + 8 hooks + Manifests + install.ps1 | #9 | ✅ |
+| 8 | Gobernanza OSS + 3-tier docs + commitlint + agent.yaml | #10 | ✅ |
+| 9 | Continuous Learning (instincts + `/evolve` + SQLite) | #11 | ✅ |
+| 10 | Skills + Eval-harness + xdd-talk-compact (caveman MIT) | #12 | ✅ |
+| 11 | Multi-agent orchestration runtime (`/orchestrate`) | #13 | ✅ |
+| 12 | AgentShield + Shannon dep AGPL híbrida + rename + ADR-0010 | #14 | ✅ |
+| 13 | White-labeling + 4 personas + ADR-0011 | #15 | ✅ |
+
+### Pendientes para v0.1.0
+
+| # | Trabajo | Días |
+|---|---|---|
+| Sprint 14 | Workspace mode (symlinks) + Wizard interactivo (`xdd-new.sh`) + ADR-0012 | ~3 |
+| Release | tag firmado v0.1.0 + RELEASES/v0.1.0.md + Template Repository | ~0.5 |
 
 ### Post-v0.1.0 (v0.2.0 hipotético)
 
-- Crecimiento autónomo (auto-aprobación con delegación, ver respuesta del maintainer sobre "Nivel 3" en lecciones futuras)
+- Crecimiento autónomo Nivel 3 (auto-aprobación con clave delegada + audit retroactivo)
 - SSE transport para MCP server
-- Multi-machine collaboration con clave compartida
+- Multi-machine collaboration con `.gate-key` compartida
 - Plantillas por industria (fintech, e-commerce, SaaS B2B)
 - Internacionalización del README (English)
-- Plantilla GitHub Template Repository
+- TF-IDF clustering en `/evolve` (Sprint 11 usa cluster-by-category simple como MVP)
 
 ## Referencias
 
 - [Plan vigente](MEJORAS-X-DD.md) — task tracking
-- [10 ADRs](docs/adr/) — decisiones arquitectónicas
-- SOUL del proyecto — futuro pendiente como en ECC
+- [11 ADRs](docs/adr/) — decisiones arquitectónicas (incluyendo 0010 Shannon + 0011 white-labeling)
 - [Inspiración ECC analizada](docs/research/ECC-inspiration-analysis.md)
+- [White-labeling guía](docs/BRANDING.md)
+- [Pentest híbrido guía](docs/PENTEST.md)

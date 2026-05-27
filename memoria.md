@@ -11,11 +11,22 @@
 - **Repo:** https://github.com/Cucholambr3ta/x-dd
 
 ## Estado Actual
-- **Fase X-DD:** F4 Build extensión post-Sprint 8 (Sprints 9-14 ampliados)
-- **Sprint en curso:** **Sprint 9 — Continuous Learning** (rama `feat/sprint-9-continuous-learning`)
-- **Plan macro:** MAXIMALISTA + 2 sprints nuevos (13 White-labeling, 14 Workspace). Total v0.1.0: ~36d, 22.5d restantes.
-- **Último hito:** Sprint 8 ampliado mergeado (PR #10, commit `adede3b`): gobernanza OSS + 3-tier docs + commitlint + agent.yaml + research/ + release.yml.
-- **Próximo paso:** scripts/xdd-state.py (SQLite) + stop-pattern-extraction real + /evolve workflow + tests pytest.
+- **Fase X-DD:** F4 Build extensión completa (Sprints 9-13 done); pendiente S14 + release
+- **Sprint en curso:** **fix/docs-sync-s9-s13** (hotfix doc drift post-S13)
+- **Plan macro:** MAXIMALISTA. 13.5d (S0-8) + ~10d (S9-13) = ~23.5d invertidos. Restan ~3.5d (S14 + release).
+- **Último hito:** Sprint 13 mergeado (PR #15, commit `4abfb58`): white-labeling + 4 personas + xdd-brand.sh + ADR-0011.
+- **Próximo paso:** sync docs (9 files), luego Sprint 14 (Workspace+Wizard) + release v0.1.0.
+
+## Stats actuales (post-S13)
+- **160+ tests verdes** (102 pytest + 45 bats + 12 E2E + 1 manifests)
+- **15 PRs cerrados** todos preservados
+- **51 workflows** X-DD
+- **180 agentes** (1 renombrado security-pentest-operator)
+- **2 skills** propios (xdd-talk-compact, agent-eval)
+- **8 hooks** event-driven
+- **6 install profiles** + 13 modules
+- **11 ADRs** Nygard
+- **AgentShield** audit propio: 0 crit/high con `--severity=high`
 
 ## Decisiones Arquitectónicas Clave
 <!-- ADR-lite: una línea por decisión, con fecha y motivo -->

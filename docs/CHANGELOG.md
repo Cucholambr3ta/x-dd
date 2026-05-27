@@ -9,6 +9,67 @@
 
 ## [Unreleased] — main
 
+### Added — Sprint 13 (2026-05-26) — White-labeling (branding + 4 personas + rename trigger)
+- **`scripts/xdd-brand.sh`** — aplica white-labeling al destino. Lee sección
+  `branding` de `xdd.profile.yml`, genera `.claude/commands/<trigger>.md`
+  symlink, copia persona, escribe `.claude/branding.json`. Idempotente.
+- **`prompts/orchestrator/personas/{technical,friendly,casual,formal}.md`** —
+  4 personas presets con ejemplos de cierre de sprint/error/decisión.
+- **`schemas/xdd.profile.schema.json`** — schema actualizado con sección
+  `branding` (ecosystem_name/slug, orchestrator_trigger, persona, output.compact,
+  attribution_required, rename_subworkflows).
+- **`templates/xdd.profile.with-branding.yml`** — template completo.
+- **`docs/adr/0011-white-labeling-policy.md`** — política inmutable
+  (framework upstream) vs customizable (instance).
+- **`docs/BRANDING.md`** — guía operativa con 3 ejemplos (startup casual,
+  fintech formal, consultora dev) + matriz combinable 4×4 con xdd-talk-compact.
+- **`tests/bats/xdd-brand.bats`** — 10 tests verdes.
+- **`.xdd/build/sprint-13/REPORT.md`** — sub-reporte.
+
+### Added — Sprint 12 (2026-05-26) — AgentShield + Shannon dep + rename + ADR-0010
+- **`scripts/xdd-shield.py`** — AgentShield: audit estático del propio framework.
+  13 reglas v0.1.0 (hooks/workflows/registry/MCP/general). Severity crit/high/
+  warning/info, `--ci` gate, `--json` output. Repo X-DD pasa con 0 crit/high.
+- **`scripts/xdd-pentest.sh`** — wrapper híbrido. Si Shannon CLI (`shn`)
+  instalado: delega capacidades dinámicas (fuzz/verify/sandbox). Sin Shannon:
+  degrada elegantemente a STRIDE + source-review estático con aviso de skip.
+- **Rename** `prompts/agents/security/shannon-secops-expert.md` →
+  `security-pentest-operator.md`. Frontmatter actualizado con constraints
+  declarados. Atribución a Shannon preservada en system prompt + NOTICE.
+- **`docs/adr/0010-shannon-external-dep-pentest-operator-naming.md`** —
+  Shannon como dep externa AGPL-3.0 opcional + rename para neutralidad.
+- **`docs/PENTEST.md`** — guía operativa con división Shannon↔AgentShield.
+- **`DEPENDENCIES.md`** — nueva sección Pentesting con disclaimer AGPL.
+- **`tests/test_shield.py`** — 10 tests verdes (102 total).
+- **`.xdd/build/sprint-12/REPORT.md`**.
+
+### Added — Sprint 11 (2026-05-26) — Multi-agent orchestration runtime
+- **`scripts/xdd-orchestrate.py`** — runtime stdlib pura (ThreadPoolExecutor,
+  no PM2). 3 orchestration types: sequential / parallel / parallel_then_sync.
+  Modo dry-run por default + `--exec` para validar prompts. NO ejecuta LLM
+  calls directamente; delega al orquestador vía MCP server (Sprint 6).
+- **`.agent/workflows/orchestrate.md`** — workflow `/orchestrate` catalogado
+  sección 10. 51 workflows totales.
+- **`tests/test_orchestrate.py`** — 13 tests verdes (92 total).
+- **`.xdd/build/sprint-11/REPORT.md`**.
+
+### Added — Sprint 10 (2026-05-26) — Skills + Eval-harness + xdd-talk-compact
+- **`skills/xdd-talk-compact/SKILL.md`** — compresión output orquestador,
+  3 niveles (lite/standard/ultra), inspirado en caveman (juliusbrussee/caveman,
+  MIT, 65k stars) con atribución en NOTICE. Combinable con persona (Sprint 13)
+  en matriz 4×3.
+- **`skills/agent-eval/SKILL.md`** — eval-harness con 5 grader types
+  (structural/behavioral/output_match/pass_at_k/token_count_reduction).
+- **`scripts/xdd-eval.py`** — harness Python stdlib pura. `list`/`run`/`show`
+  + `--ci` gate. Parser YAML mínimo. Token counter con `ignore_code_blocks`.
+- **`evals/xdd-talk-compact/cases.jsonl + grader.yaml`** — suite real,
+  5 cases, threshold 50% reduction. Validado: 5/5 pasan (~60% avg reduction).
+- **`prompts/skills/registry.json` + `schemas/skills.schema.json`** — SSoT.
+- **`tests/test_eval.py`** — 17 tests verdes (79 total).
+- **Fix CI markdownlint** — 2 errores en `the-longform-guide.md` (link
+  fragments + empty link).
+- **`.xdd/build/sprint-10/REPORT.md`**.
+
 ### Added — Sprint 9 (2026-05-26) — Continuous Learning (instincts + /evolve + SQLite)
 
 - **`scripts/xdd-state.py`** — state store SQLite con 5 subcomandos

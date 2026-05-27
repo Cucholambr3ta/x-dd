@@ -289,5 +289,58 @@ Los tres mecanismos:
 
 Ver [docs/RETROFIT_GUIDE.md](./docs/RETROFIT_GUIDE.md) para el detalle.
 
+### Workflows Sprints 9-13 (capacidades v0.1.0)
+
+| Comando | Sprint | Propósito |
+|---------|--------|-----------|
+| `/evolve` | 9 | Cluster instincts SQLite → propone skills/agents/commands (aprobación humana T6.1) |
+| `/orchestrate` | 11 | Ejecuta composition_patterns del registry (sequential/parallel/sync) |
+
+## Scripts Python/Bash X-DD v0.1.0 (post-S13)
+
+| Script | Función | Sprint |
+|--------|---------|--------|
+| `scripts/xdd-doctor.sh` | Diagnóstico entorno (SemVer real, `--json`) | 3 |
+| `scripts/xdd-init.sh` | Bootstrap proyecto (`--profile`, `--list-profiles`) | 7 |
+| `scripts/xdd-start.sh` | MemPalace + orquestador | 0 |
+| `scripts/xdd-adapt.sh` | Generar config IDE (claude-code/opencode DRY) | 7 |
+| `scripts/xdd-gate.py` | Gate keeper HMAC (init/validate/transition/approve/status) | 4 |
+| `scripts/xdd-state.py` | SQLite state-store para instincts | 9 |
+| `scripts/xdd-eval.py` | Eval-harness con 5 grader types | 10 |
+| `scripts/xdd-orchestrate.py` | Runtime multi-agent | 11 |
+| `scripts/xdd-shield.py` | AgentShield audit del framework (13 reglas) | 12 |
+| `scripts/xdd-pentest.sh` | Wrapper Shannon híbrido | 12 |
+| `scripts/xdd-brand.sh` | Aplica white-labeling | 13 |
+| `scripts/lint-workflows.sh` | Lint frontmatter + catálogo | 1 |
+| `scripts/migrate-agents-to-registry.py` | Re-genera registry.json | 5 |
+| `scripts/validate-registry.py` | Valida registry + id-refs (`--strict`) | 5 |
+| `scripts/generate-equipo.sh` | Regenera docs/equipo.md | 5 |
+| `install.ps1` | Bootstrap Windows | 7 |
+
+## Dependencias opcionales adicionales (Sprint 12+)
+
+### Shannon CLI (pentest dinámico, AGPL-3.0)
+
+```bash
+npx @keygraph/shannon setup
+```
+
+> ⚠️ **AGPL-3.0**. Sin Shannon X-DD funciona en modo híbrido degradado (STRIDE + source review estático). Con Shannon: dynamic fuzzing + verify + sandbox. Ver `docs/PENTEST.md` y ADR-0010. **X-DD NO bundle Shannon** — tu proyecto X-DD no se contamina con AGPL.
+
+## Docs Sprints 9-13
+
+| Doc | Sprint |
+|-----|--------|
+| [docs/GATE.md](./docs/GATE.md) | 4 (Gate keeper HMAC) |
+| [docs/CONFIG.md](./docs/CONFIG.md) | 3 (xdd.config.yml) |
+| [docs/INSTALL_PROFILES.md](./docs/INSTALL_PROFILES.md) | 7 (manifest-driven install) |
+| [docs/HOOKS.md](./docs/HOOKS.md) | 7 (8 hooks event-driven) |
+| [docs/MCP_INTEGRATION.md](./docs/MCP_INTEGRATION.md) | 6 (MCP server propio) |
+| [docs/PENTEST.md](./docs/PENTEST.md) | 12 (Shannon híbrido + AgentShield) |
+| [docs/BRANDING.md](./docs/BRANDING.md) | 13 (white-labeling) |
+| [the-shortform-guide.md](./the-shortform-guide.md) | 8 (~15min quickstart) |
+| [the-longform-guide.md](./the-longform-guide.md) | 8 (referencia exhaustiva) |
+| [the-security-guide.md](./the-security-guide.md) | 8 (threat model + SecDD) |
+
 ---
 *X-DD System — Instalación y configuración*
