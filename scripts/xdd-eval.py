@@ -92,12 +92,49 @@ def grader_token_reduction(case: dict, grader: dict) -> tuple[bool, str]:
     return False, f"reduction only {reduction:.1f}% (<{threshold_pct}%)"
 
 
+def grader_inspect_ai_compat(case: dict, grader: dict) -> tuple[bool, str]:
+    """Sprint 20 ADR-0025: ejecutar suite formato Inspect AI.
+    Case schema: {input, target, scorers: [match|includes|regex]}.
+    Devuelve True si todos los scorers pasan."""
+    target = case.get("target", "")
+    output = case.get("output", case.get("actual", ""))
+    scorers = grader.get("scorers", ["match"])
+    results = []
+    for scorer in scorers:
+        if scorer == "match":
+            results.append(output.strip() == target.strip())
+        elif scorer == "includes":
+            results.append(target.lower() in output.lower())
+        elif scorer == "regex":
+            try:
+                results.append(bool(re.search(target, output)))
+            except re.error:
+                results.append(False)
+        else:
+            results.append(False)
+    ok = all(results)
+    detail = f"scorers={scorers} results={results}"
+    return ok, detail
+
+
+def grader_pass_at_one_external(case: dict, grader: dict) -> tuple[bool, str]:
+    """Sprint 20 ADR-0026: external benchmark pass@1 (Terminal-Bench, SWE-bench).
+    Espera case con {actual_pass: bool, task_id: str, expected_outcome: pass|fail}."""
+    actual = case.get("actual_pass", False)
+    expected = case.get("expected_outcome", "pass") == "pass"
+    if actual == expected:
+        return True, f"pass@1 ok task={case.get('task_id', '?')}"
+    return False, f"pass@1 fail task={case.get('task_id', '?')} expected={expected} got={actual}"
+
+
 GRADERS = {
     "structural": grader_structural,
     "behavioral": grader_behavioral,
     "output_match": grader_output_match,
     "pass_at_k": grader_pass_at_k,
     "token_count_reduction": grader_token_reduction,
+    "inspect_ai_compat": grader_inspect_ai_compat,
+    "pass_at_one_external": grader_pass_at_one_external,
 }
 
 
