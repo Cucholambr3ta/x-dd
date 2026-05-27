@@ -12,6 +12,30 @@
     },
     "capabilities": {"type": "object", "additionalProperties": {"type": "boolean"}},
     "stacks": {"type": "object"},
+    "workspace": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Workspace mode (Sprint 14 + ADR-0012). Permite que X-DD opere sobre un workspace con N proyectos.",
+      "properties": {
+        "enabled": {"type": "boolean", "default": false},
+        "root": {"type": "string", "description": "Ruta absoluta o relativa al workspace root"},
+        "projects": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["name", "path"],
+            "properties": {
+              "name": {"type": "string", "pattern": "^[a-z][a-z0-9-]+$"},
+              "path": {"type": "string"},
+              "profile": {"type": "string", "enum": ["minimal", "core", "developer", "security", "research", "full"]}
+            }
+          }
+        },
+        "shared_memory": {"type": "boolean", "default": true, "description": "Comparte ~/.xdd/state.db entre proyectos del workspace"},
+        "shared_gate_key": {"type": "boolean", "default": false, "description": "Comparte .gate-key entre proyectos (security warning)"}
+      }
+    },
     "branding": {
       "type": "object",
       "additionalProperties": false,
