@@ -171,34 +171,118 @@ def cmd_list(args):
     return 0
 
 
+def _tokenize(text):
+    """Tokenize: lowercase, alphanumeric, drop stopwords + len<3."""
+    import re
+    stop = {"the", "a", "an", "and", "or", "but", "of", "to", "in", "on", "at",
+            "for", "by", "with", "is", "are", "was", "be", "as", "from", "que",
+            "el", "la", "los", "las", "de", "en", "y", "o", "un", "una"}
+    toks = re.findall(r"[a-z0-9]+", text.lower())
+    return [t for t in toks if len(t) >= 3 and t not in stop]
+
+
+def _tfidf_vectors(docs):
+    """Compute TF-IDF vectors (stdlib pure, no sklearn). Returns list of dict[term]=weight."""
+    import math
+    tokenized = [_tokenize(d) for d in docs]
+    df = {}
+    for toks in tokenized:
+        for term in set(toks):
+            df[term] = df.get(term, 0) + 1
+    n = len(docs)
+    vectors = []
+    for toks in tokenized:
+        tf = {}
+        for t in toks:
+            tf[t] = tf.get(t, 0) + 1
+        vec = {}
+        for term, count in tf.items():
+            tf_norm = count / max(len(toks), 1)
+            idf = math.log((n + 1) / (df.get(term, 0) + 1)) + 1
+            vec[term] = tf_norm * idf
+        vectors.append(vec)
+    return vectors
+
+
+def _cosine(v1, v2):
+    """Cosine similarity between sparse vectors (dict[term]=weight)."""
+    import math
+    common = set(v1) & set(v2)
+    num = sum(v1[t] * v2[t] for t in common)
+    n1 = math.sqrt(sum(w * w for w in v1.values()))
+    n2 = math.sqrt(sum(w * w for w in v2.values()))
+    if n1 == 0 or n2 == 0:
+        return 0.0
+    return num / (n1 * n2)
+
+
+def _tfidf_cluster(rows, similarity_threshold=0.3):
+    """Cluster instincts by TF-IDF cosine similarity (single-pass greedy clustering)."""
+    if not rows:
+        return []
+    def _ctx(row):
+        try:
+            v = row["context"]
+        except (KeyError, IndexError):
+            v = row.get("context") if hasattr(row, "get") else None
+        return v or ""
+    docs = [f"{r['category']} {r['pattern']} {_ctx(r)}" for r in rows]
+    vectors = _tfidf_vectors(docs)
+    clusters = []
+    cluster_centroids = []
+    for i, row in enumerate(rows):
+        assigned = False
+        for c_idx, centroid in enumerate(cluster_centroids):
+            if _cosine(vectors[i], centroid) >= similarity_threshold:
+                clusters[c_idx].append(dict(row))
+                # Update centroid: simple average of vectors in cluster
+                for t, w in vectors[i].items():
+                    centroid[t] = (centroid.get(t, 0) + w) / 2
+                assigned = True
+                break
+        if not assigned:
+            clusters.append([dict(row)])
+            cluster_centroids.append(dict(vectors[i]))
+    return clusters
+
+
 def cmd_evolve(args):
-    """Cluster instincts por categoría + confidence ≥ threshold → propuestas."""
+    """Cluster instincts vía TF-IDF cosine similarity (Sprint 16) → propuestas."""
     conn = db(args.db)
     threshold = args.min_confidence or 0.5
     rows = conn.execute(
         "SELECT * FROM instincts WHERE confidence >= ? AND promoted = 0 "
-        "ORDER BY category, confidence DESC", (threshold,)
+        "ORDER BY confidence DESC", (threshold,)
     ).fetchall()
 
-    # Cluster simple por categoría (Sprint 9 MVP — TF-IDF en Sprint 11)
-    clusters = {}
-    for r in rows:
-        clusters.setdefault(r["category"], []).append(dict(r))
+    use_tfidf = not getattr(args, "category_only", False)
+    if use_tfidf:
+        sim_threshold = getattr(args, "similarity_threshold", None) or 0.3
+        groups = _tfidf_cluster(rows, similarity_threshold=sim_threshold)
+        clusters = {f"cluster_{i}": items for i, items in enumerate(groups)}
+    else:
+        clusters = {}
+        for r in rows:
+            clusters.setdefault(r["category"], []).append(dict(r))
 
     proposals = []
-    for cat, items in clusters.items():
+    for cluster_label, items in clusters.items():
         if len(items) < (args.min_cluster_size or 3):
             continue
-        # Propone tipo según categoría
+        # Modo dominante en el cluster determina tipo propuesto
+        from collections import Counter
+        cats = Counter(i["category"] for i in items)
+        dominant_cat = cats.most_common(1)[0][0]
         proposed_type = {
             "user_action": "command",
             "auto_trigger": "skill",
             "multi_step": "agent",
-        }.get(cat, "skill")
-        cluster_id = f"clu_{hashlib.sha256(cat.encode()).hexdigest()[:12]}"
-        proposed_name = f"{cat}-auto-{cluster_id[-6:]}"
+        }.get(dominant_cat, "skill")
+        seed = f"{cluster_label}-{dominant_cat}"
+        cluster_id = f"clu_{hashlib.sha256(seed.encode()).hexdigest()[:12]}"
+        proposed_name = f"{dominant_cat}-auto-{cluster_id[-6:]}"
         rationale = (
-            f"Cluster {len(items)} instincts of category '{cat}' with avg confidence "
+            f"Cluster {len(items)} instincts (dominant category: '{dominant_cat}') with avg confidence "
             f"{sum(i['confidence'] for i in items) / len(items):.2f}. "
             f"Top pattern: {items[0]['pattern'][:80]}"
         )
@@ -319,6 +403,10 @@ def build_parser():
     p_ev = sub.add_parser("evolve", help="Clusters instincts → propuestas")
     p_ev.add_argument("--min-confidence", type=float, default=0.5)
     p_ev.add_argument("--min-cluster-size", type=int, default=3)
+    p_ev.add_argument("--similarity-threshold", type=float, default=0.3,
+                      help="TF-IDF cosine threshold para agrupar (Sprint 16)")
+    p_ev.add_argument("--category-only", action="store_true",
+                      help="Modo legacy Sprint 9: cluster sólo por categoría")
     p_ev.add_argument("--generate", action="store_true",
                       help="Guardar propuestas en tabla evolutions")
     p_ev.add_argument("--json", action="store_true")
