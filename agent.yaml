@@ -35,16 +35,17 @@ model:
 workflows:
   source: ".agent/workflows/"
   catalog: "prompts/workflows/03_workflows_catalog.md"
-  count: 49
+  count: 51                       # Sprint 9 +/evolve, Sprint 11 +/orchestrate
   # Categorías clave
   categories:
-    - orchestration   # /xdd, /xdd-build, /xdd-trace, /xdd-ingest
+    - orchestration   # /xdd, /xdd-build, /xdd-trace, /xdd-ingest, /orchestrate
     - planning        # /fase-requisitos, /plan-fases, /analisis-impacto
     - qa              # /qa-review, /generate-unit-tests, /pruebas-humo, /pruebas-fuzz, /stress-test
     - security        # /security-audit, /advanced-agentic-pentesting, /secure-isolation-ops
     - deploy          # /deploy-prod, /ci-cd-setup, /incidente-ID, /rollback
     - lifecycle       # /cierre-fase, /adr-new, /release-cut
     - retrofit        # /ux-discovery, /api-contract, /privacy-review, /feature-flag, etc.
+    - learning        # /evolve (Sprint 9 continuous learning)
 
 # 2. Agentes especializados
 agents:
@@ -121,24 +122,99 @@ dependencies:
   recommended:
     - {name: mempalace, min: "3.3.0", license: MIT, repo: "https://github.com/MemPalace/mempalace"}
     - {name: node, min: "20.0.0"}
+  optional:
+    - {name: shannon, license: AGPL-3.0, repo: "https://github.com/KeygraphHQ/shannon",
+        purpose: "Dynamic pentest (wrapper híbrido en scripts/xdd-pentest.sh)"}
+    - {name: caveman, license: MIT, repo: "https://github.com/juliusbrussee/caveman",
+        purpose: "Token compression skill (instalación global del usuario, X-DD tiene xdd-talk-compact propio)"}
   declared: "DEPENDENCIES.md"
 
 # === Dogfooding ===
 dogfooding:
   visible: true                          # ADR-0001
-  artifacts: [".xdd/", "memoria.md", "lecciones.md", "docs/adr/", "PROJ-MASTER-PLAN.md", "docs/CHANGELOG.md", "RELEASES/"]
+  artifacts: [".xdd/", "memoria.md", "lecciones.md", "docs/adr/", "PROJ-MASTER-PLAN.md", "docs/CHANGELOG.md", "RELEASES/", "WORKING-CONTEXT.md"]
   current_phases:
     briefing: APPROVED
     spec: APPROVED
     plan: APPROVED
-    build: in_progress  # se actualiza al cerrar sprint actual
+    build: APPROVED
+    qa: in_progress  # AgentShield ya audita; QA_REPORT.md presente
+    retro: pending  # Sprint 14 + release
 
 # === Testing ===
 testing:
-  total_tests: 97
-  bats: 35
-  pytest: 50
+  total_tests: 160          # post-S13: 102 pytest + 45 bats + 12 E2E + 1 manifests
+  pytest: 102               # gate(17) + mcp(17) + manifests(13) + state(12) + eval(17) + orchestrate(13) + shield(10) + helpers(3)
+  bats: 45                  # core(35) + xdd-brand(10)
   e2e: 12
+
+# === Sprint 9+: Continuous Learning ===
+continuous_learning:
+  enabled: true
+  state_db: "~/.xdd/state.db"
+  state_script: "scripts/xdd-state.py"
+  evolve_workflow: ".agent/workflows/evolve.md"
+  hook: ".agent/hooks/scripts/stop-pattern-extraction.sh"
+  instinct_schema:
+    categories: [user_action, auto_trigger, multi_step, tool_use, error_pattern, preference]
+  approval_required: true   # T6.1 — /evolve nunca auto-promote
+  opt_out_env: "XDD_LEARNING_DISABLED"
+
+# === Sprint 10: Skills + Eval-harness ===
+skills:
+  registry: "prompts/skills/registry.json"
+  schema: "schemas/skills.schema.json"
+  count: 2                  # xdd-talk-compact + agent-eval
+  catalog:
+    - {name: "xdd-talk-compact", category: "output-optimization", inspired_by: "juliusbrussee/caveman MIT"}
+    - {name: "agent-eval", category: "quality-gate", inspired_by: "ECC agent-eval MIT"}
+
+eval_harness:
+  script: "scripts/xdd-eval.py"
+  grader_types: [structural, behavioral, output_match, pass_at_k, token_count_reduction]
+  ci_mode: "--ci"
+  suites_dir: "evals/"
+
+# === Sprint 11: Multi-agent orchestration runtime ===
+orchestration:
+  runtime: "scripts/xdd-orchestrate.py"
+  workflow: ".agent/workflows/orchestrate.md"
+  types: [sequential, parallel, parallel_then_sync]
+  patterns_in_registry: 3   # security_review, feature_squad, release_train
+  delegates_to_mcp: true    # invocaciones reales vía MCP server (Sprint 6)
+  no_pm2: true              # stdlib pura, ThreadPoolExecutor
+
+# === Sprint 12: AgentShield + Shannon integration ===
+agent_shield:
+  script: "scripts/xdd-shield.py"
+  rules_count: 13
+  severity_levels: [crit, high, warning, info]
+  ci_gate: true             # --ci exit 1 on findings
+  audit_target: "framework_self"  # diferente de Shannon (audits client apps)
+
+pentest_wrapper:
+  script: "scripts/xdd-pentest.sh"
+  shannon_dep:
+    repo: "https://github.com/KeygraphHQ/shannon"
+    license: "AGPL-3.0"
+    bundled: false
+    install: "npx @keygraph/shannon"
+  hybrid_policy: "degraded_no_shannon"  # STRIDE+source-review work sin shn; fuzz/verify requieren shn
+  adr: "docs/adr/0010-shannon-external-dep-pentest-operator-naming.md"
+
+# === Sprint 13: White-labeling ===
+white_labeling:
+  enabled: true
+  script: "scripts/xdd-brand.sh"
+  profile_section: "branding"
+  personas:
+    presets: [technical, friendly, casual, formal]
+    custom_supported: true
+  trigger_rename: true       # /xdd → /<custom>
+  subworkflow_rename: false  # default false, opt-in
+  matrix_combinable: true    # persona × xdd-talk-compact = 4×4
+  adr: "docs/adr/0011-white-labeling-policy.md"
+  docs: "docs/BRANDING.md"
 
 # === Documentación ===
 docs:

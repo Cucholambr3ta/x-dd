@@ -20,6 +20,16 @@ Categorías sugeridas: `ARQUITECTURA`, `SEGURIDAD`, `DOMINIO`, `TESTING`, `DEVOP
 
 ## Lecciones
 
+### [PROCESO] ⚠️ Doc drift entre sprints rápidos — auditar README/CLAUDE/WORKING-CONTEXT/agent.yaml cada N sprints — 2026-05-27
+**Contexto:** Tras correr Sprints 9-13 en secuencia rápida (4 sprints consecutivos sin pausa), el user preguntó "¿toda la documentación está actualizada?". Audit reveló drift significativo en 9 files macro: README sin badges/capacidades nuevas, CLAUDE.md sin scripts nuevos, WORKING-CONTEXT decía "Sprint 8 en curso", PROJ-MASTER-PLAN con S10 "🔄 En curso" (ya done), CHANGELOG sin entries S10/11/12/13, agent.yaml con workflows count viejo, INSTALL.md sin nuevos scripts/disclaimer Shannon, 3-tier guides sin secciones nuevas.
+**Problema:** `/cierre-fase` + `/xdd-trace` se aplicaron por sprint pero **solo tocan** memoria.md + lecciones.md + PROJ-MASTER-PLAN + CHANGELOG. Files macro (README/CLAUDE/WORKING-CONTEXT/agent.yaml/INSTALL/guides) **NO están en el flujo automático** y solo se actualizan ad-hoc.
+**Causa raíz:** Falta de checklist explícito de "files macro a tocar cada N sprints". El protocolo de cierre por sprint cubre trazabilidad granular pero no la doc estructural high-level que ve el visitante del repo OSS.
+**Lección:** Cualquier framework OSS con dogfooding visible necesita 2 niveles de trazabilidad:
+1. **Por-sprint** (granular): memoria/lecciones/CHANGELOG/PROJ-MASTER-PLAN (ya cubierto por /cierre-fase + /xdd-trace).
+2. **Por-bloque** (estructural): README/CLAUDE/WORKING-CONTEXT/agent.yaml/INSTALL/guides — auditar **cada 3-5 sprints** o al cierre de cada fase X-DD.
+Hacer un workflow `/docs-sync` (post-v0.1.0) que detecte drift automáticamente comparando contra git log + manifests. Patrón: SSoT-derived docs (como `docs/equipo.md` auto-generado desde registry) reducen drift; aplicar a más files si posible.
+**Aplica a:** Cualquier framework OSS publicable que evolucione rápido. Refleja en `docs/research/` patrones de mantenimiento de docs. Considerar agregar a Sprint 14 o release v0.1.0 un workflow `/docs-sync` futuro.
+
 ### [TESTING] `capsys.readouterr()` necesita limpieza previa cuando hay output mezclado — 2026-05-26
 **Contexto:** Sprint 9. Tests pytest de xdd-state.py invocaban init() + record() (con print "[state] ✓") + cmd_list(json=True). `capsys.readouterr().out` capturaba TODO acumulado, y `json.loads()` fallaba con "Extra data".
 **Causa:** capsys es FIFO acumulativo. Sin limpieza, retorna todo desde el último readouterr().

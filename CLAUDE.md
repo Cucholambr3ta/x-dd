@@ -39,6 +39,32 @@ Los workflows producen artefactos versionables en la raíz del proyecto. Consult
 | `CHANGELOG.md` + `RELEASES/v*.md` | `/release-cut` | Trazabilidad de releases |
 | `docs/adr/NNNN-*.md` | `/adr-new` | Decisiones arquitectónicas |
 | `xdd.profile.yml` | `xdd-init.sh` | Perfil del proyecto |
+| `~/.xdd/state.db` | `scripts/xdd-state.py` | Continuous Learning instincts (Sprint 9) |
+| `skills/<name>/SKILL.md` | manual o `/evolve` | Sistema de skills (Sprint 10) |
+| `evals/<suite>/cases.jsonl + grader.yaml` | `scripts/xdd-eval.py` | Eval-harness (Sprint 10) |
+| `.xdd/qa/QA_REPORT.md` + AgentShield reports | `scripts/xdd-shield.py audit` | Audit estático del framework (Sprint 12) |
+| `.claude/branding.json` + `.claude/orchestrator-persona.md` | `scripts/xdd-brand.sh` | White-labeling aplicado (Sprint 13) |
+
+## 🛠️ Scripts disponibles (post-S13)
+
+| Script | Función |
+|---|---|
+| `xdd-doctor.sh` | Diagnóstico entorno + `--json` |
+| `xdd-init.sh` | Bootstrap proyecto + `--profile` + `--list-profiles` |
+| `xdd-start.sh` | Arranca MemPalace + orquestador |
+| `xdd-adapt.sh` | Generar config IDE (claude-code/opencode + DRY symlinks) |
+| `xdd-gate.py` | Gate keeper HMAC-SHA256 (init/validate/transition/approve/status) |
+| `xdd-state.py` | SQLite state-store para instincts (Sprint 9) |
+| `xdd-eval.py` | Eval-harness con 5 grader types (Sprint 10) |
+| `xdd-orchestrate.py` | Runtime multi-agent (sequential/parallel/parallel_then_sync) (Sprint 11) |
+| `xdd-shield.py` | AgentShield audit del framework (Sprint 12) |
+| `xdd-pentest.sh` | Wrapper híbrido Shannon (Sprint 12) |
+| `xdd-brand.sh` | Aplica white-labeling al proyecto (Sprint 13) |
+| `lint-workflows.sh` | Lint frontmatter + catálogo |
+| `migrate-agents-to-registry.py` | Re-genera `registry.json` desde `.md` |
+| `validate-registry.py --strict` | Valida registry + id-refs |
+| `generate-equipo.sh` | Regenera `docs/equipo.md` desde registry |
+| `install.ps1` | Bootstrap Windows (PowerShell) |
 
 ## 💎 Directrices de Calidad
 1. **Portabilidad Absoluta:** Prohibido generar rutas absolutas del host. Toda ruta debe ser estrictamente relativa (`./` o `../`).

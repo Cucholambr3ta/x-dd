@@ -2,11 +2,13 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Last commit](https://img.shields.io/github/last-commit/Cucholambr3ta/x-dd)](https://github.com/Cucholambr3ta/x-dd/commits/main)
-[![ADRs](https://img.shields.io/badge/ADRs-10-blue)](docs/adr/)
-[![Workflows](https://img.shields.io/badge/workflows-49-green)](.agent/workflows/)
+[![ADRs](https://img.shields.io/badge/ADRs-11-blue)](docs/adr/)
+[![Workflows](https://img.shields.io/badge/workflows-51-green)](.agent/workflows/)
+[![Agents](https://img.shields.io/badge/agents-180-orange)](docs/equipo.md)
+[![Tests](https://img.shields.io/badge/tests-160%2B%20green-brightgreen)](tests/)
 [![MemPalace](https://img.shields.io/badge/MemPalace-%E2%89%A53.3.0-purple)](DEPENDENCIES.md)
 
-**Pipeline de desarrollo de alta calidad** que integra múltiples metodologías *-Driven Development* como capas sobre un Gated Pipeline de 6 fases, orquestado por **Claude Code**, **OpenCode** o cualquier IDE compatible con **MCP**, apoyado por una agencia de 77+ subagentes especializados.
+**Pipeline de desarrollo de alta calidad** que integra múltiples metodologías *-Driven Development* como capas sobre un Gated Pipeline de 6 fases, orquestado por **Claude Code**, **OpenCode** o cualquier IDE compatible con **MCP**, apoyado por una agencia de 180 subagentes especializados.
 
 > 📌 X-DD se aplica a sí mismo: ver [.xdd/](.xdd/), [docs/adr/](docs/adr/), [PROJ-MASTER-PLAN.md](PROJ-MASTER-PLAN.md) y [docs/CHANGELOG.md](docs/CHANGELOG.md) para el dogfooding visible (ver [ADR-0001](docs/adr/0001-dogfooding-visible-commiteable.md)).
 
@@ -183,6 +185,18 @@ Nueva sesión          →  xdd-start.sh      →  mempalace mine → orquestado
 | Tool interna / script | **ÁGIL**: FDD + SDD + TDD |
 | Bugfix > 20 líneas | **MÍNIMO**: SDD + TDD |
 | Bugfix < 10 líneas | **DIRECTO**: sin pipeline (Art. 8) |
+
+## Capacidades avanzadas (Sprints 9-13)
+
+| Capacidad | Sprint | Doc |
+|---|---|---|
+| **Continuous Learning** — auto-extrae instincts a SQLite + `/evolve` propone skills/agents/commands. Aprobación humana obligatoria (T6.1) | 9 | [`scripts/xdd-state.py`](scripts/xdd-state.py), [`.agent/workflows/evolve.md`](.agent/workflows/evolve.md) |
+| **Skills + Eval-harness** — sistema `skills/<name>/SKILL.md` + 5 grader types (structural/behavioral/output_match/pass_at_k/token_count_reduction) | 10 | [`skills/`](skills/), [`scripts/xdd-eval.py`](scripts/xdd-eval.py) |
+| **xdd-talk-compact** — compresión output del orquestador inspirada en [caveman](https://github.com/juliusbrussee/caveman) (MIT). 3 niveles. Ahorro ~50-75% tokens manteniendo precisión técnica | 10 | [`skills/xdd-talk-compact/SKILL.md`](skills/xdd-talk-compact/SKILL.md) |
+| **Multi-agent orchestration runtime** — ejecuta `composition_patterns` del registry (sequential/parallel/parallel_then_sync) | 11 | [`scripts/xdd-orchestrate.py`](scripts/xdd-orchestrate.py), [`.agent/workflows/orchestrate.md`](.agent/workflows/orchestrate.md) |
+| **AgentShield** — audit estático del propio framework (13 reglas SAST). Hooks, registry, MCP tools, workflows | 12 | [`scripts/xdd-shield.py`](scripts/xdd-shield.py) |
+| **Shannon integration (híbrido)** — wrapper para [Shannon CLI](https://github.com/KeygraphHQ/shannon) AGPL-3.0 (dep externa opcional). STRIDE + source review sin Shannon; dynamic fuzzing + verify con Shannon | 12 | [`scripts/xdd-pentest.sh`](scripts/xdd-pentest.sh), [`docs/PENTEST.md`](docs/PENTEST.md) |
+| **White-labeling** — branding por org. ecosystem_name, custom trigger (`/xdd` → `/helios`), 4 personas presets (technical/friendly/casual/formal) + custom | 13 | [`scripts/xdd-brand.sh`](scripts/xdd-brand.sh), [`docs/BRANDING.md`](docs/BRANDING.md) |
 
 ## Qué NO es X-DD
 

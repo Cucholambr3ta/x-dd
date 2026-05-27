@@ -115,24 +115,78 @@ bash scripts/xdd-init.sh /tu/proyecto --modules=core,mcp-server,hooks-runtime
 `bash scripts/generate-equipo.sh`. Composition patterns: `security_review`,
 `feature_squad`, `release_train`.
 
-## Próximos sprints (v0.1.0 maximalista)
+## Capacidades v0.1.0 avanzadas (Sprints 9-13 ya done)
 
-| Sprint | Capacidad | Estado |
-|--------|-----------|--------|
-| 9 | Continuous Learning (instincts + `/evolve` + SQLite) | 🔄 próximo |
-| 10 | Skills (SKILL.md) + Eval-harness | ⏳ |
-| 11 | Multi-agent orchestration runtime | ⏳ |
-| 12 | AgentShield (security audit del propio framework) | ⏳ |
-| Release | tag firmado v0.1.0 | ⏳ |
+### Continuous Learning (Sprint 9)
+Hook `stop:pattern-extraction` extrae patrones de sesiones → SQLite (`~/.xdd/state.db`).
+`/evolve` agrupa instincts ≥3 con confidence ≥0.5 → propone skills/agents/commands.
+**Aprobación humana obligatoria** (T6.1).
+
+```bash
+python3 scripts/xdd-state.py stats
+python3 scripts/xdd-state.py evolve --generate  # propuestas en evolutions table
+```
+
+### Skills + Eval-harness (Sprint 10)
+Sistema `skills/<name>/SKILL.md`. 5 grader types (structural/behavioral/output_match/pass_at_k/token_count_reduction).
+Skill `xdd-talk-compact` reduce ~50-75% tokens del orquestador (inspirado en
+[caveman](https://github.com/juliusbrussee/caveman) MIT).
+
+```bash
+python3 scripts/xdd-eval.py list
+python3 scripts/xdd-eval.py run --all --ci
+```
+
+### Multi-agent orchestration (Sprint 11)
+`/orchestrate` ejecuta composition_patterns (sequential/parallel/parallel_then_sync).
+
+```bash
+python3 scripts/xdd-orchestrate.py list
+python3 scripts/xdd-orchestrate.py run --pattern=security_review --json
+```
+
+### AgentShield + Shannon híbrido (Sprint 12)
+- **`xdd-shield`** audita el propio framework (13 reglas SAST). Repo X-DD pasa 0 crit/high.
+- **`xdd-pentest`** wrapper: usa Shannon CLI ([KeygraphHQ/shannon](https://github.com/KeygraphHQ/shannon), AGPL-3.0) si instalado; degrada a STRIDE + source-review estático si no.
+
+```bash
+python3 scripts/xdd-shield.py audit --severity=high --ci
+bash scripts/xdd-pentest.sh stride                  # sin Shannon
+bash scripts/xdd-pentest.sh fuzz https://example.com  # con Shannon
+```
+
+### White-labeling (Sprint 13)
+Renombrar instance + custom trigger + 4 personas presets (technical/friendly/casual/formal) en `xdd.profile.yml` sección `branding`.
+
+```yaml
+branding:
+  ecosystem_name: "Helios"
+  orchestrator_trigger: "helios"   # /xdd → /helios
+  orchestrator_persona:
+    tone: "friendly"
+```
+
+```bash
+bash scripts/xdd-brand.sh /tu/proyecto
+```
+
+## Roadmap pendiente para v0.1.0
+
+| # | Capacidad | Estado |
+|---|---|---|
+| Sprint 14 | Workspace mode + Wizard interactivo + ADR-0012 | ⏳ pausado |
+| Release | tag firmado v0.1.0 + RELEASES/v0.1.0.md | ⏳ |
 
 ## Para saber más
 
-- **Filosofía + decisiones:** `docs/adr/` (10 ADRs Nygard)
+- **Filosofía + decisiones:** `docs/adr/` (11 ADRs Nygard)
 - **Referencia exhaustiva:** [`the-longform-guide.md`](the-longform-guide.md)
 - **Modelo de amenazas + SecDD:** [`the-security-guide.md`](the-security-guide.md)
 - **Inspiración ECC + research:** [`docs/research/`](docs/research/)
 - **Plan vigente:** [`MEJORAS-X-DD.md`](MEJORAS-X-DD.md)
 - **Dogfooding live:** [`.xdd/`](.xdd/) + [`WORKING-CONTEXT.md`](WORKING-CONTEXT.md)
+- **White-labeling:** [`docs/BRANDING.md`](docs/BRANDING.md)
+- **Pentest híbrido:** [`docs/PENTEST.md`](docs/PENTEST.md)
 
 ## Empezá ahora
 
