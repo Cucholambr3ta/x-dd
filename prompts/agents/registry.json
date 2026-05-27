@@ -3459,6 +3459,30 @@
       "orchestration": "sequential",
       "gate_between": "qa_gate",
       "description": "Coordinación de release: contratos, deploy, docs user-facing."
+    },
+    {
+      "name": "plan_and_act",
+      "lead": "product-manager",
+      "specialists": [
+        "engineering-backend-architect",
+        "engineering-frontend-developer"
+      ],
+      "orchestration": "sequential",
+      "gate_between": "plan_approval",
+      "description": "Sprint 23 + ADR-0032: Planner-Executor split. Lead crea plan, specialists ejecutan secuencialmente. Inspirado en ai-boost research Plan-and-Execute pattern."
+    },
+    {
+      "name": "adapt_orch",
+      "lead": "product-manager",
+      "specialists": [
+        "engineering-backend-architect",
+        "design-ui-designer",
+        "engineering-security-engineer",
+        "testing-test-results-analyzer"
+      ],
+      "orchestration": "parallel_then_sync",
+      "sync_point": "topology_decision",
+      "description": "Sprint 23 + ADR-0032: AdaptOrch task-adaptive topology selector. Specialists corren en paralelo, lead decide qué outputs combinar (consensus o weighted). Inspirado en ai-boost research."
     }
   ],
   "routing_rules": [
