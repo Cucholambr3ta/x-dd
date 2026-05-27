@@ -73,6 +73,66 @@
         "async": true,
         "script": ".agent/hooks/scripts/stop-pattern-extraction.sh"
       }
+    ],
+    "before_agent": [
+      {
+        "id": "ba:otel:trace-start",
+        "matcher": "*",
+        "description": "Sprint 18 ADR-0021: abre span OTel agent.invocation al inicio de agent loop.",
+        "profile": ["strict"],
+        "async": true,
+        "script": ".agent/hooks/scripts/ba-otel-trace-start.sh"
+      }
+    ],
+    "before_model": [
+      {
+        "id": "bm:cost:budget-check",
+        "matcher": "*",
+        "description": "Sprint 18 ADR-0022: pre-call check de cost budget (warning si exceede).",
+        "profile": ["strict"],
+        "exit_on_match": 0,
+        "script": ".agent/hooks/scripts/bm-cost-budget-check.sh"
+      }
+    ],
+    "wrap_model_call": [
+      {
+        "id": "wm:otel:span",
+        "matcher": "*",
+        "description": "Sprint 18 ADR-0021: wrap LLM call con span llm.call (input/output tokens, latency, cost).",
+        "profile": ["strict"],
+        "async": true,
+        "script": ".agent/hooks/scripts/wm-otel-span.sh"
+      }
+    ],
+    "wrap_tool_call": [
+      {
+        "id": "wt:otel:span",
+        "matcher": "*",
+        "description": "Sprint 18 ADR-0021: wrap tool call con span tool.call (tool name, args, duration).",
+        "profile": ["strict"],
+        "async": true,
+        "script": ".agent/hooks/scripts/wt-otel-span.sh"
+      }
+    ],
+    "after_model": [
+      {
+        "id": "am:cost:record",
+        "matcher": "*",
+        "description": "Sprint 18 ADR-0022: post-call registra cost en SQLite cost.db.",
+        "profile": ["strict"],
+        "async": true,
+        "script": ".agent/hooks/scripts/am-cost-record.sh"
+      }
+    ],
+    "after_agent": [
+      {
+        "id": "aa:replay:flush",
+        "matcher": "*",
+        "description": "Sprint 18 ADR-0021: flush session events a .xdd/traces/<sid>.jsonl.",
+        "profile": ["strict"],
+        "async": true,
+        "script": ".agent/hooks/scripts/aa-replay-flush.sh"
+      }
     ]
   }
 }
