@@ -9,6 +9,31 @@
 
 ## [Unreleased] — main
 
+### Added — Sprint 9 (2026-05-26) — Continuous Learning (instincts + /evolve + SQLite)
+
+- **`scripts/xdd-state.py`** — state store SQLite con 5 subcomandos
+  (init/record-instinct/list/evolve/prune/stats). DB default `~/.xdd/state.db`
+  (override `XDD_STATE_DB`). Schema: instincts + instinct_sessions + evolutions.
+- **`.agent/workflows/evolve.md`** — workflow `/evolve` que cluster instincts
+  por categoría (MVP simple, TF-IDF en Sprint 11) y propone skills/agents/commands.
+  Aprobación humana obligatoria (T6.1 mitigación) antes de promover.
+- **`.agent/hooks/scripts/stop-pattern-extraction.sh`** — deja de ser stub.
+  Extrae 2 heurísticas v0.1.0: commits recientes + cambios de `.status` de fases.
+  Opt-out vía `XDD_LEARNING_DISABLED=1`.
+- **Catalog actualizado** — sección 9 "Continuous Learning" añadida.
+- **`tests/test_state.py`** — 12 tests pytest verdes (init, record, list filters,
+  evolve clusters, evolve generate, prune, stats).
+- **`.xdd/build/sprint-9/REPORT.md`** — Build extensión.
+
+### Stats — Sprint 9
+- **109 tests totales verdes** (97 anteriores + 12 nuevos).
+- **50 workflows** (49 + /evolve).
+- **+1 script** (`xdd-state.py`).
+- **+1 hook real** (no stub).
+
+### Changed — Sprint 9
+- `memoria.md` — estado actualizado a Sprint 9.
+
 ### Added — Sprint 8 (2026-05-26) — Gobernanza OSS + 3-tier docs + commitlint + agent.yaml + research/
 
 **Gobernanza OSS (Tarea 8.1):**
