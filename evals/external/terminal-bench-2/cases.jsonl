@@ -1,0 +1,3 @@
+{"task_id": "tb-001-hello-world", "actual_pass": true, "expected_outcome": "pass", "_note": "placeholder; populated by adapter"}
+{"task_id": "tb-002-grep-logs", "actual_pass": true, "expected_outcome": "pass"}
+{"task_id": "tb-003-tar-extract", "actual_pass": true, "expected_outcome": "pass"}
