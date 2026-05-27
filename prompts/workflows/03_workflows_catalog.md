@@ -85,6 +85,9 @@ Los workflows son guías ejecutables en formato Markdown que definen flujos paso
 ### 9. Continuous Learning (Sprint 9)
 *   **`/evolve` (`evolve.md`)**: Cluster instincts acumulados en SQLite (`~/.xdd/state.db`) → propone skills/agents/commands nuevos. Humano aprueba (T6.1) antes de promover. Inspirado en ECC `/evolve`.
 
+### 10. Multi-Agent Orchestration (Sprint 11)
+*   **`/orchestrate` (`orchestrate.md`)**: Runtime que ejecuta composition_patterns del registry (sequential/parallel/parallel_then_sync). Modo dry-run + exec. Reusa MCP server (Sprint 6) para invocaciones reales.
+
 ---
 
 ## 🛠️ Ejecución y Orquestación de Workflows por Hermes Agent
