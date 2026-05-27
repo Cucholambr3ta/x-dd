@@ -18,6 +18,7 @@ capabilities:
   disaster_recovery: true
   finops: true
   onboarding: true
+  code_intelligence: true   # GitNexus MCP — impact analysis + AST grafo (opt-in, PolyForm Noncomm)
 
   # Calidad técnica
   api_contract: true

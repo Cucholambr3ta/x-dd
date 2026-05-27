@@ -1,5 +1,5 @@
 #!/bin/bash
-# X-DD Start — inicializa MemPalace (si está disponible) y lanza el orquestador
+# X-DD Start — inicializa MemPalace + GitNexus (si disponibles) y lanza el orquestador
 set -eu
 
 XDD_VERSION="0.1.0-dev"
@@ -15,8 +15,9 @@ Uso:
 
 Hace:
   1. Re-indexa MemPalace (si está instalado; log en ~/.mempalace/mine.log).
-  2. Activa el git hook post-commit (idempotente).
-  3. Lanza el orquestador (claude > opencode, primero disponible).
+  2. Indexa GitNexus code intelligence (si está instalado; log en ~/.gitnexus/index.log).
+  3. Activa el git hook post-commit (idempotente).
+  4. Lanza el orquestador (claude > opencode, primero disponible).
 
 Args:
   PROJECT_DIR  Ruta del proyecto a iniciar (default: $PWD).
@@ -54,6 +55,22 @@ if command -v mempalace >/dev/null 2>&1; then
 else
   echo "[X-DD] WARN: 'mempalace' no encontrado. Omitiendo indexación semántica."
   echo "[X-DD]       Instalación: ver INSTALL.md sección MemPalace."
+fi
+
+# GitNexus: opcional, code intelligence (knowledge graph del codebase)
+GN_LOG_DIR="${HOME}/.gitnexus"
+mkdir -p "$GN_LOG_DIR"
+GN_LOG_FILE="$GN_LOG_DIR/index.log"
+if command -v gitnexus >/dev/null 2>&1; then
+  echo "[X-DD] Inicializando GitNexus..."
+  if gitnexus index "$PROJECT_DIR" >>"$GN_LOG_FILE" 2>&1; then
+    echo "[X-DD] GitNexus indexado. Log: $GN_LOG_FILE"
+  else
+    echo "[X-DD] WARN: gitnexus index falló (ver $GN_LOG_FILE). Continuando sin code intel."
+  fi
+else
+  echo "[X-DD] WARN: 'gitnexus' no encontrado. Omitiendo code intelligence."
+  echo "[X-DD]       Instalación: ver INSTALL.md sección GitNexus (license PolyForm Noncomm)."
 fi
 
 # Git hook post-commit (idempotente)
