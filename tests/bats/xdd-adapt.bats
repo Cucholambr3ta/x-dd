@@ -90,11 +90,20 @@ teardown() {
   [ -f "$DEST/.windsurf/mcp.json" ]
 }
 
-@test "antigravity genera mcp.json + README (no slash)" {
-  run bash scripts/xdd-adapt.sh antigravity --dest="$DEST" --trigger=helios
+@test "antigravity mergea ~/.gemini config + .agents/skills + README (Sprint 25)" {
+  GEMHOME="$(mktemp -d)/gemini"
+  mkdir -p "$GEMHOME"
+  echo '{"mcpServers":{"existing":{"command":"npx","args":["foo"]}}}' > "$GEMHOME/mcp_config.json"
+  run env XDD_ANTIGRAVITY_HOME="$GEMHOME" bash scripts/xdd-adapt.sh antigravity --dest="$DEST" --trigger=helios
   [ "$status" -eq 0 ]
-  [ -f "$DEST/.antigravity/mcp.json" ]
   [ -f "$DEST/.antigravity/README-xdd.md" ]
+  # MCP merge: preserva existing + añade helios con CascadePluginCommandTemplate
+  grep -q "existing" "$GEMHOME/mcp_config.json"
+  grep -q "helios" "$GEMHOME/mcp_config.json"
+  grep -q "CascadePluginCommandTemplate" "$GEMHOME/mcp_config.json"
+  # Sprint 25: .agents/skills/ (plural, convención Antigravity) poblado
+  [ -d "$DEST/.agents/skills" ]
+  rm -rf "$(dirname "$GEMHOME")"
 }
 
 @test "opencode genera command/ + AGENTS.md" {
@@ -105,14 +114,18 @@ teardown() {
 }
 
 @test "all genera los 6 IDEs" {
-  run bash scripts/xdd-adapt.sh all --dest="$DEST" --trigger=helios
+  GEMHOME="$(mktemp -d)/gemini"; mkdir -p "$GEMHOME"
+  run env XDD_ANTIGRAVITY_HOME="$GEMHOME" bash scripts/xdd-adapt.sh all --dest="$DEST" --trigger=helios
   [ "$status" -eq 0 ]
   [ -f "$DEST/.claude/commands/helios.md" ]
   [ -f "$DEST/.opencode/command/helios.md" ]
   [ -f "$DEST/.cursor/rules/helios.mdc" ]
   [ -f "$DEST/.windsurf/rules/helios.md" ]
   [ -f "$DEST/.github/prompts/helios.prompt.md" ]
-  [ -f "$DEST/.antigravity/mcp.json" ]
+  [ -f "$DEST/.antigravity/README-xdd.md" ]
+  [ -d "$DEST/.agents/skills" ]
+  grep -q "helios" "$GEMHOME/mcp_config.json"
+  rm -rf "$(dirname "$GEMHOME")"
 }
 
 @test "trigger resuelve desde branding xdd.profile.yml" {
