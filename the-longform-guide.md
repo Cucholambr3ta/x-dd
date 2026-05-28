@@ -223,16 +223,25 @@ Detalles en [`docs/INSTALL_PROFILES.md`](docs/INSTALL_PROFILES.md).
 
 ## 8. IDE adapters
 
-### Soportados v0.1.0 (ADR-0007)
+### Soportados v0.1.0 (ADR-0034 supersede ADR-0007, ADR-0035, ADR-0036)
 
-| Mecanismo | IDEs |
-|-----------|------|
-| Adapter dedicado (`xdd-adapt.sh`) | Claude Code, OpenCode |
-| MCP server nativo | Cursor, Continue, Zed, Cline, Windsurf |
+**7 IDEs adapters con auto-detect en `xdd-init`:**
 
-### Adapter pattern DRY
+| IDE | Trigger | Output | ADR |
+|---|---|---|---|
+| Claude Code | `/<trigger>` slash | `.claude/commands/*.md` (copia real) + `.mcp.json` | 0034 |
+| OpenCode | `/<trigger>` slash | `.opencode/command/*.md` + AGENTS.md (governance) | 0034 + 0038 |
+| Cursor | `@<trigger>` + MCP | `.cursor/rules/*.mdc` + `.cursor/mcp.json` | 0034 |
+| Windsurf | MCP tool | `.windsurf/rules/*.md` + `.windsurf/mcp.json` | 0034 |
+| VSCode + Copilot | `/<trigger>` Copilot Chat | `.github/prompts/*.prompt.md` + `.vscode/{mcp,tasks,settings}.json` | 0034 + 0037 |
+| Antigravity (Google) | MCP tool | `~/.gemini/config/mcp_config.json` (merge global) + `.agents/skills/` | 0034 + 0035 |
+| Codex (OpenAI) | `/<trigger>` (description-based) | `~/.codex/skills/<trigger>-orchestrator/` global + agents-index.json | 0036 |
 
-`xdd-adapt.sh` enlaza workflows como symlinks (no duplica). El SSoT vive
+Otros IDEs MCP-compatible (Continue, Zed, Cline, Gemini, Qwen, Hermes) consumen vía MCP server propio sin adapter dedicado.
+
+### Sprint 24 fix: copia real (NO symlinks)
+
+Claude Code + VSCode Copilot rechazan symlinks por security. `xdd-adapt.sh` Sprint 24 reemplaza `ln -sf` con `copy_real()`. SSoT vive
 en `.agent/workflows/`; cada IDE lee desde su path estándar (`.claude/commands/`
 para Claude Code, `AGENTS.md` para OpenCode).
 
@@ -357,7 +366,7 @@ Sin MemPalace/GitNexus instalados → X-DD degrada con `xdd-fs-context` baseline
 ## Referencias
 
 - [Plan vigente](MEJORAS-X-DD.md) — task tracking
-- [33 ADRs](docs/adr/) — decisiones arquitectónicas (10 + 23 post-S13)
+- [36 ADRs](docs/adr/) — decisiones arquitectónicas (10 + 26 post-S13)
 - [Research notes](docs/research/) — ECC + awesome-harness-engineering + agents-best-practices analysis
 - [docs/BRANDING.md](docs/BRANDING.md), [docs/PENTEST.md](docs/PENTEST.md), [docs/WORKSPACE.md](docs/WORKSPACE.md), [docs/MONOREPO.md](docs/MONOREPO.md)
 - [docs/OBSERVABILITY.md](docs/OBSERVABILITY.md), [docs/CONTEXT_ENGINEERING.md](docs/CONTEXT_ENGINEERING.md)

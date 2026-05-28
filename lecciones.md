@@ -20,6 +20,34 @@ Categorías sugeridas: `ARQUITECTURA`, `SEGURIDAD`, `DOMINIO`, `TESTING`, `DEVOP
 
 ## Lecciones
 
+### [HERRAMIENTAS] Symlinks rechazados Claude Code + VSCode Copilot → SIEMPRE copia real en `.claude/commands/` y `.github/prompts/` — 2026-05-27
+**Contexto:** Sprint 24 universal IDE adapter inicial generaba `.claude/commands/*.md` como symlinks → SSoT en `.agent/workflows/`. UX broken: trigger custom "No matching commands" en Claude Code + Copilot Chat. Antigravity diagnostico CWD correcto pero también symlink → no aparecía.
+**Problema:** Claude Code + VSCode Copilot prompt files NO siguen/aceptan symlinks (security policy). Antigravity también.
+**Causa raíz:** Asumí que symlinks = OK para DRY. Falso para IDEs modernos AI-agent.
+**Lección:** Para `.claude/commands/`, `.github/prompts/`, `.opencode/command/`: SIEMPRE `cp` real, NUNCA `ln -sf`. Trade-off DRY vs compat: compat gana. SSoT permanece en `.agent/workflows/`; adapter materializa copias. Re-correr adapter tras editar SSoT.
+**Aplica a:** Cualquier adapter futuro X-DD para IDEs AI-agent. Pattern `copy_real()` en xdd-adapt.sh.
+
+### [ARQUITECTURA] Install-once-global > per-proyecto copy → escalable cross-workspace (Sprint 25 + ADR-0035) — 2026-05-27
+**Contexto:** Sprint 24 cwd estático MCP + xdd-mcp-server/ duplicado per-proyecto. Update X-DD upstream → propagar a N proyectos manualmente. Workspace switching IDE bloqueado.
+**Problema:** N proyectos = N copias = N updates. cwd fijo MCP = 1 proyecto único soportado.
+**Causa raíz:** Pattern install per-proyecto (legado xdd-init full). MemPalace + GitNexus YA usaban install-once-global (modelo correcto, no copié pattern hasta dogfooding falló).
+**Lección:** Para framework que sirve N proyectos: usar wrapper PATH (`~/.local/bin/`) + tools.py resolver dinámico (local-first + global fallback) + MCP config sin cwd (workspace dinámico IDE). Backwards compat: alias constants WORKFLOWS_DIR/REGISTRY_PATH preserva imports externos. Patrón MemPalace/GitNexus validated.
+**Aplica a:** Frameworks multi-proyecto. Wrapper installer pattern reusable.
+
+### [PROCESO] Install manifests deben actualizarse CADA sprint que añade scripts/modules/skills (PR #39) — 2026-05-28
+**Contexto:** Sprints 13-25 añadieron 18 scripts + 6 skills + 4 personas + registry. `manifests/install-modules.json` NUNCA se actualizó. `xdd-init full` instalaba ~25 paths cuando debía 70+. Bug salió en dogfooding agent_helios (faltaban xdd-state.py, xdd-orchestrate.py, etc.).
+**Problema:** Manifests = SSoT install pero no en checklist sprint closure.
+**Causa raíz:** `/cierre-fase` workflow cubre memoria/lecciones/CHANGELOG/PROJ-MASTER-PLAN pero NO `manifests/install-*.json`.
+**Lección:** Añadir item a `/cierre-fase` checklist: "Si sprint añadió scripts/skills/files, actualizar `manifests/install-modules.json` (file en módulo apropiado o nuevo módulo) + verificar perfiles relevantes incluyen el módulo. Audit post-fix: `git ls-files` vs install_files cobertura debe ser 100% paths críticos (scripts/, skills/, prompts/orchestrator/)."
+**Aplica a:** Todos los sprints que tocan source paths versionables. Workflow auto-check pendiente para v0.2.0.
+
+### [DOMINIO] Cada IDE AI-agent tiene CONVENCIÓN propia — NO asumir cross-IDE compat sin leer docs (Codex case PR #40) — 2026-05-28
+**Contexto:** Codex (OpenAI CLI) usa convención muy distinta a Claude Code/Cursor/etc.: Skills SOLO global (`~/.codex/skills/`), frontmatter MINIMAL (solo name+description), pattern 1 orchestrator + agents-index.json (NO N skills individuales — guía explícita "satura entorno"), trigger declarado en `description` (no slash registry). X-DD skills/* frontmatter incluye campos extra (origin, inspired_by, when_to_use, triggers, evals) → Codex ignora pero no rompe. AGENTS.md format X-DD ≠ Codex.
+**Problema:** Asumí "skill = skill cross-IDE". Falso. Cada IDE tiene reglas.
+**Causa raíz:** Skill spec ≠ universal. MCP es lo único universal cross-IDE.
+**Lección:** ANTES de añadir adapter para IDE nuevo: (1) leer guía oficial del IDE, (2) identificar convenciones (paths, frontmatter mandatorio, patterns recommended/anti-patterns), (3) detectar override env var para tests. Pattern adapter consistente: detect → adapt → README local explicando dónde vive realmente. Frontmatter X-DD subset CON name+description sirve para IDEs minimalistas (Codex); IDEs ricos (Claude/Cursor) ignoran campos extra.
+**Aplica a:** Futuros adapters IDE (Continue, Zed, Aider, Kiro, Trae, etc.). Mantener docs/IDE_SETUP.md actualizado con convención + override env var cada uno.
+
 ### [PROCESO] Workspace global = purga selectiva framework legacy + preserve hijos infra — 2026-05-27
 **Contexto:** Workspace raíz `<workspace>/` tenía setup de framework legacy (predecessor X-DD). User pidió instalar X-DD global. El legacy es subset funcional inferior (15 categorías agents vs 180 X-DD; workflows legacy vs `xdd-*` renombrados; sin registry tipado; sin gate keeper HMAC). NO git repo → backup tar.gz crítico antes de tocar.
 **Problema:** Colisiones directas (CLAUDE.md, .agent/, prompts/, scripts/, templates/, .claude/) requieren DELETE. Pero workspace también contiene non-legacy (Docker/MemPalace yaml, .hermes/, hermes-companion/, openwhispr/, personal/) que NO debe tocarse.

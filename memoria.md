@@ -18,17 +18,18 @@
 - **Workspace global:** instalado en `<workspace>/` (post-purga framework legacy). Backup tar.gz en `~/<workspace>-backup.tar.gz`.
 - **Próximo paso:** sync docs (este branch) → Release v0.1.0 cuando user autorice.
 
-## Stats actuales (post-S23 + GitNexus)
-- **~300+ tests verdes** (~95 nuevos S14-23 sobre 160 base S13)
-- **27+ PRs cerrados** todos preservados (delete_branch_on_merge=false estricto)
-- **55 workflows** X-DD (+brainstorm, clarify, cross-validate, code-as-tool)
+## Stats actuales (post-PR #40 + Codex adapter)
+- **~330+ tests verdes** (S14-25 cumulativos)
+- **40+ PRs cerrados** preservados (delete_branch_on_merge=false estricto)
+- **55 workflows** X-DD
 - **180 agentes** (1 renombrado security-pentest-operator)
-- **5 composition_patterns** (+plan_and_act, +adapt_orch Sprint 23)
+- **5 composition_patterns**
 - **6 skills** propios (xdd-talk-compact, agent-eval, xdd-ai-review, xdd-compact, xdd-fs-context, xdd-sandbox)
 - **14 hooks** event-driven (8 base + 6 stage middleware S18)
-- **6 install profiles** + 13 modules
-- **33 ADRs** Nygard (10 base + 12 + 11 S14-23 + 0033 GitNexus)
-- **23 scripts ejecutables** (S14-23 +12 nuevos)
+- **6 install profiles** + **24 modules** (14 base + 10 nuevos PR #39 Sprints 13-25)
+- **36 ADRs** Nygard (10 base + 26 nuevos S14-25 + 0033 GitNexus + 0034 Universal IDE + 0035 Global install + 0036 Codex)
+- **27 scripts ejecutables** (Sprints 0-25 completos)
+- **7 IDEs adapters** (claude-code, opencode, cursor, windsurf, vscode-copilot, antigravity, codex)
 - **3 MCP companion servers** (xdd-mcp + MemPalace + GitNexus)
 - **AgentShield** audit propio: 0 crit/high con `--severity=high`
 
@@ -54,6 +55,71 @@
 ---
 
 ## Bitácora de Sesiones
+
+### Sesión 2026-05-28 — Codex adapter (7° IDE) + ADR-0036
+- **Meta:** Soporte Codex (OpenAI CLI) per guía oficial provista user. Skills GLOBAL + orchestrator pattern + agents-index (NO N skills).
+- **Hitos:**
+  - adapt_codex genera `~/.codex/skills/<trigger>-orchestrator/` con SKILL.md (frontmatter MINIMAL name+description) + references/agents-index.json (180 agentes lowercase-normalized) + workflows-index.md + constitution + invoke_workflow.sh
+  - 6 X-DD skills copiadas a ~/.codex/skills/ (compat directo, frontmatter X-DD ⊃ Codex requirement)
+  - Project-level `<DEST>/.codex/README-xdd.md` referencia
+  - Auto-detect xdd-init: `command -v codex` OR `~/.codex/` dir
+  - Override XDD_CODEX_HOME env var (test+setups)
+  - 18/18 bats verde, lint 0/0
+- **Decisiones:** Pattern 1 orchestrator + index (rechazado N skills per guía "satura entorno"). Frontmatter minimal (rechazado origin/inspired_by/etc per "No uses campos extra").
+- **PR:** #40 merged.
+
+### Sesión 2026-05-28 — Fix install manifests Sprints 13-25 (PR #39)
+- **Meta:** Bug raíz: install-modules.json no actualizado durante Sprints 13-25 → projects perdían 18 scripts + 6 skills + 4 personas + registry.
+- **Hitos:**
+  - 10 módulos nuevos: personas, skills-core, mcp-server-global, workspace-monorepo, observability, governance-runtime, ahe-evolve, protocols, router, pentest
+  - Reasignación 5 perfiles. Core: 13→43 paths. Full: 25→70 paths.
+  - 0 gaps post-fix (audit script confirma)
+  - Re-sync agent_helios + mesalink: 27 scripts + 6 skills + 4 personas cada uno
+- **PR:** #39 merged.
+
+### Sesión 2026-05-28 — Fix install docs-governance + AGENTS template (PR #38)
+- **Meta:** 3 bugs reportados dogfooding agent_helios: AGENTS.md no governance, docs/constitucion.md no copiado, 5 docs core faltantes.
+- **Hitos:**
+  - Módulo docs-governance nuevo (8 files: constitucion + 5 guides + INSTALL + AGENTS)
+  - core extendido con constitucion + AGENTS
+  - AGENTS.md template governance creado (mirror CLAUDE.md rebrandeado OpenCode)
+  - adapt_opencode fix: AGENTS SKIP si existe + COPY desde root si no + registry → docs/equipo.md (no AGENTS)
+  - 6 perfiles incluyen docs-governance
+- **PR:** #38 merged.
+
+### Sesión 2026-05-28 — VSCode tasks.json + settings.json + INSTALL_VSCODE.md (PR #37)
+- **Meta:** Ampliar vscode-copilot adapter (Sprint 24 sólo .github/prompts + .vscode/mcp.json). User input doc IDE con errores corregidos.
+- **Hitos:**
+  - adapt_vscode_copilot añade .vscode/tasks.json (4 tasks: doctor/start/list/gate) + .vscode/settings.json (env vars terminal ANTHROPIC/OPENAI)
+  - SKIP si existing (no overwrite proyecto)
+  - INSTALL_VSCODE.md reescrito limpio: corrige mempalace=pip (no npm) + scripts/xdd-adapt.sh (no xdd-vscode-integration.sh inexistente) + skills via MCP (no xdd-skill-invoke)
+  - .claude/skills/ + AGENTS.md + .antigravity/ gitignored (configs locales gitnexus/harness)
+  - Bats 17/17 verde
+- **PR:** #37 merged.
+
+### Sesión 2026-05-27 — Sprint 25 Global install architecture (PR #36) + ADR-0035
+- **Meta:** Resolver fricción Sprint 24 (cwd estático MCP, duplicación per-proyecto, paths constants). Per propuesta IDE Antigravity (modelo MemPalace/GitNexus install-once-global).
+- **Hitos:**
+  - scripts/xdd-mcp-install-global.sh → ~/.local/bin/xdd-mcp-server (wrapper PYTHONPATH baked)
+  - tools.py refactor: get_workflows_dir/get_registry_path local-first + global fallback. get_xdd_dir STRICTAMENTE local (T4.3)
+  - 4 tools acept project_root opcional + schemas inputSchema añaden field
+  - adapt_antigravity refactor: detecta wrapper → MCP config sin cwd (dinámico workspace) + fallback legacy
+  - Popula .agents/skills/ (convención Antigravity plural NO singular OpenCode)
+  - 30/30 pytest verde + 17/17 backwards compat
+- **PR:** #36 merged. Wrapper instalado real ~/.local/bin/xdd-mcp-server.
+
+### Sesión 2026-05-27 — Fix Antigravity ruta real ~/.gemini + scrub privado (PR #35)
+- **Meta:** User confirmó ruta real Antigravity = ~/.gemini/config/mcp_config.json (no ~/.antigravity/ que adiviné). Scrub branding privado del repo público per directiva.
+- **Hitos:**
+  - adapt_antigravity merge formato $typeName CascadePluginCommandTemplate
+  - Scrub helios → helios + rutas absolutas → <workspace> (Portabilidad Absoluta Art. 9)
+  - .claude/settings.json untracked + gitignored
+- **PR:** #35 merged.
+
+### Sesión 2026-05-27 — Sprint 24 Universal IDE adapter (PR #34) + ADR-0034
+- **Meta:** "install once → funciona cualquier IDE, cero pasos extra". Fix root cause symlinks rechazados + 6 IDEs.
+- **Hitos:** copy_real() reemplaza ln -sf. 6 IDEs: claude-code/opencode/cursor/windsurf/vscode-copilot/antigravity. MCP auto-config formato por IDE. Auto-detect en xdd-init. 15/15 bats.
+- **PR:** #34 merged.
 
 ### Sesión 2026-05-27 (cont.) — Workspace global Desarrollos/ + GitNexus tier-1 + docs sync
 - **Meta:** (1) Instalar X-DD en workspace raíz Desarrollos/ post-purga framework legacy. (2) Integrar GitNexus tier-1 paralelo MemPalace. (3) Sincronizar toda la documentación post-S14-23 + GitNexus.

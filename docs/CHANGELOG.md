@@ -9,6 +9,52 @@
 
 ## [Unreleased] — main
 
+### Added — Codex adapter (2026-05-28) — 7° IDE — PR #40 + ADR-0036
+- **`scripts/xdd-adapt.sh adapt_codex()`** — genera `~/.codex/skills/<trigger>-orchestrator/` (SKILL.md frontmatter MINIMAL name+description + references/agents-index.json 180 entries lowercase-normalized + workflows-index.md + constitution + invoke_workflow.sh helper).
+- **6 X-DD skills copiadas** a `~/.codex/skills/` (compat directo: xdd-talk-compact + agent-eval + xdd-ai-review + xdd-compact + xdd-fs-context + xdd-sandbox).
+- **Project-level `<DEST>/.codex/README-xdd.md`** referencia dónde vive realmente.
+- **Auto-detect xdd-init:** `command -v codex` OR `~/.codex/` dir.
+- **Override env:** `XDD_CODEX_HOME=/path`.
+- **Pattern respetado per guía Codex:** 1 orchestrator + agents-index (NO N skills individuales). Frontmatter minimal.
+- **`docs/adr/0036-codex-adapter-global-skills.md`**.
+
+### Fixed — install manifests Sprints 13-25 (2026-05-28) — PR #39
+- **`manifests/install-modules.json`** + **`install-profiles.json`** — 10 módulos nuevos (personas, skills-core, mcp-server-global, workspace-monorepo, observability, governance-runtime, ahe-evolve, protocols, router, pentest).
+- **Bug raíz:** manifests no actualizados durante Sprints 13-25 → projects perdían 18 scripts + 6 skills + 4 personas + registry.
+- **Stats install:** core 13→43 paths, full 25→70 paths, 0 gaps post-fix.
+
+### Fixed — install docs-governance + AGENTS.md template (2026-05-28) — PR #38
+- **Módulo docs-governance nuevo** (8 files): docs/constitucion.md + X-DD_Integration_Guide + RETROFIT_GUIDE + HOOKS + CONFIG + INSTALL_PROFILES + INSTALL + AGENTS.
+- **core extendido** con docs/constitucion.md + AGENTS.md.
+- **AGENTS.md template** (mirror CLAUDE.md rebrandeado OpenCode) — governance manifest.
+- **`adapt_opencode` fix:** AGENTS.md SKIP si existe (preserva governance custom) + COPY desde X-DD root si no. Registry 180 agentes movido a `docs/equipo.md` (separación ley vs directorio).
+
+### Added — VSCode tasks.json + settings.json (2026-05-27) — PR #37
+- **`adapt_vscode_copilot`** amplía a 4 archivos (vs 2 antes): + `.vscode/tasks.json` (4 tasks: doctor/start/list/gate) + `.vscode/settings.json` (env vars terminal ANTHROPIC/OPENAI).
+- **SKIP si existing** (no overwrite proyecto).
+- **`docs/INSTALL_VSCODE.md`** reescrito limpio: corrige errors doc previo (mempalace = pip no npm, xdd-skill-invoke CLI inexistente).
+- **`.gitignore`** añade `.claude/skills/` (gitnexus auto-config).
+
+### Added — Sprint 25 Global install architecture (2026-05-27) — PR #36 + ADR-0035
+- **`scripts/xdd-mcp-install-global.sh`** — genera `~/.local/bin/xdd-mcp-server` con PYTHONPATH baked al X-DD root. Comandos: install / `--check` / `--uninstall` / `--bin-dir=` / `--xdd-root=`.
+- **`xdd-mcp-server/tools.py` refactor:** `get_workflows_dir(project_root)` + `get_registry_path()` local-first + global fallback. `get_xdd_dir()` STRICTAMENTE local (T4.3, sin fallback). 4 tools acept `project_root` opcional. Schemas inputSchema añade field. Backwards compat constants retained.
+- **`adapt_antigravity` refactor:** detecta wrapper global → MCP config SIN cwd (dinámico al workspace IDE). Fallback legacy cwd-fixed si no wrapper. Popula `.agents/skills/` (convención Antigravity plural).
+- **Tests:** test_mcp_local_first.py 11 verde + xdd-mcp-install-global.bats 8 verde + 17/17 backwards compat.
+
+### Fixed — Antigravity path real + scrub branding privado (2026-05-27) — PR #35
+- **Antigravity path real descubierto:** `~/.gemini/config/mcp_config.json` (no `~/.antigravity/`). `adapt_antigravity` mergea formato `$typeName CascadePluginCommandTemplate`.
+- **Scrub branding privado del repo público:** ejemplos `helios` → `helios` (marca canónica X-DD). Rutas absolutas host → `<workspace>` placeholder (Portabilidad Absoluta Art.).
+- **`.claude/settings.json`** untracked + gitignored (era leak PR #34 con paths secrets).
+- **`.agent/workflows/xdd-trace.md`:** "Legacy-PM" legacy → "X-DD-PM".
+
+### Added — Sprint 24 Universal IDE adapter (2026-05-27) — PR #34 + ADR-0034
+- **Root cause fix:** symlinks rechazados Claude Code/Copilot. `copy_real()` reemplaza `ln -sf`.
+- **6 IDEs soportados:** claude-code, opencode, cursor, windsurf, vscode-copilot, antigravity. Cada uno con MCP auto-config formato propio (`mcpServers` vs `servers`).
+- **Auto-detect en xdd-init:** detecta IDEs presentes (CLI `command -v` o config dirs) y corre `xdd-adapt` por cada uno. Opt-out: `XDD_NO_ADAPT=1`.
+- **Trigger resolution:** `--trigger` > branding `xdd.profile.yml` > `"xdd"` default. Rebrand cabecera command copiado.
+- **15/15 bats verde** + ADR-0034 + `docs/IDE_SETUP.md` matriz honesta (limitación slash idéntico cross-IDE).
+
+
 ### Added — GitNexus tier-1 integration (2026-05-27) — PR #32
 - **`scripts/xdd-doctor.sh`** — detect `gitnexus` CLI en sección Núcleo recomendado (paralelo a `mempalace`).
 - **`scripts/xdd-start.sh`** — bloque idéntico a MemPalace: indexa GitNexus si CLI disponible (log `~/.gitnexus/index.log`), warn + continúa si falta.

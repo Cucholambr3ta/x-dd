@@ -148,3 +148,11 @@ graph LR
 | 2026-05-27 | Workspace global Desarrollos/ instalado X-DD core post-purga framework legacy. Backup tar.gz preservado | aplacencia |
 | 2026-05-27 | GitNexus tier-1 companion mergeado (PR #32) paralelo MemPalace + ADR-0033 | aplacencia |
 | 2026-05-27 | docs/sync-post-gitnexus — sync 12 files post-S14-23 + GitNexus | aplacencia |
+| 2026-05-27 | Sprint 24 Universal IDE adapter mergeado (PR #34) — copia real + 6 IDEs + MCP auto-config + ADR-0034 | aplacencia |
+| 2026-05-27 | Fix Antigravity ruta real ~/.gemini/config/mcp_config.json (PR #35) + scrub branding privado del repo + Portabilidad Absoluta restored | aplacencia |
+| 2026-05-27 | Sprint 25 Global install architecture (PR #36) — wrapper PATH + tools.py local-first + ADR-0035. Sigue modelo MemPalace/GitNexus. | aplacencia |
+| 2026-05-27 | VSCode adapter tasks.json + settings.json (PR #37) + INSTALL_VSCODE.md reescrito limpio | aplacencia |
+| 2026-05-28 | Fix install docs-governance (PR #38) — módulo nuevo + AGENTS.md template + adapt_opencode SKIP existing | aplacencia |
+| 2026-05-28 | Fix manifests Sprints 13-25 (PR #39) — 10 módulos nuevos / 18 scripts integrados / 6 skills / 4 personas. Cierra gap 32 paths críticos | aplacencia |
+| 2026-05-28 | Codex adapter (PR #40) — 7° IDE soportado + ADR-0036. Global skills + agents-index + orchestrator pattern | aplacencia |
+| 2026-05-28 | docs/sync-post-pr40 — sync docs macro post PRs #34-40 | aplacencia |
