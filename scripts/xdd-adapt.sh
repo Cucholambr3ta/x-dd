@@ -192,16 +192,27 @@ adapt_claude_code() {
 }
 
 adapt_opencode() {
-  echo "[xdd-adapt] target: opencode → $DEST/.opencode/command/ + AGENTS.md"
+  echo "[xdd-adapt] target: opencode → $DEST/.opencode/command/ + AGENTS.md (governance) + docs/equipo.md (registry)"
   copy_commands "$DEST/.opencode/command" "md"
   # .agent/workflows symlink al SSoT (OpenCode lo lee directo; symlink OK aquí, no es slash command file)
   if [ ! -e "$DEST/.agent/workflows" ]; then
     if [ $DRY_RUN -eq 0 ]; then mkdir -p "$DEST/.agent"; ln -sf "$WF_DIR" "$DEST/.agent/workflows"; fi
     emit ".agent/workflows (symlink → $WF_DIR)"
   fi
+
+  # AGENTS.md = GOVERNANCE manifest (no overwrite si existe). Copia desde X-DD source root.
+  if [ ! -f "$DEST/AGENTS.md" ] && [ -f "$ROOT/AGENTS.md" ] && [ $DRY_RUN -eq 0 ]; then
+    cp "$ROOT/AGENTS.md" "$DEST/AGENTS.md"
+    echo "[xdd-adapt] ✓ AGENTS.md (governance) copiado"
+  elif [ -f "$DEST/AGENTS.md" ]; then
+    echo "[xdd-adapt] SKIP AGENTS.md (ya existe — preserva governance custom del proyecto)"
+  fi
+
+  # Registry de 180 agentes → docs/equipo.md (NO AGENTS.md, separar ley vs directory)
   local registry="$ROOT/prompts/agents/registry.json"
   if [ -f "$registry" ] && command -v python3 >/dev/null 2>&1 && [ $DRY_RUN -eq 0 ]; then
-    python3 - "$registry" "$DEST/AGENTS.md" <<'PY'
+    mkdir -p "$DEST/docs"
+    python3 - "$registry" "$DEST/docs/equipo.md" <<'PY'
 import json, sys
 from collections import defaultdict
 from pathlib import Path
@@ -209,15 +220,16 @@ data = json.loads(Path(sys.argv[1]).read_text(encoding="utf-8"))
 by_cat = defaultdict(list)
 for a in data["agents"]:
     by_cat[a["category"]].append(a)
-lines = ["# AGENTS — X-DD", "", f"> {len(data['agents'])} agentes en {len(by_cat)} categorías.", ""]
+lines = ["# Directorio de Agentes — X-DD", "", f"> Auto-generado desde `prompts/agents/registry.json` por `xdd-adapt opencode`. {len(data['agents'])} agentes en {len(by_cat)} categorías.", ""]
 for cat in sorted(by_cat):
-    lines.append(f"### {cat} ({len(by_cat[cat])})")
+    lines.append(f"## {cat} ({len(by_cat[cat])})")
+    lines.append("")
     for a in sorted(by_cat[cat], key=lambda a: a["name"].lower()):
         desc = (a.get("description") or "").split("\n")[0][:120]
         lines.append(f"- **{a['name']}** — {desc}")
     lines.append("")
 Path(sys.argv[2]).write_text("\n".join(lines), encoding="utf-8")
-print("[xdd-adapt] ✓ AGENTS.md generado")
+print("[xdd-adapt] ✓ docs/equipo.md regenerado (registry → directorio)")
 PY
   fi
 }
