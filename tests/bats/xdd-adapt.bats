@@ -18,7 +18,7 @@ teardown() {
   [[ "$output" == *"xdd-adapt v"* ]]
 }
 
-@test "xdd-adapt --list incluye 6 targets" {
+@test "xdd-adapt --list incluye 7 targets" {
   run bash scripts/xdd-adapt.sh --list
   [ "$status" -eq 0 ]
   [[ "$output" == *"claude-code"* ]]
@@ -27,6 +27,33 @@ teardown() {
   [[ "$output" == *"windsurf"* ]]
   [[ "$output" == *"vscode-copilot"* ]]
   [[ "$output" == *"antigravity"* ]]
+  [[ "$output" == *"codex"* ]]
+}
+
+@test "codex genera orchestrator skill global (XDD_CODEX_HOME override) + agents-index" {
+  CODEX_HOME="$(mktemp -d)/codex"
+  mkdir -p "$CODEX_HOME"
+  run env XDD_CODEX_HOME="$CODEX_HOME" bash scripts/xdd-adapt.sh codex --dest="$DEST" --trigger=helios
+  [ "$status" -eq 0 ]
+  # Orchestrator skill creada
+  [ -f "$CODEX_HOME/helios-orchestrator/SKILL.md" ]
+  # Frontmatter minimal (name + description, NO campos extra)
+  grep -q "^name: helios-orchestrator" "$CODEX_HOME/helios-orchestrator/SKILL.md"
+  grep -q "^description:" "$CODEX_HOME/helios-orchestrator/SKILL.md"
+  # NO campos extra como color/risk/origin en frontmatter
+  ! grep -qE "^(color|risk|origin|inspired_by):" "$CODEX_HOME/helios-orchestrator/SKILL.md"
+  # agents-index.json con 180 entries
+  [ -f "$CODEX_HOME/helios-orchestrator/references/agents-index.json" ]
+  python3 -c "import json; d=json.load(open('$CODEX_HOME/helios-orchestrator/references/agents-index.json')); assert len(d) >= 100"
+  # workflows-index + constitution + script helper
+  [ -f "$CODEX_HOME/helios-orchestrator/references/workflows-index.md" ]
+  [ -x "$CODEX_HOME/helios-orchestrator/scripts/invoke_workflow.sh" ]
+  # 6 X-DD skills copiadas
+  [ -d "$CODEX_HOME/xdd-talk-compact" ]
+  [ -d "$CODEX_HOME/xdd-ai-review" ]
+  # Project-level README
+  [ -f "$DEST/.codex/README-xdd.md" ]
+  rm -rf "$(dirname "$CODEX_HOME")"
 }
 
 @test "xdd-adapt sin target falla" {
@@ -139,9 +166,11 @@ teardown() {
   [ -f "$DEST/AGENTS.md" ]
 }
 
-@test "all genera los 6 IDEs" {
+@test "all genera los 7 IDEs (claude/opencode/cursor/windsurf/vscode/antigravity/codex)" {
   GEMHOME="$(mktemp -d)/gemini"; mkdir -p "$GEMHOME"
-  run env XDD_ANTIGRAVITY_HOME="$GEMHOME" bash scripts/xdd-adapt.sh all --dest="$DEST" --trigger=helios
+  CODEX_HOME="$(mktemp -d)/codex"; mkdir -p "$CODEX_HOME"
+  run env XDD_ANTIGRAVITY_HOME="$GEMHOME" XDD_CODEX_HOME="$CODEX_HOME" \
+      bash scripts/xdd-adapt.sh all --dest="$DEST" --trigger=helios
   [ "$status" -eq 0 ]
   [ -f "$DEST/.claude/commands/helios.md" ]
   [ -f "$DEST/.opencode/command/helios.md" ]
@@ -150,8 +179,10 @@ teardown() {
   [ -f "$DEST/.github/prompts/helios.prompt.md" ]
   [ -f "$DEST/.antigravity/README-xdd.md" ]
   [ -d "$DEST/.agents/skills" ]
+  [ -f "$DEST/.codex/README-xdd.md" ]
+  [ -f "$CODEX_HOME/helios-orchestrator/SKILL.md" ]
   grep -q "helios" "$GEMHOME/mcp_config.json"
-  rm -rf "$(dirname "$GEMHOME")"
+  rm -rf "$(dirname "$GEMHOME")" "$(dirname "$CODEX_HOME")"
 }
 
 @test "trigger resuelve desde branding xdd.profile.yml" {
