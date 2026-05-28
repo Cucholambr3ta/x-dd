@@ -13,10 +13,10 @@ Para equipos que ya usan Claude Code, Cursor u OpenCode y buscan **cero deuda t�
 <br/>
 
 [![License: MIT](https://img.shields.io/badge/License-MIT%20pure-yellow.svg?style=for-the-badge)](LICENSE)
-[![Tests](https://img.shields.io/badge/tests-160%2B%20✓-brightgreen?style=for-the-badge)](tests/)
+[![Tests](https://img.shields.io/badge/tests-330%2B%20✓-brightgreen?style=for-the-badge)](tests/)
 [![Workflows](https://img.shields.io/badge/workflows-51-blue?style=for-the-badge)](.agent/workflows/)
 [![Agents](https://img.shields.io/badge/agents-180-orange?style=for-the-badge)](docs/equipo.md)
-[![ADRs](https://img.shields.io/badge/ADRs-11-purple?style=for-the-badge)](docs/adr/)
+[![ADRs](https://img.shields.io/badge/ADRs-36-purple?style=for-the-badge)](docs/adr/)
 
 <br/>
 
@@ -92,7 +92,7 @@ Cada gate firmado HMAC-SHA256.<br/>"APROBADO" auditable, no editable.<br/>**Úni
 
 ### 🌍 Cualquier<br/>**IDE/Asistente**
 
-13+ soportados vía MCP.<br/>Sin vendor lock-in.<br/>**1 framework, todos los agentes.**
+7 IDEs auto-config + más vía MCP.<br/>Sin vendor lock-in.<br/>**1 framework, todos los agentes.**
 
 *Claude, Cursor, OpenCode, Continue, Zed, Windsurf, Antigravity, Codex, Gemini...*
 
@@ -108,14 +108,14 @@ Cada gate firmado HMAC-SHA256.<br/>"APROBADO" auditable, no editable.<br/>**Úni
 
 | 📊 Métrica | Valor |
 |---|---|
-| Tests verdes | **160+** (pytest + bats + E2E) |
+| Tests verdes | **330+** (pytest + bats + E2E, S0-25) |
 | Workflows production | **51** ejecutables como slash commands |
 | Agentes especializados | **180** en 15 categorías |
-| ADRs Nygard documentados | **11** decisiones arquitectónicas |
+| ADRs Nygard documentados | **36** decisiones arquitectónicas |
 | Hooks event-driven | **8** (security + quality + learning) |
 | Install profiles | **6** (minimal → full) |
-| IDEs soportados | **13+** (Claude Code, Cursor, OpenCode, Continue, Zed, Cline, Windsurf, Antigravity, Codex, Gemini, Qwen, Hermes, Copilot...) |
-| Sprints cerrados | **15** (dogfooding visible público) |
+| IDEs soportados | **7 auto-adapt + más vía MCP** (Claude Code, Cursor, OpenCode, VSCode+Copilot, Windsurf, Antigravity, Codex + Continue, Zed, Cline, Gemini... vía MCP) |
+| Sprints cerrados | **26** (dogfooding visible público, S0-25) |
 | AgentShield audit propio | **0 crit/high** con `--severity=high` ✅ |
 
 </div>
