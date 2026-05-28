@@ -39,3 +39,5 @@ Thumbs.db
 
 # CI/CD local runs
 .github/local-test-output/
+.claude/settings.json
+.antigravity/

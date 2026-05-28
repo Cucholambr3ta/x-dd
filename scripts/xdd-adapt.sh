@@ -20,7 +20,7 @@ Targets soportados (Sprint 24):
   opencode        AGENTS.md + .opencode/command/ + .agent/workflows/
   cursor          .cursor/rules/xdd.mdc + .cursor/mcp.json
   windsurf        .windsurf/rules/xdd.md + MCP note
-  vscode-copilot  .github/prompts/*.prompt.md (slash /anmax en Copilot) + .vscode/mcp.json
+  vscode-copilot  .github/prompts/*.prompt.md (slash /helios en Copilot) + .vscode/mcp.json
   antigravity     .antigravity/mcp.json (o mcp config Google IDE)
   all             genera todos los soportados (auto-detect aplica si --dest tiene markers)
 

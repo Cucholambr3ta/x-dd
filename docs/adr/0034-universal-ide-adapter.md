@@ -6,9 +6,9 @@
 
 ## Context
 
-ADR-0007 limitó adapters a claude-code + opencode; resto vía MCP "manual". Realidad de campo (dogfooding del maintainer): instalar X-DD/ANMAX en proyectos nuevos generó fricción:
+ADR-0007 limitó adapters a claude-code + opencode; resto vía MCP "manual". Realidad de campo (dogfooding del maintainer): instalar X-DD en proyectos nuevos generó fricción:
 
-1. **Symlinks rotos** — `xdd-adapt.sh` + `xdd-brand.sh` creaban `.claude/commands/*.md` como **symlinks**. Claude Code + VSCode Copilot **rechazan symlinks** → `/anmax` invisible ("No matching commands").
+1. **Symlinks rotos** — `xdd-adapt.sh` + `xdd-brand.sh` creaban `.claude/commands/*.md` como **symlinks**. Claude Code + VSCode Copilot **rechazan symlinks** → `/helios` invisible ("No matching commands").
 2. **Solo 2 IDEs** — Cursor/Windsurf/VSCode/Antigravity requerían config MCP manual no documentada → fricción para nuevo instalador.
 3. **`.claude/commands/` no hereda del padre** — cada proyecto (CWD) necesita su propia config; workspace global no se propaga a subproyectos.
 4. **MCP config manual** — usuario debía escribir `mcp.json` a mano en formato + ruta correcta por IDE.
@@ -39,7 +39,7 @@ Sprint 24 reescribe adapter como **universal**:
 - `cwd` apunta al proyecto → MCP server lee su `.xdd/` local
 
 ### 4. Trigger resolution
-`resolve_trigger()`: `--trigger` flag > branding `xdd.profile.yml` > `"xdd"` default. Rebrand automático de cabecera del command copiado (`# /xdd` → `# /anmax`).
+`resolve_trigger()`: `--trigger` flag > branding `xdd.profile.yml` > `"xdd"` default. Rebrand automático de cabecera del command copiado (`# /xdd` → `# /helios`).
 
 ### 5. Auto-detect en xdd-init
 Tras bootstrap, `xdd-init.sh` detecta IDEs presentes (CLI `command -v` o config dirs `.cursor/.vscode/.windsurf/.antigravity/.idx`) y corre `xdd-adapt` por cada uno. Opt-out: `XDD_NO_ADAPT=1`. Resultado: **un solo `xdd-init` configura todos los IDEs del dev sin pasos extra**.
@@ -55,9 +55,9 @@ Tras bootstrap, `xdd-init.sh` detecta IDEs presentes (CLI `command -v` o config 
 
 ### Positivas
 - ✅ `xdd-init` → 6 IDEs configurados automáticamente, cero pasos manuales
-- ✅ Symlink bug eliminado (copia real) → `/anmax` visible en Claude Code + Copilot
+- ✅ Symlink bug eliminado (copia real) → `/helios` visible en Claude Code + Copilot
 - ✅ MCP auto-config → Cursor/Windsurf/Antigravity listos sin escribir json a mano
-- ✅ Trigger custom (ANMAX) propaga a todos los formatos
+- ✅ Trigger custom (Helios) propaga a todos los formatos
 - ✅ Honestidad: matriz declara qué IDE da slash real vs MCP-only
 
 ### Negativas
@@ -73,7 +73,7 @@ Tras bootstrap, `xdd-init.sh` detecta IDEs presentes (CLI `command -v` o config 
 bash scripts/xdd-init.sh /path --profile=full       # detecta + adapta todos
 
 # Manual:
-bash scripts/xdd-adapt.sh all --dest=/path --trigger=anmax
+bash scripts/xdd-adapt.sh all --dest=/path --trigger=helios
 bash scripts/xdd-adapt.sh cursor --dest=/path
 bash scripts/xdd-adapt.sh vscode-copilot --dest=/path
 

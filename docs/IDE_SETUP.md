@@ -19,14 +19,14 @@ XDD_NO_ADAPT=1 bash scripts/xdd-init.sh /tu/proyecto
 
 | IDE | Trigger | Mecanismo | Archivos generados |
 |---|---|---|---|
-| **Claude Code** | `/anmax` slash ✅ | slash command real | `.claude/commands/*.md` + `.mcp.json` |
-| **OpenCode** | `/anmax` slash ✅ | command + workflows | `.opencode/command/*.md` + `AGENTS.md` |
-| **VSCode + Copilot** | `/anmax` slash ✅ | prompt files | `.github/prompts/*.prompt.md` + `.vscode/mcp.json` |
-| **Cursor** | `@anmax` + MCP ⚠️ | rules + MCP | `.cursor/rules/*.mdc` + `.cursor/mcp.json` |
+| **Claude Code** | `/helios` slash ✅ | slash command real | `.claude/commands/*.md` + `.mcp.json` |
+| **OpenCode** | `/helios` slash ✅ | command + workflows | `.opencode/command/*.md` + `AGENTS.md` |
+| **VSCode + Copilot** | `/helios` slash ✅ | prompt files | `.github/prompts/*.prompt.md` + `.vscode/mcp.json` |
+| **Cursor** | `@helios` + MCP ⚠️ | rules + MCP | `.cursor/rules/*.mdc` + `.cursor/mcp.json` |
 | **Windsurf** | MCP tool ⚠️ | rules + MCP | `.windsurf/rules/*.md` + `.windsurf/mcp.json` |
 | **Antigravity** | MCP tool ❌ | MCP only | `.antigravity/mcp.json` + README |
 
-> ⚠️ **Verdad técnica:** `/anmax` slash idéntico NO existe en todos los IDEs. Claude Code, OpenCode, VSCode Copilot soportan slash commands de archivos. Cursor/Windsurf/Antigravity NO — usan MCP tools (`xdd_invoke_workflow`) o @-mention. Limitación de cada IDE, no de X-DD.
+> ⚠️ **Verdad técnica:** `/helios` slash idéntico NO existe en todos los IDEs. Claude Code, OpenCode, VSCode Copilot soportan slash commands de archivos. Cursor/Windsurf/Antigravity NO — usan MCP tools (`xdd_invoke_workflow`) o @-mention. Limitación de cada IDE, no de X-DD.
 
 ## Por IDE
 
@@ -34,15 +34,15 @@ XDD_NO_ADAPT=1 bash scripts/xdd-init.sh /tu/proyecto
 ```bash
 bash scripts/xdd-adapt.sh claude-code --dest=/proyecto
 ```
-- `.claude/commands/anmax.md` (copia real, NO symlink)
+- `.claude/commands/helios.md` (copia real, NO symlink)
 - `.mcp.json` apunta a xdd-mcp-server
-- **Reinicia Claude Code** → `/anmax` aparece en menú
+- **Reinicia Claude Code** → `/helios` aparece en menú
 
 ### VSCode + Copilot
 ```bash
 bash scripts/xdd-adapt.sh vscode-copilot --dest=/proyecto
 ```
-- `.github/prompts/anmax.prompt.md` → `/anmax` en Copilot Chat
+- `.github/prompts/helios.prompt.md` → `/helios` en Copilot Chat
 - `.vscode/mcp.json` (key `servers`, convención VSCode)
 - Requiere Copilot con prompt files habilitados
 
@@ -50,7 +50,7 @@ bash scripts/xdd-adapt.sh vscode-copilot --dest=/proyecto
 ```bash
 bash scripts/xdd-adapt.sh cursor --dest=/proyecto
 ```
-- `.cursor/rules/anmax.mdc` → menciona `@anmax`
+- `.cursor/rules/helios.mdc` → menciona `@helios`
 - `.cursor/mcp.json` → tools MCP en Cursor Settings
 
 ### Antigravity (Google IDE)
@@ -80,9 +80,9 @@ Config MCP generada apunta a:
 
 | Síntoma | Causa | Fix |
 |---|---|---|
-| `/anmax` no aparece Claude Code | symlink (versión vieja) o no reiniciaste | re-run adapt (copia real) + reinicia |
-| `/anmax` no aparece en subproyecto | `.claude/` solo a nivel CWD, no hereda padre | `xdd-adapt claude-code --dest=subproyecto` |
-| Antigravity no muestra `/anmax` | Antigravity no tiene slash markdown | usa tools MCP, no slash |
+| `/helios` no aparece Claude Code | symlink (versión vieja) o no reiniciaste | re-run adapt (copia real) + reinicia |
+| `/helios` no aparece en subproyecto | `.claude/` solo a nivel CWD, no hereda padre | `xdd-adapt claude-code --dest=subproyecto` |
+| Antigravity no muestra `/helios` | Antigravity no tiene slash markdown | usa tools MCP, no slash |
 | MCP server no responde | `xdd-mcp-server` no en PYTHONPATH | verifica `cwd` en mcp.json apunta a proyecto con dir `xdd-mcp-server/` |
 | commands desactualizados | editaste workflow SSoT | re-run `xdd-adapt all` |
 
@@ -90,4 +90,4 @@ Config MCP generada apunta a:
 - [ADR-0034 Universal IDE adapter](adr/0034-universal-ide-adapter.md)
 - [ADR-0007 Alcance inicial adapters](adr/0007-alcance-inicial-adaptadores.md)
 - [docs/MCP_INTEGRATION.md](MCP_INTEGRATION.md)
-- [docs/BRANDING.md](BRANDING.md) — trigger custom (ANMAX)
+- [docs/BRANDING.md](BRANDING.md) — trigger custom (Helios)

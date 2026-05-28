@@ -13,7 +13,7 @@
 - **Fase X-DD:** F4 Build COMPLETO (Sprints 0-23 done). Próximo: Release v0.1.0
 - **Plan vigente:** Maximalista extendido (S0-23 done = 33 ADRs + 11 docs nuevas + 12 scripts nuevos pre-release). User pidió pausa release.
 - **Caveman mode:** ON (full) — ~75% reducción tokens
-- **Workspace global:** instalado en `/home/alejandro/Documentos/Desarrollos/` (X-DD core profile, post-purga ANMAX, GitNexus tier-1 syncd)
+- **Workspace global:** instalado en `<workspace>/` (X-DD core profile, post-purga framework legacy, GitNexus tier-1 syncd)
 
 ## Sprints cerrados (10 PRs nuevos S14-23 + #30 fix + #32 GitNexus)
 
