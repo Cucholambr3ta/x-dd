@@ -1,0 +1,93 @@
+# IDE Setup — X-DD universal adapter (Sprint 24)
+
+**Install once → funciona en cualquier IDE.** `xdd-init` auto-detecta tus IDEs y genera config óptima por cada uno. Cero pasos manuales.
+
+## Quick start
+
+```bash
+bash scripts/xdd-init.sh /tu/proyecto --profile=full
+# → detecta IDEs presentes → genera .claude/commands/, .cursor/, .vscode/, etc.
+
+# Manual (todos):
+bash scripts/xdd-adapt.sh all --dest=/tu/proyecto
+
+# Opt-out auto-adapt en init:
+XDD_NO_ADAPT=1 bash scripts/xdd-init.sh /tu/proyecto
+```
+
+## Matriz IDE — qué obtienes
+
+| IDE | Trigger | Mecanismo | Archivos generados |
+|---|---|---|---|
+| **Claude Code** | `/anmax` slash ✅ | slash command real | `.claude/commands/*.md` + `.mcp.json` |
+| **OpenCode** | `/anmax` slash ✅ | command + workflows | `.opencode/command/*.md` + `AGENTS.md` |
+| **VSCode + Copilot** | `/anmax` slash ✅ | prompt files | `.github/prompts/*.prompt.md` + `.vscode/mcp.json` |
+| **Cursor** | `@anmax` + MCP ⚠️ | rules + MCP | `.cursor/rules/*.mdc` + `.cursor/mcp.json` |
+| **Windsurf** | MCP tool ⚠️ | rules + MCP | `.windsurf/rules/*.md` + `.windsurf/mcp.json` |
+| **Antigravity** | MCP tool ❌ | MCP only | `.antigravity/mcp.json` + README |
+
+> ⚠️ **Verdad técnica:** `/anmax` slash idéntico NO existe en todos los IDEs. Claude Code, OpenCode, VSCode Copilot soportan slash commands de archivos. Cursor/Windsurf/Antigravity NO — usan MCP tools (`xdd_invoke_workflow`) o @-mention. Limitación de cada IDE, no de X-DD.
+
+## Por IDE
+
+### Claude Code
+```bash
+bash scripts/xdd-adapt.sh claude-code --dest=/proyecto
+```
+- `.claude/commands/anmax.md` (copia real, NO symlink)
+- `.mcp.json` apunta a xdd-mcp-server
+- **Reinicia Claude Code** → `/anmax` aparece en menú
+
+### VSCode + Copilot
+```bash
+bash scripts/xdd-adapt.sh vscode-copilot --dest=/proyecto
+```
+- `.github/prompts/anmax.prompt.md` → `/anmax` en Copilot Chat
+- `.vscode/mcp.json` (key `servers`, convención VSCode)
+- Requiere Copilot con prompt files habilitados
+
+### Cursor
+```bash
+bash scripts/xdd-adapt.sh cursor --dest=/proyecto
+```
+- `.cursor/rules/anmax.mdc` → menciona `@anmax`
+- `.cursor/mcp.json` → tools MCP en Cursor Settings
+
+### Antigravity (Google IDE)
+```bash
+bash scripts/xdd-adapt.sh antigravity --dest=/proyecto
+```
+- `.antigravity/mcp.json` → importar en Antigravity Settings → MCP
+- **NO hay slash** — invoca tools MCP: `xdd_invoke_workflow` name="xdd"
+
+## MCP server (denominador común)
+
+Todos los IDEs MCP-capable consumen `xdd-mcp-server` (6 tools):
+- `xdd_invoke_workflow` — arranca orquestador / workflow específico
+- `xdd_list_workflows` — catálogo
+- `xdd_list_agents` — 180 agentes
+- `xdd_validate_phase` / `xdd_transition_phase` — gates HMAC
+- `xdd_get_phase_artifacts` — contenido `.xdd/<fase>/`
+
+Config MCP generada apunta a:
+```json
+{"command": "python3", "args": ["-m", "xdd-mcp-server"], "cwd": "/tu/proyecto"}
+```
+
+`cwd` = proyecto → MCP lee su `.xdd/` local. Para monorepo, cada package puede tener su MCP cwd.
+
+## Troubleshooting
+
+| Síntoma | Causa | Fix |
+|---|---|---|
+| `/anmax` no aparece Claude Code | symlink (versión vieja) o no reiniciaste | re-run adapt (copia real) + reinicia |
+| `/anmax` no aparece en subproyecto | `.claude/` solo a nivel CWD, no hereda padre | `xdd-adapt claude-code --dest=subproyecto` |
+| Antigravity no muestra `/anmax` | Antigravity no tiene slash markdown | usa tools MCP, no slash |
+| MCP server no responde | `xdd-mcp-server` no en PYTHONPATH | verifica `cwd` en mcp.json apunta a proyecto con dir `xdd-mcp-server/` |
+| commands desactualizados | editaste workflow SSoT | re-run `xdd-adapt all` |
+
+## Referencias
+- [ADR-0034 Universal IDE adapter](adr/0034-universal-ide-adapter.md)
+- [ADR-0007 Alcance inicial adapters](adr/0007-alcance-inicial-adaptadores.md)
+- [docs/MCP_INTEGRATION.md](MCP_INTEGRATION.md)
+- [docs/BRANDING.md](BRANDING.md) — trigger custom (ANMAX)

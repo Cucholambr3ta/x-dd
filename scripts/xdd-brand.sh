@@ -115,13 +115,25 @@ if [ "$SHOW_ONLY" = "1" ]; then
   exit 0
 fi
 
-# Aplicar: si el trigger != "xdd", crear symlink en .claude/commands/<trigger>.md → xdd.md
+# Aplicar: si el trigger != "xdd", crear COPIA REAL en .claude/commands/<trigger>.md.
+# Sprint 24: copia real, NO symlink — Claude Code/Copilot rechazan symlinks (ver lección).
 if [ "$B_orchestrator_trigger" != "xdd" ]; then
   echo "[xdd-brand] Aplicando trigger custom: /$B_orchestrator_trigger"
   mkdir -p "$DEST/.claude/commands"
   if [ -f "$ROOT/.agent/workflows/xdd.md" ]; then
-    ln -sf "$ROOT/.agent/workflows/xdd.md" "$DEST/.claude/commands/${B_orchestrator_trigger}.md"
-    echo "  ✓ .claude/commands/${B_orchestrator_trigger}.md → xdd.md (symlink)"
+    cp "$ROOT/.agent/workflows/xdd.md" "$DEST/.claude/commands/${B_orchestrator_trigger}.md"
+    # Rebrand cabecera del command copiado (description + título)
+    if command -v python3 >/dev/null 2>&1; then
+      python3 - "$DEST/.claude/commands/${B_orchestrator_trigger}.md" "$B_ecosystem_name" "$B_orchestrator_trigger" <<'PY'
+import sys, re
+path, eco, trig = sys.argv[1], sys.argv[2], sys.argv[3]
+t = open(path, encoding="utf-8").read()
+t = re.sub(r"description:.*", f"description: Orquestador Principal del Ecosistema {eco} (powered by X-DD).", t, count=1)
+t = t.replace("# /xdd", f"# /{trig}", 1)
+open(path, "w", encoding="utf-8").write(t)
+PY
+    fi
+    echo "  ✓ .claude/commands/${B_orchestrator_trigger}.md (copia real rebrandeada)"
   fi
 fi
 
