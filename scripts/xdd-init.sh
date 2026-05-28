@@ -184,6 +184,28 @@ fi
 # Marcar scripts como ejecutables
 chmod +x ./scripts/*.sh ./scripts/hooks/* ./.agent/hooks/scripts/*.sh 2>/dev/null || true
 
+# === Auto-detect IDEs + auto-adapt (Sprint 24) ===
+# Detecta IDEs presentes (CLI o config dir) y genera config óptima por cada uno.
+# Opt-out: XDD_NO_ADAPT=1
+if [ "${XDD_NO_ADAPT:-0}" != "1" ] && [ -f "./scripts/xdd-adapt.sh" ]; then
+  DETECTED=""
+  # claude-code: siempre (orquestador primario). CLI o cualquier proyecto.
+  DETECTED="claude-code"
+  command -v opencode  >/dev/null 2>&1 && DETECTED="$DETECTED opencode"
+  { command -v cursor >/dev/null 2>&1 || [ -d ".cursor" ]; }       && DETECTED="$DETECTED cursor"
+  { command -v code   >/dev/null 2>&1 || [ -d ".vscode" ] || [ -d ".github" ]; } && DETECTED="$DETECTED vscode-copilot"
+  { command -v windsurf >/dev/null 2>&1 || [ -d ".windsurf" ]; }   && DETECTED="$DETECTED windsurf"
+  { command -v antigravity >/dev/null 2>&1 || [ -d ".antigravity" ] || [ -d ".idx" ]; } && DETECTED="$DETECTED antigravity"
+
+  echo "[xdd-init] IDEs detectados para adapt: $DETECTED"
+  for ide in $DETECTED; do
+    bash ./scripts/xdd-adapt.sh "$ide" --dest="$DEST" 2>&1 | sed 's/^/  /' || \
+      echo "  [xdd-init] WARN: adapt $ide falló (no bloqueante)"
+  done
+  echo "[xdd-init] ✓ IDE adapters generados (copia real + MCP auto-config)."
+  echo "[xdd-init]   Override: XDD_NO_ADAPT=1 para saltar. Manual: bash scripts/xdd-adapt.sh all"
+fi
+
 cat <<EOF
 
 [xdd-init] ✓ Bootstrap completado en: $DEST
