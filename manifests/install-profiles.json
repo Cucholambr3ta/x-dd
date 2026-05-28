@@ -21,7 +21,10 @@
         "gate-keeper",
         "memory",
         "ci-runtime",
-        "docs-governance"
+        "docs-governance",
+        "personas",
+        "skills-core",
+        "mcp-server-global"
       ]
     },
     "developer": {
@@ -36,7 +39,14 @@
         "platform-configs",
         "memory",
         "ci-runtime",
-        "docs-governance"
+        "docs-governance",
+        "personas",
+        "skills-core",
+        "mcp-server-global",
+        "workspace-monorepo",
+        "observability",
+        "governance-runtime",
+        "router"
       ]
     },
     "security": {
@@ -50,7 +60,12 @@
         "agent-shield",
         "memory",
         "ci-runtime",
-        "docs-governance"
+        "docs-governance",
+        "personas",
+        "skills-core",
+        "mcp-server-global",
+        "governance-runtime",
+        "pentest"
       ]
     },
     "research": {
@@ -63,7 +78,12 @@
         "eval-harness",
         "continuous-learning",
         "memory",
-        "docs-governance"
+        "docs-governance",
+        "personas",
+        "skills-core",
+        "mcp-server-global",
+        "observability",
+        "ahe-evolve"
       ]
     },
     "full": {
@@ -82,7 +102,17 @@
         "continuous-learning",
         "orchestration",
         "agent-shield",
-        "docs-governance"
+        "docs-governance",
+        "personas",
+        "skills-core",
+        "mcp-server-global",
+        "workspace-monorepo",
+        "observability",
+        "governance-runtime",
+        "ahe-evolve",
+        "protocols",
+        "router",
+        "pentest"
       ]
     }
   }
