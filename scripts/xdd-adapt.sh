@@ -261,11 +261,68 @@ EOF
 }
 
 adapt_vscode_copilot() {
-  echo "[xdd-adapt] target: vscode-copilot → $DEST/.github/prompts/ (slash /$TRIGGER) + .vscode/mcp.json"
-  # VSCode Copilot: .github/prompts/*.prompt.md → aparecen como /<name> en Copilot Chat
+  echo "[xdd-adapt] target: vscode-copilot → .github/prompts/ + .vscode/{mcp,tasks,settings}.json"
+  # 1. Prompt files (slash /<trigger> en Copilot Chat) — copia real
   copy_commands "$DEST/.github/prompts" "prompt.md"
-  # VSCode usa key "servers" (no "mcpServers")
+  # 2. MCP server (key "servers" — convención VSCode, no "mcpServers")
   gen_mcp_json "$DEST/.vscode/mcp.json" "servers"
+  # 3. tasks.json — 4 tasks comunes accesibles desde Paleta (Run Task) o atajo
+  if [ ! -e "$DEST/.vscode/tasks.json" ]; then
+    write_file "$DEST/.vscode/tasks.json" "$(cat <<EOF
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "X-DD: doctor",
+      "type": "shell",
+      "command": "bash scripts/xdd-doctor.sh",
+      "problemMatcher": [],
+      "presentation": {"reveal": "always", "panel": "dedicated"}
+    },
+    {
+      "label": "X-DD: start orchestrator",
+      "type": "shell",
+      "command": "bash scripts/xdd-start.sh",
+      "problemMatcher": [],
+      "presentation": {"reveal": "always", "panel": "dedicated"}
+    },
+    {
+      "label": "X-DD: list workflows",
+      "type": "shell",
+      "command": "bash scripts/lint-workflows.sh && ls -1 .agent/workflows/*.md | head -20",
+      "problemMatcher": []
+    },
+    {
+      "label": "X-DD: gate validate (current phase)",
+      "type": "shell",
+      "command": "python3 scripts/xdd-gate.py status",
+      "problemMatcher": []
+    }
+  ]
+}
+EOF
+)"
+  else
+    echo "[xdd-adapt] SKIP .vscode/tasks.json (ya existe; merge manual si querés añadir tasks X-DD)"
+  fi
+  # 4. settings.json env vars terminal — solo si no existe (no overwrite proyecto)
+  if [ ! -e "$DEST/.vscode/settings.json" ]; then
+    write_file "$DEST/.vscode/settings.json" "$(cat <<'EOF'
+{
+  "terminal.integrated.env.linux": {
+    "ANTHROPIC_API_KEY": "${env:ANTHROPIC_API_KEY}",
+    "OPENAI_API_KEY": "${env:OPENAI_API_KEY}"
+  },
+  "terminal.integrated.env.osx": {
+    "ANTHROPIC_API_KEY": "${env:ANTHROPIC_API_KEY}",
+    "OPENAI_API_KEY": "${env:OPENAI_API_KEY}"
+  }
+}
+EOF
+)"
+  else
+    echo "[xdd-adapt] SKIP .vscode/settings.json (ya existe; añadí manual terminal.integrated.env.* si necesitás)"
+  fi
 }
 
 adapt_antigravity() {

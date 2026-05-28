@@ -76,6 +76,32 @@ teardown() {
   grep -q '"servers"' "$DEST/.vscode/mcp.json"
 }
 
+@test "vscode-copilot genera tasks.json + settings.json env vars" {
+  run bash scripts/xdd-adapt.sh vscode-copilot --dest="$DEST" --trigger=helios
+  [ "$status" -eq 0 ]
+  # tasks.json con 4 tasks X-DD
+  [ -f "$DEST/.vscode/tasks.json" ]
+  grep -q "X-DD: doctor" "$DEST/.vscode/tasks.json"
+  grep -q "X-DD: start orchestrator" "$DEST/.vscode/tasks.json"
+  grep -q "X-DD: list workflows" "$DEST/.vscode/tasks.json"
+  grep -q "X-DD: gate validate" "$DEST/.vscode/tasks.json"
+  # settings.json env vars terminal
+  [ -f "$DEST/.vscode/settings.json" ]
+  grep -q "terminal.integrated.env.linux" "$DEST/.vscode/settings.json"
+  grep -q "ANTHROPIC_API_KEY" "$DEST/.vscode/settings.json"
+}
+
+@test "vscode-copilot SKIP tasks.json + settings.json si ya existen (no overwrite)" {
+  mkdir -p "$DEST/.vscode"
+  echo '{"custom":"existing"}' > "$DEST/.vscode/tasks.json"
+  echo '{"editor.fontSize":14}' > "$DEST/.vscode/settings.json"
+  run bash scripts/xdd-adapt.sh vscode-copilot --dest="$DEST"
+  [ "$status" -eq 0 ]
+  # Preservados
+  grep -q "custom" "$DEST/.vscode/tasks.json"
+  grep -q "fontSize" "$DEST/.vscode/settings.json"
+}
+
 @test "cursor genera rules .mdc + mcp.json" {
   run bash scripts/xdd-adapt.sh cursor --dest="$DEST" --trigger=helios
   [ "$status" -eq 0 ]
