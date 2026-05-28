@@ -1,21 +1,27 @@
 {
   "$schema": "../schemas/install-profiles.schema.json",
   "version": "0.1.0",
-  "description": "Perfiles de instalación X-DD. Cada perfil agrupa módulos coherentes para un caso de uso.",
+  "description": "Perfiles de instalaci\u00f3n X-DD. Cada perfil agrupa m\u00f3dulos coherentes para un caso de uso.",
   "profiles": {
     "minimal": {
-      "description": "Mínima viable: solo núcleo + workflows + memoria. Sin agentes, sin hooks, sin MCP.",
-      "modules": ["core", "workflows-core", "memory"]
+      "description": "M\u00ednima viable: solo n\u00facleo + workflows + memoria. Sin agentes, sin hooks, sin MCP.",
+      "modules": [
+        "core",
+        "workflows-core",
+        "memory",
+        "docs-governance"
+      ]
     },
     "core": {
-      "description": "Recomendada para empezar: núcleo + workflows + agentes + gate + memoria + CI.",
+      "description": "Recomendada para empezar: n\u00facleo + workflows + agentes + gate + memoria + CI.",
       "modules": [
         "core",
         "workflows-core",
         "agents-core",
         "gate-keeper",
         "memory",
-        "ci-runtime"
+        "ci-runtime",
+        "docs-governance"
       ]
     },
     "developer": {
@@ -29,11 +35,12 @@
         "mcp-server",
         "platform-configs",
         "memory",
-        "ci-runtime"
+        "ci-runtime",
+        "docs-governance"
       ]
     },
     "security": {
-      "description": "Énfasis en SecDD: núcleo + hooks strict + AgentShield + gate firmado.",
+      "description": "\u00c9nfasis en SecDD: n\u00facleo + hooks strict + AgentShield + gate firmado.",
       "modules": [
         "core",
         "workflows-core",
@@ -42,11 +49,12 @@
         "hooks-runtime",
         "agent-shield",
         "memory",
-        "ci-runtime"
+        "ci-runtime",
+        "docs-governance"
       ]
     },
     "research": {
-      "description": "Investigación: núcleo + eval-harness + continuous learning + memoria.",
+      "description": "Investigaci\u00f3n: n\u00facleo + eval-harness + continuous learning + memoria.",
       "modules": [
         "core",
         "workflows-core",
@@ -54,11 +62,12 @@
         "gate-keeper",
         "eval-harness",
         "continuous-learning",
-        "memory"
+        "memory",
+        "docs-governance"
       ]
     },
     "full": {
-      "description": "Todo (incluyendo capacidades de v0.1.0 sprint 9-12 cuando estén disponibles).",
+      "description": "Todo (incluyendo capacidades de v0.1.0 sprint 9-12 cuando est\u00e9n disponibles).",
       "modules": [
         "core",
         "workflows-core",
@@ -72,7 +81,8 @@
         "eval-harness",
         "continuous-learning",
         "orchestration",
-        "agent-shield"
+        "agent-shield",
+        "docs-governance"
       ]
     }
   }

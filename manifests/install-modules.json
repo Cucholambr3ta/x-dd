@@ -1,10 +1,10 @@
 {
   "$schema": "../schemas/install-modules.schema.json",
   "version": "0.1.0",
-  "description": "Módulos instalables de X-DD. Cada módulo agrupa archivos coherentes para una capacidad específica.",
+  "description": "M\u00f3dulos instalables de X-DD. Cada m\u00f3dulo agrupa archivos coherentes para una capacidad espec\u00edfica.",
   "modules": {
     "core": {
-      "description": "Núcleo: scripts (doctor, init, start, adapt), templates, CLAUDE.md, MEJORAS, configs base.",
+      "description": "N\u00facleo: scripts (doctor, init, start, adapt), templates, CLAUDE.md, MEJORAS, configs base.",
       "files": [
         "CLAUDE.md",
         "MEJORAS-X-DD.md",
@@ -18,12 +18,14 @@
         "scripts/xdd-adapt.sh",
         "scripts/lint-workflows.sh",
         "scripts/hooks/post-commit",
-        "templates/"
+        "templates/",
+        "docs/constitucion.md",
+        "AGENTS.md"
       ],
       "required": true
     },
     "workflows-core": {
-      "description": "Catálogo de 49 workflows X-DD (.agent/workflows/).",
+      "description": "Cat\u00e1logo de 49 workflows X-DD (.agent/workflows/).",
       "files": [
         ".agent/workflows/",
         "prompts/workflows/"
@@ -49,7 +51,9 @@
         "schemas/hooks.schema.json"
       ],
       "required": false,
-      "requires": ["core"]
+      "requires": [
+        "core"
+      ]
     },
     "mcp-server": {
       "description": "MCP server propio de X-DD (Python stdlib pura, 6 tools).",
@@ -58,16 +62,21 @@
         "docs/MCP_INTEGRATION.md"
       ],
       "required": false,
-      "requires": ["core", "agents-core"]
+      "requires": [
+        "core",
+        "agents-core"
+      ]
     },
     "gate-keeper": {
-      "description": "Gate keeper programático con HMAC-SHA256.",
+      "description": "Gate keeper program\u00e1tico con HMAC-SHA256.",
       "files": [
         "scripts/xdd-gate.py",
         "docs/GATE.md"
       ],
       "required": false,
-      "requires": ["core"]
+      "requires": [
+        "core"
+      ]
     },
     "platform-configs": {
       "description": "Configs por IDE (.claude/, .opencode/, MCP configs).",
@@ -121,13 +130,26 @@
       "available_from": "0.1.0-sprint11"
     },
     "agent-shield": {
-      "description": "AgentShield: security audit estática del framework (Sprint 12).",
+      "description": "AgentShield: security audit est\u00e1tica del framework (Sprint 12).",
       "files": [
         "scripts/xdd-shield.py",
         "docs/AGENT_SHIELD.md"
       ],
       "required": false,
       "available_from": "0.1.0-sprint12"
+    },
+    "docs-governance": {
+      "description": "Documentaci\u00f3n governance + guides core que CLAUDE.md/AGENTS.md referencian (constitucion, integration, retrofit, hooks, config, install).",
+      "files": [
+        "docs/constitucion.md",
+        "docs/X-DD_Integration_Guide.md",
+        "docs/RETROFIT_GUIDE.md",
+        "docs/HOOKS.md",
+        "docs/CONFIG.md",
+        "docs/INSTALL_PROFILES.md",
+        "INSTALL.md",
+        "AGENTS.md"
+      ]
     }
   }
 }
