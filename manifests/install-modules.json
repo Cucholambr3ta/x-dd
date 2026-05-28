@@ -150,6 +150,77 @@
         "INSTALL.md",
         "AGENTS.md"
       ]
+    },
+    "personas": {
+      "description": "White-labeling (Sprint 13): xdd-brand + 4 personas presets.",
+      "files": [
+        "scripts/xdd-brand.sh",
+        "prompts/orchestrator/"
+      ]
+    },
+    "skills-core": {
+      "description": "Skills system (Sprint 10-21): registry + 6 skills propias + xdd-bundle.",
+      "files": [
+        "skills/",
+        "prompts/skills/",
+        "scripts/xdd-bundle.py"
+      ]
+    },
+    "mcp-server-global": {
+      "description": "Sprint 25 + ADR-0035: wrapper installer global ~/.local/bin/xdd-mcp-server.",
+      "files": [
+        "scripts/xdd-mcp-install-global.sh"
+      ]
+    },
+    "workspace-monorepo": {
+      "description": "Sprint 14-15: wizard interactivo + monorepo detect (9 tools soportadas).",
+      "files": [
+        "scripts/xdd-wizard.sh",
+        "scripts/xdd-monorepo.sh"
+      ]
+    },
+    "observability": {
+      "description": "Sprint 18-19: OTel spans + session replay + cost tracker + context budget.",
+      "files": [
+        "scripts/xdd-otel.py",
+        "scripts/xdd-replay.py",
+        "scripts/xdd-cost.py",
+        "scripts/xdd-context.py"
+      ]
+    },
+    "governance-runtime": {
+      "description": "Sprint 21: intent taxonomy + OAP authz <100ms.",
+      "files": [
+        "scripts/xdd-intent.py",
+        "scripts/xdd-authz.py"
+      ]
+    },
+    "ahe-evolve": {
+      "description": "Sprint 22 + ADR-0029: AHE-style /evolve 3-layer obs + frozen transfer + trace summarize.",
+      "files": [
+        "scripts/xdd-trace-summarize.py",
+        "scripts/xdd-frozen-transfer.py",
+        "scripts/xdd-meta-eval.py"
+      ]
+    },
+    "protocols": {
+      "description": "Sprint 23: A2A + AG-UI streaming spec.",
+      "files": [
+        "scripts/xdd-a2a.py",
+        "scripts/xdd-agui.py"
+      ]
+    },
+    "router": {
+      "description": "Sprint 17 + ADR-0019: multi-provider LLM router (5 task \u00d7 4 providers).",
+      "files": [
+        "scripts/xdd-router.py"
+      ]
+    },
+    "pentest": {
+      "description": "Sprint 12 + ADR-0010: wrapper h\u00edbrido Shannon (AGPL opt-in).",
+      "files": [
+        "scripts/xdd-pentest.sh"
+      ]
     }
   }
 }
