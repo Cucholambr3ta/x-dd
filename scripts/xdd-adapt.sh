@@ -269,20 +269,92 @@ adapt_vscode_copilot() {
 }
 
 adapt_antigravity() {
-  echo "[xdd-adapt] target: antigravity → $DEST/.antigravity/mcp.json"
-  # Antigravity (Google IDE): consume vía MCP. Sin slash custom markdown.
-  gen_mcp_json "$DEST/.antigravity/mcp.json" "mcpServers"
+  # Sprint 25 + ADR-0035: usa wrapper global xdd-mcp-server (si instalado) SIN cwd
+  # → Antigravity arranca server en workspace activo dinámicamente.
+  # Fallback: si wrapper global no existe, usa python3 -m con cwd=DEST (modo legacy).
+  # También popula `.agents/skills/` (convención Antigravity plural, no .agent singular).
+  local gemini_cfg="${XDD_ANTIGRAVITY_HOME:-$HOME/.gemini/config}/mcp_config.json"
+  echo "[xdd-adapt] target: antigravity"
+  echo "  · MCP config: $gemini_cfg (MERGE)"
+  echo "  · Skills:     $DEST/.agents/skills/ (convención Antigravity plural)"
+
+  local wrapper="$HOME/.local/bin/xdd-mcp-server"
+  local use_global=0
+  if [ -x "$wrapper" ]; then
+    use_global=1
+    echo "[xdd-adapt] usando wrapper global (sin cwd, dinámico al workspace IDE)"
+  else
+    echo "[xdd-adapt] wrapper global no instalado — modo legacy con cwd fijo=$DEST"
+    echo "[xdd-adapt]   recomendado: bash scripts/xdd-mcp-install-global.sh"
+  fi
+
+  # 1. MCP config merge en ~/.gemini/config/mcp_config.json
+  if [ $DRY_RUN -eq 1 ]; then
+    emit "$gemini_cfg (merge '$TRIGGER', use_global=$use_global)"
+  elif command -v python3 >/dev/null 2>&1; then
+    python3 - "$gemini_cfg" "$TRIGGER" "$DEST" "$wrapper" "$use_global" <<'PY'
+import json, os, sys
+cfg_path, trigger, dest, wrapper, use_global = sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5] == "1"
+os.makedirs(os.path.dirname(cfg_path), exist_ok=True)
+cfg = {}
+if os.path.exists(cfg_path):
+    try: cfg = json.load(open(cfg_path, encoding="utf-8"))
+    except Exception: cfg = {}
+cfg.setdefault("mcpServers", {})
+entry = {"$typeName": "exa.cascade_plugins_pb.CascadePluginCommandTemplate", "env": {}}
+if use_global:
+    entry["command"] = wrapper
+    entry["args"] = []
+else:
+    entry["command"] = "python3"
+    entry["args"] = ["-m", "xdd-mcp-server"]
+    entry["cwd"] = dest
+cfg["mcpServers"][trigger] = entry
+json.dump(cfg, open(cfg_path, "w", encoding="utf-8"), indent=2)
+print(f"[xdd-adapt] ✓ '{trigger}' merged en {cfg_path} (use_global={use_global})")
+PY
+  fi
+
+  # 2. .agents/skills/ — convención Antigravity plural (NO .agent singular)
+  # Copia skills SSoT de X-DD a estructura Antigravity. Cada skill = dir con SKILL.md.
+  local skills_src="$ROOT/skills"
+  local skills_dst="$DEST/.agents/skills"
+  if [ -d "$skills_src" ]; then
+    if [ $DRY_RUN -eq 1 ]; then
+      emit ".agents/skills/ (copia $(ls -1 "$skills_src" 2>/dev/null | wc -l) skills X-DD)"
+    else
+      mkdir -p "$skills_dst"
+      local count=0
+      for skill_dir in "$skills_src"/*/; do
+        [ -d "$skill_dir" ] || continue
+        local sname; sname=$(basename "$skill_dir")
+        cp -r "$skill_dir" "$skills_dst/"
+        count=$((count+1))
+      done
+      echo "[xdd-adapt] ✓ ${count} skills copiadas a $skills_dst/ (convención Antigravity)"
+    fi
+  fi
+
+  # 3. README local explicando arquitectura
   write_file "$DEST/.antigravity/README-xdd.md" "$(cat <<EOF
-# X-DD en Antigravity
+# X-DD/$TRIGGER en Antigravity
 
-Antigravity NO soporta slash commands markdown custom. Consume X-DD vía **MCP server**.
+Antigravity (Gemini IDE) consume X-DD vía 2 mecanismos:
 
-1. Config MCP: \`.antigravity/mcp.json\` (generado). Impórtalo en Antigravity Settings → MCP.
-2. Invoca tools MCP:
-   - \`xdd_invoke_workflow\` name="xdd" → arranca orquestador /$TRIGGER
-   - \`xdd_list_workflows\` → lista workflows
-   - \`xdd_list_agents\` → 180 agentes
-3. NO escribas /$TRIGGER (no es slash en Antigravity). Usa las tools MCP.
+## 1. MCP server (orquestador)
+Config global: \`~/.gemini/config/mcp_config.json\` (mergeado automático). Server "$TRIGGER" con 6 tools.
+
+**Sprint 25 (recomendado):**
+1. \`bash scripts/xdd-mcp-install-global.sh\` (wrapper en ~/.local/bin)
+2. \`bash scripts/xdd-adapt.sh antigravity --dest=<proyecto>\`
+3. Refresh panel MCP. Server arranca en workspace activo dinámicamente.
+
+## 2. Skills (\`.agents/skills/\` plural — convención Antigravity)
+6 X-DD skills copiadas a \`.agents/skills/\`. Antigravity las detecta automático.
+NOTA: Antigravity usa \`.agents/\` (plural), OpenCode usa \`.agent/\` (singular).
+
+## Uso
+Invoca \`xdd_invoke_workflow\` name="xdd" desde Cascade. NO escribas /$TRIGGER (no es slash).
 EOF
 )"
 }
