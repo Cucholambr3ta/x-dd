@@ -145,6 +145,6 @@ graph LR
 | 2026-05-27 | fix/docs-sync-s9-s13 — sync doc drift detectado en 9 files post-S13 | aplacencia |
 | 2026-05-27 | Sprints 14-23 ejecutados autónomos (PRs #20-29). 10 sprints, 33 ADRs total, ~95 tests nuevos | aplacencia |
 | 2026-05-27 | fix CI lint workflows description (PR #30) | aplacencia |
-| 2026-05-27 | Workspace global Desarrollos/ instalado X-DD core post-purga ANMAX. Backup tar.gz preservado | aplacencia |
+| 2026-05-27 | Workspace global Desarrollos/ instalado X-DD core post-purga framework legacy. Backup tar.gz preservado | aplacencia |
 | 2026-05-27 | GitNexus tier-1 companion mergeado (PR #32) paralelo MemPalace + ADR-0033 | aplacencia |
 | 2026-05-27 | docs/sync-post-gitnexus — sync 12 files post-S14-23 + GitNexus | aplacencia |

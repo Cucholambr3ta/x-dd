@@ -20,14 +20,14 @@ Categorías sugeridas: `ARQUITECTURA`, `SEGURIDAD`, `DOMINIO`, `TESTING`, `DEVOP
 
 ## Lecciones
 
-### [PROCESO] Workspace global = purga selectiva ANMAX legacy + preserve hijos infra — 2026-05-27
-**Contexto:** Workspace raíz `/home/alejandro/Documentos/Desarrollos/` tenía setup ANMAX (predecessor X-DD). User pidió instalar X-DD global. ANMAX es superset funcional inferior (15 categorías agents vs 180 X-DD; workflows `anmax-*` vs `xdd-*` renombrados; sin registry tipado; sin gate keeper HMAC). NO git repo → backup tar.gz crítico antes de tocar.
-**Problema:** Colisiones directas (CLAUDE.md, .agent/, prompts/, scripts/, templates/, .claude/) requieren DELETE. Pero workspace también contiene non-ANMAX (Docker/MemPalace yaml, .hermes/, hermes-companion/, openwhispr/, personal/) que NO debe tocarse.
+### [PROCESO] Workspace global = purga selectiva framework legacy + preserve hijos infra — 2026-05-27
+**Contexto:** Workspace raíz `<workspace>/` tenía setup de framework legacy (predecessor X-DD). User pidió instalar X-DD global. El legacy es subset funcional inferior (15 categorías agents vs 180 X-DD; workflows legacy vs `xdd-*` renombrados; sin registry tipado; sin gate keeper HMAC). NO git repo → backup tar.gz crítico antes de tocar.
+**Problema:** Colisiones directas (CLAUDE.md, .agent/, prompts/, scripts/, templates/, .claude/) requieren DELETE. Pero workspace también contiene non-legacy (Docker/MemPalace yaml, .hermes/, hermes-companion/, openwhispr/, personal/) que NO debe tocarse.
 **Causa raíz:** Workspace mixed = product hijos + legacy bootstrap. Purga ciega corrompería productos.
 **Lección:** Para install X-DD en workspace existente con framework legacy:
 1. SIEMPRE backup tar.gz (workspace puede NO ser git repo).
 2. Enumerar archivos colision-vs-preserve antes de tocar.
-3. `tar -czf ~/Desarrollos-anmax-backup-$(date).tar.gz CLAUDE.md docs/ .agent/ prompts/ scripts/ templates/ .claude/ setup_skills.sh` (solo lo a purgar, no toda la carpeta de 2.7GB).
+3. `tar -czf ~/workspace-backup-$(date).tar.gz CLAUDE.md docs/ .agent/ prompts/ scripts/ templates/ .claude/ setup_skills.sh` (solo lo a purgar, no toda la carpeta de 2.7GB).
 4. `rm -rf` selectivo de paths X-DD-colliding.
 5. `xdd-init.sh /path --profile=core` sobre workspace limpio.
 6. Re-validar con `xdd-doctor.sh`.

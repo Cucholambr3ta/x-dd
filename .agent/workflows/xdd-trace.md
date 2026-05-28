@@ -2,7 +2,7 @@
 description: Inicializa y sincroniza el sistema de trazabilidad (Gantt + Changelog) en el proyecto actual.
 ---
 # /xdd-trace
-**ID:** FLUJO-TRACE | **Versión:** 1.0 | **Agente:** Anmax-PM
+**ID:** FLUJO-TRACE | **Versión:** 1.0 | **Agente:** X-DD-PM
 **Misión**: Garantizar que el proyecto tenga una infraestructura de gestión completa y herede la historia existente.
 
 ## 0. AUDITORÍA DE GESTIÓN

@@ -62,36 +62,36 @@ teardown() {
 }
 
 @test "trigger custom renombra + rebrandea command principal" {
-  run bash scripts/xdd-adapt.sh claude-code --dest="$DEST" --trigger=anmax
+  run bash scripts/xdd-adapt.sh claude-code --dest="$DEST" --trigger=helios
   [ "$status" -eq 0 ]
-  [ -f "$DEST/.claude/commands/anmax.md" ]
-  grep -q "# /anmax" "$DEST/.claude/commands/anmax.md"
+  [ -f "$DEST/.claude/commands/helios.md" ]
+  grep -q "# /helios" "$DEST/.claude/commands/helios.md"
 }
 
 @test "vscode-copilot genera .github/prompts + .vscode/mcp.json key servers" {
-  run bash scripts/xdd-adapt.sh vscode-copilot --dest="$DEST" --trigger=anmax
+  run bash scripts/xdd-adapt.sh vscode-copilot --dest="$DEST" --trigger=helios
   [ "$status" -eq 0 ]
-  [ -f "$DEST/.github/prompts/anmax.prompt.md" ]
+  [ -f "$DEST/.github/prompts/helios.prompt.md" ]
   [ -f "$DEST/.vscode/mcp.json" ]
   grep -q '"servers"' "$DEST/.vscode/mcp.json"
 }
 
 @test "cursor genera rules .mdc + mcp.json" {
-  run bash scripts/xdd-adapt.sh cursor --dest="$DEST" --trigger=anmax
+  run bash scripts/xdd-adapt.sh cursor --dest="$DEST" --trigger=helios
   [ "$status" -eq 0 ]
-  [ -f "$DEST/.cursor/rules/anmax.mdc" ]
+  [ -f "$DEST/.cursor/rules/helios.mdc" ]
   [ -f "$DEST/.cursor/mcp.json" ]
 }
 
 @test "windsurf genera rules + mcp.json" {
-  run bash scripts/xdd-adapt.sh windsurf --dest="$DEST" --trigger=anmax
+  run bash scripts/xdd-adapt.sh windsurf --dest="$DEST" --trigger=helios
   [ "$status" -eq 0 ]
-  [ -f "$DEST/.windsurf/rules/anmax.md" ]
+  [ -f "$DEST/.windsurf/rules/helios.md" ]
   [ -f "$DEST/.windsurf/mcp.json" ]
 }
 
 @test "antigravity genera mcp.json + README (no slash)" {
-  run bash scripts/xdd-adapt.sh antigravity --dest="$DEST" --trigger=anmax
+  run bash scripts/xdd-adapt.sh antigravity --dest="$DEST" --trigger=helios
   [ "$status" -eq 0 ]
   [ -f "$DEST/.antigravity/mcp.json" ]
   [ -f "$DEST/.antigravity/README-xdd.md" ]
@@ -105,13 +105,13 @@ teardown() {
 }
 
 @test "all genera los 6 IDEs" {
-  run bash scripts/xdd-adapt.sh all --dest="$DEST" --trigger=anmax
+  run bash scripts/xdd-adapt.sh all --dest="$DEST" --trigger=helios
   [ "$status" -eq 0 ]
-  [ -f "$DEST/.claude/commands/anmax.md" ]
-  [ -f "$DEST/.opencode/command/anmax.md" ]
-  [ -f "$DEST/.cursor/rules/anmax.mdc" ]
-  [ -f "$DEST/.windsurf/rules/anmax.md" ]
-  [ -f "$DEST/.github/prompts/anmax.prompt.md" ]
+  [ -f "$DEST/.claude/commands/helios.md" ]
+  [ -f "$DEST/.opencode/command/helios.md" ]
+  [ -f "$DEST/.cursor/rules/helios.mdc" ]
+  [ -f "$DEST/.windsurf/rules/helios.md" ]
+  [ -f "$DEST/.github/prompts/helios.prompt.md" ]
   [ -f "$DEST/.antigravity/mcp.json" ]
 }
 

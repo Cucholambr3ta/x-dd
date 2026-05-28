@@ -15,7 +15,7 @@
 - **Sprint en curso:** **docs/sync-post-gitnexus** (sync docs post-S14-23 + GitNexus)
 - **Plan macro:** MAXIMALISTA EXTENDIDO. 23.5d (S0-13) + ~34d (S14-23) = ~57.5d invertidos. Restan ~0.5d (release).
 - **Último hito:** GitNexus tier-1 companion mergeado (PR #32) — paralelo MemPalace en xdd-doctor + xdd-start + ADR-0033.
-- **Workspace global:** instalado en `/home/alejandro/Documentos/Desarrollos/` (post-purga ANMAX legacy). Backup tar.gz en `~/Desarrollos-anmax-backup-2026-05-27-1025.tar.gz`.
+- **Workspace global:** instalado en `<workspace>/` (post-purga framework legacy). Backup tar.gz en `~/<workspace>-backup.tar.gz`.
 - **Próximo paso:** sync docs (este branch) → Release v0.1.0 cuando user autorice.
 
 ## Stats actuales (post-S23 + GitNexus)
@@ -56,11 +56,11 @@
 ## Bitácora de Sesiones
 
 ### Sesión 2026-05-27 (cont.) — Workspace global Desarrollos/ + GitNexus tier-1 + docs sync
-- **Meta:** (1) Instalar X-DD en workspace raíz Desarrollos/ post-purga ANMAX legacy. (2) Integrar GitNexus tier-1 paralelo MemPalace. (3) Sincronizar toda la documentación post-S14-23 + GitNexus.
+- **Meta:** (1) Instalar X-DD en workspace raíz Desarrollos/ post-purga framework legacy. (2) Integrar GitNexus tier-1 paralelo MemPalace. (3) Sincronizar toda la documentación post-S14-23 + GitNexus.
 - **Hitos:**
-  - Backup ANMAX `~/Desarrollos-anmax-backup-2026-05-27-1025.tar.gz` (3.9MB, 713 files)
+  - Backup framework legacy `~/<workspace>-backup.tar.gz` (3.9MB, 713 files)
   - Purga selectiva: CLAUDE.md + docs/ + .agent/ + prompts/ + scripts/ + templates/ + .claude/ + setup_skills.sh (preservados Docker/MemPalace/hijos)
-  - Install X-DD core en workspace: `bash scripts/xdd-init.sh /home/alejandro/Documentos/Desarrollos --profile=core`
+  - Install X-DD core en workspace: `bash scripts/xdd-init.sh <workspace> --profile=core`
   - GitNexus tier-1 (PR #32): xdd-doctor detect + xdd-start indexa + DEPENDENCIES + agent.yaml.companions + ADR-0033
   - PR #30 fix CI lint: 4 workflows S16/S17/S19 sin `description:` frontmatter
   - 12 archivos doc sincronizados: shortform, longform, security, INSTALL, agent.yaml, CHANGELOG, README en/pt-BR, WORKING-CONTEXT
