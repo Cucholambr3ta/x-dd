@@ -196,6 +196,7 @@ if [ "${XDD_NO_ADAPT:-0}" != "1" ] && [ -f "./scripts/xdd-adapt.sh" ]; then
   { command -v code   >/dev/null 2>&1 || [ -d ".vscode" ] || [ -d ".github" ]; } && DETECTED="$DETECTED vscode-copilot"
   { command -v windsurf >/dev/null 2>&1 || [ -d ".windsurf" ]; }   && DETECTED="$DETECTED windsurf"
   { command -v antigravity >/dev/null 2>&1 || [ -d ".antigravity" ] || [ -d ".idx" ]; } && DETECTED="$DETECTED antigravity"
+  { command -v codex >/dev/null 2>&1 || [ -d "$HOME/.codex" ]; } && DETECTED="$DETECTED codex"
 
   echo "[xdd-init] IDEs detectados para adapt: $DETECTED"
   for ide in $DETECTED; do

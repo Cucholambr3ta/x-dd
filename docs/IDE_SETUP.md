@@ -24,7 +24,8 @@ XDD_NO_ADAPT=1 bash scripts/xdd-init.sh /tu/proyecto
 | **VSCode + Copilot** | `/helios` slash ✅ | prompt files | `.github/prompts/*.prompt.md` + `.vscode/mcp.json` |
 | **Cursor** | `@helios` + MCP ⚠️ | rules + MCP | `.cursor/rules/*.mdc` + `.cursor/mcp.json` |
 | **Windsurf** | MCP tool ⚠️ | rules + MCP | `.windsurf/rules/*.md` + `.windsurf/mcp.json` |
-| **Antigravity** | MCP tool ❌ | MCP only | `.antigravity/mcp.json` + README |
+| **Antigravity** | MCP tool ❌ | MCP only | `~/.gemini/config/mcp_config.json` (merge) + `.agents/skills/` |
+| **Codex** | `/<trigger>` (description-based) ✅ | global skills | `~/.codex/skills/<trigger>-orchestrator/` (SKILL.md + agents-index.json) |
 
 > ⚠️ **Verdad técnica:** `/helios` slash idéntico NO existe en todos los IDEs. Claude Code, OpenCode, VSCode Copilot soportan slash commands de archivos. Cursor/Windsurf/Antigravity NO — usan MCP tools (`xdd_invoke_workflow`) o @-mention. Limitación de cada IDE, no de X-DD.
 

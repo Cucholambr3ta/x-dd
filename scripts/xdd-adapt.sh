@@ -15,13 +15,14 @@ Uso:
   bash scripts/xdd-adapt.sh <target> [--dest=PATH] [--trigger=NAME] [--dry-run]
   bash scripts/xdd-adapt.sh --help | --version | --list
 
-Targets soportados (Sprint 24):
+Targets soportados (Sprint 24 + codex):
   claude-code     .claude/commands/*.md (copia real) + .mcp.json + CLAUDE.md
   opencode        AGENTS.md + .opencode/command/ + .agent/workflows/
-  cursor          .cursor/rules/xdd.mdc + .cursor/mcp.json
-  windsurf        .windsurf/rules/xdd.md + MCP note
-  vscode-copilot  .github/prompts/*.prompt.md (slash /helios en Copilot) + .vscode/mcp.json
-  antigravity     .antigravity/mcp.json (o mcp config Google IDE)
+  cursor          .cursor/rules/<trigger>.mdc + .cursor/mcp.json
+  windsurf        .windsurf/rules/<trigger>.md + MCP note
+  vscode-copilot  .github/prompts/*.prompt.md (slash en Copilot) + .vscode/mcp.json + tasks.json + settings.json
+  antigravity     ~/.gemini/config/mcp_config.json (MERGE) + .agents/skills/ + .antigravity/README
+  codex           ~/.codex/skills/<trigger>-orchestrator/ (SKILL.md + agents-index.json + workflows-index)
   all             genera todos los soportados (auto-detect aplica si --dest tiene markers)
 
 Opciones:
@@ -34,14 +35,15 @@ EOF
 
 list_targets() {
   cat <<EOF
-Targets Sprint 24 (todos copia real + MCP auto-config):
+Targets (todos copia real + MCP/global auto-config):
   claude-code     — slash commands .md reales + .mcp.json
   opencode        — AGENTS.md + .opencode/command/ + .agent/workflows/
   cursor          — .cursor/rules/*.mdc + .cursor/mcp.json
   windsurf        — .windsurf/rules/*.md + MCP
-  vscode-copilot  — .github/prompts/*.prompt.md (slash /<trigger>) + .vscode/mcp.json
-  antigravity     — .antigravity/mcp.json
-  all             — los 6
+  vscode-copilot  — .github/prompts/*.prompt.md (slash /<trigger>) + .vscode/{mcp,tasks,settings}.json
+  antigravity     — ~/.gemini/config/mcp_config.json (MERGE) + .agents/skills/
+  codex           — ~/.codex/skills/<trigger>-orchestrator/ (SKILL.md + agents-index.json)
+  all             — los 7
 EOF
 }
 
@@ -60,7 +62,7 @@ while [ $# -gt 0 ]; do
     --dest) DEST="$2"; shift 2 ;;
     --trigger=*) TRIGGER="${1#--trigger=}"; shift ;;
     --trigger) TRIGGER="$2"; shift 2 ;;
-    claude-code|opencode|cursor|windsurf|vscode-copilot|antigravity|all)
+    claude-code|opencode|cursor|windsurf|vscode-copilot|antigravity|codex|all)
       TARGET="$1"; shift ;;
     *) echo "[xdd-adapt] ERROR: argumento desconocido: $1" >&2; usage; exit 2 ;;
   esac
@@ -428,6 +430,153 @@ EOF
 )"
 }
 
+adapt_codex() {
+  # Codex (OpenAI CLI). Skills GLOBAL en ~/.codex/skills/. Convención:
+  # - <trigger>-orchestrator/ con SKILL.md + references/agents-index.json + references/workflows-index.md
+  # - X-DD propias skills (skills/*) copiadas como <name>/ cada una
+  # Frontmatter MINIMAL (solo name + description). NO genera local en proyecto.
+  local codex_home="${XDD_CODEX_HOME:-$HOME/.codex/skills}"
+  echo "[xdd-adapt] target: codex → $codex_home/${TRIGGER}-orchestrator/ + skills X-DD"
+
+  if [ $DRY_RUN -eq 1 ]; then
+    emit "$codex_home/${TRIGGER}-orchestrator/SKILL.md (orchestrator)"
+    emit "$codex_home/${TRIGGER}-orchestrator/references/agents-index.json (180 agentes)"
+    emit "$codex_home/${TRIGGER}-orchestrator/references/workflows-index.md (54 workflows)"
+    emit "$codex_home/{xdd-talk-compact,agent-eval,xdd-ai-review,xdd-compact,xdd-fs-context,xdd-sandbox}/ (6 X-DD skills)"
+    return
+  fi
+
+  local orch_dir="$codex_home/${TRIGGER}-orchestrator"
+  mkdir -p "$orch_dir/references" "$orch_dir/scripts"
+
+  # 1. SKILL.md orchestrator (frontmatter minimal — Codex requirement)
+  cat > "$orch_dir/SKILL.md" <<EOF
+---
+name: ${TRIGGER}-orchestrator
+description: Use when the user starts with /${TRIGGER}, asks to coordinate X-DD pipeline (6 gated phases briefing/spec/plan/build/qa/retro), select specialist agents (180 in registry), execute *-Driven Development workflows (FDD/DDD/BDD/ATDD/TDD/SDD/STDD/SecDD), or invoke the X-DD orchestrator with HMAC gate validation.
+---
+
+# X-DD Orchestrator (${TRIGGER})
+
+Coordinate the X-DD pipeline: gated 6-phase development with cryptographic signatures.
+
+## Workflow
+
+1. Clarify the user's objective (read constitution Art. 7: zero ambiguity).
+2. Identify current phase (briefing/spec/plan/build/qa/retro).
+3. Read \`references/workflows-index.md\` to find the relevant workflow.
+4. Load only the specialist agents needed (consult \`references/agents-index.json\`).
+5. Execute or guide the requested phase.
+6. Validate via gate keeper (HMAC-SHA256 signature) before phase transition.
+7. Report outcome with audit trail.
+
+## References
+
+- \`references/agents-index.json\` — 180 specialists in 15 categories
+- \`references/workflows-index.md\` — 54 workflows + when to invoke each
+- \`references/x-dd-constitution.md\` — local law (10 articles)
+
+## Scripts
+
+- \`scripts/invoke_workflow.sh\` — helper to read workflow content from project root
+
+## Trigger conventions
+
+- \`/${TRIGGER} <objective>\` — invoke pipeline
+- \`/${TRIGGER} validate <phase>\` — gate validation
+- \`/${TRIGGER} list agents [category]\` — list specialists
+EOF
+
+  # 2. agents-index.json desde registry X-DD
+  local registry="$ROOT/prompts/agents/registry.json"
+  if [ -f "$registry" ] && command -v python3 >/dev/null 2>&1; then
+    python3 - "$registry" "$orch_dir/references/agents-index.json" <<'PY'
+import json, sys
+data = json.load(open(sys.argv[1], encoding="utf-8"))
+index = []
+for a in data.get("agents", []):
+    name = a["name"].lower().replace(" ", "-").replace("_", "-").replace(".", "-")
+    name = "".join(c if c.isalnum() or c == "-" else "" for c in name)
+    desc = (a.get("description") or "").split("\n")[0][:200]
+    index.append({
+        "id": a["id"],
+        "name": name,
+        "category": a["category"],
+        "description": desc,
+        "source_file": a.get("prompt_file", ""),
+    })
+json.dump(index, open(sys.argv[2], "w", encoding="utf-8"), indent=2)
+PY
+  fi
+
+  # 3. workflows-index.md
+  {
+    echo "# X-DD Workflows Index"
+    echo
+    echo "> Auto-generated by xdd-adapt codex. Read individual workflow files in the project at \`.agent/workflows/<name>.md\`."
+    echo
+    for wf in "$WF_DIR"/*.md; do
+      local base; base=$(basename "$wf" .md)
+      [ "$base" = "readme" ] || [ "$base" = "README" ] && continue
+      local desc
+      desc=$(grep -m1 "^description:" "$wf" 2>/dev/null | sed 's/description:[[:space:]]*//' | tr -d '"' | tr -d "'")
+      echo "- **${base}** — ${desc:-(sin descripción)}"
+    done
+  } > "$orch_dir/references/workflows-index.md"
+
+  # 4. constitution copia (opcional, si existe)
+  [ -f "$ROOT/docs/constitucion.md" ] && cp "$ROOT/docs/constitucion.md" "$orch_dir/references/x-dd-constitution.md"
+
+  # 5. Helper script
+  cat > "$orch_dir/scripts/invoke_workflow.sh" <<'EOF'
+#!/bin/bash
+# Helper: lee workflow desde project root (.agent/workflows/<name>.md).
+# Uso: invoke_workflow.sh <project_root> <workflow_name>
+set -eu
+PROJECT="${1:-$PWD}"
+NAME="${2:?workflow name required}"
+WF="$PROJECT/.agent/workflows/${NAME}.md"
+[ -f "$WF" ] || { echo "Workflow no encontrado: $WF" >&2; exit 1; }
+cat "$WF"
+EOF
+  chmod +x "$orch_dir/scripts/invoke_workflow.sh"
+
+  # 6. Copia 6 skills X-DD propias a Codex global (compat directo)
+  if [ -d "$ROOT/skills" ]; then
+    local count=0
+    for sd in "$ROOT/skills"/*/; do
+      [ -d "$sd" ] || continue
+      local sname; sname=$(basename "$sd")
+      [ -d "$codex_home/$sname" ] && continue   # SKIP si existe
+      cp -r "$sd" "$codex_home/"
+      count=$((count+1))
+    done
+    [ $count -gt 0 ] && echo "[xdd-adapt] ✓ ${count} skills X-DD copiadas a $codex_home/"
+  fi
+
+  echo "[xdd-adapt] ✓ orchestrator skill creada: $orch_dir"
+  echo "[xdd-adapt]   uso: en Codex escribe '/${TRIGGER} <tu objetivo>'"
+
+  # Project-level note
+  write_file "$DEST/.codex/README-xdd.md" "$(cat <<EOF
+# X-DD / ${TRIGGER} en Codex
+
+Codex consume skills desde \`~/.codex/skills/\` (GLOBAL, no project-local).
+
+Skill orchestrator instalada: \`~/.codex/skills/${TRIGGER}-orchestrator/\`
+
+## Uso
+\`\`\`
+/${TRIGGER} <tu objetivo>          # invoca orchestrator
+/${TRIGGER} list agents engineering # lista specialists
+/${TRIGGER} validate spec          # gate validation
+\`\`\`
+
+Codex carga la skill leyendo \`name\` + \`description\` del frontmatter — no necesita slash command registry.
+EOF
+)"
+}
+
 run_target() {
   case "$1" in
     claude-code)    adapt_claude_code ;;
@@ -436,11 +585,12 @@ run_target() {
     windsurf)       adapt_windsurf ;;
     vscode-copilot) adapt_vscode_copilot ;;
     antigravity)    adapt_antigravity ;;
+    codex)          adapt_codex ;;
   esac
 }
 
 if [ "$TARGET" = "all" ]; then
-  for t in claude-code opencode cursor windsurf vscode-copilot antigravity; do
+  for t in claude-code opencode cursor windsurf vscode-copilot antigravity codex; do
     run_target "$t"; echo
   done
 else
