@@ -31,7 +31,10 @@
           "type": "array",
           "items": {"type": "string"}
         },
-        "available_from": {"type": "string"}
+        "available_from": {"type": "string"},
+        "generated": {"type": "boolean"},
+        "requires_wrapper_global": {"type": "boolean"},
+        "available_from_sprint": {"type": "integer"}
       }
     }
   }

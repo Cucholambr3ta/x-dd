@@ -18,7 +18,13 @@
         "SessionStart": {"type": "array", "items": {"$ref": "#/$defs/hook"}},
         "SessionEnd":   {"type": "array", "items": {"$ref": "#/$defs/hook"}},
         "Stop":         {"type": "array", "items": {"$ref": "#/$defs/hook"}},
-        "PreCompact":   {"type": "array", "items": {"$ref": "#/$defs/hook"}}
+        "PreCompact":   {"type": "array", "items": {"$ref": "#/$defs/hook"}},
+        "before_agent":     {"type": "array", "items": {"$ref": "#/$defs/hook"}},
+        "after_agent":      {"type": "array", "items": {"$ref": "#/$defs/hook"}},
+        "before_model":     {"type": "array", "items": {"$ref": "#/$defs/hook"}},
+        "after_model":      {"type": "array", "items": {"$ref": "#/$defs/hook"}},
+        "wrap_model_call":  {"type": "array", "items": {"$ref": "#/$defs/hook"}},
+        "wrap_tool_call":   {"type": "array", "items": {"$ref": "#/$defs/hook"}}
       }
     }
   },

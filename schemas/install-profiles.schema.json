@@ -25,7 +25,9 @@
           "type": "array",
           "items": {"type": "string"},
           "minItems": 1
-        }
+        },
+        "requires_wrapper_global": {"type": "boolean"},
+        "max_size_mb": {"type": "number"}
       }
     }
   }
