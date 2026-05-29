@@ -42,7 +42,7 @@ jobs:
           sudo apt-get update && sudo apt-get install -y bats jq
           python3 -m pip install -r requirements-dev.txt
       - name: Run bats (unit + e2e)
-        run: bats tests/bats/ tests/e2e/
+        run: bats --print-output-on-failure tests/bats/ tests/e2e/
 
   shield:
     name: AgentShield audit (0 crit)
