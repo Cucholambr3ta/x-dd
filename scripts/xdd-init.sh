@@ -207,6 +207,38 @@ if [ "${XDD_NO_ADAPT:-0}" != "1" ] && [ -f "./scripts/xdd-adapt.sh" ]; then
   echo "[xdd-init]   Override: XDD_NO_ADAPT=1 para saltar. Manual: bash scripts/xdd-adapt.sh all"
 fi
 
+# === Auto-trigger xdd-brand.sh si profile tiene branding custom (Sprint 28 / ADR-0038) ===
+# Lección retroactiva: en proyecto piloto multi-IDE, branding declarado en profile NO se aplicó
+# automáticamente porque xdd-brand.sh debía invocarse manualmente. Ahora auto-trigger.
+# Opt-out: XDD_NO_BRAND=1
+if [ "${XDD_NO_BRAND:-0}" != "1" ] && [ -f "./scripts/xdd-brand.sh" ] && [ -f "./xdd.profile.yml" ] && command -v python3 >/dev/null 2>&1; then
+  TRIGGER_CUSTOM=$(python3 -c "
+import sys
+try:
+    import yaml
+    d = yaml.safe_load(open('./xdd.profile.yml')) or {}
+    t = (d.get('branding') or {}).get('orchestrator_trigger', 'xdd')
+    print(t if t != 'xdd' else '')
+except Exception:
+    print('')
+" 2>/dev/null)
+  if [ -n "$TRIGGER_CUSTOM" ]; then
+    echo "[xdd-init] Branding custom detectado (trigger=/$TRIGGER_CUSTOM). Ejecutando xdd-brand..."
+    bash ./scripts/xdd-brand.sh "$DEST" 2>&1 | sed 's/^/  /' || \
+      echo "  [xdd-init] WARN: xdd-brand falló (no bloqueante). Re-ejecuta manual: bash scripts/xdd-brand.sh ."
+    echo "[xdd-init] ✓ Branding aplicado (override: XDD_NO_BRAND=1 para saltar)."
+  fi
+fi
+
+# === Init gate keeper (Sprint 28 / ADR-0038) ===
+# Lección retroactiva: gate keeper criptográfico NO se inicializó en bootstrap.
+# Resultado: cierres "APROBADO" verbal sin firma HMAC.
+if [ "${XDD_NO_GATE_INIT:-0}" != "1" ] && [ -f "./scripts/xdd-gate.py" ] && [ ! -d "./.xdd" ] && command -v python3 >/dev/null 2>&1; then
+  python3 ./scripts/xdd-gate.py init 2>&1 | sed 's/^/  /' || \
+    echo "[xdd-init] WARN: xdd-gate init falló (no bloqueante). Re-ejecuta: python3 scripts/xdd-gate.py init"
+  echo "[xdd-init] ✓ Gate keeper HMAC inicializado en .xdd/ (override: XDD_NO_GATE_INIT=1)."
+fi
+
 cat <<EOF
 
 [xdd-init] ✓ Bootstrap completado en: $DEST
