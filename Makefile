@@ -7,7 +7,7 @@ SHELL := /bin/bash
 
 PY ?= python3
 
-.PHONY: help doctor start init lint test pytest bats shield install trace cierre version
+.PHONY: help doctor start init lint test pytest bats e2e shield install trace cierre version
 
 help: ## Lista los targets disponibles
 	@echo "X-DD — comandos disponibles:"
@@ -43,9 +43,13 @@ test: lint pytest bats shield ## Suite completa (lint + pytest + bats + AgentShi
 pytest: ## Tests Python (pytest)
 	$(PY) -m pytest -q
 
-bats: ## Tests shell (bats unit + e2e)
+bats: ## Tests shell unitarios (gate CI)
 	@command -v bats >/dev/null || { echo "bats no instalado — make install"; exit 1; }
-	bats tests/bats/ tests/e2e/
+	bats tests/bats/
+
+e2e: ## Tests E2E (dogfooding; requiere entorno dev completo + orquestador en PATH)
+	@command -v bats >/dev/null || { echo "bats no instalado — make install"; exit 1; }
+	bats tests/e2e/
 
 shield: ## AgentShield audit (falla si crit/high)
 	$(PY) scripts/xdd-shield.py audit --severity=high

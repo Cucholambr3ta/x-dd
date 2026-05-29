@@ -41,8 +41,11 @@ jobs:
         run: |
           sudo apt-get update && sudo apt-get install -y bats jq
           python3 -m pip install -r requirements-dev.txt
-      - name: Run bats (unit + e2e)
-        run: bats --print-output-on-failure tests/bats/ tests/e2e/
+      - name: Run bats (unit)
+        # Solo la suite unitaria gatea el PR. tests/e2e/ es dogfooding que asume
+        # un entorno de dev completo (orquestador claude/opencode en PATH, paso 9),
+        # imposible en runner headless — se ejecuta local con `make e2e`.
+        run: bats --print-output-on-failure tests/bats/
 
   shield:
     name: AgentShield audit (0 crit)
