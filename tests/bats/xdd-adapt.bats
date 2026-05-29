@@ -136,11 +136,16 @@ teardown() {
   [ -f "$DEST/.cursor/mcp.json" ]
 }
 
-@test "windsurf genera rules + mcp.json" {
-  run bash scripts/xdd-adapt.sh windsurf --dest="$DEST" --trigger=helios
+@test "windsurf genera rules + workflows + stub mcp.json + merge global (Sprint 26)" {
+  WSHOME="$(mktemp -d)/codeium"; mkdir -p "$WSHOME"
+  run env XDD_WINDSURF_HOME="$WSHOME" bash scripts/xdd-adapt.sh windsurf --dest="$DEST" --trigger=helios
   [ "$status" -eq 0 ]
   [ -f "$DEST/.windsurf/rules/helios.md" ]
+  [ -f "$DEST/.windsurf/workflows/helios.md" ]
   [ -f "$DEST/.windsurf/mcp.json" ]
+  [ -f "$WSHOME/mcp_config.json" ]
+  grep -q "helios" "$WSHOME/mcp_config.json"
+  rm -rf "$(dirname "$WSHOME")"
 }
 
 @test "antigravity mergea ~/.gemini config + .agents/skills + README (Sprint 25)" {
@@ -169,20 +174,23 @@ teardown() {
 @test "all genera los 7 IDEs (claude/opencode/cursor/windsurf/vscode/antigravity/codex)" {
   GEMHOME="$(mktemp -d)/gemini"; mkdir -p "$GEMHOME"
   CODEX_HOME="$(mktemp -d)/codex"; mkdir -p "$CODEX_HOME"
-  run env XDD_ANTIGRAVITY_HOME="$GEMHOME" XDD_CODEX_HOME="$CODEX_HOME" \
+  WSHOME="$(mktemp -d)/codeium"; mkdir -p "$WSHOME"
+  run env XDD_ANTIGRAVITY_HOME="$GEMHOME" XDD_CODEX_HOME="$CODEX_HOME" XDD_WINDSURF_HOME="$WSHOME" \
       bash scripts/xdd-adapt.sh all --dest="$DEST" --trigger=helios
   [ "$status" -eq 0 ]
   [ -f "$DEST/.claude/commands/helios.md" ]
   [ -f "$DEST/.opencode/command/helios.md" ]
   [ -f "$DEST/.cursor/rules/helios.mdc" ]
   [ -f "$DEST/.windsurf/rules/helios.md" ]
+  [ -f "$DEST/.windsurf/workflows/helios.md" ]
   [ -f "$DEST/.github/prompts/helios.prompt.md" ]
   [ -f "$DEST/.antigravity/README-xdd.md" ]
   [ -d "$DEST/.agents/skills" ]
   [ -f "$DEST/.codex/README-xdd.md" ]
   [ -f "$CODEX_HOME/helios-orchestrator/SKILL.md" ]
   grep -q "helios" "$GEMHOME/mcp_config.json"
-  rm -rf "$(dirname "$GEMHOME")" "$(dirname "$CODEX_HOME")"
+  grep -q "helios" "$WSHOME/mcp_config.json"
+  rm -rf "$(dirname "$GEMHOME")" "$(dirname "$CODEX_HOME")" "$(dirname "$WSHOME")"
 }
 
 @test "trigger resuelve desde branding xdd.profile.yml" {
