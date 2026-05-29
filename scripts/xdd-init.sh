@@ -91,6 +91,25 @@ echo "[xdd-init] Origen: $XDD_ROOT"
 echo "[xdd-init] Destino: $DEST"
 echo "[xdd-init] Perfil: $PROFILE"
 
+# === Sprint 32 / ADR-0042: lean profile requires wrapper global ===
+LEAN_PROFS_MANIFEST="$XDD_ROOT/manifests/install-profiles.json"
+if [ "$PROFILE" = "lean" ] && [ -f "$LEAN_PROFS_MANIFEST" ] && command -v python3 >/dev/null 2>&1; then
+  REQUIRES_WRAPPER=$(python3 -c "
+import json
+p = json.load(open('$LEAN_PROFS_MANIFEST'))['profiles'].get('lean', {})
+print('1' if p.get('requires_wrapper_global') else '0')
+" 2>/dev/null || echo "0")
+  if [ "$REQUIRES_WRAPPER" = "1" ]; then
+    if [ ! -x "$HOME/.local/bin/xdd-mcp-server" ]; then
+      echo "[xdd-init] ⚠ WARN: perfil 'lean' requiere wrapper global xdd-mcp-server pero NO está instalado."
+      echo "[xdd-init]   Ejecuta primero: bash $XDD_ROOT/scripts/xdd-mcp-install-global.sh"
+      echo "[xdd-init]   Continuando — bootstrap funcionará pero MCP runtime fallará hasta instalar wrapper."
+    else
+      echo "[xdd-init] ✓ wrapper global xdd-mcp-server detectado (~/.local/bin/xdd-mcp-server)"
+    fi
+  fi
+fi
+
 # Resolver módulos a instalar
 PROFILES_MANIFEST="$XDD_ROOT/manifests/install-profiles.json"
 MODULES_MANIFEST="$XDD_ROOT/manifests/install-modules.json"
