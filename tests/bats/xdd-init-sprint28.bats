@@ -106,11 +106,12 @@ EOF
   grep -q "Versión:\*\* 1.3" "$ROOT/.agent/workflows/xdd.md"
 }
 
-@test "workflow /cierre-fase v1.2 contiene CHECKS BLOQUEANTES (Sprint 28)" {
+@test "workflow /cierre-fase v1.2+ contiene CHECKS BLOQUEANTES (Sprint 28+)" {
   grep -q "CHECKS BLOQUEANTES" "$ROOT/.agent/workflows/cierre-fase.md"
   grep -q "xdd-gate.py validate" "$ROOT/.agent/workflows/cierre-fase.md"
   grep -q "xdd-gate.py approve" "$ROOT/.agent/workflows/cierre-fase.md"
-  grep -q "Versión:\*\* 1.2" "$ROOT/.agent/workflows/cierre-fase.md"
+  # v1.2 (Sprint 28) o v1.3+ (Sprint 31 auto-organize)
+  grep -qE "Versión:\*\* 1\.[2-9]" "$ROOT/.agent/workflows/cierre-fase.md"
 }
 
 @test "workflow /project-architecture-gsd v2.3.0 contiene SCAFFOLDING OBLIGATORIO" {

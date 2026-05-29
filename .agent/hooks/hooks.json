@@ -8,7 +8,10 @@
         "id": "pre:bash:dangerous-command",
         "matcher": "Bash",
         "description": "Bloquea comandos peligrosos: rm -rf, git push --force, git reset --hard, chmod 777, curl|sh.",
-        "profile": ["standard", "strict"],
+        "profile": [
+          "standard",
+          "strict"
+        ],
         "exit_on_match": 2,
         "script": ".agent/hooks/scripts/pre-bash-dangerous-command.sh"
       },
@@ -16,7 +19,9 @@
         "id": "pre:edit:config-protection",
         "matcher": "Edit|Write",
         "description": "Bloquea modificaciones a configs de linters/formatters sin justificación explícita (steers a arreglar código, no a debilitar configs).",
-        "profile": ["strict"],
+        "profile": [
+          "strict"
+        ],
         "exit_on_match": 2,
         "script": ".agent/hooks/scripts/pre-edit-config-protection.sh"
       },
@@ -24,7 +29,10 @@
         "id": "pre:write:doc-file-warning",
         "matcher": "Write",
         "description": "Advierte cuando se crean archivos .md fuera de paths estándar (README, CHANGELOG, docs/, .xdd/).",
-        "profile": ["standard", "strict"],
+        "profile": [
+          "standard",
+          "strict"
+        ],
         "exit_on_match": 0,
         "script": ".agent/hooks/scripts/pre-write-doc-warning.sh"
       }
@@ -34,7 +42,11 @@
         "id": "post:edit:mempalace-index",
         "matcher": "Edit|Write|NotebookEdit",
         "description": "Re-indexa MemPalace en background tras cada Edit/Write (heredado del retrofit original).",
-        "profile": ["minimal", "standard", "strict"],
+        "profile": [
+          "minimal",
+          "standard",
+          "strict"
+        ],
         "async": true,
         "script": ".agent/hooks/scripts/post-edit-mempalace-index.sh"
       },
@@ -42,9 +54,23 @@
         "id": "post:bash:pr-logger",
         "matcher": "Bash",
         "description": "Log de PR URL tras gh pr create (facilita seguimiento).",
-        "profile": ["standard", "strict"],
+        "profile": [
+          "standard",
+          "strict"
+        ],
         "async": true,
         "script": ".agent/hooks/scripts/post-bash-pr-logger.sh"
+      },
+      {
+        "id": "post:write:auto-organize",
+        "matcher": "Edit|Write|NotebookEdit",
+        "description": "Sprint 31: auto-organize workspace (move docs canónicos, gitignore framework pollution + cache + secrets). Idempotente, no destructivo. Opt-out: XDD_NO_ORGANIZE=1.",
+        "profile": [
+          "standard",
+          "strict"
+        ],
+        "async": true,
+        "script": ".agent/hooks/scripts/post-write-auto-organize.sh"
       }
     ],
     "SessionStart": [
@@ -52,7 +78,10 @@
         "id": "session-start:context-load",
         "matcher": "*",
         "description": "Carga last entry de memoria.md + estado de WORKING-CONTEXT.md al iniciar sesión.",
-        "profile": ["standard", "strict"],
+        "profile": [
+          "standard",
+          "strict"
+        ],
         "script": ".agent/hooks/scripts/session-start-context-load.sh"
       }
     ],
@@ -61,7 +90,10 @@
         "id": "stop:git-check",
         "matcher": "*",
         "description": "Advierte (no bloquea) si hay cambios no commiteados al cerrar la sesión.",
-        "profile": ["standard", "strict"],
+        "profile": [
+          "standard",
+          "strict"
+        ],
         "exit_on_match": 0,
         "script": ".agent/hooks/scripts/stop-git-check.sh"
       },
@@ -69,7 +101,9 @@
         "id": "stop:pattern-extraction",
         "matcher": "*",
         "description": "Stub para Sprint 9 (Continuous Learning). Hoy no-op; será punto de extracción de instincts.",
-        "profile": ["strict"],
+        "profile": [
+          "strict"
+        ],
         "async": true,
         "script": ".agent/hooks/scripts/stop-pattern-extraction.sh"
       }
@@ -79,7 +113,9 @@
         "id": "ba:otel:trace-start",
         "matcher": "*",
         "description": "Sprint 18 ADR-0021: abre span OTel agent.invocation al inicio de agent loop.",
-        "profile": ["strict"],
+        "profile": [
+          "strict"
+        ],
         "async": true,
         "script": ".agent/hooks/scripts/ba-otel-trace-start.sh"
       }
@@ -89,7 +125,9 @@
         "id": "bm:cost:budget-check",
         "matcher": "*",
         "description": "Sprint 18 ADR-0022: pre-call check de cost budget (warning si exceede).",
-        "profile": ["strict"],
+        "profile": [
+          "strict"
+        ],
         "exit_on_match": 0,
         "script": ".agent/hooks/scripts/bm-cost-budget-check.sh"
       }
@@ -99,7 +137,9 @@
         "id": "wm:otel:span",
         "matcher": "*",
         "description": "Sprint 18 ADR-0021: wrap LLM call con span llm.call (input/output tokens, latency, cost).",
-        "profile": ["strict"],
+        "profile": [
+          "strict"
+        ],
         "async": true,
         "script": ".agent/hooks/scripts/wm-otel-span.sh"
       }
@@ -109,7 +149,9 @@
         "id": "wt:otel:span",
         "matcher": "*",
         "description": "Sprint 18 ADR-0021: wrap tool call con span tool.call (tool name, args, duration).",
-        "profile": ["strict"],
+        "profile": [
+          "strict"
+        ],
         "async": true,
         "script": ".agent/hooks/scripts/wt-otel-span.sh"
       }
@@ -119,7 +161,9 @@
         "id": "am:cost:record",
         "matcher": "*",
         "description": "Sprint 18 ADR-0022: post-call registra cost en SQLite cost.db.",
-        "profile": ["strict"],
+        "profile": [
+          "strict"
+        ],
         "async": true,
         "script": ".agent/hooks/scripts/am-cost-record.sh"
       }
@@ -129,7 +173,9 @@
         "id": "aa:replay:flush",
         "matcher": "*",
         "description": "Sprint 18 ADR-0021: flush session events a .xdd/traces/<sid>.jsonl.",
-        "profile": ["strict"],
+        "profile": [
+          "strict"
+        ],
         "async": true,
         "script": ".agent/hooks/scripts/aa-replay-flush.sh"
       }

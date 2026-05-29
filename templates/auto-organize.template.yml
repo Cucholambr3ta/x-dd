@@ -1,0 +1,149 @@
+# auto-organize.yml — Sprint 31 / ADR-0041
+# Reglas declarativas para auto-organización del workspace + auto-gitignore.
+# Aplicadas por:
+#   - Hook PostToolUse `post:write:auto-organize` (real-time, async)
+#   - Workflow /cierre-fase v1.3 (batch al cierre fase)
+#   - Comando manual `bash scripts/xdd-organize.sh apply`
+#
+# Comportamiento:
+#   - Idempotente (ejecutar N veces = mismo resultado)
+#   - Non-destructive defaults (gitignore primero, delete solo con confirm)
+#   - Opt-out: XDD_NO_ORGANIZE=1 env var
+#
+# Override por proyecto: copia este archivo a `.agent/auto-organize.yml`
+# y modifica. Sin override, se usa la versión del repo X-DD source.
+
+version: 1
+
+# === Regla 1: docs canónicos del proyecto en root → docs/ ===
+# Patrones de SPEC/DOMAIN/THREATS quedan en root tras bootstrap. Mover a docs/.
+move_to_docs:
+  description: "Mover docs canónicos de SPEC/Arquitectura a docs/ automáticamente"
+  patterns:
+    - "SPEC.md"
+    - "DOMAIN.md"
+    - "THREATS.md"
+    - "DISCOVERY.md"
+    - "PLAN.md"
+    - "PRD.md"
+    - "SAD.md"
+    - "RFC-*.md"
+    - "API.md"
+    - "openapi.yaml"
+    - "openapi.yml"
+  from_root_only: true
+  to: "docs/"
+  skip_if_exists: true
+  action: "move"
+
+# === Regla 2: framework pollution → .gitignore + delete (con confirm) ===
+# Archivos/dirs del framework X-DD que NO deben vivir en proyectos consumidores
+# porque ya son accesibles vía wrapper global ADR-0035.
+gitignore_framework_pollution:
+  description: "Framework docs/dirs que no pertenecen al proyecto"
+  patterns:
+    - "MEJORAS-X-DD.md"
+    - "INSTALL.md"
+    - "DEPENDENCIES.md"
+    - "MEJORAS-*.md"
+  from_root_only: true
+  action: "gitignore_and_delete"
+  confirm_before_delete: true
+
+# === Regla 3: framework local copies (prompts/scripts/skills/templates) ===
+# Acceso vía wrapper global ADR-0035 — no necesario copiar al proyecto.
+# Si profile.yml declara `framework.copy_full: true` esta regla se omite.
+gitignore_framework_copies:
+  description: "Carpetas framework copiadas innecesariamente (wrapper global ya las sirve)"
+  patterns:
+    - "prompts/"
+    - "scripts/"
+    - "skills/"
+    - "templates/"
+  from_root_only: true
+  action: "gitignore_only"   # NO delete por seguridad — solo .gitignore
+  skip_if_profile_declares: "framework.copy_full"
+
+# === Regla 4: caches + binarios + IDE state ===
+# Cosas que NUNCA deberían ir a git.
+gitignore_cache:
+  description: "Caches, binarios temporales, IDE state"
+  patterns:
+    - "node_modules/"
+    - "__pycache__/"
+    - "*.pyc"
+    - ".venv/"
+    - "venv/"
+    - "env/"
+    - ".DS_Store"
+    - "Thumbs.db"
+    - "*.log"
+    - "*.tmp"
+    - "*.bak"
+    - ".idea/"
+    - ".vscode/.history/"
+    - "dist/"
+    - "build/"
+    - "*.egg-info/"
+    - ".pytest_cache/"
+    - ".mypy_cache/"
+    - ".coverage"
+    - "coverage.xml"
+  action: "gitignore_only"
+
+# === Regla 5: secretos / credenciales (CRITICAL — SecDD) ===
+# Siempre gitignore. Nunca commit. SecDD enforcement.
+gitignore_secrets:
+  description: "Credenciales y secretos (SecDD enforcement)"
+  patterns:
+    - ".env"
+    - ".env.local"
+    - ".env.*.local"
+    - "*.pem"
+    - "*.key"
+    - "credentials.json"
+    - "service-account*.json"
+    - ".gate-key"
+    - ".xdd/.gate-key"
+  action: "gitignore_only"
+  block_if_already_tracked: true   # WARN + ABORT si ya estaba commiteado
+
+# === Regla 6: docs de research/inspiración en raíz → docs/research/ ===
+move_research_to_subdir:
+  description: "Research docs / análisis externos a docs/research/"
+  patterns:
+    - "*-inspiration-*.md"
+    - "*-research-*.md"
+    - "*-analysis.md"
+  from_root_only: true
+  to: "docs/research/"
+  skip_if_exists: true
+  action: "move"
+
+# === Regla 7: ADRs sueltos en raíz → docs/adr/ ===
+move_adrs:
+  description: "ADRs en root → docs/adr/"
+  patterns:
+    - "ADR-*.md"
+    - "adr-*.md"
+    - "[0-9][0-9][0-9][0-9]-*.md"
+  from_root_only: true
+  to: "docs/adr/"
+  skip_if_exists: true
+  action: "move"
+
+# === Regla 8: dirs canónicos del proyecto ===
+# Lección retroactiva: scaffolding post-SPEC no ejecutado.
+# Crear inmediato post-bootstrap.
+ensure_canonical_dirs:
+  description: "Dirs canónicos del proyecto (idea/docs/api/design/assets/src/tests)"
+  dirs:
+    - "idea"
+    - "docs"
+    - "api"
+    - "design"
+    - "assets"
+    - "src"
+    - "tests"
+  action: "mkdir_with_gitkeep"
+  create_readme_placeholder: true
