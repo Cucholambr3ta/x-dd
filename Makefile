@@ -5,7 +5,9 @@
 SHELL := /bin/bash
 .DEFAULT_GOAL := help
 
-.PHONY: help doctor start init lint test trace cierre version
+PY ?= python3
+
+.PHONY: help doctor start init lint test pytest bats shield install trace cierre version
 
 help: ## Lista los targets disponibles
 	@echo "X-DD — comandos disponibles:"
@@ -31,8 +33,22 @@ init: ## Bootstrap de un proyecto nuevo (uso: make init DEST=/ruta/proyecto)
 lint: ## Lint de workflows X-DD
 	@bash ./scripts/lint-workflows.sh
 
-test: lint doctor ## Lint + doctor (suite básica; tests bats/pytest llegan en Sprint 3+)
-	@echo "[X-DD] tests básicos OK"
+install: ## Instala dependencias de desarrollo (pytest, jsonschema)
+	$(PY) -m pip install -r requirements-dev.txt
+	@echo "[X-DD] Para bats: sudo apt install bats / brew install bats-core"
+
+test: lint pytest bats shield ## Suite completa (lint + pytest + bats + AgentShield) — gate Art. 7 §4
+	@echo "[X-DD] suite completa OK"
+
+pytest: ## Tests Python (pytest)
+	$(PY) -m pytest -q
+
+bats: ## Tests shell (bats unit + e2e)
+	@command -v bats >/dev/null || { echo "bats no instalado — make install"; exit 1; }
+	bats tests/bats/ tests/e2e/
+
+shield: ## AgentShield audit (falla si crit/high)
+	$(PY) scripts/xdd-shield.py audit --severity=high
 
 trace: ## Sincroniza Gantt y CHANGELOG (invocá /xdd-trace en el orquestador)
 	@echo "[X-DD] Invocá '/xdd-trace' en Claude Code / OpenCode."
