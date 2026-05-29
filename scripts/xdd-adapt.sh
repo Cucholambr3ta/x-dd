@@ -258,20 +258,129 @@ EOF
 }
 
 adapt_windsurf() {
-  echo "[xdd-adapt] target: windsurf → $DEST/.windsurf/"
+  # Sprint 26 + ADR-0037: paridad con claude-code/opencode (workflows nativos) +
+  # paridad con antigravity (MCP merge global, no project-local).
+  # Windsurf usa ~/.codeium/mcp_config.json (GLOBAL) según docs.windsurf.com.
+  # Override: XDD_WINDSURF_HOME (default $HOME/.codeium).
+  local windsurf_cfg="${XDD_WINDSURF_HOME:-$HOME/.codeium}/mcp_config.json"
+  echo "[xdd-adapt] target: windsurf"
+  echo "  · Workflows: $DEST/.windsurf/workflows/ (slash nativos /$TRIGGER)"
+  echo "  · Rules:     $DEST/.windsurf/rules/${TRIGGER}.md"
+  echo "  · MCP cfg:   $windsurf_cfg (MERGE global)"
+
+  local wrapper="$HOME/.local/bin/xdd-mcp-server"
+  local use_global=0
+  if [ -x "$wrapper" ]; then
+    use_global=1
+    echo "[xdd-adapt] usando wrapper global (sin cwd, dinámico al workspace IDE)"
+  else
+    echo "[xdd-adapt] wrapper global no instalado — modo legacy con cwd fijo=$DEST"
+    echo "[xdd-adapt]   recomendado: bash scripts/xdd-mcp-install-global.sh"
+  fi
+
+  # 1. Workflows nativos — Windsurf descubre .windsurf/workflows/*.md como slash commands.
+  #    Doc oficial: https://docs.windsurf.com/plugins/cascade/workflows.md
+  copy_commands "$DEST/.windsurf/workflows" "md"
+
+  # 1.b WARN si algún workflow excede 12000 chars (límite Windsurf documentado).
+  if [ $DRY_RUN -eq 0 ] && [ -d "$DEST/.windsurf/workflows" ]; then
+    local oversize=0
+    for wf in "$DEST/.windsurf/workflows"/*.md; do
+      [ -f "$wf" ] || continue
+      local size
+      size=$(wc -c < "$wf")
+      if [ "$size" -gt 12000 ]; then
+        echo "[xdd-adapt] WARN: $(basename "$wf") = ${size} chars > 12000 (límite Windsurf). Considera split." >&2
+        oversize=$((oversize+1))
+      fi
+    done
+    [ $oversize -eq 0 ] || echo "[xdd-adapt] WARN: ${oversize} workflow(s) exceden límite Windsurf — pueden fallar discovery." >&2
+  fi
+
+  # 2. Rule orquestador (@-mention trigger).
   write_file "$DEST/.windsurf/rules/${TRIGGER}.md" "$(cat <<EOF
 # /$TRIGGER — Orquestador X-DD (Windsurf)
 
-Activa el orquestador vía tool MCP \`xdd_invoke_workflow\` (name="xdd") o mención @$TRIGGER.
-Pipeline gated 6 fases. Workflows en \`.agent/workflows/\`. Lee memoria/lecciones/CLAUDE al iniciar.
+Activa orquestador con \`/$TRIGGER\` (slash nativo, workflows en \`.windsurf/workflows/\`) o mención @$TRIGGER.
+Pipeline gated 6 fases. Lee memoria/lecciones/CLAUDE al iniciar.
 
-MCP server: añade a Windsurf Settings → MCP la config de abajo.
-\`\`\`json
-{"mcpServers": {"$TRIGGER": {"command": "python3", "args": ["-m", "xdd-mcp-server"], "cwd": "$DEST"}}}
-\`\`\`
+MCP server registrado en config global Windsurf (\`~/.codeium/mcp_config.json\`). 6 tools disponibles.
 EOF
 )"
-  gen_mcp_json "$DEST/.windsurf/mcp.json" "mcpServers"
+
+  # 3. MCP config merge en ~/.codeium/mcp_config.json (GLOBAL Windsurf).
+  if [ $DRY_RUN -eq 1 ]; then
+    emit "$windsurf_cfg (merge '$TRIGGER', use_global=$use_global)"
+  elif command -v python3 >/dev/null 2>&1; then
+    python3 - "$windsurf_cfg" "$TRIGGER" "$DEST" "$wrapper" "$use_global" <<'PY'
+import json, os, sys
+cfg_path, trigger, dest, wrapper, use_global = sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5] == "1"
+os.makedirs(os.path.dirname(cfg_path), exist_ok=True)
+cfg = {}
+if os.path.exists(cfg_path):
+    try:
+        cfg = json.load(open(cfg_path, encoding="utf-8"))
+    except Exception:
+        print(f"[xdd-adapt] ERROR: {cfg_path} contiene JSON corrupto — ABORT (no destruir)", file=sys.stderr)
+        sys.exit(1)
+cfg.setdefault("mcpServers", {})
+entry = {}
+if use_global:
+    entry["command"] = wrapper
+    entry["args"] = []
+else:
+    entry["command"] = "python3"
+    entry["args"] = ["-m", "xdd-mcp-server"]
+    entry["cwd"] = dest
+cfg["mcpServers"][trigger] = entry
+json.dump(cfg, open(cfg_path, "w", encoding="utf-8"), indent=2)
+print(f"[xdd-adapt] ✓ '{trigger}' merged en {cfg_path} (use_global={use_global})")
+PY
+  else
+    echo "[xdd-adapt] ERROR: python3 no disponible — no se puede mergear $windsurf_cfg" >&2
+    return 1
+  fi
+
+  # 4. Stub project-local .windsurf/mcp.json (informativo, no funcional).
+  write_file "$DEST/.windsurf/mcp.json" "$(cat <<'EOF'
+{
+  "_comment": "Config MCP real vive en ~/.codeium/mcp_config.json (Windsurf lee solo de ahí, no project-local). Este archivo es stub informativo. Re-ejecuta xdd-adapt windsurf para regenerar.",
+  "mcpServers": {}
+}
+EOF
+)"
+
+  # 5. README local explicando arquitectura.
+  write_file "$DEST/.windsurf/README-xdd.md" "$(cat <<EOF
+# X-DD / $TRIGGER en Windsurf
+
+Windsurf (Codeium) consume X-DD vía 3 mecanismos:
+
+## 1. Workflows nativos (slash commands)
+\`.windsurf/workflows/*.md\` — Windsurf los descubre auto desde workspace.
+Invoca con \`/$TRIGGER\` u otro nombre de workflow (\`/fase-requisitos\`, \`/plan-fases\`, etc).
+Doc: https://docs.windsurf.com/plugins/cascade/workflows.md
+Límite: 12000 chars por archivo (adapter WARN si excede).
+
+## 2. Rule orquestador (@-mention)
+\`.windsurf/rules/${TRIGGER}.md\` — Cascade lo carga como contexto persistente.
+Activa con \`@$TRIGGER\` en chat.
+
+## 3. MCP server (6 tools)
+Config GLOBAL en \`~/.codeium/mcp_config.json\` (mergeada por adapter).
+Override: \`XDD_WINDSURF_HOME\` env var.
+Doc: https://docs.windsurf.com/plugins/cascade/mcp.md
+
+**Sprint 25 (recomendado):**
+1. \`bash scripts/xdd-mcp-install-global.sh\` (wrapper en ~/.local/bin)
+2. \`bash scripts/xdd-adapt.sh windsurf --dest=<proyecto>\`
+3. Reinicia Windsurf. Tools auto-descubiertas.
+
+## Re-sync tras editar SSoT
+\`bash scripts/xdd-adapt.sh windsurf --dest=<proyecto>\`
+Workflows + rule + MCP entry actualizados (no destructive merge).
+EOF
+)"
 }
 
 adapt_vscode_copilot() {
