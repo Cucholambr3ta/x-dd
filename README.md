@@ -13,6 +13,7 @@ Para equipos que ya usan Claude Code, Cursor u OpenCode y buscan **cero deuda t�
 <br/>
 
 [![License: MIT](https://img.shields.io/badge/License-MIT%20pure-yellow.svg?style=for-the-badge)](LICENSE)
+[![Status](https://img.shields.io/badge/status-v0.1.0--pre--release-orange?style=for-the-badge)](RELEASES/)
 [![Tests](https://img.shields.io/badge/tests-330%2B%20✓-brightgreen?style=for-the-badge)](tests/)
 [![Workflows](https://img.shields.io/badge/workflows-51-blue?style=for-the-badge)](.agent/workflows/)
 [![Agents](https://img.shields.io/badge/agents-180-orange?style=for-the-badge)](docs/equipo.md)
@@ -22,9 +23,11 @@ Para equipos que ya usan Claude Code, Cursor u OpenCode y buscan **cero deuda t�
 
 ### 🎯 [**Comienza en 4 minutos →**](#-4-minutos-para-comenzar)
 
-<sub>Compatible con **13+ IDEs/asistentes IA**. Sin vendor lock-in. Sin trampas ocultas.</sub>
+<sub>Compatible con **7 IDEs auto-adapt + MCP universal**. Sin vendor lock-in. Sin trampas ocultas.</sub>
 
 </div>
+
+> ⚠️ **Pre-release (v0.1.0-rc).** Funcional + dogfooded en producción del maintainer. API/manifests/CLI pueden romper hasta tag firmado `v0.1.0` final. Adopters early-stage: pin commit SHA. Issues: [github.com/Cucholambr3ta/x-dd/issues](https://github.com/Cucholambr3ta/x-dd/issues).
 
 ---
 
