@@ -239,6 +239,19 @@ if [ "${XDD_NO_GATE_INIT:-0}" != "1" ] && [ -f "./scripts/xdd-gate.py" ] && [ ! 
   echo "[xdd-init] ✓ Gate keeper HMAC inicializado en .xdd/ (override: XDD_NO_GATE_INIT=1)."
 fi
 
+# === Auto-organize bootstrap (Sprint 31 / ADR-0041) ===
+# Lección retroactiva: scaffolding 7 dirs canónicos no auto-generado en bootstrap.
+# Resultado: SPEC/DOMAIN/THREATS en root, sin docs/. Repo contaminado.
+# Auto-aplica: ensure_canonical_dirs + gitignore_cache + gitignore_secrets.
+# NO destruye nada (apply mode, no --confirm-delete).
+if [ "${XDD_NO_ORGANIZE:-0}" != "1" ] && [ -f "$XDD_ROOT/scripts/xdd-organize.sh" ]; then
+  bash "$XDD_ROOT/scripts/xdd-organize.sh" init --dest=. 2>&1 | sed 's/^/  /' || \
+    echo "[xdd-init] WARN: xdd-organize init falló (no bloqueante)."
+  bash "$XDD_ROOT/scripts/xdd-organize.sh" apply --dest=. 2>&1 | sed 's/^/  /' || true
+  echo "[xdd-init] ✓ Auto-organize aplicado (estructura canónica + .gitignore base)."
+  echo "[xdd-init]   Override: XDD_NO_ORGANIZE=1. Manual: bash scripts/xdd-organize.sh check"
+fi
+
 cat <<EOF
 
 [xdd-init] ✓ Bootstrap completado en: $DEST
