@@ -13,6 +13,7 @@ For teams already using Claude Code, Cursor, or OpenCode who want **zero technic
 <br/>
 
 [![License: MIT](https://img.shields.io/badge/License-MIT%20pure-yellow.svg?style=for-the-badge)](LICENSE)
+[![Status](https://img.shields.io/badge/status-v0.1.0--pre--release-orange?style=for-the-badge)](RELEASES/)
 [![Tests](https://img.shields.io/badge/tests-330%2B%20✓-brightgreen?style=for-the-badge)](tests/)
 [![Workflows](https://img.shields.io/badge/workflows-51-blue?style=for-the-badge)](.agent/workflows/)
 [![Agents](https://img.shields.io/badge/agents-180-orange?style=for-the-badge)](docs/equipo.md)
@@ -22,9 +23,11 @@ For teams already using Claude Code, Cursor, or OpenCode who want **zero technic
 
 ### 🎯 [**Get started in 4 minutes →**](#-4-minutes-to-start)
 
-<sub>Compatible with **13+ IDEs/AI assistants**. No vendor lock-in. No hidden traps.</sub>
+<sub>Compatible with **7 IDEs auto-adapt + universal MCP**. No vendor lock-in. No hidden traps.</sub>
 
 </div>
+
+> ⚠️ **Pre-release (v0.1.0-rc).** Functional + dogfooded in maintainer's production. API/manifests/CLI may break until final signed tag `v0.1.0`. Early adopters: pin commit SHA. Issues: [github.com/Cucholambr3ta/x-dd/issues](https://github.com/Cucholambr3ta/x-dd/issues).
 
 ---
 
