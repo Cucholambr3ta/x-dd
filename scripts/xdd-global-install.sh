@@ -232,10 +232,64 @@ install_windsurf() {
 install_vscode_copilot() {
   # VSCode + Copilot Chat usa prompt files. Path global: ~/.config/Code/User/prompts/<name>.prompt.md
   # https://code.visualstudio.com/docs/copilot/copilot-customization#_prompt-files
-  local prompts_dir="${XDG_CONFIG_HOME:-$HOME/.config}/Code/User/prompts"
+  #
+  # Sprint 30 / ADR-0040: VSCode por default solo descubre prompts en .github/prompts/
+  # del workspace. Para auto-discover los prompts globales en ~/.config/Code/User/prompts/
+  # hay que registrar el path en chat.promptFilesLocations del settings.json User.
+  # Sin esta config, el prompt file global se escribe pero VSCode no lo lista en autocomplete.
+  local user_dir="${XDG_CONFIG_HOME:-$HOME/.config}/Code/User"
+  local prompts_dir="$user_dir/prompts"
   local dst="$prompts_dir/${TRIGGER}.prompt.md"
+  local settings="$user_dir/settings.json"
   echo "[xdd-global] vscode-copilot → $dst"
   write_orchestrator_md "$dst" "$TRIGGER"
+
+  # MERGE no destructivo de chat.promptFilesLocations + chat.promptFiles en User settings
+  if [ $DRY_RUN -eq 1 ]; then
+    emit "merge: $settings (chat.promptFiles + chat.promptFilesLocations[$prompts_dir])"
+    return
+  fi
+  if ! command -v python3 >/dev/null 2>&1; then
+    echo "  WARN: python3 no disponible — settings.json no actualizado. Añade manual:" >&2
+    echo "    \"chat.promptFiles\": true," >&2
+    echo "    \"chat.promptFilesLocations\": { \"$prompts_dir\": true }" >&2
+    return
+  fi
+  mkdir -p "$user_dir"
+  python3 - "$settings" "$prompts_dir" <<'PY'
+import json, os, sys, re
+settings_path, prompts_dir = sys.argv[1], sys.argv[2]
+
+def strip_jsonc(text):
+    # VSCode settings.json admite comentarios (JSONC). Removerlos antes de parsear.
+    text = re.sub(r'/\*.*?\*/', '', text, flags=re.DOTALL)
+    text = re.sub(r'(?m)//.*$', '', text)
+    text = re.sub(r',(\s*[}\]])', r'\1', text)  # trailing commas
+    return text
+
+cfg = {}
+if os.path.exists(settings_path):
+    raw = open(settings_path, encoding="utf-8").read()
+    try:
+        cfg = json.loads(strip_jsonc(raw)) if raw.strip() else {}
+    except Exception as e:
+        print(f"  ERROR: settings.json corrupto ({e}) — NO se modifica. Edita manual.", file=sys.stderr)
+        sys.exit(1)
+
+# Activar feature flag
+cfg["chat.promptFiles"] = True
+
+# Mergear path global en chat.promptFilesLocations
+locs = cfg.get("chat.promptFilesLocations", {})
+if isinstance(locs, list):
+    # legacy schema: convertir lista a dict
+    locs = {p: True for p in locs}
+locs[prompts_dir] = True
+cfg["chat.promptFilesLocations"] = locs
+
+json.dump(cfg, open(settings_path, "w", encoding="utf-8"), indent=2)
+print(f"  ✓ merged en {settings_path}: chat.promptFiles=true + chat.promptFilesLocations['{prompts_dir}']=true")
+PY
 }
 
 install_codex() {

@@ -74,6 +74,91 @@ teardown() {
   [ -f "$XDG_CONFIG_HOME/Code/User/prompts/helios.prompt.md" ]
 }
 
+@test "vscode-copilot mergea chat.promptFilesLocations en User settings.json (Sprint 30)" {
+  run bash scripts/xdd-global-install.sh --ides=vscode-copilot --trigger=helios
+  [ "$status" -eq 0 ]
+  local settings="$XDG_CONFIG_HOME/Code/User/settings.json"
+  [ -f "$settings" ]
+  # Feature flag activa
+  python3 -c "import json; d=json.load(open('$settings')); assert d.get('chat.promptFiles') is True"
+  # Path global registrado
+  python3 -c "
+import json
+d = json.load(open('$settings'))
+locs = d.get('chat.promptFilesLocations', {})
+assert '$XDG_CONFIG_HOME/Code/User/prompts' in locs
+assert locs['$XDG_CONFIG_HOME/Code/User/prompts'] is True
+"
+}
+
+@test "vscode-copilot MERGE no destructivo — preserva settings existentes" {
+  mkdir -p "$XDG_CONFIG_HOME/Code/User"
+  cat > "$XDG_CONFIG_HOME/Code/User/settings.json" <<'EOF'
+{
+  "editor.fontSize": 14,
+  "workbench.colorTheme": "Default Dark+",
+  "chat.promptFilesLocations": {
+    "/some/existing/path": true
+  }
+}
+EOF
+  run bash scripts/xdd-global-install.sh --ides=vscode-copilot --trigger=helios
+  [ "$status" -eq 0 ]
+  # Settings existentes preservados
+  python3 -c "
+import json
+d = json.load(open('$XDG_CONFIG_HOME/Code/User/settings.json'))
+assert d['editor.fontSize'] == 14
+assert d['workbench.colorTheme'] == 'Default Dark+'
+locs = d['chat.promptFilesLocations']
+assert locs.get('/some/existing/path') is True
+assert locs.get('$XDG_CONFIG_HOME/Code/User/prompts') is True
+"
+}
+
+@test "vscode-copilot maneja settings.json con comentarios JSONC" {
+  mkdir -p "$XDG_CONFIG_HOME/Code/User"
+  cat > "$XDG_CONFIG_HOME/Code/User/settings.json" <<'EOF'
+{
+  // Comentario de línea
+  "editor.fontSize": 14,
+  /* Comentario
+     multi-línea */
+  "workbench.colorTheme": "Default Dark+",
+}
+EOF
+  run bash scripts/xdd-global-install.sh --ides=vscode-copilot --trigger=helios
+  [ "$status" -eq 0 ]
+  python3 -c "import json; d=json.load(open('$XDG_CONFIG_HOME/Code/User/settings.json')); assert d.get('chat.promptFiles') is True"
+}
+
+@test "vscode-copilot ABORT si settings.json corrupto (no destruir)" {
+  mkdir -p "$XDG_CONFIG_HOME/Code/User"
+  echo 'TOTALLY BROKEN { not json' > "$XDG_CONFIG_HOME/Code/User/settings.json"
+  run bash scripts/xdd-global-install.sh --ides=vscode-copilot --trigger=helios
+  # Archivo corrupto NO debe ser destruido
+  grep -q "TOTALLY BROKEN" "$XDG_CONFIG_HOME/Code/User/settings.json"
+}
+
+@test "vscode-copilot legacy schema chat.promptFilesLocations como lista → convierte a dict" {
+  mkdir -p "$XDG_CONFIG_HOME/Code/User"
+  cat > "$XDG_CONFIG_HOME/Code/User/settings.json" <<'EOF'
+{
+  "chat.promptFilesLocations": ["/legacy/path"]
+}
+EOF
+  run bash scripts/xdd-global-install.sh --ides=vscode-copilot --trigger=helios
+  [ "$status" -eq 0 ]
+  python3 -c "
+import json
+d = json.load(open('$XDG_CONFIG_HOME/Code/User/settings.json'))
+locs = d['chat.promptFilesLocations']
+assert isinstance(locs, dict)
+assert locs.get('/legacy/path') is True
+assert locs.get('$XDG_CONFIG_HOME/Code/User/prompts') is True
+"
+}
+
 @test "xdd-global-install instala opencode en XDG_CONFIG_HOME/opencode/command/" {
   run bash scripts/xdd-global-install.sh --ides=opencode --trigger=helios
   [ "$status" -eq 0 ]
