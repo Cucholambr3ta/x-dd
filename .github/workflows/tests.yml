@@ -1,0 +1,61 @@
+name: Tests (pytest + bats)
+
+# Gate de calidad Art. 7 §4 de la Constitución X-DD:
+# "No se permite la mezcla de código sin validación de tests automatizados."
+# Este workflow ejecuta la suite completa en cada PR a main y en push a main.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  pytest:
+    name: Python tests (pytest)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install test deps
+        run: python3 -m pip install -r requirements-dev.txt
+      - name: Run pytest
+        run: python3 -m pytest -q
+
+  bats:
+    name: Shell tests (bats)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install bats + Python deps
+        # Los e2e (test_quickstart.bats) invocan `python3 -m pytest` internamente,
+        # así que el job bats también necesita pytest + jsonschema.
+        run: |
+          sudo apt-get update && sudo apt-get install -y bats jq
+          python3 -m pip install -r requirements-dev.txt
+      - name: Run bats (unit)
+        # Solo la suite unitaria gatea el PR. tests/e2e/ es dogfooding que asume
+        # un entorno de dev completo (orquestador claude/opencode en PATH, paso 9),
+        # imposible en runner headless — se ejecuta local con `make e2e`.
+        run: bats --print-output-on-failure tests/bats/
+
+  shield:
+    name: AgentShield audit (0 crit)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install deps
+        run: python3 -m pip install -r requirements-dev.txt
+      - name: Run AgentShield audit (falla si crit/high; warnings permitidos)
+        run: python3 scripts/xdd-shield.py audit --severity=high

@@ -85,11 +85,13 @@ def test_modulos_requires_referencian_modulos_existentes():
 # ---------- Archivos declarados existen (donde aplica) ----------
 
 def test_modulos_core_archivos_existen():
-    """Para módulos sin available_from (ya disponibles), todos los files deben existir."""
+    """Para módulos sin available_from (ya disponibles) y no generados, todos los files deben existir."""
     mods = load(MANIFESTS / "install-modules.json")["modules"]
     for mname, mod in mods.items():
         if "available_from" in mod:
             continue  # módulos futuros (Sprint 9-12)
+        if mod.get("generated"):
+            continue  # archivos generados en install-time (gitignored by design)
         for f in mod["files"]:
             target = ROOT / f
             assert target.exists(), f"módulo {mname!r}: archivo {f!r} no existe"
@@ -116,7 +118,9 @@ def test_hooks_ids_unicos():
 
 
 def test_hooks_count():
-    """Sprint 7.2 declaró 8 hooks (3 PreToolUse + 2 PostToolUse + 1 SessionStart + 2 Stop)."""
+    """Hooks declarados: 8 base (S7.2: 3 PreToolUse + 3 PostToolUse + 1 SessionStart + 2 Stop)
+    + 6 lifecycle OTel/cost (S18 ADR-0021/0022) + auto-organize ya contado en PostToolUse.
+    Total esperado: 15."""
     hooks_doc = load(ROOT / ".agent/hooks/hooks.json")
     total = sum(len(h) for h in hooks_doc["hooks"].values())
-    assert total == 8, f"se esperaban 8 hooks, hay {total}"
+    assert total == 15, f"se esperaban 15 hooks, hay {total}"

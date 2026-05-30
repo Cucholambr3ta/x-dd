@@ -1,10 +1,10 @@
 {
   "$schema": "../schemas/install-profiles.schema.json",
   "version": "0.1.0",
-  "description": "Perfiles de instalaci\u00f3n X-DD. Cada perfil agrupa m\u00f3dulos coherentes para un caso de uso.",
+  "description": "Perfiles de instalación X-DD. Cada perfil agrupa módulos coherentes para un caso de uso.",
   "profiles": {
     "minimal": {
-      "description": "M\u00ednima viable: solo n\u00facleo + workflows + memoria. Sin agentes, sin hooks, sin MCP.",
+      "description": "Mínima viable: solo núcleo + workflows + memoria. Sin agentes, sin hooks, sin MCP.",
       "modules": [
         "core",
         "workflows-core",
@@ -13,7 +13,7 @@
       ]
     },
     "core": {
-      "description": "Recomendada para empezar: n\u00facleo + workflows + agentes + gate + memoria + CI.",
+      "description": "Recomendada para empezar: núcleo + workflows + agentes + gate + memoria + CI.",
       "modules": [
         "core",
         "workflows-core",
@@ -50,7 +50,7 @@
       ]
     },
     "security": {
-      "description": "\u00c9nfasis en SecDD: n\u00facleo + hooks strict + AgentShield + gate firmado.",
+      "description": "Énfasis en SecDD: núcleo + hooks strict + AgentShield + gate firmado.",
       "modules": [
         "core",
         "workflows-core",
@@ -69,7 +69,7 @@
       ]
     },
     "research": {
-      "description": "Investigaci\u00f3n: n\u00facleo + eval-harness + continuous learning + memoria.",
+      "description": "Investigación: núcleo + eval-harness + continuous learning + memoria.",
       "modules": [
         "core",
         "workflows-core",
@@ -87,7 +87,7 @@
       ]
     },
     "full": {
-      "description": "Todo (incluyendo capacidades de v0.1.0 sprint 9-12 cuando est\u00e9n disponibles).",
+      "description": "Todo (incluyendo capacidades de v0.1.0 sprint 9-12 cuando estén disponibles).",
       "modules": [
         "core",
         "workflows-core",
@@ -114,6 +114,18 @@
         "router",
         "pentest"
       ]
+    },
+    "lean": {
+      "description": "Sprint 32: Wrapper-global only. <5MB. NO copia framework local (prompts/scripts/skills/templates). Requiere `bash xdd-mcp-install-global.sh` ejecutado. Agentes/skills/scripts vía MCP + PATH global.",
+      "modules": [
+        "core-essential",
+        "workflows-essential",
+        "memory",
+        "platform-configs",
+        "gate-keeper"
+      ],
+      "requires_wrapper_global": true,
+      "max_size_mb": 5
     }
   }
 }

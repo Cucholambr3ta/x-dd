@@ -14,9 +14,9 @@ Análisis por categoría:
 
 | # | Categoría | Cantidad |
 |---|---|---|
-| Proceso (orquestador omitió pasos canónicos) | 9 |
-| Técnico (Tauri/npm/Rust) | 4 |
-| Frontend (fallbacks visuales) | 1 |
+| 1 | Proceso (orquestador omitió pasos canónicos) | 9 |
+| 2 | Técnico (Tauri/npm/Rust) | 4 |
+| 3 | Frontend (fallbacks visuales) | 1 |
 
 **Insight crítico:** las 9 lecciones de proceso **NO son por falta de tooling** (scripts existen desde Sprint 4-13). Son por **falta de enforcement en workflows del orquestador**. El LLM ejecutó pasos parciales o saltó secuencias canónicas:
 

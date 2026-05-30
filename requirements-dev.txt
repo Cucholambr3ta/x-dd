@@ -1,0 +1,5 @@
+# Dependencias de desarrollo y CI de X-DD.
+# Runtime de X-DD usa solo stdlib; estas son para la suite de tests.
+pytest>=7.4
+jsonschema>=4.0
+PyYAML>=6.0
