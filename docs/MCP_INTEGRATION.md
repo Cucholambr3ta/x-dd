@@ -1,5 +1,11 @@
 # MCP Integration — `xdd-mcp-server`
 
+> ⚠️ **DEPRECADO — eliminación en v0.2.0 ([ADR-0044](adr/0044-deprecar-mcp-no-necesario.md)).**
+> El piloto agentix demostró que la orquestación X-DD no requiere MCP: la copia real de
+> comandos/workflows a los IDEs cubre el caso de uso. MCP sigue presente y funcional en
+> v0.1.x para quien lo use, pero **no se recomienda para integraciones nuevas** y se
+> retirará en v0.2.0. Vía recomendada: `xdd-adapt.sh` (copia real, sin servidor).
+>
 > X-DD habla **Model Context Protocol** nativamente desde v0.1.0 (Sprint 6, [ADR-0005](adr/0005-mcp-preferido-y-server-propio.md)).
 > Cualquier cliente MCP (Claude Code, Cursor, Continue, Zed, Cline, Windsurf, etc.) puede conectar al server propio de X-DD y consumir 6 tools sin adapter específico.
 

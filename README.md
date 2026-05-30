@@ -33,7 +33,7 @@ X-DD transforma cualquier proyecto en un entorno gobernado donde **agentes de IA
 - **Gate keeper HMAC-SHA256** — cada transición de fase se firma criptográficamente (`xdd-gate.py`); no hay "APROBADO" verbal.
 - **CI como ley** — `.github/workflows/tests.yml` corre pytest + bats + AgentShield en cada PR. La cláusula "tests verdes antes de merge" (Constitución Art. 7 §4) es un gate ejecutable, no una promesa.
 - **AgentShield** — audit estático de seguridad del propio framework (`xdd-shield.py`): 13 reglas sobre hooks, agentes, MCP tools y workflows.
-- **MCP server propio** — `xdd-mcp-server` (Python stdlib pura) expone agentes, workflows y artefactos vía Model Context Protocol.
+- **MCP server propio** — `xdd-mcp-server` (Python stdlib pura) expone agentes, workflows y artefactos vía Model Context Protocol. ⚠️ _Deprecado v0.2.0 ([ADR-0044](docs/adr/0044-deprecar-mcp-no-necesario.md)): la copia real a IDEs lo reemplaza._
 - **Instalación modular** — perfiles `minimal | core | developer | security | research | full | lean` con manifests declarativos validados por JSON Schema.
 - **White-labeling** — `xdd-brand.sh` aplica branding y persona del orquestador por proyecto.
 - **Observabilidad** — spans OTel, session replay, cost tracker, context budget (perfil strict).
