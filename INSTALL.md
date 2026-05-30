@@ -266,6 +266,29 @@ Reporta qué herramientas están instaladas y cuáles faltan, sin abortar al pri
 
 ---
 
+## Instalación como paquete pip (opcional, ADR-0043)
+
+X-DD se puede instalar como paquete Python y exponer sus scripts como comandos
+(`xdd-gate`, `xdd-eval`, `xdd-flow`, `xdd-provider`, `xdd-shield`, `xdd-orchestrate`):
+
+```bash
+# Desde el clon del repo (instalación editable)
+pip install -e .
+
+# Con soporte real de Anthropic (opcional; sin esto se usa MockProvider sin red)
+pip install -e ".[anthropic]"
+
+# Verificar
+xdd-gate --help
+xdd-provider --self-test
+```
+
+Stdlib-first: sin extras, no requiere dependencias externas. Los comandos son
+dispatchers finos sobre los scripts existentes — **no reescriben nada** (ADR-0043
+supersede ADR-0008). Override de ubicación de scripts con `XDD_SCRIPTS_DIR`.
+
+---
+
 ## Bootstrap de un proyecto nuevo
 
 X-DD incluye un script de inicialización portable. **No copies directorios manualmente** — usa:
