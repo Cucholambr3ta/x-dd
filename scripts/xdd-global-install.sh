@@ -327,7 +327,7 @@ check_one() {
     vscode-copilot) path="${XDG_CONFIG_HOME:-$HOME/.config}/Code/User/prompts/${TRIGGER}.prompt.md" ;;
     codex)          path="${XDD_CODEX_HOME:-$HOME/.codex/skills}/${TRIGGER}-orchestrator/SKILL.md" ;;
   esac
-  if [ -f "$path" ] || [ -d "$(dirname "$path")" -a "$ide" = "codex" -a -f "$path" ]; then
+  if [ -f "$path" ] || { [ -d "$(dirname "$path")" ] && [ "$ide" = "codex" ] && [ -f "$path" ]; }; then
     echo "  ✓ $ide: $path"
   else
     echo "  ✗ $ide: NOT INSTALLED ($path)"
