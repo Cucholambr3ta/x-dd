@@ -269,3 +269,17 @@ Hacer un workflow `/docs-sync` (post-v0.1.0) que detecte drift automáticamente 
 **Causa raíz:** La firma es determinista sobre el contrato de artefactos. Cambiar el contrato invalida firmas retroactivamente — proyectos viejos quedarían en rojo INVÁLIDO.
 **Lección:** Evolucionar el pipeline SOLO con append al final de PHASES. Proyectos viejos dejan la fase nueva en PENDIENTE (estado legítimo), nunca INVÁLIDO. Combinar con migración suave (re-correr /cierre-fase) en vez de re-firmar. Regla añadida a Constitución Art.9.
 **Aplica a:** xdd-gate.py PHASES, schemas de fases, cualquier estructura firmada criptográficamente. Ver schema/manifest drift.
+
+### [PROCESO] Checks de contenido frágiles al formato producen falsos-negativos — 2026-05-30
+**Contexto:** Sprint 32 añadió enforcement de contenido en el gate qa (`_TEST_EVIDENCE` en xdd-gate.py): exige evidencia de tests reales N>0, no solo `path.exists()`.
+**Problema:** El piloto agentix tenía 41 tests reales y verdes, pero el gate qa marcaba FALLA. La regex exigía la palabra "tests" *antes* del marcador pass/ratio en la misma línea. Reportes con orden natural ("41/41 PASS", "41/41 tests") quedaban rechazados.
+**Causa raíz:** Un check de contenido es tan bueno como su tolerancia al formato. Asumir un único orden de palabras o un único patrón de redacción convierte el anti-falso-positivo en falso-negativo. El remedio del bug Agent Anmax (gates que validan existencia) introdujo el sesgo opuesto: rigidez de parsing.
+**Lección:** Al escribir un check que parsea prosa, enumerar las variantes de redacción reales (orden bidireccional, ✓/✅, ratio N/N, "passed"/"verde") y cubrirlas con casos de prueba positivos Y negativos antes de inyectar. Un check que rechaza evidencia legítima erosiona la confianza en todo el gate.
+**Aplica a:** Todo check de contenido en xdd-gate.py y cualquier validación basada en regex sobre documentos humanos. Ver gate valida contenido no existencia.
+
+### [HERRAMIENTAS] write_file con printf '%s' no interpreta escapes embebidos — 2026-05-30
+**Contexto:** xdd-adapt.sh genera CLAUDE.md (Claude Code) y AGENTS.md (opencode) al adaptar un proyecto a un IDE.
+**Problema:** El CLAUDE.md generado salía con `\n` literales como texto en vez de saltos de línea — archivo de una sola línea, ilegible. Además el template era genérico: sin trigger branded, sin gobernanza (Art. 3/9).
+**Causa raíz:** `write_file()` usa `printf '%s\n'`, que NO interpreta `\n` dentro del contenido. El caller pasaba un string con `\n` embebidos asumiendo interpretación. Solo 1 de 10 callers tenía este patrón → cambiar write_file a `%b` global arriesgaba los otros 9.
+**Lección:** Para contenido multilínea con estructura, usar heredoc (`cat <<EOF`) en el caller — respeta saltos nativos e interpola variables ($TRIGGER) — en vez de forzar escapes a través de un helper de una línea. No cambiar la firma de un helper compartido por culpa de un único caller atípico; arregla el caller.
+**Aplica a:** Generadores de archivos en scripts shell del framework. Ver schema/manifest drift.

@@ -199,9 +199,18 @@ def _load_profile(root: Path) -> dict:
 
 
 # Marcadores que delatan un QA_REPORT sin tests reales (el bug Agent Anmax).
-_NO_TEST_HINTS = re.compile(r"0\s+tests|sin\s+tests|no\s+tests|0\s+test\b", re.I)
+_NO_TEST_HINTS = re.compile(
+    r"0\s+tests|sin\s+tests|no\s+tests|0\s+test\b|\b0\s+passed\b", re.I
+)
+# Evidencia de tests reales. Acepta orden natural en cualquier dirección:
+# "41/41 tests", "41/41 PASS", "tests passed", "41 passed", "tests ✓/✅".
+# El guard _NO_TEST_HINTS sigue bloqueando "0 tests" / "sin tests".
 _TEST_EVIDENCE = re.compile(
-    r"\btests?\b.*\b(pass|passed|passing|verde|ok|✅|\d+\s*/\s*\d+)\b", re.I
+    r"\btests?\b[^\n]*\b(pass|passed|passing|verde|ok|✅|✓|\d+\s*/\s*\d+)\b"
+    r"|\b(pass|passed|passing|\d+\s*/\s*\d+)\b[^\n]*\btests?\b"
+    r"|\b\d+\s*/\s*\d+\b[^\n]*\b(pass|passed|passing|verde)\b"
+    r"|\b(pass|passed|passing|verde)\b[^\n]*\b\d+\s*/\s*\d+\b",
+    re.I,
 )
 
 

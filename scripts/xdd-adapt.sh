@@ -187,7 +187,42 @@ adapt_claude_code() {
   copy_commands "$DEST/.claude/commands" "md"
   gen_mcp_json "$DEST/.mcp.json" "mcpServers"
   if [ ! -e "$DEST/CLAUDE.md" ]; then
-    write_file "$DEST/CLAUDE.md" "# Proyecto integrado con X-DD\n\nWorkflows: \`.claude/commands/\` (copia real desde \`.agent/workflows/\`).\nMCP: \`.mcp.json\` apunta a xdd-mcp-server.\nMemoria: \`memoria.md\` · Lecciones: \`lecciones.md\` · Config: \`xdd.profile.yml\`.\n\nDocs: https://github.com/Cucholambr3ta/x-dd"
+    if [ $DRY_RUN -eq 1 ]; then
+      emit "$DEST/CLAUDE.md"
+    else
+      mkdir -p "$DEST"
+      cat > "$DEST/CLAUDE.md" <<EOF
+# Manifiesto del Proyecto — integrado con X-DD
+
+Contexto operativo y gobernanza para **Claude Code** y otros agentes en este proyecto.
+
+## ⚖️ Gobernanza (Constitución X-DD)
+- **Lectura Obligatoria (Art. 3):** antes de cualquier iteración, lee \`memoria.md\` (flight recorder) y \`lecciones.md\` (aprendizajes).
+- **Pipeline gated (Art. 2):** solicita \`APROBADO\` antes de refactors grandes o cambios de fase.
+- **Append-only (Art. 9):** las fases del pipeline solo se agregan al final; editar una fase firmada rompe su firma HMAC.
+
+## 🚀 Orquestador
+- Trigger principal: \`/${TRIGGER}\` — arranca el orquestador X-DD desde cualquier directorio.
+- Workflows: \`.claude/commands/\` (copia real desde \`.agent/workflows/\`).
+- MCP: \`.mcp.json\` apunta a xdd-mcp-server.
+
+## 📦 Artefactos del proyecto
+| Artefacto | Propósito |
+|-----------|-----------|
+| \`memoria.md\` | Flight recorder (Art. 3) |
+| \`lecciones.md\` | Aprendizajes acumulados |
+| \`xdd.profile.yml\` | Perfil del proyecto |
+| \`.xdd/\` | Estado de fases + firmas HMAC del gate keeper |
+
+## 💎 Calidad
+1. **Portabilidad:** rutas relativas (\`./\` o \`../\`), nunca absolutas del host.
+2. **Gate real:** build verde ≠ producto verde. Cada fase parsea su artefacto (tests N>0, evidencia, placeholders resueltos).
+
+---
+Docs: https://github.com/Cucholambr3ta/x-dd
+EOF
+      emit "$DEST/CLAUDE.md"
+    fi
   else
     echo "[xdd-adapt] SKIP CLAUDE.md (ya existe)"
   fi
