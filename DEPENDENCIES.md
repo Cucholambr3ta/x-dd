@@ -35,6 +35,7 @@ Matriz oficial de dependencias del ecosistema X-DD. Mantenida manualmente; verif
 | **Claude Code** | latest | `npm i -g @anthropic-ai/claude-code` | Propietaria (Anthropic) | Orquestador oficial — slash commands en `.claude/commands/` |
 | **OpenCode** | latest | `npm i -g opencode-ai` | Apache-2.0 | Orquestador alternativo multi-proveedor (Claude/GPT/Gemini/Ollama) |
 | **Cursor / Continue / Zed / Windsurf** | latest | sitios oficiales | varía | Compatibles vía MCP server propio de X-DD (Sprint 6, [ADR-0005](docs/adr/0005-mcp-preferido-y-server-propio.md)) |
+| **anthropic** (SDK Python) | `>=0.40` | `pip install x-dd[anthropic]` | MIT | **OPCIONAL.** Solo para `AnthropicProvider` en `scripts/xdd-provider.py`. Sin él, X-DD usa `MockProvider` determinista (sin red). Lazy-import: no requerido para tests ni operación base |
 
 ## Testing
 
