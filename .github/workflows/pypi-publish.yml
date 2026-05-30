@@ -1,0 +1,72 @@
+name: PyPI Publish
+
+# Publica el paquete x-dd en (Test)PyPI al taggear una versión.
+# Usa Trusted Publishing (OIDC) — sin tokens en secrets (ADR-0047).
+#
+# - Tag pre-release (v*-dev / -rc / -alpha / -beta) → TestPyPI.
+# - Tag estable (vX.Y.Z) → PyPI.
+#
+# Requisito una sola vez: registrar el "trusted publisher" en (Test)PyPI
+# apuntando a este repo + workflow (pypi-publish.yml) + environment.
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build sdist + wheel
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Build
+        run: |
+          python -m pip install --upgrade build
+          python -m build
+      - name: Check artifacts
+        run: |
+          python -m pip install --upgrade twine
+          twine check dist/*
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+  testpypi:
+    name: Publish to TestPyPI (pre-release tags)
+    needs: build
+    if: contains(github.ref_name, '-dev') || contains(github.ref_name, '-rc') || contains(github.ref_name, '-alpha') || contains(github.ref_name, '-beta')
+    runs-on: ubuntu-latest
+    environment: testpypi
+    permissions:
+      id-token: write  # OIDC trusted publishing
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+      - uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          repository-url: https://test.pypi.org/legacy/
+
+  pypi:
+    name: Publish to PyPI (stable tags)
+    needs: build
+    if: "!contains(github.ref_name, '-dev') && !contains(github.ref_name, '-rc') && !contains(github.ref_name, '-alpha') && !contains(github.ref_name, '-beta')"
+    runs-on: ubuntu-latest
+    environment: pypi
+    permissions:
+      id-token: write  # OIDC trusted publishing
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+      - uses: pypa/gh-action-pypi-publish@release/v1
