@@ -1,0 +1,53 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "x-dd"
+version = "0.1.0.dev0"
+description = "X-DD — Gated pipeline multi-metodología (*-Driven Development) con gate keeper HMAC. CLI + tooling. Stdlib-first."
+readme = "README.md"
+requires-python = ">=3.12"
+license = { text = "MIT" }
+authors = [{ name = "Alejandro Placencia" }]
+keywords = ["agents", "llm", "orchestration", "pipeline", "gated", "sdd", "tdd", "ddd"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Quality Assurance",
+]
+
+# Stdlib-first (ADR-0003). Deps externas OPCIONALES con degradación elegante.
+dependencies = []
+
+[project.optional-dependencies]
+anthropic = ["anthropic>=0.40"]
+dev = ["pytest>=7.4", "jsonschema>=4.0", "PyYAML>=6.0"]
+
+[project.urls]
+Homepage = "https://github.com/Cucholambr3ta/x-dd"
+Repository = "https://github.com/Cucholambr3ta/x-dd"
+Issues = "https://github.com/Cucholambr3ta/x-dd/issues"
+
+# Entry-points: dispatchers finos sobre los scripts existentes (NO reescritura — ADR-0008).
+[project.scripts]
+xdd = "xdd_cli:main"
+xdd-gate = "xdd_cli:gate"
+xdd-eval = "xdd_cli:eval_"
+xdd-flow = "xdd_cli:flow"
+xdd-provider = "xdd_cli:provider"
+xdd-shield = "xdd_cli:shield"
+xdd-orchestrate = "xdd_cli:orchestrate"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/xdd_cli"]
+
+# Empaqueta scripts/ como data dentro del paquete (resolución wheel en xdd_cli).
+[tool.hatch.build.targets.wheel.force-include]
+"scripts" = "xdd_cli/scripts"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"

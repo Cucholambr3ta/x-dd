@@ -6,7 +6,7 @@
 #   - Banner files del proyecto consumidor con ecosystem_name
 set -eu
 
-XDD_VERSION="0.1.0-dev"
+XDD_VERSION="$(cat "$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )/.." && pwd )/VERSION" 2>/dev/null || echo "0.1.0-dev")"
 ROOT="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )/.." && pwd )"
 
 case "${1:-}" in
@@ -100,6 +100,10 @@ for k, v in out.items():
 PY
 }
 
+# Declaradas con valor por defecto antes del eval (que las puebla dinámicamente
+# desde el YAML). shellcheck 0.9.0 no ve el eval como asignación → SC2154 sin esto.
+B_ecosystem_name="" B_ecosystem_slug="" B_orchestrator_trigger="" \
+  B_rename_subworkflows="" B_tone="" B_compact="" B_attribution_required=""
 eval "$(read_branding | sed 's/^/B_/')"
 
 echo "[xdd-brand] Branding detectado:"

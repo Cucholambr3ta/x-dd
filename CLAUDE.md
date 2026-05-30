@@ -56,6 +56,9 @@ Los workflows producen artefactos versionables en la raíz del proyecto. Consult
 | `xdd-gate.py` | Gate keeper HMAC-SHA256 (init/validate/transition/approve/status) |
 | `xdd-state.py` | SQLite state-store para instincts (Sprint 9) |
 | `xdd-eval.py` | Eval-harness con 5 grader types (Sprint 10) |
+| `xdd-provider.py` | Puerto LLM hexagonal: MockProvider determinista + AnthropicProvider lazy (sin red por defecto) |
+| `xdd-flow.py` | Gate ejecutable: corre flujos declarativos (seq/parallel) con MockProvider → ExecutionTrace; valida ejecución real, no solo archivos |
+| `xdd_adapters.py` | SSoT → 7 IDEs (copia real, sin MCP). Módulo aditivo empaquetable; `xdd-adapt.sh` sigue siendo el camino por defecto (ADR-0046) |
 | `xdd-orchestrate.py` | Runtime multi-agent (sequential/parallel/parallel_then_sync) (Sprint 11) |
 | `xdd-shield.py` | AgentShield audit del framework (Sprint 12) |
 | `xdd-pentest.sh` | Wrapper híbrido Shannon (Sprint 12) |
@@ -77,7 +80,7 @@ Los workflows producen artefactos versionables en la raíz del proyecto. Consult
 <!-- gitnexus:start -->
 # GitNexus — Code Intelligence
 
-This project is indexed by GitNexus as **x-dd** (8791 symbols, 9411 relationships, 39 execution flows). Use the GitNexus MCP tools to understand code, assess impact, and navigate safely.
+This project is indexed by GitNexus as **x-dd** (8822 symbols, 9445 relationships, 39 execution flows). Use the GitNexus MCP tools to understand code, assess impact, and navigate safely.
 
 > If any GitNexus tool warns the index is stale, run `npx gitnexus analyze` in terminal first.
 

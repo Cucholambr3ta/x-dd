@@ -9,6 +9,14 @@
 
 ## [Unreleased] — main
 
+## [0.1.0] — 2026-05-30
+
+> Primer release público. Notas user-facing en [RELEASES/v0.1.0.md](../RELEASES/v0.1.0.md).
+> Incluye: gated pipeline 6 fases + gate HMAC, gate ejecutable de flujos (xdd-flow),
+> MockProvider determinista (xdd-provider), pip-installable + comando `xdd` (pipx),
+> adapters en código (módulo aditivo), deprecación de MCP (borrado v0.2.0), VERSION
+> única, 7 IDEs, 180 agentes.
+
 ### Added — Codex adapter (2026-05-28) — 7° IDE — PR #40 + ADR-0036
 - **`scripts/xdd-adapt.sh adapt_codex()`** — genera `~/.codex/skills/<trigger>-orchestrator/` (SKILL.md frontmatter MINIMAL name+description + references/agents-index.json 180 entries lowercase-normalized + workflows-index.md + constitution + invoke_workflow.sh helper).
 - **6 X-DD skills copiadas** a `~/.codex/skills/` (compat directo: xdd-talk-compact + agent-eval + xdd-ai-review + xdd-compact + xdd-fs-context + xdd-sandbox).

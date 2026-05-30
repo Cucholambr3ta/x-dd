@@ -1,10 +1,10 @@
 {
   "$schema": "../schemas/install-modules.schema.json",
   "version": "0.1.0",
-  "description": "M\u00f3dulos instalables de X-DD. Cada m\u00f3dulo agrupa archivos coherentes para una capacidad espec\u00edfica.",
+  "description": "Módulos instalables de X-DD. Cada módulo agrupa archivos coherentes para una capacidad específica.",
   "modules": {
     "core": {
-      "description": "N\u00facleo: scripts (doctor, init, start, adapt), templates, CLAUDE.md, MEJORAS, configs base.",
+      "description": "Núcleo: scripts (doctor, init, start, adapt), templates, CLAUDE.md, MEJORAS, configs base.",
       "files": [
         "CLAUDE.md",
         "MEJORAS-X-DD.md",
@@ -25,7 +25,7 @@
       "required": true
     },
     "workflows-core": {
-      "description": "Cat\u00e1logo de 49 workflows X-DD (.agent/workflows/).",
+      "description": "Catálogo de 49 workflows X-DD (.agent/workflows/).",
       "files": [
         ".agent/workflows/",
         "prompts/workflows/"
@@ -68,7 +68,7 @@
       ]
     },
     "gate-keeper": {
-      "description": "Gate keeper program\u00e1tico con HMAC-SHA256.",
+      "description": "Gate keeper programático con HMAC-SHA256.",
       "files": [
         "scripts/xdd-gate.py",
         "docs/GATE.md"
@@ -79,11 +79,12 @@
       ]
     },
     "platform-configs": {
-      "description": "Configs por IDE (.claude/, .opencode/, MCP configs).",
+      "description": "Configs por IDE (.claude/, .opencode/, MCP configs). Generado por xdd-adapt en install-time; .claude/settings.json es gitignored (scrub branding privado, ADR-0035).",
       "files": [
         ".claude/settings.json"
       ],
-      "required": false
+      "required": false,
+      "generated": true
     },
     "ci-runtime": {
       "description": "GitHub Actions workflows + pre-commit + Renovate.",
@@ -130,7 +131,7 @@
       "available_from": "0.1.0-sprint11"
     },
     "agent-shield": {
-      "description": "AgentShield: security audit est\u00e1tica del framework (Sprint 12).",
+      "description": "AgentShield: security audit estática del framework (Sprint 12).",
       "files": [
         "scripts/xdd-shield.py",
         "docs/AGENT_SHIELD.md"
@@ -139,7 +140,7 @@
       "available_from": "0.1.0-sprint12"
     },
     "docs-governance": {
-      "description": "Documentaci\u00f3n governance + guides core que CLAUDE.md/AGENTS.md referencian (constitucion, integration, retrofit, hooks, config, install).",
+      "description": "Documentación governance + guides core que CLAUDE.md/AGENTS.md referencian (constitucion, integration, retrofit, hooks, config, install).",
       "files": [
         "docs/constitucion.md",
         "docs/X-DD_Integration_Guide.md",
@@ -211,16 +212,40 @@
       ]
     },
     "router": {
-      "description": "Sprint 17 + ADR-0019: multi-provider LLM router (5 task \u00d7 4 providers).",
+      "description": "Sprint 17 + ADR-0019: multi-provider LLM router (5 task × 4 providers).",
       "files": [
         "scripts/xdd-router.py"
       ]
     },
     "pentest": {
-      "description": "Sprint 12 + ADR-0010: wrapper h\u00edbrido Shannon (AGPL opt-in).",
+      "description": "Sprint 12 + ADR-0010: wrapper híbrido Shannon (AGPL opt-in).",
       "files": [
         "scripts/xdd-pentest.sh"
       ]
+    },
+    "core-essential": {
+      "description": "Sprint 32: Project-only essentials. NO framework docs (MEJORAS-X-DD.md, DEPENDENCIES.md, INSTALL.md). NO framework scripts (acceso vía wrapper global ADR-0035). Asume xdd-mcp-install-global ejecutado.",
+      "files": [
+        "CLAUDE.md",
+        "AGENTS.md",
+        ".editorconfig",
+        ".gitattributes",
+        ".markdownlint.yaml",
+        ".pre-commit-config.yaml",
+        "docs/constitucion.md"
+      ],
+      "requires_wrapper_global": true,
+      "available_from_sprint": 32
+    },
+    "workflows-essential": {
+      "description": "Sprint 32: workflows mínimos para sesión X-DD (3: /xdd orquestador + /cierre-fase + /project-architecture-gsd). Resto via MCP xdd_invoke_workflow.",
+      "files": [
+        ".agent/workflows/xdd.md",
+        ".agent/workflows/cierre-fase.md",
+        ".agent/workflows/project-architecture-gsd.md",
+        ".agent/workflows/README.md"
+      ],
+      "available_from_sprint": 32
     }
   }
 }

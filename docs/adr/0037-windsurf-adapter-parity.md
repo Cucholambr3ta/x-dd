@@ -17,7 +17,7 @@ adapt_windsurf() {
 }
 ```
 
-**Dos gaps identificados** durante review de doc generado por Windsurf IA (`docs/GUIA_WINDSURF_AGENTES_SKILLS_WORKFLOWS.md`):
+**Dos gaps identificados** durante review de doc generado por Windsurf IA (`docs/dev/GUIA_WINDSURF_AGENTES_SKILLS_WORKFLOWS.md`):
 
 ### Gap 1 — Workflows nativos no copiados
 
@@ -154,7 +154,7 @@ Añadido `[ -d "$HOME/.codeium" ]` — instalación Windsurf típica no pone CLI
 
 ### Doc actualizada
 
-`docs/GUIA_WINDSURF_AGENTES_SKILLS_WORKFLOWS.md`:
+`docs/dev/GUIA_WINDSURF_AGENTES_SKILLS_WORKFLOWS.md`:
 - Header: estado adapter → "✅ Implementación completa (Sprint 26 / ADR-0037)"
 - Sección 2: "Sprint 26 resuelve los gaps"
 - Sección 4 matriz: actualiza workflows + MCP path
@@ -178,7 +178,7 @@ Añadido `[ -d "$HOME/.codeium" ]` — instalación Windsurf típica no pone CLI
 
 - Implementación: `scripts/xdd-adapt.sh:260-380` (función `adapt_windsurf`)
 - Tests: `tests/bats/xdd-adapt-windsurf.bats` (11 casos)
-- Guía técnica: `docs/GUIA_WINDSURF_AGENTES_SKILLS_WORKFLOWS.md`
+- Guía técnica: `docs/dev/GUIA_WINDSURF_AGENTES_SKILLS_WORKFLOWS.md`
 - Doc oficial workflows: https://docs.windsurf.com/plugins/cascade/workflows.md
 - Doc oficial MCP: https://docs.windsurf.com/plugins/cascade/mcp.md
 - ADR-0034: Universal IDE adapter (decisión de soportar 6 IDEs + Codex)

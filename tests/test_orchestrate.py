@@ -101,11 +101,11 @@ def test_cmd_run_invalid_pattern():
     assert rc == 2
 
 
-def test_cmd_list_includes_3_patterns(capsys):
+def test_cmd_list_includes_5_patterns(capsys):
     rc = xo.cmd_list(_args(json=True))
     assert rc == 0
     out = json.loads(capsys.readouterr().out)
-    assert len(out["patterns"]) == 3
+    assert len(out["patterns"]) == 5
 
 
 # ---------- Sprint 17: party, retry, conditional, HITL ----------

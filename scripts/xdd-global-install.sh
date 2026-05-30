@@ -11,7 +11,7 @@
 # permite self-bootstrap = workflow detecta dir vacío y dispara xdd-init.sh inline.
 set -eu
 
-XDD_VERSION="0.1.0-dev"
+XDD_VERSION="$(cat "$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )/.." && pwd )/VERSION" 2>/dev/null || echo "0.1.0-dev")"
 XDD_ROOT="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )/.." && pwd )"
 
 usage() {
@@ -327,7 +327,7 @@ check_one() {
     vscode-copilot) path="${XDG_CONFIG_HOME:-$HOME/.config}/Code/User/prompts/${TRIGGER}.prompt.md" ;;
     codex)          path="${XDD_CODEX_HOME:-$HOME/.codex/skills}/${TRIGGER}-orchestrator/SKILL.md" ;;
   esac
-  if [ -f "$path" ] || [ -d "$(dirname "$path")" -a "$ide" = "codex" -a -f "$path" ]; then
+  if [ -f "$path" ] || { [ -d "$(dirname "$path")" ] && [ "$ide" = "codex" ] && [ -f "$path" ]; }; then
     echo "  ✓ $ide: $path"
   else
     echo "  ✗ $ide: NOT INSTALLED ($path)"
@@ -391,6 +391,12 @@ Próximos pasos:
 
 Verifica estado:
   bash scripts/xdd-global-install.sh --check
+
+Comando de terminal (opcional, ADR-0045):
+  Este script registra el slash command /$TRIGGER en los IDEs. Para invocar el
+  tooling desde la terminal sin ruta absoluta, instala el paquete:
+    pipx install x-dd      # luego: xdd doctor · xdd gate status · xdd flow ...
+    pipx install -e .      # desde el clon (editable)
 
 Override portabilidad:
   XDG_CONFIG_HOME=<path>  (afecta opencode + vscode paths)
