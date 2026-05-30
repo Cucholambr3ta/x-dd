@@ -1,9 +1,13 @@
 #!/bin/bash
 # xdd-mcp-install-global — Sprint 25 + ADR-0035: instala wrapper global xdd-mcp-server
 # en PATH del usuario. Single source install. Adapter MCP usa este wrapper sin cwd.
+#
+# ⚠️ DEPRECADO v0.2.0 (ADR-0044): MCP no es necesario para la orquestación X-DD —
+# la copia real a IDEs (xdd-adapt.sh) cubre el caso. Sigue funcional en v0.1.x pero
+# se eliminará en v0.2.0. No usar para integraciones nuevas.
 set -eu
 
-XDD_VERSION="0.1.0-dev"
+XDD_VERSION="$(cat "$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )/.." && pwd )/VERSION" 2>/dev/null || echo "0.1.0-dev")"
 
 usage() {
   cat <<'EOF'
@@ -47,6 +51,8 @@ while [ $# -gt 0 ]; do
 done
 
 WRAPPER="$BIN_DIR/xdd-mcp-server"
+
+echo "[mcp] ⚠️  DEPRECADO v0.2.0 (ADR-0044): MCP se eliminará. Vía recomendada: xdd-adapt.sh (copia real)." >&2
 
 if [ "$CHECK" -eq 1 ]; then
   echo "=== Global install check ==="
