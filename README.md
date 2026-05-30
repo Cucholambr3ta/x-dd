@@ -1,93 +1,138 @@
 <div align="center">
 
-# X-DD — Excelencia Operativa en Desarrollo Asistido por IA
+# X-DD
+
+**El sistema operativo para desarrollo de software asistido por IA**
+
+**Agentes de IA que colaboran bajo reglas estrictas y firmadas — para que "lo hizo la IA" deje de significar "nadie revisó".**
 
 [![pre-release](https://img.shields.io/badge/status-pre--release-orange)](https://github.com/Cucholambr3ta/x-dd/releases)
+[![pip install](https://img.shields.io/badge/pip-install%20x--dd-blue)](#instala-en-30-segundos)
 [![Constitución](https://img.shields.io/badge/Constituci%C3%B3n-v1.5-blue)](docs/constitucion.md)
-[![Tests](https://img.shields.io/badge/tests-378%20(230%20pytest%20%2B%20148%20bats)-brightgreen)](tests/)
-[![Agentes](https://img.shields.io/badge/agentes-180-blueviolet)](prompts/agents/registry.json)
-[![IDEs](https://img.shields.io/badge/IDEs-7-informational)](docs/)
-
-**Un sistema operativo para el desarrollo de software asistido por IA.**
+[![Tests](https://img.shields.io/badge/tests-verdes%20como%20gate%20de%20CI-brightgreen)](tests/)
+[![Licencia](https://img.shields.io/badge/licencia-MIT-green)](LICENSE)
 
 </div>
 
 ---
 
-## ¿Qué es X-DD?
+## El problema
 
-X-DD transforma cualquier proyecto en un entorno gobernado donde **agentes de IA especializados** colaboran bajo reglas estrictas para producir software de alta calidad. Integra múltiples metodologías *-Driven Development* (SDD, FDD, BDD, ATDD, DDD, TDD, STDD, SecDD, Threat-Driven) como capas sobre un Gated Pipeline de 6 fases.
+La IA escribe código rápido. Pero "build verde" no es "producto verde": tests que no existen,
+documentación inventada, fases marcadas como completas que nunca corrieron. Cuando un agente
+escribe **y** aprueba su propio trabajo, nadie revisó nada.
 
-| Pilar | Descripción |
-|---|---|
-| **Metodología** | Pipeline de 6 fases (Briefing → Spec → Plan → Build → QA → Retro), cada una con checkpoint de aprobación humana |
-| **Gobernanza** | [Constitución v1.5](docs/constitucion.md) (9 artículos) + Gate keeper criptográfico que bloquea avances de fase sin aprobación firmada |
-| **Subagentes** | **180** agentes especializados con registry tipado en `prompts/agents/` |
-| **Multi-IDE** | **7** adapters: Claude Code, Cursor, opencode, Windsurf, VSCode/Copilot, Antigravity, Codex |
-| **Trazabilidad** | **43** ADRs (`docs/adr/`), **55** workflows, CHANGELOG + releases versionados |
-| **Calidad** | **378 tests** (230 pytest + 148 bats); la suite unitaria corre como gate de CI en cada PR |
-| **Memoria** | Flight recorder (`memoria.md`) + Continuous Learning (instincts SQLite) entre sesiones |
+## La solución
 
-## Capacidades destacadas
+X-DD pone a los agentes a trabajar dentro de un **pipeline con candados criptográficos**. Cada
+fase del desarrollo se valida por contenido real y se firma con HMAC. No hay "APROBADO" verbal:
+hay una firma que el gate verifica, y un aprobador que no puede ser el mismo que hizo el trabajo.
 
-- **Gate keeper HMAC-SHA256** — cada transición de fase se firma criptográficamente (`xdd-gate.py`); no hay "APROBADO" verbal.
-- **CI como ley** — `.github/workflows/tests.yml` corre pytest + bats + AgentShield en cada PR. La cláusula "tests verdes antes de merge" (Constitución Art. 7 §4) es un gate ejecutable, no una promesa.
-- **AgentShield** — audit estático de seguridad del propio framework (`xdd-shield.py`): 13 reglas sobre hooks, agentes, MCP tools y workflows.
-- **MCP server propio** — `xdd-mcp-server` (Python stdlib pura) expone agentes, workflows y artefactos vía Model Context Protocol. ⚠️ _Deprecado v0.2.0 ([ADR-0044](docs/adr/0044-deprecar-mcp-no-necesario.md)): la copia real a IDEs lo reemplaza._
-- **Instalación modular** — perfiles `minimal | core | developer | security | research | full | lean` con manifests declarativos validados por JSON Schema.
-- **White-labeling** — `xdd-brand.sh` aplica branding y persona del orquestador por proyecto.
-- **Observabilidad** — spans OTel, session replay, cost tracker, context budget (perfil strict).
-
-## Quickstart
-
-```bash
-git clone https://github.com/Cucholambr3ta/x-dd.git
-cd x-dd
-./scripts/xdd-doctor.sh                 # diagnóstico del entorno
-make init DEST=/ruta/a/tu/proyecto      # bootstrap de un proyecto X-DD
+```
+Briefing → Spec → Plan → Build → QA → Retro
+   └─ cada flecha es un gate firmado que bloquea el avance sin aprobación válida ─┘
 ```
 
-Verificar la suite completa localmente:
+## Lo que hace a X-DD distinto: 9 disciplinas, una sola corriente
+
+X-DD no inventa una metodología nueva: **integra nueve** *-Driven Development* como capas sobre
+el pipeline gated, cada una entrando en la fase donde aporta.
+
+| Disciplina | Qué aporta | Dónde entra |
+|---|---|---|
+| **SDD** Spec-Driven | la spec es el contrato, no un borrador | Briefing → Spec |
+| **FDD** Feature-Driven | catálogo de features trazable | Spec → Plan |
+| **DDD** Domain-Driven | modelo de dominio + bounded contexts | Spec |
+| **BDD / ATDD** Behavior/Acceptance | criterios ejecutables antes de codear | Plan → Build |
+| **TDD** Test-Driven | tests primero, código después | Build |
+| **STDD** Security-Test-Driven | tests de seguridad como ciudadanos de primera | Build → QA |
+| **SecDD + Threat-Driven** | modelo de amenazas STRIDE guía el diseño | Spec + QA |
+
+No eliges una; X-DD las **orquesta en la fase correcta**.
+
+## Harness engineering: el agente es el 10%, el entorno es el 90%
+
+Un buen prompt no basta. Lo que hace confiable a un agente es el **harness** que lo rodea: los
+gates, los hooks, el presupuesto de contexto, la memoria y las pruebas. X-DD trata ese entorno
+como ingeniería de primera clase:
+
+- **Eval-harness** (`xdd-eval`) — 5 tipos de grader deterministas para medir agentes sin azar.
+- **MockProvider** (`xdd-provider`) — corre flujos completos **sin red ni tokens**, reproducibles.
+- **Hooks + context budget + observabilidad** — OTel spans, session replay, cost tracker.
+- **AgentShield** (`xdd-shield`) — audita el propio framework con 13 reglas estáticas.
+
+## Memoria y pruebas: MemPalace + Shannon
+
+Dos integraciones externas (opcionales, nunca bundled) cubren lo que un agente solo no puede:
+
+- **🧠 MemPalace** *(memoria semántica, MIT)* — el flight recorder del proyecto. ChromaDB + SQLite
+  + 29 MCP tools para que los agentes recuerden decisiones y lecciones **entre sesiones**, no solo
+  dentro de una conversación. Sin él, X-DD degrada a memoria de archivos (`memoria.md`/`lecciones.md`).
+
+- **🎯 Shannon** *(pentest dinámico, AGPL)* — pruebas de seguridad reales: white-box, exploits en
+  sandbox, *verify findings* contra el código corriendo. Integrado vía `xdd-pentest.sh`. Sin él,
+  X-DD degrada elegantemente a STRIDE + revisión estática de fuente.
+
+> Ambas son **dependencias externas declaradas** ([DEPENDENCIES.md](DEPENDENCIES.md)), nunca
+> incrustadas: tu proyecto MIT no se contamina con sus licencias. Instalarlas es decisión tuya.
+
+## Por qué importa
+
+| En vez de… | X-DD te da… |
+|---|---|
+| "confía en que la IA lo hizo bien" | un gate que **parsea el artefacto** (tests N>0, evidencia de ejecución, placeholders resueltos) |
+| el agente que escribe también aprueba | **aprobador ≠ autor**, firmado criptográficamente |
+| "el .md existe, listo" | validación de **flujos ejecutados** end-to-end (`xdd-flow`), no solo de archivos |
+| copiar prompts entre IDEs a mano | **7 IDEs** desde una sola fuente (Claude Code, Cursor, opencode, Windsurf, Copilot, Antigravity, Codex) |
+| 180 prompts sueltos | un **registry tipado** de 180 agentes especializados |
+| probar agentes gastando tokens | **MockProvider determinista** — testea flujos sin red ni costo |
+
+## Instala en 30 segundos
 
 ```bash
-make install   # pytest + jsonschema + PyYAML (ver requirements-dev.txt)
-make test      # lint + pytest + bats + AgentShield
+pip install -e .          # o: pipx install x-dd
+xdd doctor                # diagnóstico del entorno
+xdd gate status           # estado del pipeline
 ```
 
-## Scripts principales
+¿Prefieres bootstrap de un proyecto completo?
 
-| Script | Función |
-|---|---|
-| `xdd-doctor.sh` | Diagnóstico del entorno (`--json` para CI) |
-| `xdd-init.sh` | Bootstrap de proyecto (`--profile`, `--list-profiles`) |
-| `xdd-gate.py` | Gate keeper HMAC-SHA256 (init/validate/transition/approve/status) |
-| `xdd-orchestrate.py` | Runtime multi-agente (sequential/parallel/parallel_then_sync) |
-| `xdd-shield.py` | AgentShield: audit estático de seguridad del framework |
-| `xdd-eval.py` | Eval-harness con 5 tipos de grader |
-| `xdd-adapt.sh` | Genera config por IDE (7 adapters) |
+```bash
+git clone https://github.com/Cucholambr3ta/x-dd.git && cd x-dd
+make init DEST=/ruta/a/tu/proyecto
+```
 
-## Gobernanza de ramas (Constitución Art. 7 v1.5)
+## Qué hay dentro
 
-Modelo **híbrido** ([ADR-0042](docs/adr/0042-gitflow-hybrid-trunk-based.md)): trunk-based por defecto, GitFlow opt-in. Invariantes en ambos modos:
+- **🔐 Gate keeper HMAC-SHA256** — cada transición de fase se firma; el gate detecta manipulación.
+- **▶️ Gate ejecutable** — `xdd-flow` corre flujos de agentes y valida su salida real, no su existencia.
+- **🧪 CI como ley** — pytest + bats + AgentShield corren como gate en cada PR (Constitución Art. 7).
+- **🛡️ AgentShield** — audit estático de seguridad del propio framework: 13 reglas.
+- **🎨 White-labeling** — renombra el orquestador y su persona por proyecto.
+- **📊 Observabilidad** — spans OTel, session replay, cost tracker, context budget.
 
-- `main` y `develop` protegidas — integración solo vía PR con aprobación humana.
-- **Tests verdes obligatorios** en CI antes de merge.
-- Conventional Commits.
+## Filosofía
 
-## Documentación
+X-DD se construye a sí mismo con su propio pipeline (*dogfooding*). Cada decisión vive en un
+[ADR](docs/adr/) (47 y contando). La [Constitución](docs/constitucion.md) es la ley; el gate la
+hace cumplir. No prometemos calidad: la bloqueamos cuando falta.
 
-- [Constitución](docs/constitucion.md) — ley suprema, 9 artículos
-- [Guía de Integración X-DD](docs/X-DD_Integration_Guide.md) — pipeline completo
-- [INSTALL](INSTALL.md) — instalación detallada y perfiles
-- [Guía de Retrofit](docs/RETROFIT_GUIDE.md) — capacidades extendidas
-- [ADRs](docs/adr/) — 43 decisiones arquitectónicas
-- [Guías de desarrollo por IDE](docs/dev/) — `GUIA_*_AGENTES_SKILLS_WORKFLOWS.md` (material interno, 7 IDEs)
-- [LICENSE](LICENSE) — licencia del proyecto
+## Empieza
+
+- 📖 [Constitución](docs/constitucion.md) — la ley, 9 artículos
+- 🚀 [INSTALL](INSTALL.md) — instalación, perfiles, pip
+- 🧭 [Guía de Integración](docs/X-DD_Integration_Guide.md) — el pipeline completo
+- 🏛️ [ADRs](docs/adr/) — por qué X-DD es como es
+- 🛠️ [Guías de desarrollo](docs/dev/) — cómo crear agentes/skills/workflows (material interno)
+
+> ⏳ **Nota v0.1.0:** el MCP server propio está deprecado (se elimina en v0.2.0, [ADR-0044](docs/adr/0044-deprecar-mcp-no-necesario.md)); la copia real a IDEs lo reemplaza.
 
 ---
 
 <div align="center">
 
-*X-DD — Excelencia Operativa*
+**X-DD — la IA escribe, el pipeline responde.**
+
+[Empezar](#instala-en-30-segundos) · [Documentación](docs/) · [Licencia MIT](LICENSE)
 
 </div>
