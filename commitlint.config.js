@@ -23,6 +23,12 @@
  */
 module.exports = {
   extends: ['@commitlint/config-conventional'],
+  // Ignora merge commits (no siguen Conventional Commits por diseño) y reverts auto.
+  // Mantiene defaultIgnores de commitlint (fixup!, squash!, etc.).
+  ignores: [
+    (message) => /^merge:/i.test(message) || /^Merge (branch|pull request|remote-tracking)/i.test(message),
+  ],
+  defaultIgnores: true,
   rules: {
     // type-enum reemplaza el default
     'type-enum': [
