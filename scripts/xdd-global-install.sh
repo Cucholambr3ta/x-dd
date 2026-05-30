@@ -392,6 +392,12 @@ Próximos pasos:
 Verifica estado:
   bash scripts/xdd-global-install.sh --check
 
+Comando de terminal (opcional, ADR-0045):
+  Este script registra el slash command /$TRIGGER en los IDEs. Para invocar el
+  tooling desde la terminal sin ruta absoluta, instala el paquete:
+    pipx install x-dd      # luego: xdd doctor · xdd gate status · xdd flow ...
+    pipx install -e .      # desde el clon (editable)
+
 Override portabilidad:
   XDG_CONFIG_HOME=<path>  (afecta opencode + vscode paths)
   XDD_CODEX_HOME=<path>   (afecta codex skills global)
