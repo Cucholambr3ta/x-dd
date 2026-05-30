@@ -33,6 +33,7 @@ Issues = "https://github.com/Cucholambr3ta/x-dd/issues"
 
 # Entry-points: dispatchers finos sobre los scripts existentes (NO reescritura — ADR-0008).
 [project.scripts]
+xdd = "xdd_cli:main"
 xdd-gate = "xdd_cli:gate"
 xdd-eval = "xdd_cli:eval_"
 xdd-flow = "xdd_cli:flow"
