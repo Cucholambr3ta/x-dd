@@ -103,7 +103,7 @@
 
     "pipeline": {
       "type": "object",
-      "description": "Configuración del Gated Pipeline de 6 fases.",
+      "description": "Configuración del Gated Pipeline de 7 fases.",
       "additionalProperties": false,
       "properties": {
         "gates": {
@@ -129,7 +129,7 @@
             "properties": {
               "id": {
                 "type": "string",
-                "enum": ["briefing", "spec", "plan", "build", "qa", "retro"]
+                "enum": ["briefing", "spec", "plan", "build", "qa", "retro", "docs"]
               },
               "artifacts": {
                 "type": "array",

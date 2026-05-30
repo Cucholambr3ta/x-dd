@@ -42,7 +42,7 @@
               "profile": {"type": "string", "enum": ["minimal", "core", "developer", "security", "research", "full"]},
               "owns_phases": {
                 "type": "array",
-                "items": {"type": "string", "enum": ["briefing", "spec", "plan", "build", "qa", "retro"]},
+                "items": {"type": "string", "enum": ["briefing", "spec", "plan", "build", "qa", "retro", "docs"]},
                 "description": "Hybrid mode: fases que el package controla (vs raíz)"
               }
             }

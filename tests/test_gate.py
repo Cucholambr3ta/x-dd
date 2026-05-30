@@ -217,3 +217,64 @@ def test_status_reports_all_phases(initialized: Path, capsys):
     assert len(output) == len(xdd_gate.PHASE_IDS)
     ids = [e["phase"] for e in output]
     assert ids == list(xdd_gate.PHASE_IDS)
+
+
+# ---------- Sprint 32: nuevas mejoras de gate (M2-M8) ----------
+
+def test_docs_phase_in_pipeline():
+    """M7: la fase `docs` existe y es la última (append-only)."""
+    assert xdd_gate.PHASE_IDS[-1] == "docs"
+    assert ".xdd/docs/README.md" in xdd_gate.PHASE_ARTIFACTS["docs"]
+
+
+def test_placeholder_check_blocks_unresolved(tmp_path: Path):
+    """M5: README con {{AUTO}} o <CONFIGURAR> sin resolver falla."""
+    p = tmp_path / "README.md"
+    p.write_text("# Proj\n{{AUTO:foo}}\n<CONFIGURAR:bar>\n")
+    errs = xdd_gate._check_unresolved_placeholders(p, "README.md")
+    assert errs and "placeholder" in errs[0]
+
+
+def test_placeholder_check_passes_clean(tmp_path: Path):
+    p = tmp_path / "README.md"
+    p.write_text("# Proj\nDocumentación real sin tokens.\n")
+    assert xdd_gate._check_unresolved_placeholders(p, "README.md") == []
+
+
+def test_qa_report_blocks_zero_tests(tmp_path: Path):
+    """M2: QA_REPORT sin evidencia de tests reales falla."""
+    p = tmp_path / "QA_REPORT.md"
+    p.write_text("| Rust build | 0 tests |\n")
+    errs = xdd_gate._check_qa_report(p, "QA_REPORT.md", None)
+    assert any("tests reales" in e for e in errs)
+
+
+def test_qa_report_passes_with_tests(tmp_path: Path):
+    p = tmp_path / "QA_REPORT.md"
+    p.write_text("Tests: 42 passed\n")
+    assert xdd_gate._check_qa_report(p, "QA_REPORT.md", None) == []
+
+
+def test_qa_report_blocks_low_coverage(tmp_path: Path):
+    p = tmp_path / "QA_REPORT.md"
+    p.write_text("Tests: 10 passing\nCobertura: 20%\n")
+    errs = xdd_gate._check_qa_report(p, "QA_REPORT.md", 40.0)
+    assert any("cobertura" in e.lower() for e in errs)
+
+
+def test_build_evidence_required(tmp_path: Path):
+    """M3: build sin run-evidence.txt falla."""
+    (tmp_path / ".xdd" / "build").mkdir(parents=True)
+    errs = xdd_gate._check_build_evidence(tmp_path, ".xdd/build/")
+    assert errs and "run-evidence" in errs[0]
+    (tmp_path / ".xdd" / "build" / "run-evidence.txt").write_text("smoke run OK\n")
+    assert xdd_gate._check_build_evidence(tmp_path, ".xdd/build/") == []
+
+
+def test_profile_gates_docs_optional(tmp_path: Path):
+    """M8: end_user_docs:false hace la fase docs N/A."""
+    (tmp_path / "xdd.profile.yml").write_text(
+        "capabilities:\n  end_user_docs: false\n"
+    )
+    prof = xdd_gate._load_profile(tmp_path)
+    assert prof["capabilities"]["end_user_docs"] is False

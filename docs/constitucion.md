@@ -55,14 +55,17 @@ X-DD es agnóstico y multi-proyecto. El protocolo de ramas tiene un **modo por d
 3. **Calidad sobre Velocidad:** Ninguna funcionalidad compleja se considerará terminada sin pruebas unitarias o de integración que certifiquen su correcto funcionamiento.
 
 ## ARTÍCULO 9: PIPELINE X-DD (Spec-Driven Development + Capas)
-Todo desarrollo sigue este flujo de 6 fases con checkpoints de aprobación humana:
+Todo desarrollo sigue este flujo de 7 fases con checkpoints de aprobación humana:
 1. **Briefing:** Definición de objetivos + FDD (catálogo de features) + BDD (escenarios Gherkin) + ATDD (stubs de aceptación).
 2. **Spec:** Especificación técnica + DDD (modelo de dominio `DOMAIN.md`) + Threat Modeling (`THREATS.md`).
 3. **Plan:** Diseño detallado organizado por features verticales (FDD).
-4. **Build:** Codificación + TDD (ciclo Rojo→Verde→Refactor) + STDD (security tests primero).
-5. **QA:** BDD ejecutable + ATDD + SecDD (SAST + DAST + Secrets scanning).
+4. **Build:** Codificación + TDD (ciclo Rojo→Verde→Refactor) + STDD (security tests primero). Exige evidencia de ejecución real (`run-evidence.txt`).
+5. **QA:** BDD ejecutable + ATDD + SecDD (SAST + DAST + Secrets scanning). Exige suite de tests con cobertura ≥ umbral del perfil.
 6. **Retro:** Registro de lecciones en `lecciones.md` y actualización de `CLAUDE.md`.
+7. **Docs:** Documentación de usuario (`README.md` vendible + guías). Fase **aditiva** (Sprint 32): se agrega al final del orden para no romper firmas HMAC de proyectos ya sellados. Condicional a `capabilities.end_user_docs` del perfil.
 
+> **Regla de evolución del pipeline:** las fases solo se **agregan al final** (append-only). Modificar o insertar fases existentes rompe las firmas HMAC del gate keeper (`xdd-gate.py`) de todo proyecto ya certificado. Ver [[xdd-schema-manifest-drift]].
+>
 > **IMPORTANTE:** El incumplimiento de cualquier fase invalida la certificación de calidad del proyecto. El archivo `CLAUDE.md` es obligatorio para garantizar la interoperabilidad con Claude Code.
 
 ---

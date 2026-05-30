@@ -48,6 +48,11 @@ PHASES: list[tuple[str, list[str]]] = [
     ("build",    [".xdd/build/"]),
     ("qa",       [".xdd/qa/QA_REPORT.md"]),
     ("retro",    [".xdd/retro/lecciones.md"]),
+    # Fase aditiva (append-only). NO insertar antes de retro: cambiar el set de
+    # artefactos de una fase ya firmada rompe su firma HMAC. Append al final es
+    # seguro — proyectos viejos dejan `docs` en PENDIENTE, nunca en INVÁLIDO.
+    # Producida por xdd-readme.py vía /cierre-fase.
+    ("docs",     [".xdd/docs/README.md"]),
 ]
 PHASE_IDS = [p[0] for p in PHASES]
 PHASE_ARTIFACTS = dict(PHASES)
@@ -121,6 +126,122 @@ def cmd_init(root: Path, _args) -> int:
     return 0
 
 
+import re
+
+# Placeholders del template que DEBEN estar resueltos en el artefacto final.
+_PLACEHOLDER_RE = re.compile(r"\{\{AUTO:[^}]+\}\}|<CONFIGURAR[^>]*>")
+
+
+def _check_unresolved_placeholders(path: Path, rel: str) -> list[str]:
+    """Falla el gate si el README aún contiene {{AUTO:...}} o <CONFIGURAR>.
+    Cierra el bug que dejaba pasar docs con datos inventados o sin rellenar."""
+    try:
+        text = path.read_text(encoding="utf-8")
+    except (OSError, UnicodeDecodeError) as e:
+        return [f"No se pudo leer {rel}: {e}"]
+    hits = _PLACEHOLDER_RE.findall(text)
+    if hits:
+        sample = ", ".join(sorted(set(hits))[:3])
+        return [f"{rel} tiene {len(hits)} placeholder(s) sin resolver: {sample}…"]
+    return []
+
+
+def _run_git(root: Path, args: list[str]) -> str:
+    import subprocess
+    try:
+        out = subprocess.run(
+            ["git", *args], cwd=root, capture_output=True, text=True, timeout=10
+        )
+        return out.stdout
+    except (subprocess.SubprocessError, OSError):
+        return ""
+
+
+def _warn_phase_compression(root: Path, phase: str) -> None:
+    """M6: avisa si la fase huele a 'pipeline teatro' (sin esfuerzo real)."""
+    log = _run_git(root, ["log", "--since=24 hours ago", "--format=%H"])
+    commits_24h = len([l for l in log.splitlines() if l.strip()])
+    total = _run_git(root, ["rev-list", "--count", "HEAD"]).strip()
+    if commits_24h and total.isdigit() and commits_24h == int(total) and int(total) <= len(PHASE_IDS):
+        print(
+            f"[gate] ⚠ {phase}: todo el historial ({total} commits) cabe en 24h "
+            f"con ≤{len(PHASE_IDS)} commits totales. Posible compresión de "
+            f"iteraciones (pipeline teatro). Verifica esfuerzo real por fase.",
+            file=sys.stderr,
+        )
+
+
+def _load_profile(root: Path) -> dict:
+    """Lee xdd.profile.yml sin dependencia dura de PyYAML (parser mínimo de las
+    pocas claves que el gate necesita). Si no existe, devuelve {} (defaults)."""
+    pf = root / "xdd.profile.yml"
+    if not pf.exists():
+        return {}
+    caps: dict = {}
+    in_caps = False
+    coverage_min = None
+    for raw in pf.read_text(errors="ignore").splitlines():
+        line = raw.rstrip()
+        if line.startswith("capabilities:"):
+            in_caps = True
+            continue
+        if in_caps:
+            if line and not line.startswith((" ", "\t")):
+                in_caps = False
+            else:
+                m = re.match(r"\s+([a-z_]+):\s*(true|false)", line)
+                if m:
+                    caps[m.group(1)] = m.group(2) == "true"
+        m2 = re.match(r"\s*coverage_min:\s*([0-9.]+)", line)
+        if m2:
+            coverage_min = float(m2.group(1))
+    return {"capabilities": caps, "coverage_min": coverage_min}
+
+
+# Marcadores que delatan un QA_REPORT sin tests reales (el bug Agent Anmax).
+_NO_TEST_HINTS = re.compile(r"0\s+tests|sin\s+tests|no\s+tests|0\s+test\b", re.I)
+_TEST_EVIDENCE = re.compile(
+    r"\btests?\b.*\b(pass|passed|passing|verde|ok|✅|\d+\s*/\s*\d+)\b", re.I
+)
+
+
+def _check_qa_report(path: Path, rel: str, coverage_min: float | None) -> list[str]:
+    """M2: QA exige evidencia de tests reales, no solo que el reporte exista."""
+    try:
+        text = path.read_text(encoding="utf-8")
+    except (OSError, UnicodeDecodeError) as e:
+        return [f"No se pudo leer {rel}: {e}"]
+    errs = []
+    if _NO_TEST_HINTS.search(text) or not _TEST_EVIDENCE.search(text):
+        errs.append(
+            f"{rel}: sin evidencia de tests reales (suite con N>0 y resultados). "
+            "QA verde requiere tests, no solo build verde."
+        )
+    if coverage_min is not None:
+        m = re.search(r"cobertura[^0-9]*([0-9]{1,3})\s*%", text, re.I) or re.search(
+            r"coverage[^0-9]*([0-9]{1,3})\s*%", text, re.I
+        )
+        cov = float(m.group(1)) if m else None
+        if cov is None:
+            errs.append(f"{rel}: no declara cobertura (umbral perfil: {coverage_min}%).")
+        elif cov < coverage_min:
+            errs.append(
+                f"{rel}: cobertura {cov}% < umbral {coverage_min}% del perfil."
+            )
+    return errs
+
+
+def _check_build_evidence(root: Path, rel: str) -> list[str]:
+    """M3: build exige evidencia de ejecución real, no solo dir existente."""
+    ev = root / rel / "run-evidence.txt"
+    if not ev.exists() or not ev.read_text(errors="ignore").strip():
+        return [
+            f"{rel}: falta run-evidence.txt con log de ejecución end-to-end real. "
+            "Compilar no es ejecutar."
+        ]
+    return []
+
+
 def _validate_phase(root: Path, phase: str) -> tuple[bool, list[str]]:
     errors: list[str] = []
     if phase not in PHASE_IDS:
@@ -141,9 +262,28 @@ def _validate_phase(root: Path, phase: str) -> tuple[bool, list[str]]:
     if status != Status.APROBADO.value:
         errors.append(f"Fase {phase!r} status={status} (esperado APROBADO)")
 
+    profile = _load_profile(root)
+    caps = profile.get("capabilities", {})
+
+    # M8: la fase `docs` solo es obligatoria si el perfil declara end_user_docs.
+    # Si la capability está explícitamente en false, `docs` se considera N/A.
+    if phase == "docs" and caps.get("end_user_docs") is False:
+        return True, []
+
     for art_rel in PHASE_ARTIFACTS[phase]:
-        if not (root / art_rel).exists():
+        art_path = root / art_rel
+        if not art_path.exists():
             errors.append(f"Artefacto faltante: {art_rel}")
+            continue
+        # M5: gates verifican CONTENIDO, no solo existencia.
+        if phase == "docs" and art_rel.endswith(".md"):
+            errors.extend(_check_unresolved_placeholders(art_path, art_rel))
+        elif phase == "qa" and art_rel.endswith("QA_REPORT.md"):
+            errors.extend(
+                _check_qa_report(art_path, art_rel, profile.get("coverage_min"))
+            )
+        elif phase == "build" and art_rel.endswith("/"):
+            errors.extend(_check_build_evidence(root, art_rel))
 
     if not sig_file.exists() or not cks_file.exists() or not apr_file.exists():
         if status == Status.APROBADO.value:
@@ -251,6 +391,29 @@ def cmd_approve(root: Path, args) -> int:
               "XDD_APPROVER=...", file=sys.stderr)
         return 2
 
+    # M4: validador externo ≠ generador. El que aprueba no debe ser el mismo que
+    # escribió el código de la fase (rompe la auto-aprobación que dejó pasar
+    # pipelines teatro). Override explícito sólo para flujos solo-dev.
+    allow_self = getattr(args, "allow_self_approve", False) or os.environ.get(
+        "XDD_ALLOW_SELF_APPROVE"
+    )
+    last_author = _run_git(root, ["log", "-1", "--format=%an"])
+    if last_author and last_author.strip().lower() == approver.strip().lower():
+        if not allow_self:
+            print(
+                f"[gate] ✗ {phase}: el aprobador ('{approver}') es el mismo autor "
+                f"del último commit. Requiere revisor externo. Para flujo solo-dev: "
+                f"--allow-self-approve o XDD_ALLOW_SELF_APPROVE=1.",
+                file=sys.stderr,
+            )
+            return 1
+        print(f"[gate] ⚠ {phase}: auto-aprobación permitida (override solo-dev).")
+
+    # M6: anti-compresión de iteraciones. Una fase con 0-1 commits o aprobada el
+    # mismo instante que la anterior es señal de "pipeline teatro" — warning, no
+    # bloqueo (puede ser legítimo en proyectos triviales).
+    _warn_phase_compression(root, phase)
+
     try:
         key = load_gate_key(root)
     except FileNotFoundError as e:
@@ -326,6 +489,8 @@ def build_parser() -> argparse.ArgumentParser:
     p_ap = sub.add_parser("approve", help="Aprueba una fase (firma HMAC)")
     p_ap.add_argument("--phase", required=True, choices=PHASE_IDS)
     p_ap.add_argument("--approver", help="Nombre o XDD_APPROVER env")
+    p_ap.add_argument("--allow-self-approve", action="store_true",
+                      help="Permite que autor==aprobador (flujo solo-dev)")
     p_ap.add_argument("--json", action="store_true")
     p_ap.set_defaults(func=cmd_approve)
 
