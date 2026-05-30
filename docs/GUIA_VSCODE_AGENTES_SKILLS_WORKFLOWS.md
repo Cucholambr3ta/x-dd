@@ -155,7 +155,7 @@ sequenceDiagram
 | Área | VSCode + Copilot Chat | Gap vs others |
 |---|---|---|
 | Skills sync | Adapter copies SSoT to `.github/prompts/` and writes `.vscode/*` | Codex uses global skills orchestrator (different pattern) — keep minimal skills to avoid saturation |
-| Agent index | Runtime via `xdd_list_agents` (MCP) | OpenCode generates `docs/equipo.md` (human-friendly index) — optional for VSCode adapter to generate
+| Agent index | Runtime via `xdd_list_agents` (MCP) | OpenCode generates `docs/equipo.md` (human-friendly index) — optional for VSCode adapter to generate |
 | Rule triggers | Slash via prompt files | Cursor uses `@mention` rules (different UX) — not a gap, just different trigger model |
 
 13) Instalación end-to-end (auto + manual + re-sync)

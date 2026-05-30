@@ -27,7 +27,7 @@ Durante dogfooding del piloto multi-IDE (proyecto e-commerce 2026-05-29) se dete
 **Verbalización del usuario** durante dogfooding:
 
 > "el repo se ve muy contaminado con carpetas y además mucha documentación está fuera de alguna estructura de carpetas definidas y genera mucho ruido visual"
-
+>
 > "que al momento de crear cierto tipos de archivos se vayan agregando directamente al .gitignore y además que se vaya ordenando la documentacion para tener un espacio de trabajo lo más limpio"
 
 ## Decisión
