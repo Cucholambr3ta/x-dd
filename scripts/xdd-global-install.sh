@@ -11,7 +11,7 @@
 # permite self-bootstrap = workflow detecta dir vacío y dispara xdd-init.sh inline.
 set -eu
 
-XDD_VERSION="0.1.0-dev"
+XDD_VERSION="$(cat "$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )/.." && pwd )/VERSION" 2>/dev/null || echo "0.1.0-dev")"
 XDD_ROOT="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )/.." && pwd )"
 
 usage() {
