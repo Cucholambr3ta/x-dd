@@ -26,8 +26,8 @@ bash scripts/xdd-doctor.sh
 pip install pre-commit && pre-commit install
 
 # Suite de tests
-bats tests/bats/                    # 35 tests shell
-python3 -m pytest tests/ -q         # 50 tests Python
+bats tests/bats/                    # 136 tests shell
+python3 -m pytest tests/ -q         # 230 tests Python
 bats tests/e2e/test_quickstart.bats # 12 tests E2E
 ```
 

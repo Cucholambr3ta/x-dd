@@ -3,7 +3,7 @@
 # No aborta al primer fallo: lista todo y reporta al final.
 set -u
 
-XDD_VERSION="0.1.0-dev"
+XDD_VERSION="$(cat "$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )/.." && pwd )/VERSION" 2>/dev/null || echo "0.1.0-dev")"
 SCRIPT_NAME="xdd-doctor"
 
 # --- CLI flags ---
