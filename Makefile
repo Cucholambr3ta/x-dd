@@ -62,9 +62,5 @@ cierre: ## Cierre formal de fase (invocá /cierre-fase en el orquestador)
 	@echo "[X-DD] Invocá '/cierre-fase' en Claude Code / OpenCode."
 	@echo "       Actualiza memoria.md y lecciones.md."
 
-version: ## Muestra la versión actual de X-DD (lee de PROJ-MASTER-PLAN.md o RELEASES/)
-	@if [ -f "RELEASES/v0.1.0.md" ]; then \
-		echo "X-DD v0.1.0"; \
-	else \
-		echo "X-DD pre-v0.1.0 (en desarrollo — ver PROJ-MASTER-PLAN.md)"; \
-	fi
+version: ## Muestra la versión actual de X-DD (fuente única: archivo VERSION)
+	@cat VERSION 2>/dev/null | sed 's/^/X-DD v/' || echo "X-DD (VERSION ausente)"
