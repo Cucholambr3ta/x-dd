@@ -74,3 +74,60 @@ def shield() -> int:
 
 def orchestrate() -> int:
     return _run("xdd-orchestrate.py")
+
+
+def _run_shell(script_name: str, args: list[str]) -> int:
+    """Ejecuta un scripts/*.sh con bash, preservando args."""
+    import subprocess
+
+    script = _scripts_dir() / script_name
+    if not script.exists():
+        print(f"[xdd] script no encontrado: {script}", file=sys.stderr)
+        return 2
+    return subprocess.call(["bash", str(script), *args])
+
+
+# Dispatcher unificado `xdd <subcomando>` (entry-point pipx, ADR-0045).
+# Mapea subcomando → (tipo, script). NO reescribe: delega a los scripts existentes.
+_SUBCOMMANDS: dict[str, tuple[str, str]] = {
+    "gate": ("py", "xdd-gate.py"),
+    "eval": ("py", "xdd-eval.py"),
+    "flow": ("py", "xdd-flow.py"),
+    "provider": ("py", "xdd-provider.py"),
+    "shield": ("py", "xdd-shield.py"),
+    "orchestrate": ("py", "xdd-orchestrate.py"),
+    "doctor": ("sh", "xdd-doctor.sh"),
+    "init": ("sh", "xdd-init.sh"),
+    "start": ("sh", "xdd-start.sh"),
+    "adapt": ("sh", "xdd-adapt.sh"),
+    "global-install": ("sh", "xdd-global-install.sh"),
+}
+
+
+def _usage() -> None:
+    print("xdd — orquestador/tooling X-DD (pip). Uso: xdd <subcomando> [args]\n")
+    print("Subcomandos:")
+    for name in sorted(_SUBCOMMANDS):
+        print(f"  {name}")
+    print("\nEj: xdd gate status · xdd flow --self-test · xdd doctor")
+
+
+def main(argv: list[str] | None = None) -> int:
+    """Entry-point `xdd`: despacha al script del subcomando."""
+    argv = list(sys.argv[1:] if argv is None else argv)
+    if not argv or argv[0] in ("-h", "--help"):
+        _usage()
+        return 0
+    if argv[0] in ("-v", "--version"):
+        print(f"xdd {__version__}")
+        return 0
+    sub, rest = argv[0], argv[1:]
+    if sub not in _SUBCOMMANDS:
+        print(f"[xdd] subcomando desconocido: {sub!r}", file=sys.stderr)
+        _usage()
+        return 2
+    kind, script = _SUBCOMMANDS[sub]
+    if kind == "sh":
+        return _run_shell(script, rest)
+    sys.argv = [script, *rest]
+    return _run(script)
