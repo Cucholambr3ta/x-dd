@@ -121,6 +121,33 @@ def cmd_init(root: Path, _args) -> int:
     return 0
 
 
+def _check_flow_evidence(root: Path) -> list[str]:
+    """Branch 2: si la fase build declara un flujo (.xdd/build/flow.json), exige
+    evidencia de que se EJECUTÓ (.xdd/build/flow-trace.json con steps>0 y result).
+
+    Opt-in: sin flow.json no aplica (no rompe proyectos que no usan xdd-flow).
+    Refuerza 'build verde ≠ producto verde': el gate ve ejecución, no solo archivos.
+    """
+    flow_decl = root / ".xdd" / "build" / "flow.json"
+    if not flow_decl.exists():
+        return []
+    trace = root / ".xdd" / "build" / "flow-trace.json"
+    if not trace.exists():
+        return [
+            ".xdd/build/flow.json declara un flujo pero falta flow-trace.json "
+            "(corré `xdd-flow.py run --flow .xdd/build/flow.json`)."
+        ]
+    try:
+        data = json.loads(trace.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as e:
+        return [f".xdd/build/flow-trace.json ilegible: {e}"]
+    if int(data.get("step_count", 0)) <= 0 or not data.get("steps"):
+        return [".xdd/build/flow-trace.json sin steps ejecutados (flujo no corrió)."]
+    if data.get("result") in (None, "", []):
+        return [".xdd/build/flow-trace.json con result vacío (ejecución sin salida)."]
+    return []
+
+
 def _validate_phase(root: Path, phase: str) -> tuple[bool, list[str]]:
     errors: list[str] = []
     if phase not in PHASE_IDS:
@@ -144,6 +171,9 @@ def _validate_phase(root: Path, phase: str) -> tuple[bool, list[str]]:
     for art_rel in PHASE_ARTIFACTS[phase]:
         if not (root / art_rel).exists():
             errors.append(f"Artefacto faltante: {art_rel}")
+
+    if phase == "build":
+        errors.extend(_check_flow_evidence(root))
 
     if not sig_file.exists() or not cks_file.exists() or not apr_file.exists():
         if status == Status.APROBADO.value:
