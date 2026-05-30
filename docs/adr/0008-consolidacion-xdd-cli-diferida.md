@@ -1,8 +1,12 @@
 # ADR-0008: Consolidación en `xdd` CLI (Python + Click/Typer) — diferida a post-v0.1.0
 
 - **Fecha:** 2026-05-26
-- **Estado:** Propuesto (diferido)
+- **Estado:** Reemplazado por [ADR-0043](0043-pip-installable-supersede-0008.md) (2026-05-30)
 - **Decidido por:** Alejandro Placencia, Claude
+
+> ⚠️ **SUPERSEDED:** la consolidación dejó de estar diferida. ADR-0043 resuelve el
+> `pip install` por **empaquetado con entry-points sobre los scripts existentes**
+> (sin reescritura a Click/Typer), evitando el costo que motivó este diferimiento.
 
 ## Contexto
 
