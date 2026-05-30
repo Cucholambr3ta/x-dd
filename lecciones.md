@@ -255,3 +255,17 @@ Hacer un workflow `/docs-sync` (post-v0.1.0) que detecte drift automáticamente 
 **Causa raíz:** Sesgo de orden — la dispersión es visible, la consolidación es satisfactoria, pero no agrega valor demostrable a usuarios v0.1.0.
 **Lección:** Diferir consolidaciones puramente estéticas hasta tener señal de demanda real (issues de usuarios externos). Un `Makefile` es suficiente para uniformar UX sin reescribir.
 **Aplica a:** Decisiones de refactor en X-DD. Materializado en [ADR-0008](docs/adr/0008-consolidacion-xdd-cli-diferida.md).
+
+### [PROCESO] Gates que validan existencia, no contenido, certifican proyectos vacíos — 2026-05-30
+**Contexto:** Auditoría del piloto agent_anmax (creado con opencode): 6/6 gates X-DD "APROBADOS", marcado finalizado.
+**Problema:** El proyecto tenía 0 tests, nunca corrió end-to-end y no generó README ni docs de usuario — aun así pasó todos los gates.
+**Causa raíz:** El gate keeper verificaba `path.exists()` del artefacto, no su contenido. "QA_REPORT.md existe" ≠ "hay tests reales". "build/ existe" ≠ "el código se ejecutó". El mismo agente generaba Y firmaba (auto-aprobación). README nunca estuvo en el contrato de fases → nadie lo pidió.
+**Lección:** Build verde ≠ producto verde. Cada gate debe PARSEAR su artefacto (tests N>0, cobertura, run-evidence, placeholders resueltos) y el aprobador debe ser distinto del autor. Documentación de usuario es fase, no opcional. Materializado en Sprint 32: fase `docs` + checks de contenido M2-M8 en xdd-gate.py.
+**Aplica a:** Todo gate del pipeline X-DD y cualquier sistema de certificación automática.
+
+### [ARQUITECTURA] Las fases del pipeline solo se agregan al final (append-only) — 2026-05-30
+**Contexto:** Añadir fase `docs` (documentación de usuario) al gated pipeline de 6 fases.
+**Problema:** Insertar o modificar el set de artefactos de una fase ya firmada rompe su firma HMAC-SHA256 en TODO proyecto ya sellado (la firma cubre phase+checksums+approver+timestamp).
+**Causa raíz:** La firma es determinista sobre el contrato de artefactos. Cambiar el contrato invalida firmas retroactivamente — proyectos viejos quedarían en rojo INVÁLIDO.
+**Lección:** Evolucionar el pipeline SOLO con append al final de PHASES. Proyectos viejos dejan la fase nueva en PENDIENTE (estado legítimo), nunca INVÁLIDO. Combinar con migración suave (re-correr /cierre-fase) en vez de re-firmar. Regla añadida a Constitución Art.9.
+**Aplica a:** xdd-gate.py PHASES, schemas de fases, cualquier estructura firmada criptográficamente. Ver schema/manifest drift.
