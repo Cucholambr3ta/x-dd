@@ -81,7 +81,7 @@ Modelo **híbrido** ([ADR-0042](docs/adr/0042-gitflow-hybrid-trunk-based.md)): t
 - [INSTALL](INSTALL.md) — instalación detallada y perfiles
 - [Guía de Retrofit](docs/RETROFIT_GUIDE.md) — capacidades extendidas
 - [ADRs](docs/adr/) — 43 decisiones arquitectónicas
-- [Guías por IDE](docs/) — `GUIA_*_AGENTES_SKILLS_WORKFLOWS.md` (7 IDEs)
+- [Guías de desarrollo por IDE](docs/dev/) — `GUIA_*_AGENTES_SKILLS_WORKFLOWS.md` (material interno, 7 IDEs)
 - [LICENSE](LICENSE) — licencia del proyecto
 
 ---
