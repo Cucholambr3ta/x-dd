@@ -58,6 +58,7 @@ Los workflows producen artefactos versionables en la raíz del proyecto. Consult
 | `xdd-eval.py` | Eval-harness con 5 grader types (Sprint 10) |
 | `xdd-provider.py` | Puerto LLM hexagonal: MockProvider determinista + AnthropicProvider lazy (sin red por defecto) |
 | `xdd-flow.py` | Gate ejecutable: corre flujos declarativos (seq/parallel) con MockProvider → ExecutionTrace; valida ejecución real, no solo archivos |
+| `xdd_adapters.py` | SSoT → 7 IDEs (copia real, sin MCP). Módulo aditivo empaquetable; `xdd-adapt.sh` sigue siendo el camino por defecto (ADR-0046) |
 | `xdd-orchestrate.py` | Runtime multi-agent (sequential/parallel/parallel_then_sync) (Sprint 11) |
 | `xdd-shield.py` | AgentShield audit del framework (Sprint 12) |
 | `xdd-pentest.sh` | Wrapper híbrido Shannon (Sprint 12) |
