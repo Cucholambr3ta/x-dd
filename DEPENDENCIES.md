@@ -34,7 +34,7 @@ Matriz oficial de dependencias del ecosistema X-DD. Mantenida manualmente; verif
 |---|---|---|---|---|
 | **Claude Code** | latest | `npm i -g @anthropic-ai/claude-code` | Propietaria (Anthropic) | Orquestador oficial — slash commands en `.claude/commands/` |
 | **OpenCode** | latest | `npm i -g opencode-ai` | Apache-2.0 | Orquestador alternativo multi-proveedor (Claude/GPT/Gemini/Ollama) |
-| **Cursor / Continue / Zed / Windsurf** | latest | sitios oficiales | varía | Compatibles vía MCP server propio de X-DD (Sprint 6, [ADR-0005](docs/adr/0005-mcp-preferido-y-server-propio.md)) |
+| **Cursor / Continue / Zed / Windsurf** | latest | sitios oficiales | varía | Compatibles vía copia real (`xdd-adapt.sh`). ⚠️ MCP server deprecado v0.2.0 ([ADR-0044](docs/adr/0044-deprecar-mcp-no-necesario.md)) |
 
 ## Testing
 

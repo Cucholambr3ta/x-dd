@@ -6,7 +6,7 @@
 #   - Banner files del proyecto consumidor con ecosystem_name
 set -eu
 
-XDD_VERSION="0.1.0-dev"
+XDD_VERSION="$(cat "$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )/.." && pwd )/VERSION" 2>/dev/null || echo "0.1.0-dev")"
 ROOT="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )/.." && pwd )"
 
 case "${1:-}" in
