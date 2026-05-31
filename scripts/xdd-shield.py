@@ -18,7 +18,6 @@ Reglas hoy: ~12 (subset cuidado vs 102 de ECC AgentShield).
 """
 from __future__ import annotations
 
-import argparse
 import json
 import re
 import sys
@@ -26,7 +25,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from _xdd_common import read_version, utcnow_iso as utcnow  # noqa: E402
+from _xdd_common import make_parser, read_version, utcnow_iso as utcnow  # noqa: E402
 
 __version__ = read_version()
 ROOT = Path(__file__).resolve().parent.parent
@@ -267,10 +266,7 @@ def cmd_audit(args):
 
 
 def build_parser():
-    p = argparse.ArgumentParser(prog="xdd-shield",
-        description="AgentShield: audit estático del framework X-DD (Sprint 12).")
-    p.add_argument("-v", "--version", action="version", version=f"xdd-shield v{__version__}")
-    sub = p.add_subparsers(dest="command", required=True)
+    p, sub = make_parser("xdd-shield", "AgentShield: audit estático del framework X-DD (Sprint 12).")
 
     p_a = sub.add_parser("audit", help="Corre todas las reglas")
     p_a.add_argument("--severity", choices=["info", "warning", "high", "crit"],

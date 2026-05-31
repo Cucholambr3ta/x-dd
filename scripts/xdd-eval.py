@@ -12,7 +12,6 @@ Comandos:
 """
 from __future__ import annotations
 
-import argparse
 import json
 import re
 import sys
@@ -20,7 +19,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from _xdd_common import read_version, utcnow_iso as utcnow  # noqa: E402
+from _xdd_common import make_parser, read_version, utcnow_iso as utcnow  # noqa: E402
 
 __version__ = read_version()
 
@@ -280,10 +279,7 @@ def cmd_show(args):
 
 
 def build_parser():
-    p = argparse.ArgumentParser(prog="xdd-eval",
-        description="Eval-harness para skills/workflows X-DD (Sprint 10).")
-    p.add_argument("-v", "--version", action="version", version=f"xdd-eval v{__version__}")
-    sub = p.add_subparsers(dest="command", required=True)
+    p, sub = make_parser("xdd-eval", "Eval-harness para skills/workflows X-DD (Sprint 10).")
 
     p_l = sub.add_parser("list", help="Lista suites disponibles")
     p_l.add_argument("--json", action="store_true")

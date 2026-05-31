@@ -16,6 +16,8 @@ Observabilidad (agui/otel/replay) usa microsegundos. Mantener ambas.
 """
 from __future__ import annotations
 
+import argparse
+import subprocess
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -66,3 +68,54 @@ def read_version() -> str:
 # Aliases retrocompatibles: varios scripts definían `utcnow()` a precisión de
 # segundo. Mantener el nombre evita tocar sus call-sites.
 utcnow = utcnow_iso
+
+
+def make_parser(prog: str, description: str, *, with_subcommands: bool = True,
+                raw_description: bool = False, short_version_flag: bool = True):
+    """Construye el ArgumentParser común de los scripts X-DD (DRY, S3).
+
+    Centraliza el boilerplate repetido: prog + description + `--version` (resuelto
+    vía read_version) + subparsers `command` requeridos.
+
+    - `raw_description=True`: usa RawDescriptionHelpFormatter (para `description=__doc__`,
+      preserva el formato del docstring en `--help`).
+    - `short_version_flag=False`: solo `--version` (sin `-v`), para scripts que ya
+      reservan `-v` u otro uso.
+
+    Devuelve `(parser, subparsers)`. Con `with_subcommands=False`, subparsers es None.
+    """
+    kwargs = {"prog": prog, "description": description}
+    if raw_description:
+        kwargs["formatter_class"] = argparse.RawDescriptionHelpFormatter
+    p = argparse.ArgumentParser(**kwargs)
+    flags = ["-v", "--version"] if short_version_flag else ["--version"]
+    p.add_argument(*flags, action="version", version=f"{prog} v{read_version()}")
+    sub = None
+    if with_subcommands:
+        sub = p.add_subparsers(dest="command", required=True)
+    return p, sub
+
+
+def mempalace_mine(path: str, *, lock: Path | None = None) -> bool:
+    """Wrapper único de `mempalace mine` (aísla la API de MemPalace — S3).
+
+    Si MemPalace no está en PATH, no-op (degradación elegante). Con `lock`,
+    adquiere un flock no-bloqueante y omite si otro mine corre (skip-if-running).
+    Devuelve True si lanzó el mine, False si se omitió (sin CLI o lock ocupado).
+    Async: no espera a que termine.
+    """
+    import shutil
+
+    if shutil.which("mempalace") is None:
+        return False
+    cmd = ["mempalace", "mine", path]
+    if lock is not None and shutil.which("flock") is not None:
+        lock.parent.mkdir(parents=True, exist_ok=True)
+        # flock -n sobre el lockfile; si está tomado, sale 0 sin correr.
+        subprocess.Popen(
+            ["flock", "-n", str(lock), *cmd],
+            stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+        )
+    else:
+        subprocess.Popen(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    return True

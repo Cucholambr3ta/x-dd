@@ -18,7 +18,6 @@ Spec instinct:
 """
 from __future__ import annotations
 
-import argparse
 import hashlib
 import json
 import os
@@ -28,7 +27,7 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from _xdd_common import read_version, utcnow_iso as utcnow  # noqa: E402
+from _xdd_common import make_parser, read_version, utcnow_iso as utcnow  # noqa: E402
 
 __version__ = read_version()
 
@@ -411,12 +410,12 @@ def cmd_stats(args):
 
 
 def build_parser():
-    p = argparse.ArgumentParser(prog="xdd-state",
-        description="State store SQLite para continuous learning (Sprint 9).")
-    p.add_argument("-v", "--version", action="version", version=f"xdd-state v{__version__}")
+    p, sub = make_parser(
+        "xdd-state",
+        "State store SQLite para continuous learning (Sprint 9).",
+    )
     p.add_argument("--db", type=Path, default=DEFAULT_DB,
                    help=f"Path SQLite (default: {DEFAULT_DB})")
-    sub = p.add_subparsers(dest="command", required=True)
 
     p_init = sub.add_parser("init", help="Crear schema")
     p_init.set_defaults(func=cmd_init)

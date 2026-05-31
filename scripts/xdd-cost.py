@@ -15,7 +15,6 @@ Comandos:
 """
 from __future__ import annotations
 
-import argparse
 import json
 import os
 import sqlite3
@@ -24,7 +23,7 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from _xdd_common import read_version, utcnow_iso as utcnow  # noqa: E402
+from _xdd_common import make_parser, read_version, utcnow_iso as utcnow  # noqa: E402
 
 __version__ = read_version()
 
@@ -209,9 +208,7 @@ def cmd_total(args):
 
 
 def build_parser():
-    p = argparse.ArgumentParser(prog="xdd-cost", description=__doc__,
-                                 formatter_class=argparse.RawDescriptionHelpFormatter)
-    p.add_argument("--version", action="version", version=f"xdd-cost {__version__}")
+    p, _ = make_parser("xdd-cost", __doc__, with_subcommands=False, raw_description=True, short_version_flag=False)
     p.add_argument("--db", default=str(DEFAULT_DB))
     sub = p.add_subparsers(dest="command", required=True)
 

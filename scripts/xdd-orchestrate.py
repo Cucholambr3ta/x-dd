@@ -12,7 +12,6 @@ Comandos:
 """
 from __future__ import annotations
 
-import argparse
 import hashlib
 import json
 import sys
@@ -22,7 +21,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from _xdd_common import read_version, utcnow_iso as utcnow  # noqa: E402
+from _xdd_common import make_parser, read_version, utcnow_iso as utcnow  # noqa: E402
 
 __version__ = read_version()
 ROOT = Path(__file__).resolve().parent.parent
@@ -279,10 +278,7 @@ def cmd_status(args):
 
 
 def build_parser():
-    p = argparse.ArgumentParser(prog="xdd-orchestrate",
-        description="Multi-agent orchestration runtime (Sprint 11).")
-    p.add_argument("-v", "--version", action="version", version=f"xdd-orchestrate v{__version__}")
-    sub = p.add_subparsers(dest="command", required=True)
+    p, sub = make_parser("xdd-orchestrate", "Multi-agent orchestration runtime (Sprint 11).")
 
     p_l = sub.add_parser("list", help="Lista composition_patterns")
     p_l.add_argument("--json", action="store_true")
