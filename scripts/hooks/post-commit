@@ -25,14 +25,30 @@ if command -v mempalace >/dev/null 2>&1; then
 fi
 
 # GitNexus: re-indexa el grafo de código tras el commit (async, si el CLI existe).
+# flock skip-if-running: igual que MemPalace, evita re-index concurrentes que dejan
+# el índice en estado degradado (conteo parcial) si dos analyze chocan.
 GN_DIR="${HOME}/.gitnexus"
 GN_LOG="${GN_DIR}/analyze.log"
+GN_LOCK="${GN_DIR}/.analyze.lock"
 mkdir -p "$GN_DIR"
 
-if command -v gitnexus >/dev/null 2>&1; then
-  ( gitnexus analyze >>"$GN_LOG" 2>&1 ) &
-elif command -v npx >/dev/null 2>&1; then
-  ( npx --no-install gitnexus analyze >>"$GN_LOG" 2>&1 ) &
+_gn_run() {
+  if command -v gitnexus >/dev/null 2>&1; then
+    gitnexus analyze >>"$GN_LOG" 2>&1
+  elif command -v npx >/dev/null 2>&1; then
+    npx --no-install gitnexus analyze >>"$GN_LOG" 2>&1
+  fi
+}
+
+if command -v gitnexus >/dev/null 2>&1 || command -v npx >/dev/null 2>&1; then
+  if command -v flock >/dev/null 2>&1; then
+    (
+      flock -n 9 || exit 0
+      _gn_run
+    ) 9>"$GN_LOCK" &
+  else
+    ( _gn_run ) &
+  fi
 fi
 
 exit 0

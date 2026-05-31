@@ -23,7 +23,7 @@ jobs:
     name: Lint .agent/workflows
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Run X-DD workflow linter
         run: bash scripts/lint-workflows.sh
 
@@ -31,7 +31,7 @@ jobs:
     name: Smoke test xdd-doctor
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Run xdd-doctor (warnings esperados; 0 críticos)
         run: bash scripts/xdd-doctor.sh
 
@@ -39,7 +39,7 @@ jobs:
     name: Verify --help and --version on scripts
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Each script responds to --version
         run: |
           set -e
