@@ -9,7 +9,7 @@
 spec_version: "0.1.0"
 
 name: x-dd
-version: 0.1.2
+version: 0.2.0
 description: |
   Cross-Driven Development System — pipeline gated de 6 fases con metodologías
   *-Driven (SDD, FDD, BDD, ATDD, DDD, TDD, STDD, SecDD, Threat-Driven) integradas,
@@ -54,24 +54,11 @@ agents:
   count: 180
   categories: 15
 
-# 3. MCP Server propio
-mcp:
-  enabled: true
-  package: "xdd-mcp-server"
-  entrypoint: "python3 -m xdd-mcp-server"
-  transport: stdio
-  tools:
-    - xdd_validate_phase
-    - xdd_transition_phase
-    - xdd_list_workflows
-    - xdd_invoke_workflow
-    - xdd_list_agents
-    - xdd_get_phase_artifacts
-  docs: "docs/MCP_INTEGRATION.md"
-  # 3-server stack recomendado: xdd-mcp-server + MemPalace (29 tools) + GitNexus (16 tools)
-  companions:
-    - {name: mempalace, tier: 1, license: MIT, tools: 29, purpose: "Memoria semántica"}
-    - {name: gitnexus, tier: 1, license: "PolyForm-Noncommercial-1.0.0", tools: 16, purpose: "Code intelligence AST grafo", adr: "docs/adr/0033-gitnexus-tier1-companion.md"}
+# 3. Companions (opcionales, externos)
+# xdd-mcp-server eliminado en v0.2 (ADR-0044). IDEs activan via /trigger + .agents/skills/.
+companions:
+  - {name: mempalace, license: MIT, purpose: "Memoria semántica (MIT)"}
+  - {name: gitnexus, license: "PolyForm-NC", purpose: "Code intelligence — opt-in comercial (ADR-0049)", opt_in_env: "XDD_GITNEXUS"}
 
 # 4. Hook system
 hooks:
