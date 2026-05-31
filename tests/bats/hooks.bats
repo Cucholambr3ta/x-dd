@@ -27,6 +27,22 @@ setup() {
   [ "$status" -eq 0 ]
 }
 
+@test "pre-bash-dangerous-command permite rm -f en ruta profunda (no falso positivo)" {
+  # Antes 'rm -[fF] /' bloqueaba CUALQUIER ruta absoluta tras rm -f.
+  run bash -c "echo '{\"tool_input\":{\"command\":\"rm -f /tmp/foo /tmp/bar\"}}' | bash .agent/hooks/scripts/pre-bash-dangerous-command.sh"
+  [ "$status" -eq 0 ]
+}
+
+@test "pre-bash-dangerous-command permite rm -rf ./build (relativo)" {
+  run bash -c "echo '{\"tool_input\":{\"command\":\"rm -rf ./build node_modules\"}}' | bash .agent/hooks/scripts/pre-bash-dangerous-command.sh"
+  [ "$status" -eq 0 ]
+}
+
+@test "pre-bash-dangerous-command bloquea rm -rf de dir de sistema" {
+  run bash -c "echo '{\"tool_input\":{\"command\":\"rm -rf /etc\"}}' | bash .agent/hooks/scripts/pre-bash-dangerous-command.sh"
+  [ "$status" -eq 2 ]
+}
+
 @test "pre-bash-dangerous-command bloquea git push --force" {
   run bash -c "echo '{\"tool_input\":{\"command\":\"git push --force origin main\"}}' | bash .agent/hooks/scripts/pre-bash-dangerous-command.sh"
   [ "$status" -eq 2 ]
@@ -98,4 +114,14 @@ setup() {
   [ "$status" -eq 0 ]
   grep -q "gitnexus" scripts/hooks/post-commit
   grep -q "flock" scripts/hooks/post-commit
+}
+
+@test "post-write-auto-organize no toca el repo-fuente X-DD (guarda)" {
+  # En el repo-fuente, las reglas gitignore_framework_copies NO deben aplicarse:
+  # prompts/scripts/templates SON código versionado, no copias. El hook debe no-op.
+  before="$(md5sum .gitignore | cut -d' ' -f1)"
+  run bash .agent/hooks/scripts/post-write-auto-organize.sh
+  [ "$status" -eq 0 ]
+  after="$(md5sum .gitignore | cut -d' ' -f1)"
+  [ "$before" = "$after" ]
 }

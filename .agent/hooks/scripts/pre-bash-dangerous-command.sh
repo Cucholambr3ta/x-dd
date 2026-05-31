@@ -21,8 +21,13 @@ fi
 
 # Patrones peligrosos
 DANGEROUS_PATTERNS=(
-  'rm[[:space:]]+-[rR][fF]?[[:space:]]+/'
-  'rm[[:space:]]+-[fF][rR]?[[:space:]]+/'
+  # rm -rf de la raíz o de un dir de sistema top-level (no de rutas profundas
+  # legítimas como un tmp o un dir de proyecto). El flag debe incluir r o R.
+  #   - raíz: `rm -rf /` seguido de fin, espacio o wildcard
+  #   - dir de sistema: `rm -rf /etc` (etc) con fin/espacio/slash después
+  'rm[[:space:]]+-[a-zA-Z]*[rR][a-zA-Z]*[[:space:]]+/([[:space:]]|\*|$)'
+  'rm[[:space:]]+-[a-zA-Z]*[rR][a-zA-Z]*[[:space:]]+(-[a-zA-Z]+[[:space:]]+)*/(etc|usr|bin|sbin|lib|lib64|boot|var|root|sys|proc|dev|home)([[:space:]/]|$)'
+  'rm[[:space:]]+-[a-zA-Z]*[rR][a-zA-Z]*[[:space:]]+~([[:space:]/]|$)'
   'git[[:space:]]+push[[:space:]]+.*--force'
   'git[[:space:]]+push[[:space:]]+.*-f([[:space:]]|$)'
   'git[[:space:]]+reset[[:space:]]+--hard[[:space:]]+(origin|HEAD~)'
