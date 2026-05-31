@@ -20,6 +20,36 @@ Tres categorías de uso:
    cargar contexto al iniciar (`session-start:context-load`),
    loguear PRs (`post:bash:pr-logger`), extraer instincts (`stop:pattern-extraction`, Sprint 9).
 
+## Materialización: del SSoT a la ejecución (v0.1.1+)
+
+`hooks.json` es la **fuente única (SSoT)**, pero Claude Code no lo lee: lee
+`settings.json`. Hasta v0.1.1 faltaba el paso que traduce uno a otro, por lo que
+los hooks estaban **definidos pero nunca se ejecutaban** (p.ej. `mempalace mine`
+no se disparaba en Edit/Write). El flujo correcto:
+
+```
+.agent/hooks/hooks.json  (SSoT, 15 hooks)
+        │
+        │  scripts/xdd-hooks-install.py  (xdd hooks install)
+        ▼
+~/.claude/settings.json  ← sólo eventos Claude Code: Pre/PostToolUse, SessionStart, Stop
+        │                   (los eventos runtime X-DD —before_model, wrap_tool_call…— se omiten)
+        ▼
+Claude Code dispara los hooks  →  Edit/Write → mempalace mine (async)
+```
+
+- **`xdd hooks install`** materializa el perfil activo (`XDD_HOOK_PROFILE`, default
+  `standard`) en `~/.claude/settings.json`. Merge **no destructivo**: preserva hooks
+  ajenos (p.ej. caveman) y marca los propios con `_xdd_id` para re-sincronizar
+  (`xdd hooks sync`) sin duplicar. `xdd hooks status` lista los que faltan.
+- **Destino global** → cada `command` lleva guarda `[ -f "$PWD/.agent/hooks/scripts/… ]`
+  para ser **no-op fuera de un repo X-DD**.
+- **git post-commit** (`scripts/hooks/post-commit`, vía `core.hooksPath`) re-indexa
+  **MemPalace + GitNexus** tras cada commit. `xdd-init`/`xdd-start` lo instalan.
+- **Lock MemPalace**: el palace es único global; los hooks usan `flock -n`
+  (skip-if-running) para no colisionar con mines concurrentes de otros repos.
+- `xdd-doctor` reporta si el post-commit está activo y si los hooks están materializados.
+
 ## Diferencias clave vs ECC
 
 | Aspecto | ECC | X-DD v0.1.0 |
@@ -38,6 +68,8 @@ X-DD prioriza Bash sobre Node para:
 
 ## Roadmap (post-v0.1.0)
 
+- **v0.1.1** — ✅ materializador `xdd hooks` (hooks.json → settings.json) + post-commit
+  GitNexus + flock MemPalace. Cierra el gap "definido ≠ ejecutándose".
 - **Sprint 9** — `stop:pattern-extraction` deja de ser stub y escribe instincts a SQLite.
 - **Sprint 12** — `pre:bash:agent-shield` integrado: análisis estático de comandos.
 - **v0.2.0** — hot reload de hooks tras edit del JSON (sin reiniciar sesión).

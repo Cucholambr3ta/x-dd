@@ -68,3 +68,19 @@ setup() {
   run python3 -c "import json,jsonschema; jsonschema.validate(json.load(open('.agent/hooks/hooks.json')), json.load(open('schemas/hooks.schema.json')))"
   [ "$status" -eq 0 ]
 }
+
+# --- Gap post-v0.1.1: guarda repo X-DD + materializador ---
+
+@test "post-edit-mempalace-index no-op fuera de repo X-DD" {
+  tmp="$(mktemp -d)"
+  run bash -c "cd '$tmp' && bash '$ROOT/.agent/hooks/scripts/post-edit-mempalace-index.sh'"
+  rm -rf "$tmp"
+  [ "$status" -eq 0 ]
+}
+
+@test "post-commit re-indexa MemPalace + GitNexus (sintaxis + no bloquea)" {
+  run sh -n scripts/hooks/post-commit
+  [ "$status" -eq 0 ]
+  grep -q "gitnexus" scripts/hooks/post-commit
+  grep -q "flock" scripts/hooks/post-commit
+}

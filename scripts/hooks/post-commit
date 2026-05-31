@@ -1,10 +1,38 @@
 #!/bin/sh
-# X-DD: re-indexa MemPalace después de cada commit para preservar contexto.
-# No bloquea el commit si MemPalace no está instalado o falla.
-LOG_DIR="${HOME}/.mempalace"
-mkdir -p "$LOG_DIR"
-LOG_FILE="$LOG_DIR/mine.log"
+# X-DD post-commit: re-indexa MemPalace + GitNexus tras cada commit.
+# Nunca bloquea el commit (todo async, degradación elegante si falta el CLI).
+#
+# Sólo se activa donde está instalado (core.hooksPath=./scripts/hooks, por repo),
+# así que es inherentemente X-DD-scoped.
+#
+# MemPalace usa palace global único → flock skip-if-running para evitar colisión
+# "palace held by PID" con mines concurrentes (p.ej. del monorepo padre).
+
+MP_DIR="${HOME}/.mempalace"
+MP_LOG="${MP_DIR}/mine.log"
+MP_LOCK="${MP_DIR}/.mine.lock"
+mkdir -p "$MP_DIR"
 
 if command -v mempalace >/dev/null 2>&1; then
-  ( mempalace mine "$PWD" >>"$LOG_FILE" 2>&1 ) &
+  if command -v flock >/dev/null 2>&1; then
+    (
+      flock -n 9 || exit 0
+      mempalace mine "$PWD" >>"$MP_LOG" 2>&1
+    ) 9>"$MP_LOCK" &
+  else
+    ( mempalace mine "$PWD" >>"$MP_LOG" 2>&1 ) &
+  fi
 fi
+
+# GitNexus: re-indexa el grafo de código tras el commit (async, si el CLI existe).
+GN_DIR="${HOME}/.gitnexus"
+GN_LOG="${GN_DIR}/analyze.log"
+mkdir -p "$GN_DIR"
+
+if command -v gitnexus >/dev/null 2>&1; then
+  ( gitnexus analyze >>"$GN_LOG" 2>&1 ) &
+elif command -v npx >/dev/null 2>&1; then
+  ( npx --no-install gitnexus analyze >>"$GN_LOG" 2>&1 ) &
+fi
+
+exit 0
