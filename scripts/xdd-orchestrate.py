@@ -64,21 +64,69 @@ def invoke_agent_dry(agent: dict, run_id: str) -> dict:
 
 
 def invoke_agent_exec(agent: dict, run_id: str) -> dict:
-    """Execute: invoca workflow real vía MCP server propio (Sprint 6).
+    """Execute: invoca el agente con LLM real vía AnthropicProvider (S7, v0.2).
 
-    En v0.1.0, esto es un stub que solo confirma que el agente y su prompt_file
-    existen. La invocación real (LLM call) la hace el orquestador (Claude
-    Code, OpenCode, etc.) cuando recibe la tool call vía MCP.
+    Sin ANTHROPIC_API_KEY o con XDD_PROVIDER_MOCK=1 (default): degrada a dry-run
+    documentado (backwards-compatible). Con la key + XDD_PROVIDER_MOCK=0: llama
+    al modelo especificado en el registry o claude-opus-4-8 por defecto.
+
+    El prompt del agente se lee del prompt_file (SSoT). El sistema proporciona
+    el contexto del run (run_id, category).
     """
+    import importlib.util as _iu
+
     pf = ROOT / agent["prompt_file"]
-    exists = pf.exists()
+    if not pf.exists():
+        return {
+            "agent_id": agent["id"],
+            "name": agent["name"],
+            "prompt_file": str(pf.relative_to(ROOT)),
+            "invocation": "ERROR_PROMPT_NOT_FOUND",
+            "run_id": run_id,
+            "timestamp": utcnow(),
+        }
+
+    prompt = pf.read_text(encoding="utf-8")
+    system = (
+        f"Eres el agente '{agent['name']}' (categoría: {agent['category']}).\n"
+        f"run_id: {run_id}. Aplica las directrices de tu prompt completo."
+    )
+
+    # Lazy-load provider (dep opcional; MockProvider si sin key/flag)
+    try:
+        _spec = _iu.spec_from_file_location("xdd_provider", ROOT / "scripts" / "xdd-provider.py")
+        _pmod = _iu.module_from_spec(_spec)
+        _spec.loader.exec_module(_pmod)
+        provider = _pmod.get_provider(
+            name=agent.get("preferred_provider", "anthropic"),
+            model=agent.get("preferred_model", "claude-opus-4-8"),
+        )
+        invocation = "REAL_LLM"
+    except Exception as e:
+        # Degradación elegante: sin key / sin anthropic instalado → dry-run
+        return {
+            "agent_id": agent["id"],
+            "name": agent["name"],
+            "prompt_file": str(pf.relative_to(ROOT)),
+            "invocation": "DRY_RUN_DEGRADED",
+            "note": f"Provider no disponible ({e}). Instala x-dd[anthropic] y pon ANTHROPIC_API_KEY.",
+            "run_id": run_id,
+            "timestamp": utcnow(),
+        }
+
+    try:
+        response = provider.complete(prompt, system=system)
+    except Exception as e:
+        response = f"[ERROR: {e}]"
+        invocation = "REAL_LLM_ERROR"
+
     return {
         "agent_id": agent["id"],
         "name": agent["name"],
         "prompt_file": str(pf.relative_to(ROOT)),
-        "exists": exists,
-        "invocation": "EXEC_DELEGATED_TO_ORCHESTRATOR",
-        "note": "Real LLM invocation happens via MCP server in your orchestrator (Claude Code/OpenCode/etc).",
+        "invocation": invocation,
+        "response_preview": response[:200],
+        "response_len": len(response),
         "run_id": run_id,
         "timestamp": utcnow(),
     }
