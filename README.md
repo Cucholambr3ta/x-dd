@@ -154,7 +154,7 @@ hace cumplir. No prometemos calidad: la bloqueamos cuando falta.
 - 🏛️ [ADRs](docs/adr/) — por qué X-DD es como es
 - 🛠️ [Guías de desarrollo](docs/dev/) — cómo crear agentes/skills/workflows (material interno)
 
-> **v0.2:** el MCP server propio se elimina en esta versión ([ADR-0044](docs/adr/0044-deprecar-mcp-no-necesario.md)); la copia real a 7 IDEs lo reemplaza sin pérdida de funcionalidad.
+> **v0.2:** el MCP server propio fue eliminado ([ADR-0044](docs/adr/0044-deprecar-mcp-no-necesario.md)). Los 7 IDEs activan X-DD vía `/trigger` + `.agents/skills/` — sin servidor.
 
 ---
 
