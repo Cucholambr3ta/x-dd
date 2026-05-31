@@ -23,8 +23,7 @@
         "ci-runtime",
         "docs-governance",
         "personas",
-        "skills-core",
-        "mcp-server-global"
+        "skills-core"
       ]
     },
     "developer": {
@@ -35,14 +34,12 @@
         "agents-core",
         "gate-keeper",
         "hooks-runtime",
-        "mcp-server",
         "platform-configs",
         "memory",
         "ci-runtime",
         "docs-governance",
         "personas",
         "skills-core",
-        "mcp-server-global",
         "workspace-monorepo",
         "observability",
         "governance-runtime",
@@ -63,7 +60,6 @@
         "docs-governance",
         "personas",
         "skills-core",
-        "mcp-server-global",
         "governance-runtime",
         "pentest"
       ]
@@ -81,7 +77,6 @@
         "docs-governance",
         "personas",
         "skills-core",
-        "mcp-server-global",
         "observability",
         "ahe-evolve"
       ]
@@ -94,7 +89,6 @@
         "agents-core",
         "gate-keeper",
         "hooks-runtime",
-        "mcp-server",
         "platform-configs",
         "memory",
         "ci-runtime",
@@ -105,7 +99,6 @@
         "docs-governance",
         "personas",
         "skills-core",
-        "mcp-server-global",
         "workspace-monorepo",
         "observability",
         "governance-runtime",

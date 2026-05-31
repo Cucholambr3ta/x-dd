@@ -55,18 +55,6 @@
         "core"
       ]
     },
-    "mcp-server": {
-      "description": "MCP server propio de X-DD (Python stdlib pura, 6 tools).",
-      "files": [
-        "xdd-mcp-server/",
-        "docs/MCP_INTEGRATION.md"
-      ],
-      "required": false,
-      "requires": [
-        "core",
-        "agents-core"
-      ]
-    },
     "gate-keeper": {
       "description": "Gate keeper programático con HMAC-SHA256.",
       "files": [
@@ -165,12 +153,6 @@
         "skills/",
         "prompts/skills/",
         "scripts/xdd-bundle.py"
-      ]
-    },
-    "mcp-server-global": {
-      "description": "Sprint 25 + ADR-0035: wrapper installer global ~/.local/bin/xdd-mcp-server.",
-      "files": [
-        "scripts/xdd-mcp-install-global.sh"
       ]
     },
     "workspace-monorepo": {

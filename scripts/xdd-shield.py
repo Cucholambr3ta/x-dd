@@ -195,8 +195,8 @@ RULES = [
     rule_hooks_no_absolute_paths,
     rule_workflows_have_description,
     rule_agents_registry_consistent,
-    rule_mcp_tools_no_exec,
-    rule_mcp_get_artifacts_whitelist,
+    # rule_mcp_tools_no_exec and rule_mcp_get_artifacts_whitelist removed —
+    # xdd-mcp-server eliminated in v0.2 (ADR-0044).
     rule_gate_key_gitignored,
     rule_workflow_has_gate_integration,
     rule_agents_have_constraints,

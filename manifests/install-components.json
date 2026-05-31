@@ -5,23 +5,34 @@
   "components": {
     "doctor": {
       "module": "core",
-      "files": ["scripts/xdd-doctor.sh"]
+      "files": [
+        "scripts/xdd-doctor.sh"
+      ]
     },
     "init": {
       "module": "core",
-      "files": ["scripts/xdd-init.sh"]
+      "files": [
+        "scripts/xdd-init.sh"
+      ]
     },
     "adapt": {
       "module": "core",
-      "files": ["scripts/xdd-adapt.sh"]
+      "files": [
+        "scripts/xdd-adapt.sh"
+      ]
     },
     "start": {
       "module": "core",
-      "files": ["scripts/xdd-start.sh", "scripts/hooks/post-commit"]
+      "files": [
+        "scripts/xdd-start.sh",
+        "scripts/hooks/post-commit"
+      ]
     },
     "lint-workflows": {
       "module": "core",
-      "files": ["scripts/lint-workflows.sh"]
+      "files": [
+        "scripts/lint-workflows.sh"
+      ]
     },
     "registry": {
       "module": "agents-core",
@@ -35,27 +46,34 @@
     },
     "gate": {
       "module": "gate-keeper",
-      "files": ["scripts/xdd-gate.py", "tests/test_gate.py"]
-    },
-    "mcp": {
-      "module": "mcp-server",
-      "files": ["xdd-mcp-server/", "tests/test_mcp_server.py"]
+      "files": [
+        "scripts/xdd-gate.py",
+        "tests/test_gate.py"
+      ]
     },
     "hooks-dangerous-command": {
       "module": "hooks-runtime",
-      "files": [".agent/hooks/scripts/pre-bash-dangerous-command.sh"]
+      "files": [
+        ".agent/hooks/scripts/pre-bash-dangerous-command.sh"
+      ]
     },
     "hooks-config-protection": {
       "module": "hooks-runtime",
-      "files": [".agent/hooks/scripts/pre-edit-config-protection.sh"]
+      "files": [
+        ".agent/hooks/scripts/pre-edit-config-protection.sh"
+      ]
     },
     "hooks-context-load": {
       "module": "hooks-runtime",
-      "files": [".agent/hooks/scripts/session-start-context-load.sh"]
+      "files": [
+        ".agent/hooks/scripts/session-start-context-load.sh"
+      ]
     },
     "hooks-git-check": {
       "module": "hooks-runtime",
-      "files": [".agent/hooks/scripts/stop-git-check.sh"]
+      "files": [
+        ".agent/hooks/scripts/stop-git-check.sh"
+      ]
     }
   }
 }
