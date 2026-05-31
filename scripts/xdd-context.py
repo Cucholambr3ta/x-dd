@@ -163,6 +163,57 @@ def cmd_budget(args):
     return 0
 
 
+def cmd_check_segmented(args):
+    """S17: verifica presupuesto segmentado por sección (system/history/tools).
+
+    Suma total y verifica cada sección contra su fracción del budget.
+    """
+    cfg = load_budget_config()
+    total_budget = cfg.get("max_tokens", DEFAULT_BUDGET)
+    # Fracciones por defecto: system 10%, history 70%, tools 20%
+    fracs = {
+        "system":  cfg.get("system_fraction", 0.10),
+        "history": cfg.get("history_fraction", 0.70),
+        "tools":   cfg.get("tools_fraction",   0.20),
+    }
+    inputs = {
+        "system":  args.system_tokens or 0,
+        "history": args.history_tokens or 0,
+        "tools":   args.tools_tokens or 0,
+    }
+    total_used = sum(inputs.values())
+    total_ratio = total_used / total_budget if total_budget else 0
+    sections = {}
+    for sec, used in inputs.items():
+        sec_budget = int(total_budget * fracs[sec])
+        sec_ratio = used / sec_budget if sec_budget else 0
+        status = "ok"
+        if sec_ratio >= BLOCK_THRESHOLD: status = "block"
+        elif sec_ratio >= WARNING_THRESHOLD: status = "warn"
+        sections[sec] = {
+            "used": used, "budget": sec_budget,
+            "fraction": fracs[sec], "ratio": round(sec_ratio, 4), "status": status,
+        }
+    overall_status = "ok"
+    if total_ratio >= BLOCK_THRESHOLD: overall_status = "block"
+    elif total_ratio >= WARNING_THRESHOLD: overall_status = "warn"
+    result = {
+        "total_budget": total_budget, "total_used": total_used,
+        "total_ratio": round(total_ratio, 4), "overall_status": overall_status,
+        "sections": sections,
+    }
+    if args.json:
+        print(json.dumps(result, indent=2))
+    else:
+        icon = {"ok": "✅", "warn": "⚠️", "block": "🛑"}[overall_status]
+        print(f"[ctx] {icon} total={total_used:,}/{total_budget:,} ({total_ratio:.0%})")
+        for sec, d in sections.items():
+            sicon = {"ok": "✓", "warn": "!", "block": "X"}[d["status"]]
+            print(f"  {sicon} {sec:<8} {d['used']:>8,}/{d['budget']:>8,}  ({d['fraction']:.0%} budget)")
+    rc = 2 if overall_status == "block" else (1 if overall_status == "warn" else 0)
+    return rc
+
+
 def build_parser():
     p, _ = make_parser("xdd-context", __doc__, with_subcommands=False, raw_description=True, short_version_flag=False)
     sub = p.add_subparsers(dest="command", required=True)
@@ -185,6 +236,13 @@ def build_parser():
     p_b.add_argument("--max-tokens", type=int)
     p_b.add_argument("--json", action="store_true")
     p_b.set_defaults(func=cmd_budget)
+
+    p_cs = sub.add_parser("check-segmented", help="S17: verifica budget por sección system/history/tools")
+    p_cs.add_argument("--system-tokens", type=int, default=0)
+    p_cs.add_argument("--history-tokens", type=int, default=0)
+    p_cs.add_argument("--tools-tokens", type=int, default=0)
+    p_cs.add_argument("--json", action="store_true")
+    p_cs.set_defaults(func=cmd_check_segmented)
 
     return p
 
