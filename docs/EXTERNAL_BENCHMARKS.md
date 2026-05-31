@@ -45,7 +45,7 @@ Useful para CI guard: si tu evolve introduce regresión vs baseline, CI falla.
 ## Política
 
 - ❌ X-DD NUNCA bundlea benchmarks externos
-- ✅ Adapters thin (cases.jsonl + grader.yaml + README.md setup)
+- ✅ Adapters thin (cases.jsonl + grader.json + README.md setup)
 - ✅ Subsets acotados por default (cost compute)
 - ✅ Meta-eval compara ciclo a ciclo (alineado AHE iterative loop)
 

@@ -1,0 +1,6 @@
+{
+  "type": "inspect_ai_compat",
+  "scorers": [
+    "match"
+  ]
+}
