@@ -163,13 +163,53 @@ def run_parallel(pattern: dict, reg: dict, run_id: str, exec_mode: bool) -> list
 
 
 def run_parallel_then_sync(pattern: dict, reg: dict, run_id: str, exec_mode: bool) -> list:
-    """Parallel hasta sync_point, luego continúa (v0.1.0 = solo paralelo).
-    Sprint 12+ puede añadir gates de sincronización formales."""
-    results = run_parallel(pattern, reg, run_id, exec_mode)
+    """Parallel hasta sync_point con gate formal (S9, v0.2).
+
+    1. Corre todos los agentes en paralelo.
+    2. Espera con timeout que todos completen (futures.result() con timeout).
+    3. Verifica que todos pasaron (no ERROR). Si fallan N → sync_status=failed.
+    4. Registra el sync_point en xdd-state (best-effort).
+    """
+    sync_at = pattern.get("sync_point", "sync")
+    timeout_s = pattern.get("sync_timeout_seconds", 300)
+
+    # Correr paralelo con timeout real via ThreadPoolExecutor
+    invoker = invoke_agent_exec if exec_mode else invoke_agent_dry
+    results = []
+    lead = find_agent(reg, pattern["lead"])
+    if lead:
+        results.append({"role": "lead", "result": invoker(lead, run_id)})
+
+    specialists = [find_agent(reg, sp) for sp in pattern.get("specialists", [])]
+    specialists = [s for s in specialists if s]
+
+    with ThreadPoolExecutor(max_workers=min(len(specialists) or 1, 5)) as ex:
+        futs = {ex.submit(invoker, sp, run_id): sp for sp in specialists}
+        for fut in as_completed(futs, timeout=timeout_s):
+            results.append({"role": "specialist", "result": fut.result()})
+
+    # Gate de sincronización: todos deben haber completado sin ERROR_PROMPT_NOT_FOUND
+    failed = [r for r in results
+              if r.get("result", {}).get("invocation", "") == "ERROR_PROMPT_NOT_FOUND"]
+    sync_status = "failed" if failed else "ok"
+
+    # Persistir sync_point en state DB (best-effort)
+    try:
+        _spec = __import__("importlib.util", fromlist=["spec_from_file_location"])
+        import importlib.util as _iu
+        sp = _iu.spec_from_file_location("xdd_state", ROOT / "scripts" / "xdd-state.py")
+        sm = _iu.module_from_spec(sp); sp.loader.exec_module(sm)
+        sm.update_orchestration(run_id, sync_status, steps_done=len(results), sync_point=sync_at)
+    except Exception:
+        pass
+
     results.append({
         "role": "sync_point",
-        "sync_at": pattern.get("sync_point"),
-        "note": "v0.1.0: sync point sólo registra; gates formales en Sprint 12+",
+        "sync_at": sync_at,
+        "sync_status": sync_status,
+        "steps_evaluated": len(results),
+        "failed_steps": len(failed),
+        "note": f"S9 gate formal: {sync_status}. Timeout={timeout_s}s.",
     })
     return results
 
@@ -287,9 +327,32 @@ def cmd_run(args):
         return 2
 
     run_id = f"run_{hashlib.sha256(f'{args.pattern}::{utcnow()}'.encode()).hexdigest()[:12]}"
+
+    # Persistir inicio en state DB (S9 runtime tracking; best-effort)
+    _state_mod = None
+    try:
+        import importlib.util as _iu
+        _sp = _iu.spec_from_file_location("xdd_state", ROOT / "scripts" / "xdd-state.py")
+        _state_mod = _iu.module_from_spec(_sp); _sp.loader.exec_module(_state_mod)
+        steps_total = 1 + len(pattern.get("specialists", []))
+        _state_mod.record_orchestration(run_id, args.pattern, orch_type,
+                                        exec_mode=args.exec, steps_total=steps_total)
+    except Exception:
+        pass
+
     start = time.time()
     results = ORCHESTRATIONS[orch_type](pattern, reg, run_id, args.exec)
     elapsed = round(time.time() - start, 3)
+
+    # Actualizar estado final
+    if _state_mod:
+        try:
+            any_fail = any(r.get("sync_status") == "failed" for r in results
+                           if r.get("role") == "sync_point")
+            _state_mod.update_orchestration(run_id, "failed" if any_fail else "completed",
+                                            steps_done=len(results))
+        except Exception:
+            pass
 
     report = {
         "run_id": run_id,
@@ -314,14 +377,42 @@ def cmd_run(args):
 
 
 def cmd_status(args):
-    """Lee state SQLite (Sprint 9) si existe, para mostrar orchestrations en curso."""
+    """Muestra orchestrations recientes desde la state DB (S9, v0.2)."""
+    import importlib.util as _iu
     import os
     state_db = Path(os.environ.get("XDD_STATE_DB", Path.home() / ".xdd" / "state.db"))
+
     if not state_db.exists():
-        print(f"[orch] state DB no existe ({state_db}). Sprint 9 no aplicado.")
+        print(f"[orch] state DB no existe ({state_db}). Corre `xdd init` o un patrón con --exec.")
         return 0
-    print(f"[orch] state DB: {state_db}")
-    print("[orch] runtime tracking de orchestrations llega en Sprint 12+ (eval-harness integration)")
+
+    try:
+        _sp = _iu.spec_from_file_location("xdd_state", ROOT / "scripts" / "xdd-state.py")
+        _sm = _iu.module_from_spec(_sp); _sp.loader.exec_module(_sm)
+        conn = _sm.db(state_db)
+        rows = conn.execute(
+            "SELECT run_id, pattern_name, orchestration_type, status, started_at, "
+            "steps_done, steps_total FROM orchestrations ORDER BY started_at DESC LIMIT 20"
+        ).fetchall()
+        conn.close()
+    except Exception as e:
+        print(f"[orch] error leyendo state DB: {e}", file=sys.stderr)
+        return 1
+
+    if not rows:
+        print("[orch] sin orchestrations registradas.")
+        return 0
+
+    import json as _json
+    if args.json:
+        print(_json.dumps([dict(r) for r in rows], indent=2))
+    else:
+        print(f"[orch] {len(rows)} orchestrations recientes:")
+        for r in rows:
+            status_icon = {"completed": "✓", "failed": "✗", "running": "⏳",
+                           "sync_waiting": "⏸"}.get(r["status"], "?")
+            print(f"  {status_icon} {r['run_id']:<28} {r['pattern_name']:<20} "
+                  f"{r['status']:<15} {r['started_at']}")
     return 0
 
 
@@ -340,6 +431,7 @@ def build_parser():
     p_r.set_defaults(func=cmd_run)
 
     p_s = sub.add_parser("status", help="Estado de orchestrations en curso")
+    p_s.add_argument("--json", action="store_true")
     p_s.set_defaults(func=cmd_status)
 
     return p
