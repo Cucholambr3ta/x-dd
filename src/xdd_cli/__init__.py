@@ -23,7 +23,7 @@ def _resolve_version() -> str:
 
         return version("x-dd")
     except (PackageNotFoundError, ImportError):
-        return "0.1.1"
+        return "0.1.2"
 
 
 __version__ = _resolve_version()
@@ -106,6 +106,7 @@ _SUBCOMMANDS: dict[str, tuple[str, str]] = {
     "provider": ("py", "xdd-provider.py"),
     "shield": ("py", "xdd-shield.py"),
     "orchestrate": ("py", "xdd-orchestrate.py"),
+    "hooks": ("py", "xdd-hooks-install.py"),
     "doctor": ("sh", "xdd-doctor.sh"),
     "init": ("sh", "xdd-init.sh"),
     "start": ("sh", "xdd-start.sh"),

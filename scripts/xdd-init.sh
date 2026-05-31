@@ -203,6 +203,15 @@ fi
 # Marcar scripts como ejecutables
 chmod +x ./scripts/*.sh ./scripts/hooks/* ./.agent/hooks/scripts/*.sh 2>/dev/null || true
 
+# === Instalar git hook post-commit (re-index MemPalace + GitNexus tras commit) ===
+# Antes sólo lo hacía xdd-start.sh; ahora también xdd-init para que quede activo
+# desde el bootstrap. Idempotente. Opt-out: XDD_NO_GITHOOK=1.
+if [ "${XDD_NO_GITHOOK:-0}" != "1" ] && [ -d ".git" ] && [ -f "./scripts/hooks/post-commit" ]; then
+  git config core.hooksPath ./scripts/hooks
+  chmod +x ./scripts/hooks/post-commit 2>/dev/null || true
+  echo "[xdd-init] ✓ git hook post-commit activado (core.hooksPath=./scripts/hooks)"
+fi
+
 # === Auto-detect IDEs + auto-adapt (Sprint 24) ===
 # Detecta IDEs presentes (CLI o config dir) y genera config óptima por cada uno.
 # Opt-out: XDD_NO_ADAPT=1
@@ -224,6 +233,20 @@ if [ "${XDD_NO_ADAPT:-0}" != "1" ] && [ -f "./scripts/xdd-adapt.sh" ]; then
   done
   echo "[xdd-init] ✓ IDE adapters generados (copia real + MCP auto-config)."
   echo "[xdd-init]   Override: XDD_NO_ADAPT=1 para saltar. Manual: bash scripts/xdd-adapt.sh all"
+fi
+
+# === Materializar hooks X-DD en Claude Code settings (gap post-v0.1.1) ===
+# hooks.json (SSoT) → ~/.claude/settings.json. Sin esto, mempalace mine no se dispara
+# en Edit/Write. Idempotente, no destructivo (preserva hooks ajenos). Opt-out: XDD_NO_HOOKS=1.
+# Se corre desde $XDD_ROOT (no DEST): el script lee $XDD_ROOT/.agent/hooks/hooks.json,
+# y el CWD aquí es DEST (que puede no tener scripts/ según el perfil).
+if [ "${XDD_NO_HOOKS:-0}" != "1" ] && [ -f "$XDD_ROOT/scripts/xdd-hooks-install.py" ]; then
+  if python3 "$XDD_ROOT/scripts/xdd-hooks-install.py" install 2>&1 | sed 's/^/  /'; then
+    echo "[xdd-init] ✓ hooks X-DD materializados en ~/.claude/settings.json"
+  else
+    echo "[xdd-init] WARN: materialización de hooks falló (no bloqueante)"
+  fi
+  echo "[xdd-init]   Override: XDD_NO_HOOKS=1. Perfil: XDD_HOOK_PROFILE=minimal|standard|strict"
 fi
 
 # === Auto-trigger xdd-brand.sh si profile tiene branding custom (Sprint 28 / ADR-0038) ===

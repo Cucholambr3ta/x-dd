@@ -124,3 +124,28 @@ def test_hooks_count():
     hooks_doc = load(ROOT / ".agent/hooks/hooks.json")
     total = sum(len(h) for h in hooks_doc["hooks"].values())
     assert total == 15, f"se esperaban 15 hooks, hay {total}"
+
+
+def test_hooks_materializables():
+    """Cierra el gap post-v0.1.1: el materializador traduce cada hook del perfil
+    activo a settings.json. Antes, hooks.json era schema-válido pero nadie lo
+    materializaba → mempalace mine nunca se disparaba en Edit/Write."""
+    import importlib.util
+    spec = importlib.util.spec_from_file_location(
+        "xdd_hooks_install", ROOT / "scripts" / "xdd-hooks-install.py")
+    xhi = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(xhi)
+
+    catalog = load(ROOT / ".agent/hooks/hooks.json")
+    # Cada hook del perfil cuyo evento soporta Claude Code debe materializarse.
+    for profile in ("minimal", "standard", "strict"):
+        groups = xhi.materialized_groups(catalog, profile)
+        got = {g["_xdd_id"] for v in groups.values() for g in v}
+        expected = {
+            h["id"]
+            for event, hooks in catalog["hooks"].items()
+            if event in xhi.CLAUDE_EVENTS
+            for h in hooks
+            if profile in h.get("profile", [])
+        }
+        assert got == expected, f"perfil {profile}: faltan {expected - got}"

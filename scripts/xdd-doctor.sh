@@ -205,6 +205,30 @@ check_xdd_config() {
   fi
 }
 
+# Verifica el cableado de hooks (gap detectado post-v0.1.1):
+#  - git post-commit instalado (core.hooksPath → ./scripts/hooks)
+#  - hooks X-DD materializados en ~/.claude/settings.json (marcador _xdd_id)
+check_hooks() {
+  hp=$(git config --get core.hooksPath 2>/dev/null || echo "")
+  if [ "$hp" = "./scripts/hooks" ] && [ -x "./scripts/hooks/post-commit" ]; then
+    [ $JSON_OUTPUT -eq 0 ] && printf "  ✓ %s\n" "git post-commit activo (core.hooksPath)"
+    PASS=$((PASS+1)); json_check "git-post-commit" "ok" "" "" "no"
+  else
+    [ $JSON_OUTPUT -eq 0 ] && printf "  ⚠ %s\n" "git post-commit NO activo (corre: xdd-init o xdd-start)"
+    WARN=$((WARN+1)); json_check "git-post-commit" "warn" "" "" "no"
+  fi
+
+  settings="$HOME/.claude/settings.json"
+  if [ -f "$settings" ] && command -v python3 >/dev/null 2>&1 \
+     && python3 -c "import json,sys; d=json.load(open('$settings')); sys.exit(0 if any('_xdd_id' in g for v in d.get('hooks',{}).values() for g in v) else 1)" 2>/dev/null; then
+    [ $JSON_OUTPUT -eq 0 ] && printf "  ✓ %s\n" "hooks X-DD materializados (~/.claude/settings.json)"
+    PASS=$((PASS+1)); json_check "hooks-materializados" "ok" "" "" "no"
+  else
+    [ $JSON_OUTPUT -eq 0 ] && printf "  ⚠ %s\n" "hooks X-DD NO materializados (corre: xdd hooks install)"
+    WARN=$((WARN+1)); json_check "hooks-materializados" "warn" "" "" "no"
+  fi
+}
+
 # --- Main ---
 
 if [ $JSON_OUTPUT -eq 0 ]; then
@@ -244,6 +268,9 @@ done
 
 if [ $JSON_OUTPUT -eq 0 ]; then echo; echo "[Configuración X-DD]"; fi
 check_xdd_config
+
+if [ $JSON_OUTPUT -eq 0 ]; then echo; echo "[Hooks / auto-update]"; fi
+check_hooks
 
 # Detección de perfil (declarado)
 PROFILE=""

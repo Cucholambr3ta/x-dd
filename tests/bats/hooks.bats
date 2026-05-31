@@ -12,6 +12,37 @@ setup() {
   [[ "$output" == *"BLOCKED"* ]]
 }
 
+@test "pre-bash-dangerous-command bloquea fork bomb (regresión: patrón viejo no detectaba)" {
+  # fork bomb canónica en base64 para no escribirla literal en el .bats.
+  fb="$(printf 'OigpeyA6fDomIH07Og==' | base64 -d)"   # :(){ :|:& };:
+  json="$(python3 -c "import json,sys;print(json.dumps({'tool_input':{'command':sys.argv[1]}}))" "$fb")"
+  run bash -c "printf '%s' '$json' | bash .agent/hooks/scripts/pre-bash-dangerous-command.sh"
+  [ "$status" -eq 2 ]
+}
+
+@test "pre-bash-dangerous-command permite función bash benigna (no falso positivo)" {
+  fn="$(printf 'bXlmdW5jKCkgeyBlY2hvIGhpOyB9' | base64 -d)"  # myfunc() { echo hi; }
+  json="$(python3 -c "import json,sys;print(json.dumps({'tool_input':{'command':sys.argv[1]}}))" "$fn")"
+  run bash -c "printf '%s' '$json' | bash .agent/hooks/scripts/pre-bash-dangerous-command.sh"
+  [ "$status" -eq 0 ]
+}
+
+@test "pre-bash-dangerous-command permite rm -f en ruta profunda (no falso positivo)" {
+  # Antes 'rm -[fF] /' bloqueaba CUALQUIER ruta absoluta tras rm -f.
+  run bash -c "echo '{\"tool_input\":{\"command\":\"rm -f /tmp/foo /tmp/bar\"}}' | bash .agent/hooks/scripts/pre-bash-dangerous-command.sh"
+  [ "$status" -eq 0 ]
+}
+
+@test "pre-bash-dangerous-command permite rm -rf ./build (relativo)" {
+  run bash -c "echo '{\"tool_input\":{\"command\":\"rm -rf ./build node_modules\"}}' | bash .agent/hooks/scripts/pre-bash-dangerous-command.sh"
+  [ "$status" -eq 0 ]
+}
+
+@test "pre-bash-dangerous-command bloquea rm -rf de dir de sistema" {
+  run bash -c "echo '{\"tool_input\":{\"command\":\"rm -rf /etc\"}}' | bash .agent/hooks/scripts/pre-bash-dangerous-command.sh"
+  [ "$status" -eq 2 ]
+}
+
 @test "pre-bash-dangerous-command bloquea git push --force" {
   run bash -c "echo '{\"tool_input\":{\"command\":\"git push --force origin main\"}}' | bash .agent/hooks/scripts/pre-bash-dangerous-command.sh"
   [ "$status" -eq 2 ]
@@ -67,4 +98,30 @@ setup() {
 @test "hooks.json valida contra schema" {
   run python3 -c "import json,jsonschema; jsonschema.validate(json.load(open('.agent/hooks/hooks.json')), json.load(open('schemas/hooks.schema.json')))"
   [ "$status" -eq 0 ]
+}
+
+# --- Gap post-v0.1.1: guarda repo X-DD + materializador ---
+
+@test "post-edit-mempalace-index no-op fuera de repo X-DD" {
+  tmp="$(mktemp -d)"
+  run bash -c "cd '$tmp' && bash '$ROOT/.agent/hooks/scripts/post-edit-mempalace-index.sh'"
+  rm -rf "$tmp"
+  [ "$status" -eq 0 ]
+}
+
+@test "post-commit re-indexa MemPalace + GitNexus (sintaxis + no bloquea)" {
+  run sh -n scripts/hooks/post-commit
+  [ "$status" -eq 0 ]
+  grep -q "gitnexus" scripts/hooks/post-commit
+  grep -q "flock" scripts/hooks/post-commit
+}
+
+@test "post-write-auto-organize no toca el repo-fuente X-DD (guarda)" {
+  # En el repo-fuente, las reglas gitignore_framework_copies NO deben aplicarse:
+  # prompts/scripts/templates SON código versionado, no copias. El hook debe no-op.
+  before="$(md5sum .gitignore | cut -d' ' -f1)"
+  run bash .agent/hooks/scripts/post-write-auto-organize.sh
+  [ "$status" -eq 0 ]
+  after="$(md5sum .gitignore | cut -d' ' -f1)"
+  [ "$before" = "$after" ]
 }

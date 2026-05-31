@@ -9,6 +9,41 @@
 
 ## [Unreleased] — main
 
+## [0.1.2] — 2026-05-30
+
+> Reconexión del flujo de auto-update (hooks) + endurecimiento de hooks.
+> Notas user-facing en [RELEASES/v0.1.2.md](../RELEASES/v0.1.2.md).
+
+### Added
+- **Materializador de hooks** (`scripts/xdd-hooks-install.py`, `xdd hooks`): traduce
+  `.agent/hooks/hooks.json` (SSoT) → `~/.claude/settings.json`. Cierra el gap donde
+  los hooks estaban definidos y validados pero **nunca se ejecutaban** (Claude Code
+  lee settings.json, no hooks.json). Merge no-destructivo, filtra por perfil, marca
+  los propios con `_xdd_id`. Subcomandos install/sync/status + --dry-run + --project.
+- **GitNexus auto-update** en `scripts/hooks/post-commit` (antes sólo MemPalace; no
+  tenía automatización).
+- `xdd-doctor`: sección **[Hooks / auto-update]** (post-commit activo + hooks materializados).
+
+### Changed
+- `xdd-init` instala el git post-commit (antes sólo `xdd-start`) y materializa hooks.
+- Lock MemPalace: `flock -n` skip-if-running en hooks (palace global único) → elimina
+  el error "palace held by PID" con mines concurrentes.
+
+### Fixed
+- **Seguridad — patrón anti fork-bomb roto**: `:(){.*}` no detectaba `:(){ :|:& };:`
+  (en ERE `()` = grupo vacío, `{` = cuantificador inválido). Reemplazado por la firma
+  real; `\s`→`[[:space:]]`. ~5 sprints de falsa protección.
+- **Falso positivo `rm`**: el patrón bloqueaba cualquier ruta absoluta tras `rm -f`
+  (p.ej. `rm -f /tmp/x`). Refinado a raíz + dirs de sistema + `~`.
+- **Guarda repo-fuente**: `post:write:auto-organize` y `post:edit:mempalace-index`
+  no-op fuera de un repo X-DD / en el repo-fuente (el settings global los activaba en
+  todos los repos; auto-organize llegaba a gitignorear código versionado del fuente).
+
+### Tests
+- `test_hooks_install.py` (12) + `test_manifests.test_hooks_materializables` cierran el
+  gap "schema-válido ≠ ejecutándose". `hooks.bats` 20 casos (positivos + negativos,
+  payloads en base64). Total: 306 pytest.
+
 ## [0.1.1] — 2026-05-30
 
 > Release de hardening. Notas user-facing en [RELEASES/v0.1.1.md](../RELEASES/v0.1.1.md).
