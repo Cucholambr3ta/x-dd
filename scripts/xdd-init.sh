@@ -56,6 +56,10 @@ for name, p in d['profiles'].items():
 PROFILE="core"
 MODULES_OVERRIDE=""
 DEST=""
+# S20: modo de distribución. En v0.2 el modo pip es el recomendado (ADR-0048).
+# --pip-mode: solo copia editables (memoria/lecciones/profile); tooling viene de pip.
+# --legacy: copia todo (comportamiento v0.1.x, para entornos sin pip).
+PIP_MODE="auto"  # auto: usa pip si x-dd está instalado, legacy si no.
 
 while [ $# -gt 0 ]; do
   case "$1" in
@@ -65,6 +69,8 @@ while [ $# -gt 0 ]; do
     --profile) PROFILE="$2"; shift 2 ;;
     --modules=*) MODULES_OVERRIDE="${1#--modules=}"; shift ;;
     --modules) MODULES_OVERRIDE="$2"; shift 2 ;;
+    --pip-mode) PIP_MODE="pip"; shift ;;
+    --legacy) PIP_MODE="legacy"; shift ;;
     --list-profiles)
       XDD_ROOT="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )/.." && pwd )"
       echo "Perfiles disponibles:"
@@ -91,24 +97,56 @@ echo "[xdd-init] Origen: $XDD_ROOT"
 echo "[xdd-init] Destino: $DEST"
 echo "[xdd-init] Perfil: $PROFILE"
 
-# === Sprint 32 / ADR-0042: lean profile requires wrapper global ===
-LEAN_PROFS_MANIFEST="$XDD_ROOT/manifests/install-profiles.json"
-if [ "$PROFILE" = "lean" ] && [ -f "$LEAN_PROFS_MANIFEST" ] && command -v python3 >/dev/null 2>&1; then
-  REQUIRES_WRAPPER=$(python3 -c "
-import json
-p = json.load(open('$LEAN_PROFS_MANIFEST'))['profiles'].get('lean', {})
-print('1' if p.get('requires_wrapper_global') else '0')
-" 2>/dev/null || echo "0")
-  if [ "$REQUIRES_WRAPPER" = "1" ]; then
-    if [ ! -x "$HOME/.local/bin/xdd-mcp-server" ]; then
-      echo "[xdd-init] ⚠ WARN: perfil 'lean' requiere wrapper global xdd-mcp-server pero NO está instalado."
-      echo "[xdd-init]   Ejecuta primero: bash $XDD_ROOT/scripts/xdd-mcp-install-global.sh"
-      echo "[xdd-init]   Continuando — bootstrap funcionará pero MCP runtime fallará hasta instalar wrapper."
-    else
-      echo "[xdd-init] ✓ wrapper global xdd-mcp-server detectado (~/.local/bin/xdd-mcp-server)"
-    fi
+# === S20: modo pip vs legacy (ADR-0048) ===
+# auto-detect: si x-dd está pip-instalado, usar pip-mode (solo editables).
+if [ "$PIP_MODE" = "auto" ]; then
+  if python3 -c "import importlib.metadata; importlib.metadata.version('x-dd')" 2>/dev/null; then
+    PIP_MODE="pip"
+  else
+    PIP_MODE="legacy"
   fi
 fi
+echo "[xdd-init] Modo distribución: $PIP_MODE"
+
+if [ "$PIP_MODE" = "pip" ]; then
+  # Modo pip (v0.2 recomendado): solo copia artefactos EDITABLES del proyecto.
+  # El tooling (scripts/, prompts/, .agent/, templates/) viene del paquete pip.
+  echo "[xdd-init] Pip-mode: solo copiando artefactos editables (memoria, lecciones, profile)."
+  for tmpl in memoria.md lecciones.md xdd.profile.yml; do
+    if [ ! -f "./$tmpl" ] && [ -f "$XDD_ROOT/templates/${tmpl%.md}.template.md" ]; then
+      cp "$XDD_ROOT/templates/${tmpl%.md}.template.md" "./$tmpl"
+      echo "[xdd-init] Copiado: $tmpl (desde template)"
+    elif [ ! -f "./$tmpl" ] && [ -f "$XDD_ROOT/templates/${tmpl%.yml}.template.yml" ]; then
+      cp "$XDD_ROOT/templates/${tmpl%.yml}.template.yml" "./$tmpl"
+      echo "[xdd-init] Copiado: $tmpl (desde template)"
+    elif [ ! -f "./$tmpl" ]; then
+      echo "[xdd-init] WARN: template para $tmpl no encontrado" >&2
+    else
+      echo "[xdd-init] SKIP existente: $tmpl"
+    fi
+  done
+  if [ ! -d ".git" ]; then git init -q; echo "[xdd-init] Repositorio git inicializado."; fi
+  chmod +x "$XDD_ROOT/scripts/"*.sh 2>/dev/null || true
+  # Auto-adapt + hooks (usan XDD_ROOT del pip)
+  if [ "${XDD_NO_ADAPT:-0}" != "1" ]; then
+    bash "$XDD_ROOT/scripts/xdd-adapt.sh" all --dest="$DEST" 2>&1 | sed 's/^/  /' || true
+  fi
+  if [ "${XDD_NO_HOOKS:-0}" != "1" ]; then
+    python3 "$XDD_ROOT/scripts/xdd-hooks-install.py" install 2>&1 | sed 's/^/  /' || true
+  fi
+  if [ "${XDD_NO_GITHOOK:-0}" != "1" ] && [ -d ".git" ]; then
+    git config core.hooksPath "$XDD_ROOT/scripts/hooks"
+    echo "[xdd-init] ✓ git hook post-commit activado (apunta a XDD_ROOT)"
+  fi
+  echo "[xdd-init] ✓ Modo pip completo. Tooling vía pip; editables en $DEST."
+  echo "[xdd-init]   Para actualizar: xdd update"
+  exit 0
+fi
+
+# === Legacy mode (v0.1.x compat) — continúa con el bootstrap completo ===
+echo "[xdd-init] Legacy mode (copia completa). Recomendado: instala x-dd vía pip para Modo pip."
+
+# MCP server wrapper check eliminado (v0.2 S22 — xdd-mcp-server removed).
 
 # Resolver módulos a instalar
 PROFILES_MANIFEST="$XDD_ROOT/manifests/install-profiles.json"

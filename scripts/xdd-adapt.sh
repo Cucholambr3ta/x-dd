@@ -16,7 +16,7 @@ Uso:
   bash scripts/xdd-adapt.sh --help | --version | --list
 
 Targets soportados (Sprint 24 + codex):
-  claude-code     .claude/commands/*.md (copia real) + .mcp.json + CLAUDE.md
+  claude-code     .claude/commands/*.md (copia real) + CLAUDE.md
   opencode        AGENTS.md + .opencode/command/ + .agent/workflows/
   cursor          .cursor/rules/<trigger>.mdc + .cursor/mcp.json
   windsurf        .windsurf/rules/<trigger>.md + MCP note
@@ -36,7 +36,7 @@ EOF
 list_targets() {
   cat <<EOF
 Targets (todos copia real + MCP/global auto-config):
-  claude-code     — slash commands .md reales + .mcp.json
+  claude-code     — slash commands .md reales
   opencode        — AGENTS.md + .opencode/command/ + .agent/workflows/
   cursor          — .cursor/rules/*.mdc + .cursor/mcp.json
   windsurf        — .windsurf/rules/*.md + MCP
@@ -131,24 +131,9 @@ copy_real() {
 
 # === MCP config generator (formato por IDE) ===
 # mcpServers (Claude Code/Cursor/Antigravity) vs servers (VSCode)
-gen_mcp_json() {
-  # gen_mcp_json <path> <key>   key = mcpServers | servers
-  local path="$1" key="$2"
-  local content
-  content=$(cat <<EOF
-{
-  "$key": {
-    "$TRIGGER": {
-      "command": "python3",
-      "args": ["-m", "xdd-mcp-server"],
-      "cwd": "$DEST"
-    }
-  }
-}
-EOF
-)
-  write_file "$path" "$content"
-}
+# gen_mcp_json removed — xdd-mcp-server eliminated (v0.2 S22).
+# IDEs use /trigger + .agents/skills/ natively; no MCP server needed.
+gen_mcp_json() { : ; }  # no-op stub
 
 # === Commands reales desde workflows SSoT ===
 # Copia los workflows como commands reales. El trigger principal (xdd.md) se

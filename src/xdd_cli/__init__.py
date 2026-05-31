@@ -108,6 +108,8 @@ _SUBCOMMANDS: dict[str, tuple[str, str]] = {
     "orchestrate": ("py", "xdd-orchestrate.py"),
     "hooks": ("py", "xdd-hooks-install.py"),
     "metrics": ("py", "xdd-state.py"),
+    "update": ("py", "xdd-update.py"),
+    "migrate": ("py", "xdd-migrate.py"),
     "doctor": ("sh", "xdd-doctor.sh"),
     "init": ("sh", "xdd-init.sh"),
     "start": ("sh", "xdd-start.sh"),
