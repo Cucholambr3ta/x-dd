@@ -229,8 +229,10 @@ fi
 # === Materializar hooks X-DD en Claude Code settings (gap post-v0.1.1) ===
 # hooks.json (SSoT) → ~/.claude/settings.json. Sin esto, mempalace mine no se dispara
 # en Edit/Write. Idempotente, no destructivo (preserva hooks ajenos). Opt-out: XDD_NO_HOOKS=1.
-if [ "${XDD_NO_HOOKS:-0}" != "1" ] && [ -f "./scripts/xdd-hooks-install.py" ]; then
-  if python3 ./scripts/xdd-hooks-install.py install 2>&1 | sed 's/^/  /'; then
+# Se corre desde $XDD_ROOT (no DEST): el script lee $XDD_ROOT/.agent/hooks/hooks.json,
+# y el CWD aquí es DEST (que puede no tener scripts/ según el perfil).
+if [ "${XDD_NO_HOOKS:-0}" != "1" ] && [ -f "$XDD_ROOT/scripts/xdd-hooks-install.py" ]; then
+  if python3 "$XDD_ROOT/scripts/xdd-hooks-install.py" install 2>&1 | sed 's/^/  /'; then
     echo "[xdd-init] ✓ hooks X-DD materializados en ~/.claude/settings.json"
   else
     echo "[xdd-init] WARN: materialización de hooks falló (no bloqueante)"
