@@ -61,6 +61,19 @@ CREATE INDEX IF NOT EXISTS idx_confidence ON instincts(confidence DESC);
 CREATE INDEX IF NOT EXISTS idx_last_seen ON instincts(last_seen DESC);
 CREATE INDEX IF NOT EXISTS idx_promoted ON instincts(promoted);
 
+CREATE TABLE IF NOT EXISTS orchestrations (
+  run_id TEXT PRIMARY KEY,
+  pattern_name TEXT NOT NULL,
+  orchestration_type TEXT NOT NULL,
+  status TEXT DEFAULT 'running',  -- running | completed | failed | sync_waiting
+  started_at TEXT NOT NULL,
+  completed_at TEXT,
+  exec_mode INTEGER DEFAULT 0,
+  steps_total INTEGER DEFAULT 0,
+  steps_done INTEGER DEFAULT 0,
+  sync_point TEXT
+);
+
 CREATE TABLE IF NOT EXISTS evolutions (
   cluster_id TEXT PRIMARY KEY,
   proposed_type TEXT NOT NULL,
@@ -104,6 +117,41 @@ def db(path: Path = None) -> sqlite3.Connection:
     conn.executescript(SCHEMA)
     _migrate_evolutions(conn)
     return conn
+
+
+def record_orchestration(run_id: str, pattern_name: str, orch_type: str,
+                          exec_mode: bool = False, steps_total: int = 0,
+                          db_path: Path | None = None) -> None:
+    """Registra el inicio de una orquestación en la DB de estado (S9)."""
+    try:
+        conn = db(db_path)
+        conn.execute(
+            "INSERT OR REPLACE INTO orchestrations "
+            "(run_id, pattern_name, orchestration_type, status, started_at, exec_mode, steps_total) "
+            "VALUES (?, ?, ?, 'running', ?, ?, ?)",
+            (run_id, pattern_name, orch_type, utcnow(), int(exec_mode), steps_total),
+        )
+        conn.commit()
+        conn.close()
+    except Exception:
+        pass  # no-op si DB no disponible; tracking es best-effort
+
+
+def update_orchestration(run_id: str, status: str, steps_done: int = 0,
+                          sync_point: str | None = None, db_path: Path | None = None) -> None:
+    """Actualiza estado de una orquestación. Status: completed | failed | sync_waiting."""
+    try:
+        conn = db(db_path)
+        completed = utcnow() if status in ("completed", "failed") else None
+        conn.execute(
+            "UPDATE orchestrations SET status=?, steps_done=?, sync_point=?, completed_at=? "
+            "WHERE run_id=?",
+            (status, steps_done, sync_point, completed, run_id),
+        )
+        conn.commit()
+        conn.close()
+    except Exception:
+        pass
 
 
 def cmd_init(args):
