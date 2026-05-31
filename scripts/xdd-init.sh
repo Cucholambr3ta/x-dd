@@ -203,6 +203,15 @@ fi
 # Marcar scripts como ejecutables
 chmod +x ./scripts/*.sh ./scripts/hooks/* ./.agent/hooks/scripts/*.sh 2>/dev/null || true
 
+# === Instalar git hook post-commit (re-index MemPalace + GitNexus tras commit) ===
+# Antes sólo lo hacía xdd-start.sh; ahora también xdd-init para que quede activo
+# desde el bootstrap. Idempotente. Opt-out: XDD_NO_GITHOOK=1.
+if [ "${XDD_NO_GITHOOK:-0}" != "1" ] && [ -d ".git" ] && [ -f "./scripts/hooks/post-commit" ]; then
+  git config core.hooksPath ./scripts/hooks
+  chmod +x ./scripts/hooks/post-commit 2>/dev/null || true
+  echo "[xdd-init] ✓ git hook post-commit activado (core.hooksPath=./scripts/hooks)"
+fi
+
 # === Auto-detect IDEs + auto-adapt (Sprint 24) ===
 # Detecta IDEs presentes (CLI o config dir) y genera config óptima por cada uno.
 # Opt-out: XDD_NO_ADAPT=1
