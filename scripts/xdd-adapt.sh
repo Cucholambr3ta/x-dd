@@ -534,7 +534,8 @@ Config global: \`~/.gemini/config/mcp_config.json\` (mergeado automático). Serv
 NOTA: Antigravity usa \`.agents/\` (plural), OpenCode usa \`.agent/\` (singular).
 
 ## Uso
-Invoca \`xdd_invoke_workflow\` name="xdd" desde Cascade. NO escribas /$TRIGGER (no es slash).
+- **Triggers de Chat:** Escribe \`/$TRIGGER\` o cualquier otro trigger de las skills locales en la CLI/chat de Cascade (ej. \`/compact\`) para cargar automáticamente su contexto.
+- **MCP Tools:** También puedes llamar a la tool MCP \`xdd_invoke_workflow\` con name="xdd" para arrancar el orquestador principal.
 EOF
 )"
 }

@@ -25,14 +25,14 @@ Antigravity opera bajo su propio paradigma de extensibilidad agéntica basado en
 
 | Capacidad | Claude Code / OpenCode / Copilot | Antigravity |
 |-----------|----------------------------------|-------------|
-| **Slash commands locales (`/workflow`)** | ✅ Vía archivos en carpetas del IDE | ❌ **No soportado** |
-| **Registro automático de comandos slash** | ✅ Copia directa a comandos/prompts | ❌ **No soportado** |
+| **Slash commands locales (ejecutables)** | ✅ Vía archivos en carpetas del IDE | ❌ **No soportado** (sandbox del host) |
+| **Triggers de Chat / Slash commands en Chat** | ✅ Nativos en CLI | ✅ **Soportado** (vía `triggers` en `SKILL.md`) |
 | **Rules basadas en archivos de texto** | ✅ Rules de sistema locales | ❌ (Usa MCP / Skills nativas) |
 | **Skills locales auto-descubiertas** | Vía convención IDE | ✅ `.agents/skills/` (plural) |
 | **Integración MCP** | ✅ `mcp_servers.json` estándar | ✅ `mcp_config.json` con metakey custom |
 | **Delegación paralela / Subagentes** | Limitado | ✅ Cascade Runtime nativo |
 
-**Consecuencia directa de diseño:** En Antigravity, el orquestador principal X-DD y sus workflows asociados se invocan estrictamente a través de herramientas de contexto del **MCP server** (`xdd_invoke_workflow`) o mediante el panel de **Skills locales** sincronizadas, omitiendo el uso de slash commands manuales.
+**Consecuencia directa de diseño:** En Antigravity, el orquestador principal X-DD y sus workflows asociados se invocan a través de herramientas de contexto del **MCP server** (`xdd_invoke_workflow`) o escribiendo directamente sus **triggers conversacionales** (como `/${TRIGGER}` o `/compact`) definidos en las **Skills locales**, emulando la experiencia de comandos slash en la CLI de Cascade.
 
 ---
 
@@ -164,7 +164,11 @@ description: Provider-agnostic context compaction. Use when context exceeds 80% 
 Habilidad para la reducción y compactación dinámica del contexto...
 ```
 
-El frontmatter de las skills de X-DD incluye metadatos enriquecidos (como `origin`, `inspired_by` y `triggers`). Antigravity lee únicamente los campos `name` y `description`, ignorando los campos extra de forma segura sin interrumpir el cargado.
+El frontmatter de las skills de X-DD incluye metadatos enriquecidos (como `origin`, `inspired_by` y `triggers`). Antigravity/Cascade lee y procesa los campos `name` y `description` para la UI del IDE, y utiliza activamente el campo `triggers` (y también `when_to_use`) para asociar palabras clave, comandos slash (ej. `/compact` o `/xdd`) y frases de interacción con la habilidad. Esto le permite cargar y aplicar automáticamente el contexto de la skill cuando se detecta un trigger en el chat o CLI de Cascade.
+
+> [!NOTE]
+> **Instrucción para el Agente (Cascade/Antigravity):**
+> Al operar dentro del IDE Antigravity, si el usuario escribe un comando o frase que coincida con el array `triggers` de cualquiera de las skills locales (ubicadas en `.agents/skills/`), el motor Cascade cargará de manera automática las instrucciones de dicho `SKILL.md`. Debes reconocer estos disparadores como comandos de entrada válidos y actuar de acuerdo a las directrices de la skill activada sin necesidad de que el usuario llame manualmente a una tool de MCP para cargar dicho contexto.
 
 ---
 
@@ -353,8 +357,8 @@ Si requiere forzar la adaptación únicamente para este IDE en un proyecto ya ex
 
 ## 17. Resumen ejecutivo (TL;DR)
 
-1. **Sin comandos slash nativos:** Antigravity no interpreta comandos slash basados en archivos de texto locales; interactúa únicamente vía MCP y Skills.
-2. **SSoT preservada:** Los workflows y agentes residen de forma única en `.agent/workflows/` y `prompts/agents/`, consumiéndose en runtime a través del servidor MCP.
+1. **Triggers conversacionales / Slash en Chat:** Antigravity no soporta slash commands ejecutables del sistema basados en ficheros de texto (como Claude Code), pero sí soporta triggers conversacionales (como `/xdd` o `/compact`) configurados en el frontmatter de los `SKILL.md` dentro de `.agents/skills/`.
+2. **SSoT preservada:** Los workflows y agentes residen de forma única en `.agent/workflows/` y `prompts/agents/`, consumiéndose en runtime a través del servidor MCP o activándose vía triggers de las skills locales.
 3. **Nomenclatura plural obligatoria:** Las skills locales se deben ubicar en `./.agents/skills/` (formato plural) con su respectivo `SKILL.md`.
 4. **Configuración global de MCP:** El adapter escribe en la ruta centralizada del usuario `~/.gemini/config/mcp_config.json`.
 5. **Metakey custom de Cascade:** Es obligatorio declarar la clave `"$typeName": "exa.cascade_plugins_pb.CascadePluginCommandTemplate"` en la entrada de configuración de cada servidor MCP en Antigravity.
