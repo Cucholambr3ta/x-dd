@@ -179,3 +179,19 @@ def test_has_hitl_checkpoint_returns_none_when_no_match():
 
 def test_orchestrations_dict_includes_party():
     assert "party" in xo.ORCHESTRATIONS
+
+
+def test_main_parses_argv_once(monkeypatch):
+    """Regresión v0.1.1: main() parseaba argv dos veces (build_parser × 2).
+    Debe construir el parser una sola vez y despachar al func resultante."""
+    calls = {"n": 0}
+    real_build = xo.build_parser
+
+    def counting_build():
+        calls["n"] += 1
+        return real_build()
+
+    monkeypatch.setattr(xo, "build_parser", counting_build)
+    rc = xo.main(["list"])
+    assert rc == 0
+    assert calls["n"] == 1, f"build_parser llamado {calls['n']}× (esperado 1)"

@@ -25,12 +25,14 @@ import json
 import os
 import secrets
 import sys
-from datetime import datetime, timezone
 from enum import Enum
 from pathlib import Path
 from typing import Iterable
 
-__version__ = "0.1.0"
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from _xdd_common import read_version, utcnow_iso  # noqa: E402
+
+__version__ = read_version()
 
 
 class Status(str, Enum):
@@ -51,10 +53,6 @@ PHASES: list[tuple[str, list[str]]] = [
 ]
 PHASE_IDS = [p[0] for p in PHASES]
 PHASE_ARTIFACTS = dict(PHASES)
-
-
-def utcnow_iso() -> str:
-    return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
 def checksum(path: Path) -> str:
@@ -200,7 +198,13 @@ def _validate_phase(root: Path, phase: str) -> tuple[bool, list[str]]:
     if not apr_lines:
         errors.append(f".xdd/{phase}/.approvers vacío")
         return False, errors
-    last_approver, last_ts = apr_lines[-1].split(" | ", 1)
+    last_line = apr_lines[-1]
+    if " | " not in last_line:
+        errors.append(
+            f".xdd/{phase}/.approvers malformado: última línea sin ' | '"
+        )
+        return False, errors
+    last_approver, last_ts = last_line.split(" | ", 1)
 
     try:
         key = load_gate_key(root)

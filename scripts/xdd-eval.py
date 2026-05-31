@@ -19,14 +19,13 @@ import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
-__version__ = "0.1.0"
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from _xdd_common import read_version, utcnow_iso as utcnow  # noqa: E402
+
+__version__ = read_version()
 
 ROOT = Path(__file__).resolve().parent.parent
 EVALS_DIR = ROOT / "evals"
-
-
-def utcnow() -> str:
-    return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
 def count_tokens(text: str, ignore_code: bool = False) -> int:

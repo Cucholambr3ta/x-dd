@@ -18,7 +18,10 @@ import sys
 from collections import Counter
 from pathlib import Path
 
-__version__ = "0.1.0"
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from _xdd_common import read_version  # noqa: E402
+
+__version__ = read_version()
 
 DEFAULT_DIR = Path(os.environ.get("XDD_TRACES_DIR",
                                     str(Path.cwd() / ".xdd" / "traces")))

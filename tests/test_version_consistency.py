@@ -40,8 +40,12 @@ def test_shell_scripts_read_version_or_match():
     assert not offenders, f"scripts con versión divergente de VERSION={v}: {offenders}"
 
 
-def test_python_scripts_version_matches():
-    """Todo __version__ hardcoded en scripts/*.py debe coincidir con VERSION."""
+def test_python_scripts_no_hardcoded_version():
+    """Los scripts ya no deben hardcodear __version__: resuelven vía read_version().
+
+    Tras la consolidación (v0.1.1), la versión sale de _xdd_common.read_version().
+    Un literal `__version__ = "x.y.z"` reintroducido sería regresión; pero si alguien
+    lo agrega y coincide con VERSION, se tolera (no diverge)."""
     v = _canonical()
     offenders = []
     for f in glob.glob(str(ROOT / "scripts" / "*.py")):
@@ -49,7 +53,31 @@ def test_python_scripts_version_matches():
         for m in re.finditer(r'__version__\s*=\s*"([^"]+)"', txt):
             if m.group(1) != v:
                 offenders.append((Path(f).name, m.group(1)))
-    assert not offenders, f"__version__ divergente de VERSION={v}: {offenders}"
+    assert not offenders, f"__version__ literal divergente de VERSION={v}: {offenders}"
+
+
+def test_version_fallbacks_match():
+    """Los fallbacks literales embebidos deben coincidir con VERSION.
+
+    Son la última red cuando no hay archivo VERSION ni metadata de paquete:
+    scripts/_xdd_common.py (_VERSION_FALLBACK) y src/xdd_cli/__init__.py."""
+    v = _canonical()
+    offenders = []
+
+    common = ROOT / "scripts" / "_xdd_common.py"
+    m = re.search(r'_VERSION_FALLBACK\s*=\s*"([^"]+)"', common.read_text(encoding="utf-8"))
+    assert m, "_xdd_common.py sin _VERSION_FALLBACK"
+    if m.group(1) != v:
+        offenders.append(("_xdd_common.py", m.group(1)))
+
+    cli = ROOT / "src" / "xdd_cli" / "__init__.py"
+    cli_txt = cli.read_text(encoding="utf-8")
+    m2 = re.search(r'return\s+"(\d+\.\d+\.\d+[^"]*)"', cli_txt)
+    assert m2, "xdd_cli/__init__.py sin fallback de versión"
+    if m2.group(1) != v:
+        offenders.append(("xdd_cli/__init__.py", m2.group(1)))
+
+    assert not offenders, f"fallback divergente de VERSION={v}: {offenders}"
 
 
 def test_agent_yaml_version_matches():
