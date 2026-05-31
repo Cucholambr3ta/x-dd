@@ -9,7 +9,7 @@
 spec_version: "0.1.0"
 
 name: x-dd
-version: 0.1.0-dev
+version: 0.1.0
 description: |
   Cross-Driven Development System — pipeline gated de 6 fases con metodologías
   *-Driven (SDD, FDD, BDD, ATDD, DDD, TDD, STDD, SecDD, Threat-Driven) integradas,

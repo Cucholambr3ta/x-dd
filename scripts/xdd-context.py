@@ -18,7 +18,7 @@ import re
 import sys
 from pathlib import Path
 
-__version__ = "0.1.0-dev"
+__version__ = "0.1.0"
 
 # Default budget (Claude Sonnet/Opus 200k context window)
 DEFAULT_BUDGET = 200_000

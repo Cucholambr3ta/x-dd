@@ -25,7 +25,7 @@ import sys
 import time
 from pathlib import Path
 
-__version__ = "0.1.0-dev"
+__version__ = "0.1.0"
 
 DEFAULT_POLICY = {
     "default_action": "allow",  # allow | deny | require_approval | mask

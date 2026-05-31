@@ -23,7 +23,7 @@ import sys
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
-__version__ = "0.1.0-dev"
+__version__ = "0.1.0"
 
 DEFAULT_DB = Path(os.environ.get("XDD_COST_DB",
                                   str(Path.home() / ".xdd" / "cost.db")))

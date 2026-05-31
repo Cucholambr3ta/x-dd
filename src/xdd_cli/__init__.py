@@ -16,7 +16,7 @@ import runpy
 import sys
 from pathlib import Path
 
-__version__ = "0.1.0-dev"
+__version__ = "0.1.0"
 
 
 def _scripts_dir() -> Path:

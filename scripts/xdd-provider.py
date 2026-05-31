@@ -25,7 +25,7 @@ import os
 import sys
 from typing import Protocol, runtime_checkable
 
-__version__ = "0.1.0-dev"
+__version__ = "0.1.0"
 
 
 @runtime_checkable

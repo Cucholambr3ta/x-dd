@@ -22,7 +22,7 @@ import time
 from datetime import datetime, timezone
 from pathlib import Path
 
-__version__ = "0.1.0-dev"
+__version__ = "0.1.0"
 
 DEFAULT_DIR = Path(os.environ.get("XDD_TRACES_DIR",
                                     str(Path.cwd() / ".xdd" / "traces")))

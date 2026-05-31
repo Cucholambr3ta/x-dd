@@ -30,7 +30,7 @@ from enum import Enum
 from pathlib import Path
 from typing import Iterable
 
-__version__ = "0.1.0-dev"
+__version__ = "0.1.0"
 
 
 class Status(str, Enum):

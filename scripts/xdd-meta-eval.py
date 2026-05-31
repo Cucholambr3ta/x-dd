@@ -22,7 +22,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from statistics import mean, stdev
 
-__version__ = "0.1.0-dev"
+__version__ = "0.1.0"
 
 ROOT = Path(__file__).resolve().parent.parent
 RUNS_DIR = Path(os.environ.get("XDD_EVAL_RUNS_DIR",

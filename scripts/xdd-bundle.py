@@ -21,7 +21,7 @@ import zipfile
 from datetime import datetime, timezone
 from pathlib import Path
 
-__version__ = "0.1.0-dev"
+__version__ = "0.1.0"
 
 REQUIRED_FILES = ["manifest.json", "LICENSE"]
 MANIFEST_REQUIRED = ["spec_version", "name", "version", "author", "license"]

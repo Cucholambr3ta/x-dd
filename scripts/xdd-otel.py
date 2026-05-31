@@ -25,7 +25,7 @@ import uuid
 from datetime import datetime, timezone
 from pathlib import Path
 
-__version__ = "0.1.0-dev"
+__version__ = "0.1.0"
 
 DEFAULT_DIR = Path(os.environ.get("XDD_OTEL_DIR",
                                     str(Path.cwd() / ".xdd" / "traces" / "spans")))
