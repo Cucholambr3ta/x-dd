@@ -23,7 +23,7 @@ def _resolve_version() -> str:
 
         return version("x-dd")
     except (PackageNotFoundError, ImportError):
-        return "0.1.1"
+        return "0.1.2"
 
 
 __version__ = _resolve_version()
