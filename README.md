@@ -6,7 +6,7 @@
 
 **Agentes de IA que colaboran bajo reglas estrictas y firmadas — para que "lo hizo la IA" deje de significar "nadie revisó".**
 
-[![pre-release](https://img.shields.io/badge/status-pre--release-orange)](https://github.com/Cucholambr3ta/x-dd/releases)
+[![beta](https://img.shields.io/badge/status-beta-blue)](https://github.com/Cucholambr3ta/x-dd/releases)
 [![pip install](https://img.shields.io/badge/pip-install%20x--dd-blue)](#instala-en-30-segundos)
 [![Constitución](https://img.shields.io/badge/Constituci%C3%B3n-v1.5-blue)](docs/constitucion.md)
 [![Tests](https://img.shields.io/badge/tests-verdes%20como%20gate%20de%20CI-brightgreen)](tests/)
@@ -87,20 +87,49 @@ Dos integraciones externas (opcionales, nunca bundled) cubren lo que un agente s
 | 180 prompts sueltos | un **registry tipado** de 180 agentes especializados |
 | probar agentes gastando tokens | **MockProvider determinista** — testea flujos sin red ni costo |
 
+## ¿Por qué X-DD y no otro framework?
+
+| | X-DD | wshobson/agents | catlog22/Claude-Code-Workflow | prompt-repo genérico |
+|---|---|---|---|---|
+| **Gobernanza de fases** | ✅ 6 fases + gate HMAC | ❌ | ❌ | ❌ |
+| **Aprobador ≠ autor** | ✅ firmado criptográfico | ❌ | ❌ | ❌ |
+| **9 metodologías integradas** | ✅ SDD+FDD+BDD+TDD+… | parcial | parcial | ❌ |
+| **Validación de ejecución real** | ✅ `xdd-flow` | ❌ | ❌ | ❌ |
+| **Dogfooding real** | ✅ X-DD se desarrolla con X-DD | ❌ | ❌ | ❌ |
+| **7 IDEs desde una fuente** | ✅ | parcial | ❌ | ❌ |
+| **Modo degradado documentado** | ✅ Base / Completo | ❌ | ❌ | ❌ |
+
+La diferencia real: los otros frameworks son *colecciones de prompts*. X-DD es un **pipeline gated**
+donde "APROBADO" tiene firma criptográfica, el aprobador no puede ser el autor, y cada check
+valida ejecución real, no archivos.
+
+## Historial de validación
+
+X-DD se desarrolla **con su propio pipeline** — cada sprint pasa por las 6 fases (Briefing→Spec→Plan→Build→QA→Retro) antes de llegar a `main`. Las lecciones aprendidas se acumulan en [`lecciones.md`](lecciones.md), que el agente consulta antes de proponer soluciones para no repetir errores. Hoy: **50+ lecciones acumuladas**, **4+ proyectos paralelos validados**.
+
 ## Instala en 30 segundos
 
-```bash
-pip install -e .          # o: pipx install x-dd
-xdd doctor                # diagnóstico del entorno
-xdd gate status           # estado del pipeline
-```
-
-¿Prefieres bootstrap de un proyecto completo?
+### Modo Base (< 2 minutos) — pipeline completo, sin dependencias extra
 
 ```bash
-git clone https://github.com/Cucholambr3ta/x-dd.git && cd x-dd
-make init DEST=/ruta/a/tu/proyecto
+pip install x-dd             # o: pipx install x-dd
+xdd init /ruta/a/tu/proyecto
+xdd doctor                   # diagnóstico: [MODO: BASE]
 ```
+
+El pipeline completo funciona: workflows, agentes, gate HMAC, 7 IDEs.
+Lo que se pierde: continuidad semántica automática entre sesiones (ver [docs/modos.md](docs/modos.md)).
+
+### Modo Completo (~10 minutos) — + MemPalace (memoria semántica)
+
+```bash
+pip install x-dd mempalace
+mempalace init /ruta/a/tu/proyecto
+xdd init /ruta/a/tu/proyecto
+xdd doctor                   # diagnóstico: [MODO: COMPLETO]
+```
+
+Con MemPalace el agente recuerda el proyecto entre sesiones.
 
 ## Qué hay dentro
 
@@ -125,7 +154,7 @@ hace cumplir. No prometemos calidad: la bloqueamos cuando falta.
 - 🏛️ [ADRs](docs/adr/) — por qué X-DD es como es
 - 🛠️ [Guías de desarrollo](docs/dev/) — cómo crear agentes/skills/workflows (material interno)
 
-> ⏳ **Nota v0.1.0:** el MCP server propio está deprecado (se elimina en v0.2.0, [ADR-0044](docs/adr/0044-deprecar-mcp-no-necesario.md)); la copia real a IDEs lo reemplaza.
+> **v0.2:** el MCP server propio se elimina en esta versión ([ADR-0044](docs/adr/0044-deprecar-mcp-no-necesario.md)); la copia real a 7 IDEs lo reemplaza sin pérdida de funcionalidad.
 
 ---
 
