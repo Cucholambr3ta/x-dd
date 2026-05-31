@@ -123,7 +123,7 @@ def test_hooks_count():
     Total esperado: 15."""
     hooks_doc = load(ROOT / ".agent/hooks/hooks.json")
     total = sum(len(h) for h in hooks_doc["hooks"].values())
-    assert total == 15, f"se esperaban 15 hooks, hay {total}"
+    assert total == 16, f"se esperaban 16 hooks (15 original + 1 S13 temporal-awareness), hay {total}"
 
 
 def test_hooks_materializables():
