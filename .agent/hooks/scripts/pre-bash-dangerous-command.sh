@@ -31,8 +31,12 @@ DANGEROUS_PATTERNS=(
   'curl[[:space:]]+.*\|[[:space:]]*(bash|sh)([[:space:]]|$)'
   'wget[[:space:]]+.*\|[[:space:]]*(bash|sh)([[:space:]]|$)'
   'dd[[:space:]]+if=.*of=/dev/(sda|hda|nvme)'
-  ':(){.*}'
-  '>\s*/dev/(sda|hda|nvme)'
+  # Fork bomb: una función (típicamente `:`) que se llama a sí misma en pipe y al
+  # fondo. El patrón viejo ':(){.*}' estaba roto en ERE (() = grupo vacío, {} =
+  # cuantificador inválido) → NO detectaba `:(){ :|:& };:`. Detectamos la firma real:
+  # nombre()  {  … | … &   (recursión en pipe + background).
+  '[a-zA-Z_:][a-zA-Z0-9_:]*[[:space:]]*\(\)[[:space:]]*\{[^}]*\|[^}]*&'
+  '>[[:space:]]*/dev/(sda|hda|nvme)'
 )
 
 for pat in "${DANGEROUS_PATTERNS[@]}"; do
