@@ -17,5 +17,5 @@ python3 scripts/xdd-eval.py run --suite=external/promptfoo-compat --runs=1
 
 ## Files
 - `cases.jsonl`: convertido desde promptfoo output
-- `grader.yaml`: usa `inspect_ai_compat` (similar scorers a Promptfoo)
+- `grader.json`: usa `inspect_ai_compat` (similar scorers a Promptfoo)
 - `promptfooconfig.yaml.example`: ejemplo config Promptfoo

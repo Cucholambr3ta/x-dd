@@ -137,42 +137,45 @@ GRADERS = {
 }
 
 
-def load_yaml_simple(path: Path) -> dict:
-    """Parser YAML mínimo para grader.yaml (no requiere PyYAML)."""
-    out = {}
-    if not path.exists():
-        return out
-    for line in path.read_text(encoding="utf-8").splitlines():
-        line = line.strip()
-        if not line or line.startswith("#"):
-            continue
-        if ":" in line:
-            k, _, v = line.partition(":")
-            v = v.strip().strip('"').strip("'")
-            # type conversion
-            if v.lower() in ("true", "false"):
-                v = v.lower() == "true"
-            else:
-                try:
-                    if "." in v: v = float(v)
-                    else: v = int(v)
-                except ValueError:
-                    pass
-            out[k.strip()] = v
-    return out
+def load_grader(suite_dir: Path) -> dict | None:
+    """Carga el grader de una suite. Prefiere grader.json (stdlib, sin parser naive).
+
+    Orden de resolución:
+      1. grader.json → json.loads (soporta listas/nesting; el parser YAML naive no).
+      2. grader.yaml + PyYAML disponible → yaml.safe_load (con warning de migración).
+      3. grader.yaml sin PyYAML → error descriptivo (no se intenta parsear naive).
+    Devuelve dict, o None si no hay grader.
+    """
+    gj = suite_dir / "grader.json"
+    if gj.exists():
+        return json.loads(gj.read_text(encoding="utf-8"))
+
+    gy = suite_dir / "grader.yaml"
+    if gy.exists():
+        try:
+            import yaml  # type: ignore
+        except ImportError:
+            print(f"[eval] grader.yaml en {suite_dir.name} requiere PyYAML o migración a "
+                  f"grader.json. Migra: convierte los campos a JSON.", file=sys.stderr)
+            return None
+        print(f"[eval] WARN: {suite_dir.name}/grader.yaml es legacy; migra a grader.json.",
+              file=sys.stderr)
+        return yaml.safe_load(gy.read_text(encoding="utf-8")) or {}
+
+    return None
 
 
 def run_suite(suite_dir: Path) -> dict:
-    """Carga cases.jsonl + grader.yaml, ejecuta grader, retorna report."""
+    """Carga cases.jsonl + grader (json preferido), ejecuta grader, retorna report."""
     cases_file = suite_dir / "cases.jsonl"
-    grader_file = suite_dir / "grader.yaml"
 
     if not cases_file.exists():
         return {"suite": suite_dir.name, "error": "cases.jsonl not found", "passed": False}
-    if not grader_file.exists():
-        return {"suite": suite_dir.name, "error": "grader.yaml not found", "passed": False}
 
-    grader = load_yaml_simple(grader_file)
+    grader = load_grader(suite_dir)
+    if grader is None:
+        return {"suite": suite_dir.name, "error": "grader not found (grader.json)",
+                "passed": False}
     grader_type = grader.get("type")
     if grader_type not in GRADERS:
         return {"suite": suite_dir.name, "error": f"unknown grader type: {grader_type}",
