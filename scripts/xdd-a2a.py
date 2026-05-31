@@ -12,13 +12,13 @@ Comandos:
 """
 from __future__ import annotations
 
-import argparse
+import argparse  # kept for type hints
 import json
 import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from _xdd_common import read_version  # noqa: E402
+from _xdd_common import make_parser, read_version  # noqa: E402
 
 __version__ = read_version()
 
@@ -122,20 +122,90 @@ def cmd_invoke(args):
 
 
 def cmd_serve(args):
-    """Stub: imprime ready-to-use snippet en vez de iniciar HTTP server real.
-    Implementación HTTP server completa diferida a v0.2.0."""
-    print(f"[a2a] stub serve mode (port={args.port})")
-    print(f"[a2a] real HTTP server diferido a v0.2.0")
-    print(f"[a2a] Recommended: use proxy + xdd-mcp-server (Sprint 6) hasta entonces")
-    print(f"[a2a] Agent Card available via: python3 scripts/xdd-a2a.py agent-card")
+    """S18: servidor HTTP A2A real con stdlib http.server (ADR-0030, v0.2.0).
+
+    Endpoints:
+      GET  /.well-known/agent     → Agent Card JSON
+      POST /                      → JSON-RPC: agent/invoke, agent/list
+    No deps externas (stdlib pura). Solo bind a 127.0.0.1 por defecto (sin TLS).
+    """
+    import http.server
+    import urllib.parse
+
+    root = Path(__file__).resolve().parent.parent
+
+    class A2AHandler(http.server.BaseHTTPRequestHandler):
+        def log_message(self, fmt, *a):
+            print(f"[a2a] {self.address_string()} {fmt % a}")
+
+        def _send_json(self, data: dict, code: int = 200):
+            body = json.dumps(data, indent=2).encode("utf-8")
+            self.send_response(code)
+            self.send_header("Content-Type", "application/json")
+            self.send_header("Content-Length", str(len(body)))
+            self.end_headers()
+            self.wfile.write(body)
+
+        def do_GET(self):
+            path = urllib.parse.urlparse(self.path).path
+            if path in ("/.well-known/agent", "/.well-known/agent.json"):
+                try:
+                    import importlib.util as _iu
+                    _sp = _iu.spec_from_file_location("a2a", str(root / "scripts" / "xdd-a2a.py"))
+                    _m = _iu.module_from_spec(_sp); _sp.loader.exec_module(_m)
+                    card = _m.build_agent_card()
+                except Exception as e:
+                    self._send_json({"error": str(e)}, 500); return
+                self._send_json(card)
+            else:
+                self._send_json({"error": "not found"}, 404)
+
+        def do_POST(self):
+            length = int(self.headers.get("Content-Length", 0))
+            body = self.rfile.read(length).decode("utf-8") if length else "{}"
+            try:
+                req = json.loads(body)
+            except json.JSONDecodeError:
+                self._send_json({"jsonrpc": "2.0", "error": {"code": -32700, "message": "Parse error"}, "id": None}); return
+            rid = req.get("id")
+            method = req.get("method", "")
+            params = req.get("params", {})
+            if method == "agent/invoke":
+                agent_id = params.get("agent") or params.get("agent_id", "?")
+                result = {"agent_id": agent_id, "status": "delegated",
+                          "note": "Invoke via xdd-orchestrate run --pattern=... --exec"}
+                self._send_json({"jsonrpc": "2.0", "result": result, "id": rid})
+            elif method in ("agent/list", "agents/list"):
+                try:
+                    import importlib.util as _iu
+                    _sp = _iu.spec_from_file_location("a2a", str(root / "scripts" / "xdd-a2a.py"))
+                    _m = _iu.module_from_spec(_sp); _sp.loader.exec_module(_m)
+                    patterns = _m.load_patterns()
+                except Exception:
+                    patterns = []
+                self._send_json({"jsonrpc": "2.0", "result": {"agents": patterns}, "id": rid})
+            else:
+                self._send_json({
+                    "jsonrpc": "2.0",
+                    "error": {"code": -32601, "message": f"Method not found: {method}"},
+                    "id": rid,
+                }, 404)
+
+    addr = (args.bind, args.port)
+    server = http.server.HTTPServer(addr, A2AHandler)
+    print(f"[a2a] A2A server running on http://{args.bind}:{args.port}")
+    print(f"[a2a]   GET /.well-known/agent  — Agent Card")
+    print(f"[a2a]   POST /                  — JSON-RPC (agent/invoke, agent/list)")
+    print(f"[a2a]   Ctrl+C to stop")
+    try:
+        server.serve_forever()
+    except KeyboardInterrupt:
+        print("\n[a2a] server stopped.")
     return 0
 
 
 def build_parser():
-    p = argparse.ArgumentParser(prog="xdd-a2a", description=__doc__,
-                                 formatter_class=argparse.RawDescriptionHelpFormatter)
-    p.add_argument("--version", action="version", version=f"xdd-a2a {__version__}")
-    sub = p.add_subparsers(dest="command", required=True)
+    p, sub = make_parser("xdd-a2a", __doc__, raw_description=True, short_version_flag=False)
 
     p_c = sub.add_parser("agent-card", help="Emit A2A Agent Card")
     p_c.add_argument("--pretty", action="store_true")
