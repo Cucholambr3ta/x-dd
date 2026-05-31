@@ -12,6 +12,21 @@ setup() {
   [[ "$output" == *"BLOCKED"* ]]
 }
 
+@test "pre-bash-dangerous-command bloquea fork bomb (regresión: patrón viejo no detectaba)" {
+  # fork bomb canónica en base64 para no escribirla literal en el .bats.
+  fb="$(printf 'OigpeyA6fDomIH07Og==' | base64 -d)"   # :(){ :|:& };:
+  json="$(python3 -c "import json,sys;print(json.dumps({'tool_input':{'command':sys.argv[1]}}))" "$fb")"
+  run bash -c "printf '%s' '$json' | bash .agent/hooks/scripts/pre-bash-dangerous-command.sh"
+  [ "$status" -eq 2 ]
+}
+
+@test "pre-bash-dangerous-command permite función bash benigna (no falso positivo)" {
+  fn="$(printf 'bXlmdW5jKCkgeyBlY2hvIGhpOyB9' | base64 -d)"  # myfunc() { echo hi; }
+  json="$(python3 -c "import json,sys;print(json.dumps({'tool_input':{'command':sys.argv[1]}}))" "$fn")"
+  run bash -c "printf '%s' '$json' | bash .agent/hooks/scripts/pre-bash-dangerous-command.sh"
+  [ "$status" -eq 0 ]
+}
+
 @test "pre-bash-dangerous-command bloquea git push --force" {
   run bash -c "echo '{\"tool_input\":{\"command\":\"git push --force origin main\"}}' | bash .agent/hooks/scripts/pre-bash-dangerous-command.sh"
   [ "$status" -eq 2 ]
