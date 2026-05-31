@@ -9,6 +9,36 @@
 
 ## [Unreleased] — main
 
+## [0.1.1] — 2026-05-30
+
+> Release de hardening. Notas user-facing en [RELEASES/v0.1.1.md](../RELEASES/v0.1.1.md).
+
+### Fixed
+- **xdd-orchestrate**: `main()` parseaba `argv` dos veces (`build_parser()` invocado 2×).
+  Ahora parsea una sola vez y despacha al `func` resultante.
+- **xdd-gate**: `_validate_phase()` lanzaba `ValueError` no capturado cuando la última
+  línea de `.approvers` no contenía el separador ` | `. Ahora reporta el artefacto como
+  malformado y devuelve `(False, errors)` sin crashear (camino de seguridad del gate).
+
+### Changed
+- **DRY versión + timestamp** (`scripts/_xdd_common.py`, nuevo): `read_version()` resuelve
+  la versión en orden VERSION → metadata del paquete → fallback literal. Los 24 scripts y
+  `src/xdd_cli/__init__.py` dejan de hardcodear `__version__`. `utcnow_iso()` (precisión de
+  segundo) y `utcnow_iso_us()` (microsegundo) centralizan los 14 timestamps duplicados; se
+  preserva la precisión por call-site (gate firma a segundo → HMAC intacto).
+- **xdd-otel / xdd-frozen-transfer / xdd-authz**: `except Exception:` silenciosos
+  reemplazados por capturas concretas (`json.JSONDecodeError`/`OSError`/`yaml.YAMLError`/
+  `KeyError`) con comentario del porqué.
+
+### Removed
+- Import muerto `subprocess` en `scripts/xdd-orchestrate.py`.
+
+### Tests
+- `test_gate.py`: `.approvers` malformado no lanza excepción.
+- `test_orchestrate.py`: `main()` construye el parser una sola vez (regresión).
+- `test_version_consistency.py`: valida fallbacks literales contra VERSION (modelo nuevo).
+- Total: 293 pytest (+7) verdes; 141 bats; AgentShield 0 findings ≥ high.
+
 ## [0.1.0] — 2026-05-30
 
 > Primer release público. Notas user-facing en [RELEASES/v0.1.0.md](../RELEASES/v0.1.0.md).

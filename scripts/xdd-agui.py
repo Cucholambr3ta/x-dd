@@ -14,9 +14,13 @@ from __future__ import annotations
 import argparse
 import json
 import sys
+from pathlib import Path
 from datetime import datetime, timezone
 
-__version__ = "0.1.0"
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from _xdd_common import read_version, utcnow_iso_us as utcnow_iso  # noqa: E402
+
+__version__ = read_version()
 
 
 EVENT_SCHEMAS = {
@@ -45,10 +49,6 @@ EVENT_SCHEMAS = {
         "optional": ["status", "tokens_used", "cost_usd"],
     },
 }
-
-
-def utcnow_iso() -> str:
-    return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.%fZ")
 
 
 def emit_event(event_type: str, data: dict) -> dict:

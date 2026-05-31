@@ -23,7 +23,10 @@ import sys
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
-__version__ = "0.1.0"
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from _xdd_common import read_version, utcnow_iso as utcnow  # noqa: E402
+
+__version__ = read_version()
 
 DEFAULT_DB = Path(os.environ.get("XDD_COST_DB",
                                   str(Path.home() / ".xdd" / "cost.db")))
@@ -78,10 +81,6 @@ def db(path: Path) -> sqlite3.Connection:
     conn.executescript(SCHEMA)
     conn.row_factory = sqlite3.Row
     return conn
-
-
-def utcnow() -> str:
-    return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
 def pricing_for(model: str, conn: sqlite3.Connection) -> tuple[float, float]:

@@ -173,6 +173,19 @@ def test_validate_fails_when_status_missing(initialized: Path):
     assert rc == 1
 
 
+def test_validate_handles_malformed_approvers(initialized: Path):
+    """`.approvers` con última línea sin ' | ' no debe lanzar excepción:
+    _validate_phase devuelve (False, errors) reportando el artefacto corrupto."""
+    assert _approve(initialized, "briefing") == 0
+    apr = initialized / ".xdd" / "briefing" / ".approvers"
+    apr.write_text("linea-sin-separador-valido\n")
+    ok, errors = xdd_gate._validate_phase(initialized, "briefing")
+    assert ok is False
+    assert any("malformado" in e for e in errors)
+    # y la CLI tampoco crashea
+    assert _validate(initialized, "briefing") == 1
+
+
 # ---------- transition ----------
 
 def _transition(root: Path, src: str, dst: str, as_json: bool = False) -> int:

@@ -24,14 +24,13 @@ import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
-__version__ = "0.1.0"
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from _xdd_common import read_version, utcnow_iso  # noqa: E402
+
+__version__ = read_version()
 
 DEFAULT_EXP_DIR = Path(os.environ.get("XDD_FROZEN_EXP_DIR",
                                        str(Path.cwd() / ".xdd" / "frozen-experiments")))
-
-
-def utcnow_iso() -> str:
-    return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
 def list_skills(project_root: Path) -> list[str]:
@@ -149,8 +148,8 @@ def cmd_list(args):
                 "target": r["target"],
                 "skills_transferred": len(r["transferred"]["skills"]),
             })
-        except Exception:
-            continue
+        except (json.JSONDecodeError, OSError, KeyError):
+            continue  # experimento corrupto o con campos faltantes: omitir
     if args.json:
         print(json.dumps(rows, indent=2))
     else:

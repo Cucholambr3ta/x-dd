@@ -20,7 +20,10 @@ import json
 import sys
 from pathlib import Path
 
-__version__ = "0.1.0"
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from _xdd_common import read_version  # noqa: E402
+
+__version__ = read_version()
 
 ROOT = Path(__file__).resolve().parent.parent
 REGISTRY = ROOT / "prompts" / "agents" / "registry.json"

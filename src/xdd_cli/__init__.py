@@ -16,7 +16,17 @@ import runpy
 import sys
 from pathlib import Path
 
-__version__ = "0.1.0"
+def _resolve_version() -> str:
+    """Versión del paquete instalado; fallback literal si corre desde fuente."""
+    try:
+        from importlib.metadata import PackageNotFoundError, version
+
+        return version("x-dd")
+    except (PackageNotFoundError, ImportError):
+        return "0.1.1"
+
+
+__version__ = _resolve_version()
 
 
 def _scripts_dir() -> Path:

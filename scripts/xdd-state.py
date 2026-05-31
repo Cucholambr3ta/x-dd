@@ -27,7 +27,10 @@ import sys
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
-__version__ = "0.1.0"
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from _xdd_common import read_version, utcnow_iso as utcnow  # noqa: E402
+
+__version__ = read_version()
 
 DEFAULT_DB = Path(os.environ.get("XDD_STATE_DB",
                                   str(Path.home() / ".xdd" / "state.db")))
@@ -87,10 +90,6 @@ def _migrate_evolutions(conn):
         if col not in existing_cols:
             conn.execute(f"ALTER TABLE evolutions ADD COLUMN {col} TEXT")
     conn.commit()
-
-
-def utcnow() -> str:
-    return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
 def instinct_id(pattern: str, category: str) -> str:

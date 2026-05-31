@@ -25,7 +25,10 @@ import uuid
 from datetime import datetime, timezone
 from pathlib import Path
 
-__version__ = "0.1.0"
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from _xdd_common import read_version, utcnow_iso_us as utcnow_iso  # noqa: E402
+
+__version__ = read_version()
 
 DEFAULT_DIR = Path(os.environ.get("XDD_OTEL_DIR",
                                     str(Path.cwd() / ".xdd" / "traces" / "spans")))
@@ -34,10 +37,6 @@ GENAI_KINDS = {
     "llm.call", "tool.call", "agent.invocation", "skill.execution",
     "workflow.step", "gate.transition", "phase.validation",
 }
-
-
-def utcnow_iso() -> str:
-    return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.%fZ")
 
 
 def utcnow_ns() -> int:
@@ -145,8 +144,8 @@ def cmd_list(args):
     for f in sorted(d.glob("*.json")):
         try:
             spans.append(json.loads(f.read_text(encoding="utf-8")))
-        except Exception:
-            continue
+        except (json.JSONDecodeError, OSError):
+            continue  # span file corrupto/ilegible: omitir, no abortar el listado
     if args.json:
         print(json.dumps(spans, indent=2))
     else:
@@ -165,8 +164,8 @@ def cmd_export(args):
     for f in sorted(d.glob("*.json")):
         try:
             spans.append(json.loads(f.read_text(encoding="utf-8")))
-        except Exception:
-            continue
+        except (json.JSONDecodeError, OSError):
+            continue  # span file corrupto/ilegible: omitir del export
     if args.format == "jsonl":
         for s in spans:
             print(json.dumps(s))

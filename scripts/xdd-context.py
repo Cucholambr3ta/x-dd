@@ -18,7 +18,10 @@ import re
 import sys
 from pathlib import Path
 
-__version__ = "0.1.0"
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from _xdd_common import read_version  # noqa: E402
+
+__version__ = read_version()
 
 # Default budget (Claude Sonnet/Opus 200k context window)
 DEFAULT_BUDGET = 200_000

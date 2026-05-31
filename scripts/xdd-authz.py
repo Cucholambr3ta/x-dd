@@ -25,7 +25,10 @@ import sys
 import time
 from pathlib import Path
 
-__version__ = "0.1.0"
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from _xdd_common import read_version  # noqa: E402
+
+__version__ = read_version()
 
 DEFAULT_POLICY = {
     "default_action": "allow",  # allow | deny | require_approval | mask
@@ -74,8 +77,8 @@ def load_policy(path: str | None) -> dict:
                     return {**DEFAULT_POLICY, **full}
             except ImportError:
                 pass  # sin yaml, fallback al default
-            except Exception:
-                pass
+            except (OSError, yaml.YAMLError, KeyError):
+                pass  # policy YAML ilegible/malformado: fallback seguro al default
     return dict(DEFAULT_POLICY)
 
 

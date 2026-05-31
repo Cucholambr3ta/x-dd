@@ -22,14 +22,13 @@ import time
 from datetime import datetime, timezone
 from pathlib import Path
 
-__version__ = "0.1.0"
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from _xdd_common import read_version, utcnow_iso_us as utcnow_iso  # noqa: E402
+
+__version__ = read_version()
 
 DEFAULT_DIR = Path(os.environ.get("XDD_TRACES_DIR",
                                     str(Path.cwd() / ".xdd" / "traces")))
-
-
-def utcnow_iso() -> str:
-    return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.%fZ")
 
 
 def load_session(sid: str, base: Path) -> list:

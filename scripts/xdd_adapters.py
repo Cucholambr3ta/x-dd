@@ -25,7 +25,10 @@ import sys
 from dataclasses import dataclass
 from pathlib import Path
 
-__version__ = "0.1.0"
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from _xdd_common import read_version  # noqa: E402
+
+__version__ = read_version()
 
 TARGETS = [
     "claude-code",

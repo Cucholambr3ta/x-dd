@@ -15,20 +15,18 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
-import subprocess
 import sys
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timezone
 from pathlib import Path
 
-__version__ = "0.1.0"
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from _xdd_common import read_version, utcnow_iso as utcnow  # noqa: E402
+
+__version__ = read_version()
 ROOT = Path(__file__).resolve().parent.parent
 REGISTRY = ROOT / "prompts" / "agents" / "registry.json"
-
-
-def utcnow() -> str:
-    return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
 def load_registry() -> dict:
@@ -304,7 +302,8 @@ def build_parser():
 
 
 def main(argv=None):
-    return build_parser().parse_args(argv).func(build_parser().parse_args(argv))
+    args = build_parser().parse_args(argv)
+    return args.func(args)
 
 
 if __name__ == "__main__":
