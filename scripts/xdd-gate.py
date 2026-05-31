@@ -30,7 +30,7 @@ from pathlib import Path
 from typing import Iterable
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from _xdd_common import read_version, utcnow_iso  # noqa: E402
+from _xdd_common import make_parser, read_version, utcnow_iso  # noqa: E402
 
 __version__ = read_version()
 
@@ -335,13 +335,11 @@ def cmd_status(root: Path, args) -> int:
 
 
 def build_parser() -> argparse.ArgumentParser:
-    p = argparse.ArgumentParser(
-        prog="xdd-gate",
-        description="Gate keeper programático del pipeline X-DD (con firma HMAC-SHA256).",
+    p, sub = make_parser(
+        "xdd-gate",
+        "Gate keeper programático del pipeline X-DD (con firma HMAC-SHA256).",
     )
-    p.add_argument("-v", "--version", action="version", version=f"xdd-gate v{__version__}")
     p.add_argument("--project-root", default=".", help="Raíz del proyecto (default: .)")
-    sub = p.add_subparsers(dest="command", required=True)
 
     p_init = sub.add_parser("init", help="Genera .xdd/.gate-key si no existe")
     p_init.set_defaults(func=cmd_init)

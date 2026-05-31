@@ -63,3 +63,35 @@ def test_read_version_fallback_si_no_hay_archivo(tmp_path, monkeypatch):
     # Puede resolver vía importlib.metadata si 'x-dd' está instalado; si no, fallback.
     v = common.read_version()
     assert re.match(r"^\d+\.\d+\.\d+", v)  # siempre semver, nunca crashea
+
+
+# ---------- make_parser (S3 DRY) ----------
+
+def test_make_parser_con_subcomandos():
+    p, sub = common.make_parser("xdd-foo", "desc")
+    assert p.prog == "xdd-foo"
+    assert sub is not None
+    # --version usa read_version
+    import pytest
+    with pytest.raises(SystemExit):
+        p.parse_args(["--version"])
+
+
+def test_make_parser_sin_subcomandos():
+    p, sub = common.make_parser("xdd-bar", "desc", with_subcommands=False)
+    assert sub is None
+
+
+def test_make_parser_raw_description_formatter():
+    import argparse
+    p, _ = common.make_parser("xdd-baz", "doc", raw_description=True, with_subcommands=False)
+    assert p.formatter_class is argparse.RawDescriptionHelpFormatter
+
+
+# ---------- mempalace_mine (S3 wrapper) ----------
+
+def test_mempalace_mine_noop_sin_cli(monkeypatch):
+    """Sin mempalace en PATH → no-op, devuelve False, no crashea."""
+    import shutil
+    monkeypatch.setattr(shutil, "which", lambda name: None)
+    assert common.mempalace_mine("/tmp/x") is False
