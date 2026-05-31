@@ -24,13 +24,13 @@ if command -v mempalace >/dev/null 2>&1; then
   fi
 fi
 
-# GitNexus: re-indexa el grafo de código tras el commit (async, si el CLI existe).
+# GitNexus: OPT-IN (XDD_GITNEXUS=1). Default OFF por licencia PolyForm-NC
+# (incompatible con uso comercial). MemPalace (MIT) sigue por defecto. ADR-0049.
 # flock skip-if-running: igual que MemPalace, evita re-index concurrentes que dejan
 # el índice en estado degradado (conteo parcial) si dos analyze chocan.
 GN_DIR="${HOME}/.gitnexus"
 GN_LOG="${GN_DIR}/analyze.log"
 GN_LOCK="${GN_DIR}/.analyze.lock"
-mkdir -p "$GN_DIR"
 
 _gn_run() {
   if command -v gitnexus >/dev/null 2>&1; then
@@ -40,7 +40,8 @@ _gn_run() {
   fi
 }
 
-if command -v gitnexus >/dev/null 2>&1 || command -v npx >/dev/null 2>&1; then
+if [ "${XDD_GITNEXUS:-0}" = "1" ] && { command -v gitnexus >/dev/null 2>&1 || command -v npx >/dev/null 2>&1; }; then
+  mkdir -p "$GN_DIR"
   if command -v flock >/dev/null 2>&1; then
     (
       flock -n 9 || exit 0

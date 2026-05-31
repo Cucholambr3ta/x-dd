@@ -77,10 +77,21 @@ Los workflows producen artefactos versionables en la raíz del proyecto. Consult
 ---
 *X-DD System — Excelencia Operativa*
 
+---
+
+## GitNexus — opt-in (licencia comercial)
+
+> ⚠️ **GitNexus es OPT-IN.** Su licencia es PolyForm Noncommercial → **incompatible con
+> uso comercial**. Por defecto X-DD **no** ejecuta GitNexus (ni en `post-commit` ni en
+> `xdd-start`). Activar solo en proyectos no-comerciales con `XDD_GITNEXUS=1`.
+> MemPalace (MIT) cubre continuidad de contexto por defecto. Ver
+> [docs/gitnexus-optin.md](./docs/gitnexus-optin.md) y [ADR-0049](./docs/adr/0049-gitnexus-optin-licencia-comercial.md).
+> El bloque auto-generado de abajo describe el índice si GitNexus está activo.
+
 <!-- gitnexus:start -->
 # GitNexus — Code Intelligence
 
-This project is indexed by GitNexus as **x-dd** (10072 symbols, 10982 relationships, 59 execution flows). Use the GitNexus MCP tools to understand code, assess impact, and navigate safely.
+This project is indexed by GitNexus as **x-dd** (10125 symbols, 11114 relationships, 71 execution flows). Use the GitNexus MCP tools to understand code, assess impact, and navigate safely.
 
 > If any GitNexus tool warns the index is stale, run `npx gitnexus analyze` in terminal first.
 
