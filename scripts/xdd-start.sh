@@ -57,20 +57,25 @@ else
   echo "[X-DD]       Instalación: ver INSTALL.md sección MemPalace."
 fi
 
-# GitNexus: opcional, code intelligence (knowledge graph del codebase)
-GN_LOG_DIR="${HOME}/.gitnexus"
-mkdir -p "$GN_LOG_DIR"
-GN_LOG_FILE="$GN_LOG_DIR/index.log"
-if command -v gitnexus >/dev/null 2>&1; then
-  echo "[X-DD] Inicializando GitNexus..."
-  if gitnexus index "$PROJECT_DIR" >>"$GN_LOG_FILE" 2>&1; then
-    echo "[X-DD] GitNexus indexado. Log: $GN_LOG_FILE"
+# GitNexus: OPT-IN (XDD_GITNEXUS=1). Default OFF por licencia PolyForm-NC
+# (incompatible con uso comercial). Activar solo en proyectos no-comerciales. ADR-0049.
+if [ "${XDD_GITNEXUS:-0}" = "1" ]; then
+  GN_LOG_DIR="${HOME}/.gitnexus"
+  mkdir -p "$GN_LOG_DIR"
+  GN_LOG_FILE="$GN_LOG_DIR/index.log"
+  if command -v gitnexus >/dev/null 2>&1; then
+    echo "[X-DD] Inicializando GitNexus (opt-in)..."
+    if gitnexus index "$PROJECT_DIR" >>"$GN_LOG_FILE" 2>&1; then
+      echo "[X-DD] GitNexus indexado. Log: $GN_LOG_FILE"
+    else
+      echo "[X-DD] WARN: gitnexus index falló (ver $GN_LOG_FILE). Continuando sin code intel."
+    fi
   else
-    echo "[X-DD] WARN: gitnexus index falló (ver $GN_LOG_FILE). Continuando sin code intel."
+    echo "[X-DD] WARN: 'gitnexus' no encontrado. Omitiendo code intelligence."
+    echo "[X-DD]       Instalación: ver INSTALL.md sección GitNexus (license PolyForm Noncomm)."
   fi
 else
-  echo "[X-DD] WARN: 'gitnexus' no encontrado. Omitiendo code intelligence."
-  echo "[X-DD]       Instalación: ver INSTALL.md sección GitNexus (license PolyForm Noncomm)."
+  echo "[X-DD] GitNexus opt-in OFF (licencia PolyForm-NC). Activar: XDD_GITNEXUS=1 (solo no-comercial)."
 fi
 
 # Git hook post-commit (idempotente)

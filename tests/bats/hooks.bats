@@ -116,6 +116,20 @@ setup() {
   grep -q "flock" scripts/hooks/post-commit
 }
 
+@test "post-commit: GitNexus es opt-in (XDD_GITNEXUS) — S4 licencia comercial" {
+  # El bloque gitnexus debe estar guardado por XDD_GITNEXUS=1 (default OFF).
+  grep -q 'XDD_GITNEXUS:-0.*=.*1' scripts/hooks/post-commit
+  # MemPalace NO debe estar tras esa guarda (sigue por defecto).
+  # Heurística: la línea de mempalace mine aparece antes del guard gitnexus.
+  mp_line=$(grep -n "mempalace mine" scripts/hooks/post-commit | head -1 | cut -d: -f1)
+  gn_line=$(grep -n 'XDD_GITNEXUS' scripts/hooks/post-commit | head -1 | cut -d: -f1)
+  [ "$mp_line" -lt "$gn_line" ]
+}
+
+@test "xdd-start: GitNexus es opt-in (XDD_GITNEXUS)" {
+  grep -q 'XDD_GITNEXUS:-0.*=.*1' scripts/xdd-start.sh
+}
+
 @test "post-write-auto-organize no toca el repo-fuente X-DD (guarda)" {
   # En el repo-fuente, las reglas gitignore_framework_copies NO deben aplicarse:
   # prompts/scripts/templates SON código versionado, no copias. El hook debe no-op.
