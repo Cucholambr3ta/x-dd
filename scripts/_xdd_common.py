@@ -23,7 +23,7 @@ from pathlib import Path
 
 # Fallback embebido: única fuente literal de versión que el test de consistencia
 # vigila. Debe coincidir con el archivo VERSION en la raíz del repo.
-_VERSION_FALLBACK = "0.1.2"
+_VERSION_FALLBACK = "0.2.0"
 
 
 def utcnow_iso() -> str:

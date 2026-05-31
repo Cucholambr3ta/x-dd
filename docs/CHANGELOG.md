@@ -9,6 +9,29 @@
 
 ## [Unreleased] — main
 
+## [0.2.0] — 2026-05-31
+
+> Release mayor. Cero deuda técnica. Notas user-facing en [RELEASES/v0.2.0.md](../RELEASES/v0.2.0.md).
+
+### BREAKING
+- **MCP server eliminado** (ADR-0044): xdd-mcp-server/, xdd-mcp-install-global.sh, tests MCP borrados. IDEs activan vía /trigger + .agents/skills/ — sin servidor necesario.
+- **Distribución híbrida** (ADR-0048): xdd-init --pip-mode (default si x-dd pip-instalado): solo copia editables. `xdd update` y `xdd migrate` para transición v0.1→v0.2.
+- Python 3.12→**3.10** (floor arbitrario: cero features 3.11/3.12 usadas).
+
+### Added (S7-S22)
+- Orchestration runtime real: invoke_agent_exec con AnthropicProvider lazy (degradación sin key).
+- Middleware 6-stage OTel/cost: ba/wm/wt/am/aa hooks funcionales (span-start/end, cost-record).
+- Sync points formales (parallel_then_sync): gate real, timeout, persistencia SQLite.
+- Sprint tracking SQLite + `xdd metrics` cruzadas (S10-S12).
+- Pattern-extraction OTel traces + temporal-awareness PreToolUse hook (S11/S13).
+- Judge-subagents (xdd-meta-eval judge): veredicto AI o fallback numérico (S14).
+- AG-UI mapper completo, bundle.schema.json, context check-segmented, A2A server stdlib (S15-S18).
+- `xdd update` non-destructivo + `xdd migrate` automático (S20-S21).
+- GitNexus opt-in por defecto (ADR-0049): PolyForm-NC incompatible con uso comercial.
+- Modo degradado documentado (Base/Completo), docs/modos.md, doctor mempalace_mode/gitnexus_enabled.
+- README 30s: tabla comparativa honesta + dogfooding + dos paths install.
+- grader.json (stdlib), make_parser() DRY, wrapper mempalace_mine, pytest-cov + 23 tests core nuevos.
+
 ## [0.1.2] — 2026-05-30
 
 > Reconexión del flujo de auto-update (hooks) + endurecimiento de hooks.
