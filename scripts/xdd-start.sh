@@ -57,6 +57,14 @@ else
   echo "[X-DD]       Instalación: ver INSTALL.md sección MemPalace."
 fi
 
+# Modo operativo
+if command -v mempalace >/dev/null 2>&1; then
+  echo "[X-DD] Modo: COMPLETO (MemPalace activo)"
+else
+  echo "[X-DD] Modo: BASE (sin MemPalace — pipeline completo, sin continuidad semántica automática)"
+  echo "[X-DD]       Ver docs/modos.md para instalar MemPalace y activar Modo Completo."
+fi
+
 # GitNexus: OPT-IN (XDD_GITNEXUS=1). Default OFF por licencia PolyForm-NC
 # (incompatible con uso comercial). Activar solo en proyectos no-comerciales. ADR-0049.
 if [ "${XDD_GITNEXUS:-0}" = "1" ]; then

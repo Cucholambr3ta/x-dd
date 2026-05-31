@@ -281,6 +281,24 @@ if [ -f "xdd.profile.yml" ]; then
   fi
 fi
 
+# Modo operativo: COMPLETO (MemPalace disponible) vs BASE (sin MemPalace)
+MEMPALACE_MODE="base"
+command -v mempalace >/dev/null 2>&1 && MEMPALACE_MODE="complete"
+
+GITNEXUS_ENABLED="false"
+[ "${XDD_GITNEXUS:-0}" = "1" ] && GITNEXUS_ENABLED="true"
+
+if [ $JSON_OUTPUT -eq 0 ]; then
+  printf "\n[Modo operativo] "
+  if [ "$MEMPALACE_MODE" = "complete" ]; then
+    printf "COMPLETO (MemPalace activo — continuidad semántica entre sesiones)\n"
+  else
+    printf "BASE (sin MemPalace — pipeline funciona; sin continuidad semántica automática)\n"
+    printf "  → Para Modo Completo instala MemPalace: ver docs/modos.md\n"
+  fi
+  printf "  GitNexus: %s\n" "${GITNEXUS_ENABLED} (XDD_GITNEXUS=${XDD_GITNEXUS:-0})"
+fi
+
 # --- Salida ---
 if [ $JSON_OUTPUT -eq 1 ]; then
   printf '{\n'
@@ -288,6 +306,8 @@ if [ $JSON_OUTPUT -eq 1 ]; then
   printf '  "version": "%s",\n' "$XDD_VERSION"
   printf '  "timestamp": "%s",\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
   printf '  "profile": "%s",\n' "${PROFILE:-unknown}"
+  printf '  "mempalace_mode": "%s",\n' "$MEMPALACE_MODE"
+  printf '  "gitnexus_enabled": %s,\n' "$GITNEXUS_ENABLED"
   printf '  "summary": {"pass": %d, "warn": %d, "fail": %d},\n' "$PASS" "$WARN" "$FAIL"
   printf '  "checks": [\n'
   local_n=${#CHECKS_JSON[@]}
