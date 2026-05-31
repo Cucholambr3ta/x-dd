@@ -14,7 +14,7 @@ Reports persisten en .xdd/eval-runs/<suite>/<timestamp>.json
 """
 from __future__ import annotations
 
-import argparse
+import argparse  # kept for type hints / argparse.ArgumentParser references
 import json
 import os
 import sys
@@ -23,7 +23,7 @@ from pathlib import Path
 from statistics import mean, stdev
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from _xdd_common import read_version, utcnow_iso  # noqa: E402
+from _xdd_common import make_parser, read_version, utcnow_iso  # noqa: E402
 
 __version__ = read_version()
 
@@ -157,11 +157,61 @@ def cmd_baseline(args):
     return 2
 
 
+def cmd_judge(args):
+    """S14: judge-subagent — evalúa dos runs de eval con IA y emite APROBADO/REVISAR/RECHAZADO.
+
+    Usa AnthropicProvider (lazy, degradación elegante sin API key → compara numéricamente).
+    """
+    runs = load_runs(args.suite, 2)
+    if len(runs) < 2:
+        print(f"[meta-eval] judge necesita ≥2 runs (hay {len(runs)}).", file=sys.stderr)
+        return 1
+
+    a, b = runs[1], runs[0]  # a=anterior, b=latest
+
+    # Intentar AI judgment
+    try:
+        import importlib.util as _iu
+        _sp = _iu.spec_from_file_location("xdd_provider", Path(__file__).parent / "xdd-provider.py")
+        _pm = _iu.module_from_spec(_sp); _sp.loader.exec_module(_pm)
+        provider = _pm.get_provider(name="anthropic")
+        prompt = (
+            f"Eres un juez de evaluaciones de agentes de IA. Compara dos runs:\n\n"
+            f"Run A (anterior): {json.dumps(a, indent=2)[:800]}\n\n"
+            f"Run B (última): {json.dumps(b, indent=2)[:800]}\n\n"
+            "Emite exactamente una de estas palabras como primera línea de tu respuesta: "
+            "APROBADO, REVISAR, o RECHAZADO. Luego justifica en 2-3 oraciones."
+        )
+        response = provider.complete(prompt)
+        first_line = response.strip().split("\n")[0].strip().upper()
+        verdict = first_line if first_line in ("APROBADO", "REVISAR", "RECHAZADO") else "REVISAR"
+        judge_mode = "AI"
+    except Exception:
+        # Fallback: comparación numérica
+        delta = b.get("pass_rate", 0) - a.get("pass_rate", 0)
+        verdict = "APROBADO" if delta >= 0 else "RECHAZADO"
+        response = f"Fallback numérico: delta={delta:+.3f}"
+        judge_mode = "numeric"
+
+    result = {
+        "suite": args.suite or "ALL",
+        "run_a": a.get("suite", "?"),
+        "run_b": b.get("suite", "?"),
+        "verdict": verdict,
+        "judge_mode": judge_mode,
+        "reasoning": response[:300],
+    }
+    if args.json:
+        print(json.dumps(result, indent=2))
+    else:
+        icon = {"APROBADO": "✅", "REVISAR": "⚠️", "RECHAZADO": "❌"}.get(verdict, "?")
+        print(f"[meta-eval] judge [{judge_mode}]: {icon} {verdict}")
+        print(f"  {result['reasoning'][:200]}")
+    return 0 if verdict == "APROBADO" else 1
+
+
 def build_parser():
-    p = argparse.ArgumentParser(prog="xdd-meta-eval", description=__doc__,
-                                 formatter_class=argparse.RawDescriptionHelpFormatter)
-    p.add_argument("--version", action="version", version=f"xdd-meta-eval {__version__}")
-    sub = p.add_subparsers(dest="command", required=True)
+    p, sub = make_parser("xdd-meta-eval", __doc__, raw_description=True, short_version_flag=False)
 
     p_c = sub.add_parser("compare", help="Compare last N runs")
     p_c.add_argument("--last", type=int, default=5)
@@ -179,6 +229,11 @@ def build_parser():
     p_b.add_argument("--suite")
     p_b.add_argument("--json", action="store_true")
     p_b.set_defaults(func=cmd_baseline)
+
+    p_j = sub.add_parser("judge", help="S14: judge-subagent evalúa runs con IA")
+    p_j.add_argument("--suite")
+    p_j.add_argument("--json", action="store_true")
+    p_j.set_defaults(func=cmd_judge)
 
     return p
 

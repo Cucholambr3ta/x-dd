@@ -35,6 +35,17 @@
         ],
         "exit_on_match": 0,
         "script": ".agent/hooks/scripts/pre-write-doc-warning.sh"
+      },
+      {
+        "id": "pre:tool:temporal-awareness",
+        "matcher": "*",
+        "description": "S13 v0.2: inyecta contexto temporal del sprint activo antes de cada tool call. Opt-out: XDD_TEMPORAL_AWARENESS=0.",
+        "profile": [
+          "standard",
+          "strict"
+        ],
+        "exit_on_match": 0,
+        "script": ".agent/hooks/scripts/pre-tool-temporal-awareness.sh"
       }
     ],
     "PostToolUse": [

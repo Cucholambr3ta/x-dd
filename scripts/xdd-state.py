@@ -61,6 +61,15 @@ CREATE INDEX IF NOT EXISTS idx_confidence ON instincts(confidence DESC);
 CREATE INDEX IF NOT EXISTS idx_last_seen ON instincts(last_seen DESC);
 CREATE INDEX IF NOT EXISTS idx_promoted ON instincts(promoted);
 
+CREATE TABLE IF NOT EXISTS sprints (
+  id TEXT PRIMARY KEY,
+  name TEXT NOT NULL,
+  status TEXT DEFAULT 'active',  -- active | closed
+  started_at TEXT NOT NULL,
+  closed_at TEXT,
+  goal TEXT
+);
+
 CREATE TABLE IF NOT EXISTS orchestrations (
   run_id TEXT PRIMARY KEY,
   pattern_name TEXT NOT NULL,
@@ -457,6 +466,88 @@ def cmd_stats(args):
     return 0
 
 
+def cmd_sprint_start(args):
+    """S10: registra el inicio de un sprint en la DB."""
+    conn = db(args.db)
+    sid = args.id or f"sprint_{utcnow()[:10]}"
+    conn.execute(
+        "INSERT OR REPLACE INTO sprints (id, name, status, started_at, goal) VALUES (?,?,?,?,?)",
+        (sid, args.name or sid, "active", utcnow(), args.goal or ""),
+    )
+    conn.commit(); conn.close()
+    print(f"[state] ✓ sprint {sid!r} iniciado.")
+    return 0
+
+
+def cmd_sprint_close(args):
+    """S10: cierra el sprint activo."""
+    conn = db(args.db)
+    sid = args.id
+    if not sid:
+        row = conn.execute(
+            "SELECT id FROM sprints WHERE status='active' ORDER BY started_at DESC LIMIT 1"
+        ).fetchone()
+        sid = row["id"] if row else None
+    if not sid:
+        print("[state] sin sprint activo.", file=sys.stderr); conn.close(); return 1
+    conn.execute("UPDATE sprints SET status='closed', closed_at=? WHERE id=?",
+                 (utcnow(), sid))
+    conn.commit(); conn.close()
+    print(f"[state] ✓ sprint {sid!r} cerrado.")
+    return 0
+
+
+def cmd_sprint_status(args):
+    """S10: muestra sprints recientes."""
+    conn = db(args.db)
+    rows = conn.execute(
+        "SELECT id, name, status, started_at, closed_at, goal FROM sprints "
+        "ORDER BY started_at DESC LIMIT 10"
+    ).fetchall()
+    conn.close()
+    if args.json:
+        print(json.dumps([dict(r) for r in rows], indent=2))
+    else:
+        for r in rows:
+            icon = "▶" if r["status"] == "active" else "✓"
+            print(f"  {icon} {r['id']:<30} {r['status']:<8} {r['started_at'][:10]}")
+    return 0
+
+
+def cmd_metrics(args):
+    """S12: métricas de pipeline cruzadas (instincts, sprints, orchestrations)."""
+    conn = db(args.db)
+    instincts_total = conn.execute("SELECT COUNT(*) FROM instincts").fetchone()[0]
+    instincts_highconf = conn.execute(
+        "SELECT COUNT(*) FROM instincts WHERE confidence >= 0.5").fetchone()[0]
+    sprints_done = conn.execute(
+        "SELECT COUNT(*) FROM sprints WHERE status='closed'").fetchone()[0]
+    sprints_active = conn.execute(
+        "SELECT COUNT(*) FROM sprints WHERE status='active'").fetchone()[0]
+    orcs_total = conn.execute("SELECT COUNT(*) FROM orchestrations").fetchone()[0]
+    orcs_ok = conn.execute(
+        "SELECT COUNT(*) FROM orchestrations WHERE status='completed'").fetchone()[0]
+    conn.close()
+
+    data = {
+        "instincts_total": instincts_total,
+        "instincts_high_confidence": instincts_highconf,
+        "sprints_closed": sprints_done,
+        "sprints_active": sprints_active,
+        "orchestrations_total": orcs_total,
+        "orchestrations_completed": orcs_ok,
+        "db_path": str(args.db),
+    }
+    if args.json:
+        print(json.dumps(data, indent=2))
+    else:
+        print(f"[state] metrics — {data['db_path']}")
+        print(f"  Instincts: {instincts_total} total, {instincts_highconf} high-confidence")
+        print(f"  Sprints: {sprints_active} activos, {sprints_done} cerrados")
+        print(f"  Orchestrations: {orcs_ok}/{orcs_total} completadas")
+    return 0
+
+
 def build_parser():
     p, sub = make_parser(
         "xdd-state",
@@ -506,6 +597,26 @@ def build_parser():
     p_st = sub.add_parser("stats", help="Métricas")
     p_st.add_argument("--json", action="store_true")
     p_st.set_defaults(func=cmd_stats)
+
+    # S10: sprint tracking
+    p_ss = sub.add_parser("sprint-start", help="Inicia un sprint en la DB")
+    p_ss.add_argument("--id", help="ID del sprint (default: fecha)")
+    p_ss.add_argument("--name", help="Nombre descriptivo")
+    p_ss.add_argument("--goal", help="Objetivo del sprint")
+    p_ss.set_defaults(func=cmd_sprint_start)
+
+    p_sc = sub.add_parser("sprint-close", help="Cierra el sprint activo")
+    p_sc.add_argument("--id", help="ID explícito (default: activo más reciente)")
+    p_sc.set_defaults(func=cmd_sprint_close)
+
+    p_sst = sub.add_parser("sprint-status", help="Sprints recientes")
+    p_sst.add_argument("--json", action="store_true")
+    p_sst.set_defaults(func=cmd_sprint_status)
+
+    # S12: métricas de pipeline
+    p_met = sub.add_parser("metrics", help="Métricas cruzadas de pipeline (S12)")
+    p_met.add_argument("--json", action="store_true")
+    p_met.set_defaults(func=cmd_metrics)
 
     return p
 
