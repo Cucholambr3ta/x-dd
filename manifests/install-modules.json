@@ -21,6 +21,7 @@
         "scripts/lint-workflows.sh",
         "scripts/hooks/post-commit",
         "templates/",
+        "templates/agent.template.md",
         "docs/constitucion.md",
         "AGENTS.md"
       ],
@@ -120,7 +121,9 @@
         ".agent/workflows/research.md"
       ],
       "required": false,
-      "requires": ["continuous-learning"]
+      "requires": [
+        "continuous-learning"
+      ]
     },
     "orchestration": {
       "description": "Multi-agent orchestration runtime /orchestrate (Sprint 11).",
@@ -165,7 +168,8 @@
       "files": [
         "skills/",
         "prompts/skills/",
-        "scripts/xdd-bundle.py"
+        "scripts/xdd-bundle.py",
+        "skills/crear-agente/"
       ]
     },
     "workspace-monorepo": {
@@ -221,7 +225,8 @@
     "lessons-engine": {
       "description": "Motor nativo de gestion de lecciones aprendidas (stdlib Python, sin deps): add con deduplicacion fuzzy, suggest-fix via investigador, apply-fix con tracking estado, search BM25, extract desde sesion, list/stats/gc. Formato extendido: contexto+problema+causa+leccion+fix_aplicado+mejoras_sugeridas+estado_mejoras.",
       "files": [
-        "scripts/xdd-lessons.py"
+        "scripts/xdd-lessons.py",
+        "templates/lecciones.template.md"
       ],
       "available_from": "0.2.1"
     },
@@ -233,7 +238,9 @@
         ".agent/hooks/scripts/session-start-reme-load.sh",
         ".agent/hooks/scripts/stop-reme-summary.sh"
       ],
-      "requires": ["hooks-runtime"],
+      "requires": [
+        "hooks-runtime"
+      ],
       "available_from": "0.2.1"
     },
     "core-essential": {
