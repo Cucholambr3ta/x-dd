@@ -217,8 +217,9 @@
       ]
     },
     "continuous-memory": {
-      "description": "ReMe (Apache-2.0) — memory management kit para agentes: journal diario, long-term MEMORY.md, compactacion de contexto, busqueda hibrida vector+BM25. Opt-in via XDD_REME=1. Complementa MemPalace (codebase RAG) con memoria conversacional persistente.",
+      "description": "Motor nativo de memoria conversacional (arquitectura ReMe, stdlib Python, sin deps): journal diario, MEMORY.md long-term, compactacion de contexto, busqueda BM25, GC. Opt-in via XDD_MEMORY=1. Complementa MemPalace (codebase RAG) con memoria de sesiones.",
       "files": [
+        "scripts/xdd-memory.py",
         "docs/reme-optin.md",
         ".agent/hooks/scripts/session-start-reme-load.sh",
         ".agent/hooks/scripts/stop-reme-summary.sh"
