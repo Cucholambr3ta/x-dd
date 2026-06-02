@@ -9,7 +9,9 @@
         "core",
         "workflows-core",
         "memory",
-        "docs-governance"
+        "docs-governance",
+        "lessons-engine",
+        "continuous-memory"
       ]
     },
     "core": {
@@ -23,7 +25,10 @@
         "ci-runtime",
         "docs-governance",
         "personas",
-        "skills-core"
+        "skills-core",
+        "lessons-engine",
+        "hooks-runtime",
+        "continuous-memory"
       ]
     },
     "developer": {
@@ -44,7 +49,8 @@
         "observability",
         "governance-runtime",
         "router",
-        "continuous-memory"
+        "continuous-memory",
+        "lessons-engine"
       ]
     },
     "security": {
@@ -62,7 +68,9 @@
         "personas",
         "skills-core",
         "governance-runtime",
-        "pentest"
+        "pentest",
+        "lessons-engine",
+        "continuous-memory"
       ]
     },
     "research": {
@@ -81,7 +89,8 @@
         "observability",
         "ahe-evolve",
         "researcher",
-        "continuous-memory"
+        "continuous-memory",
+        "lessons-engine"
       ]
     },
     "full": {
@@ -110,7 +119,8 @@
         "router",
         "pentest",
         "researcher",
-        "continuous-memory"
+        "continuous-memory",
+        "lessons-engine"
       ]
     },
     "lean": {
@@ -120,7 +130,9 @@
         "workflows-essential",
         "memory",
         "platform-configs",
-        "gate-keeper"
+        "gate-keeper",
+        "lessons-engine",
+        "continuous-memory"
       ],
       "requires_wrapper_global": true,
       "max_size_mb": 5
