@@ -94,6 +94,18 @@
           "strict"
         ],
         "script": ".agent/hooks/scripts/session-start-context-load.sh"
+      },
+      {
+        "id": "session:start:reme-load",
+        "matcher": "*",
+        "description": "ReMe opt-in (XDD_REME=1): carga MEMORY.md + journal del dia anterior al iniciar sesion.",
+        "profile": [
+          "minimal",
+          "standard",
+          "strict"
+        ],
+        "async": true,
+        "script": ".agent/hooks/scripts/session-start-reme-load.sh"
       }
     ],
     "Stop": [
@@ -117,6 +129,18 @@
         ],
         "async": true,
         "script": ".agent/hooks/scripts/stop-pattern-extraction.sh"
+      },
+      {
+        "id": "stop:reme-summary",
+        "matcher": "*",
+        "description": "ReMe opt-in (XDD_REME=1): persiste sesion en memory/YYYY-MM-DD.md al cerrar.",
+        "profile": [
+          "minimal",
+          "standard",
+          "strict"
+        ],
+        "async": true,
+        "script": ".agent/hooks/scripts/stop-reme-summary.sh"
       }
     ],
     "before_agent": [

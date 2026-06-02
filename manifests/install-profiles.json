@@ -43,7 +43,8 @@
         "workspace-monorepo",
         "observability",
         "governance-runtime",
-        "router"
+        "router",
+        "continuous-memory"
       ]
     },
     "security": {
@@ -79,7 +80,8 @@
         "skills-core",
         "observability",
         "ahe-evolve",
-        "researcher"
+        "researcher",
+        "continuous-memory"
       ]
     },
     "full": {
@@ -107,7 +109,8 @@
         "protocols",
         "router",
         "pentest",
-        "researcher"
+        "researcher",
+        "continuous-memory"
       ]
     },
     "lean": {

@@ -216,6 +216,16 @@
         "scripts/xdd-pentest.sh"
       ]
     },
+    "continuous-memory": {
+      "description": "ReMe (Apache-2.0) — memory management kit para agentes: journal diario, long-term MEMORY.md, compactacion de contexto, busqueda hibrida vector+BM25. Opt-in via XDD_REME=1. Complementa MemPalace (codebase RAG) con memoria conversacional persistente.",
+      "files": [
+        "docs/reme-optin.md",
+        ".agent/hooks/scripts/session-start-reme-load.sh",
+        ".agent/hooks/scripts/stop-reme-summary.sh"
+      ],
+      "requires": ["hooks-runtime"],
+      "available_from": "0.2.1"
+    },
     "core-essential": {
       "description": "Sprint 32: Project-only essentials. NO framework docs (MEJORAS-X-DD.md, DEPENDENCIES.md, INSTALL.md). NO framework scripts (acceso vía wrapper global ADR-0035). Asume xdd-mcp-install-global ejecutado.",
       "files": [
