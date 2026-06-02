@@ -46,7 +46,7 @@ def test_load_no_memory_files(proj, capsys):
 
 
 def test_load_with_existing_memory(proj):
-    (proj / "MEMORY.md").write_text("# long-term\n", encoding="utf-8")
+    (proj / "AGENT_MEMORY.md").write_text("# long-term\n", encoding="utf-8")
     rc = xm.cmd_load(_args(project=proj, json=False))
     assert rc == 0
 
@@ -124,11 +124,11 @@ def test_search_no_docs(proj, capsys):
 
 
 def test_search_finds_in_memory_md(proj, capsys):
-    (proj / "MEMORY.md").write_text("User prefers Python. Loves TDD. Dislikes Java.", encoding="utf-8")
+    (proj / "AGENT_MEMORY.md").write_text("User prefers Python. Loves TDD. Dislikes Java.", encoding="utf-8")
     rc = xm.cmd_search(_args(project=proj, query=["Python", "TDD"], max=5, json=False))
     assert rc == 0
     out = capsys.readouterr().out
-    assert "MEMORY.md" in out
+    assert "AGENT_MEMORY.md" in out
 
 
 def test_search_finds_in_journal(proj, capsys):
@@ -141,7 +141,7 @@ def test_search_finds_in_journal(proj, capsys):
 
 
 def test_search_json_output(proj, capsys):
-    (proj / "MEMORY.md").write_text("Context: testing the search system.", encoding="utf-8")
+    (proj / "AGENT_MEMORY.md").write_text("Context: testing the search system.", encoding="utf-8")
     rc = xm.cmd_search(_args(project=proj, query=["testing"], max=3, json=True))
     assert rc == 0
     data = json.loads(capsys.readouterr().out)

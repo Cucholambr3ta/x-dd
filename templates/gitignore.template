@@ -1,0 +1,110 @@
+# .gitignore — Generado por xdd-init.sh
+# Separa archivos del PROYECTO (commiteables) de archivos del FRAMEWORK (no commiteables).
+# Regla: solo committear lo que pertenece al producto/idea que se construye.
+
+# ── Framework X-DD (workflow tooling — no pertenece al proyecto) ──────────────
+# Accesibles via wrapper global o pip. No commitear copias locales.
+scripts/
+prompts/
+skills/
+templates/
+evals/
+schemas/
+
+# Docs del framework (no del proyecto)
+MEJORAS-X-DD.md
+MEJORAS-*.md
+INSTALL.md
+DEPENDENCIES.md
+docs/X-DD_Integration_Guide.md
+docs/RETROFIT_GUIDE.md
+docs/CONFIG.md
+docs/HOOKS.md
+docs/INSTALL_PROFILES.md
+docs/GATE.md
+docs/reme-optin.md
+docs/DOC_STANDARD.md
+
+# Configs IDE generadas por evol-adapt.sh / xdd-adapt.sh (output, no fuente)
+.claude/commands/
+.opencode/command/
+.github/prompts/
+.cursor/rules/
+.windsurf/workflows/
+.windsurf/rules/
+.windsurf/mcp.json
+.windsurf/README-xdd.md
+.agents/skills/
+.antigravity/
+.codex/
+.vscode/mcp.json
+
+# ── Estado operativo X-DD (runtime, no versionable) ──────────────────────────
+.xdd/
+.evol/
+!.xdd/briefing/
+!.xdd/spec/
+!.xdd/plan/
+!.xdd/build/
+!.xdd/qa/
+!.xdd/retro/
+
+# ── Memoria conversacional (efímero, no pertenece al repo del proyecto) ───────
+dialog/
+tool_result/
+
+# ── Caches y binarios ─────────────────────────────────────────────────────────
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+env/
+node_modules/
+.pytest_cache/
+.coverage
+*.egg-info/
+dist/
+build/
+.mypy_cache/
+.ruff_cache/
+
+# ── Secretos / credenciales (NUNCA commitear) ─────────────────────────────────
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+.gate-key
+.xdd/.gate-key
+.evol/.gate-key
+secrets/
+credentials.json
+
+# ── IDE / OS ──────────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+.idea/
+*.swp
+*.swo
+
+# ── Lo que SÍ se committea (override explícito) ───────────────────────────────
+# Artefactos del pipeline X-DD que SÍ pertenecen al proyecto:
+!memoria.md
+!lecciones.md
+!MEMORY.md
+!memory/
+!xdd.profile.yml
+!CLAUDE.md
+!AGENTS.md
+!.agent/hooks/
+!.agent/workflows/
+!.github/workflows/
+!.github/renovate.json
+!.editorconfig
+!.gitattributes
+!.markdownlint.yaml
+!.pre-commit-config.yaml
+!Makefile
+!docs/constitucion.md
+!docs/adr/

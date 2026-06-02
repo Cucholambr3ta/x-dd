@@ -5,13 +5,13 @@ Arquitectura identica a ReMe (agentscope-ai/ReMe, Apache-2.0) pero sin dependenc
 Implementado sobre stdlib Python + evol-provider.py (MockProvider | AnthropicProvider).
 
 Estructura de archivos (por proyecto):
-  MEMORY.md                      long-term memory: hechos, preferencias, decisiones clave
+  AGENT_MEMORY.md             long-term memory conversacional del agente: hechos, preferencias, decisiones clave
   memory/YYYY-MM-DD.md           journal diario: resumen estructurado de cada sesion
   dialog/YYYY-MM-DD.jsonl        dialogo raw antes de compactacion (gitignored)
   tool_result/<uuid>.txt         cache de outputs largos de herramientas (TTL auto, gitignored)
 
 Comandos:
-  load                           carga MEMORY.md + journal del dia anterior (session:start)
+  load                           carga AGENT_MEMORY.md + journal del dia anterior (session:start)
   summarize [--messages FILE]    persiste sesion en memory/YYYY-MM-DD.md (stop hook)
   compact [--messages FILE]      compacta historial largo en summary estructurado
   search QUERY [--max N]         busca en MEMORY.md + journals (BM25 simple, sin embeddings)
@@ -44,7 +44,7 @@ MEMORY_ACTIVE             = os.environ.get("XDD_MEMORY", "0") == "1"
 
 def project_dirs(project: Path) -> dict[str, Path]:
     return {
-        "memory_long": project / "MEMORY.md",
+        "memory_long": project / "AGENT_MEMORY.md",
         "memory_dir":  project / "memory",
         "dialog_dir":  project / "dialog",
         "tool_dir":    project / "tool_result",
@@ -273,7 +273,7 @@ def bm25_search(query: str, docs: list[tuple[str, str]], max_results: int = 5,
 # ── Comandos ──────────────────────────────────────────────────────────────────
 
 def cmd_load(args) -> int:
-    """Session:start — carga MEMORY.md + journal del dia anterior."""
+    """Session:start — carga AGENT_MEMORY.md + journal del dia anterior."""
     if not MEMORY_ACTIVE:
         return 0
     project = Path(args.project)
@@ -286,9 +286,9 @@ def cmd_load(args) -> int:
     mem_long = dirs["memory_long"]
     if mem_long.exists():
         lines = mem_long.read_text(encoding="utf-8").splitlines()
-        print(f"[xdd-memory] MEMORY.md cargado ({len(lines)} lineas — long-term memory).")
+        print(f"[xdd-memory] AGENT_MEMORY.md cargado ({len(lines)} lineas — long-term memory).")
     else:
-        print("[xdd-memory] MEMORY.md no existe — se creara al cerrar la primera sesion.")
+        print("[xdd-memory] AGENT_MEMORY.md no existe — se creara al cerrar la primera sesion.")
 
     journal_dir = dirs["memory_dir"]
     journal_yesterday = journal_dir / f"{yesterday}.md"
@@ -423,14 +423,14 @@ def cmd_compact(args) -> int:
 
 
 def cmd_search(args) -> int:
-    """Busca en MEMORY.md + journals con BM25 simple."""
+    """Busca en AGENT_MEMORY.md + journals con BM25 simple."""
     project = Path(args.project)
     dirs = project_dirs(project)
     query = " ".join(args.query)
 
     docs: list[tuple[str, str]] = []
     if dirs["memory_long"].exists():
-        docs.append(("MEMORY.md", dirs["memory_long"].read_text(encoding="utf-8")))
+        docs.append(("AGENT_MEMORY.md", dirs["memory_long"].read_text(encoding="utf-8")))
 
     if dirs["memory_dir"].is_dir():
         for jf in sorted(dirs["memory_dir"].glob("*.md"), reverse=True)[:30]:
@@ -535,7 +535,7 @@ def build_parser() -> argparse.ArgumentParser:
     pc.add_argument("--output", default=None, help="Archivo de salida del summary")
 
     # search
-    pq = sub.add_parser("search", help="Busca en MEMORY.md + journals (BM25)")
+    pq = sub.add_parser("search", help="Busca en AGENT_MEMORY.md + journals (BM25)")
     pq.add_argument("query", nargs="+", help="Terminos de busqueda")
     pq.add_argument("--max", type=int, default=5, help="Maximo de resultados")
 

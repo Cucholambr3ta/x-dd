@@ -195,6 +195,47 @@ else
   FILES_TO_COPY=".agent .claude prompts scripts templates CLAUDE.md"
 fi
 
+# === .gitignore — PRIMERO que todo ===
+# Generado ANTES de copiar cualquier archivo para que git no trackee framework pollution.
+# Contiene reglas para separar archivos del PROYECTO (commiteables) del FRAMEWORK (no).
+if [ ! -f "./.gitignore" ]; then
+  if [ -f "$_XDD_DATA/templates/gitignore.template" ]; then
+    cp "$_XDD_DATA/templates/gitignore.template" "./.gitignore"
+    echo "[xdd-init] ✓ .gitignore generado (separa proyecto de framework)."
+  else
+    # Fallback minimal si no hay template
+    cat > ./.gitignore <<'GITIGNORE'
+# X-DD framework (tooling — no pertenece al proyecto)
+scripts/
+prompts/
+skills/
+templates/
+evals/
+schemas/
+MEJORAS-X-DD.md
+INSTALL.md
+DEPENDENCIES.md
+.xdd/
+.evol/
+dialog/
+tool_result/
+__pycache__/
+*.pyc
+.venv/
+node_modules/
+.env
+.env.*
+*.key
+.gate-key
+GITIGNORE
+    echo "[xdd-init] ✓ .gitignore generado (fallback minimal)."
+  fi
+elif grep -q "X-DD framework" ./.gitignore 2>/dev/null; then
+  echo "[xdd-init] SKIP .gitignore (ya tiene reglas X-DD)."
+else
+  echo "[xdd-init] WARN: .gitignore existe pero sin reglas X-DD — revisar manualmente." >&2
+fi
+
 echo "[xdd-init] Archivos a instalar:"
 echo "$FILES_TO_COPY" | sed 's/^/  - /'
 

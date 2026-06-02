@@ -16,6 +16,8 @@
         "scripts/xdd-init.sh",
         "scripts/xdd-start.sh",
         "scripts/xdd-adapt.sh",
+        "scripts/xdd-memory.py",
+        "scripts/xdd-lessons.py",
         "scripts/lint-workflows.sh",
         "scripts/hooks/post-commit",
         "templates/",

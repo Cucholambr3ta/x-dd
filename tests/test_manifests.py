@@ -118,13 +118,11 @@ def test_hooks_ids_unicos():
 
 
 def test_hooks_count():
-    """Hooks declarados: 8 base (S7.2: 3 PreToolUse + 3 PostToolUse + 1 SessionStart + 2 Stop)
-    + 6 lifecycle OTel/cost (S18 ADR-0021/0022) + auto-organize ya contado en PostToolUse
-    + 2 ReMe opt-in (SessionStart:reme-load + Stop:reme-summary).
-    Total esperado: 18."""
+    """Hooks: 8 base + 6 OTel/cost (S18) + 2 ReMe opt-in + 1 GitFlow.
+    Total esperado: 19."""
     hooks_doc = load(ROOT / ".agent/hooks/hooks.json")
     total = sum(len(h) for h in hooks_doc["hooks"].values())
-    assert total == 18, f"se esperaban 18 hooks (16 previos + 2 ReMe opt-in), hay {total}"
+    assert total == 19, f"se esperaban 19 hooks (18 previos + 1 GitFlow), hay {total}"
 
 
 def test_hooks_materializables():

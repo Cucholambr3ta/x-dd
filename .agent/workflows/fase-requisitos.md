@@ -27,9 +27,58 @@ Este workflow operacionaliza el **Artículo 1 (Filtro de Ambigüedad)** de la Co
 ## 2. DIRECTRICES INQUEBRANTABLES
 
 - **Protocolo Paso Cero:** Prohibido redactar el PRD si existen dudas en áreas críticas (Frontend, Backend, Seguridad, Infraestructura).
-- **Categorización Mandataria:** Los requisitos deben estar agrupados por áreas de especialidad técnica.
-- **Auditoría de Interoperabilidad:** Cada requisito debe ser validado contra las capacidades de los workflows existentes (Fit-Audit).
-- **Formato Gherkin Obligatorio:** Todo requisito funcional debe tener escenarios de prueba claros.
+- **Categorización Mandataria:** Los requisitos agrupados por áreas de especialidad técnica.
+- **Auditoría de Interoperabilidad:** Cada requisito validado contra workflows existentes (Fit-Audit).
+- **Gherkin Completo Obligatorio:** Cada feature tiene TODOS sus criterios de aceptacion en formato Gherkin. No se acepta "criterio" sin su bloque Feature/Scenario.
+
+## 2.1 ESPECIFICACIONES DE ACEPTACION GRANULARES (OBLIGATORIO)
+
+Cada feature del FEATURES.md produce un bloque Gherkin con esta estructura minima:
+
+```gherkin
+Feature: [nombre de la feature en lenguaje de negocio]
+  Como [rol del usuario]
+  Quiero [accion]
+  Para [beneficio]
+
+  # HAPPY PATH — obligatorio
+  Scenario: [descripcion del caso exitoso principal]
+    Given [estado inicial del sistema]
+    When [accion del usuario o evento]
+    Then [resultado observable esperado]
+    And [efecto secundario si aplica]
+
+  # ESCENARIOS DE ERROR — minimo 1 obligatorio
+  Scenario: [descripcion del error mas probable]
+    Given [condicion que provoca el error]
+    When [accion del usuario]
+    Then [mensaje de error especifico]
+    And [estado del sistema tras el error]
+
+  # CASOS BORDE — minimo 1 obligatorio
+  Scenario Outline: [variacion de inputs]
+    Given [estado con "<variable>"]
+    When [accion]
+    Then [resultado para "<resultado>"]
+
+    Examples:
+      | variable | resultado |
+      | <valor1> | <esperado1> |
+      | <valor2> | <esperado2> |
+      | <limite> | <esperado_limite> |
+```
+
+**Reglas de granularidad:**
+- Maximo 8 escenarios por feature (si mas, el feature esta mal acotado — partir en sub-features)
+- Maximo 5 pasos por escenario (Given/When/Then/And)
+- Vocabulario exclusivamente del DOMAIN.md (Ubiquitous Language)
+- Cada escenario referencia su REQ-NNN de trazabilidad en un comentario `# REQ-NNN`
+- Los valores de Examples deben incluir: caso normal, caso limite inferior, caso limite superior, caso invalido
+
+**Criterio de DoD de esta fase:**
+- Cada feature tiene bloque Gherkin con 1 happy path + >=1 error + >=1 borde
+- Todos los terminos en Gherkin existen en DOMAIN.md
+- Matriz trazabilidad REQ-NNN <-> Scenario completa
 
 ## 3. FLUJO OPERATIVO (SINOPSIS)
 
