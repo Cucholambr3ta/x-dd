@@ -266,6 +266,13 @@
         ".agent/workflows/README.md"
       ],
       "available_from_sprint": 32
+    },
+    "evol-dd-bootstrap": {
+      "description": "Master Plan Arquitectonico de Evol-DD (1600+ lineas): identidad, 16 agentes core, ciclo de efimeros, memoria nativa, growth engine (crear-skill + crear-agente), specs Gherkin granulares, hooks, manifests, modos, decisiones Anexo A-I. PROMPT.md de partida para construir Evol-DD.",
+      "files": [
+        "templates/evol-dd.PROMPT.template.md"
+      ],
+      "available_from": "0.2.1"
     }
   }
 }

@@ -50,7 +50,8 @@
         "governance-runtime",
         "router",
         "continuous-memory",
-        "lessons-engine"
+        "lessons-engine",
+        "evol-dd-bootstrap"
       ]
     },
     "security": {
@@ -120,7 +121,8 @@
         "pentest",
         "researcher",
         "continuous-memory",
-        "lessons-engine"
+        "lessons-engine",
+        "evol-dd-bootstrap"
       ]
     },
     "lean": {
