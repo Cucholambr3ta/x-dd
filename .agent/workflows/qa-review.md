@@ -3,6 +3,11 @@ description: Ejecución de revisión por pares concurrente y validación estrati
 ---
 
 # /qa-review
+
+> **Estandar de documentacion:** Todo artefacto que produzca este workflow cumple
+> [`docs/DOC_STANDARD.md`](../../docs/DOC_STANDARD.md): sin emojis, diagramas Mermaid
+> obligatorios, tablas para datos estructurados, Gherkin donde aplique, secciones
+> minimas y trazabilidad bidireccional.
 **ID:** FLUJO-010 | **Versión:** 2.3.0 | **Nivel:** Táctico
 **Mission:** Ejecución de revisión por pares concurrente y validación estratificada (Tiers 1-3) para garantizar la excelencia técnica y estética antes de la entrega.
 

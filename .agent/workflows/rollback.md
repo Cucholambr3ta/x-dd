@@ -3,6 +3,11 @@ description: Reversión segura y rápida a estados estables ante fallos crítico
 ---
 
 # /rollback
+
+> **Estandar de documentacion:** Todo artefacto que produzca este workflow cumple
+> [`docs/DOC_STANDARD.md`](../../docs/DOC_STANDARD.md): sin emojis, diagramas Mermaid
+> obligatorios, tablas para datos estructurados, Gherkin donde aplique, secciones
+> minimas y trazabilidad bidireccional.
 **ID:** FLUJO-022 | **Versión:** 2.3.0 | **Nivel:** Táctico
 **Misión:** Reversión segura y rápida a estados estables ante fallos críticos.
 **Agentes Asignados:** 03_Ejecutor_Asincrono, 04_Swarm_QA, 05_Gestor_Boveda

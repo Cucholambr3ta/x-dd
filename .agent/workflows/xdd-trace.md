@@ -2,6 +2,11 @@
 description: Inicializa y sincroniza el sistema de trazabilidad (Gantt + Changelog) en el proyecto actual.
 ---
 # /xdd-trace
+
+> **Estandar de documentacion:** Todo artefacto que produzca este workflow cumple
+> [`docs/DOC_STANDARD.md`](../../docs/DOC_STANDARD.md): sin emojis, diagramas Mermaid
+> obligatorios, tablas para datos estructurados, Gherkin donde aplique, secciones
+> minimas y trazabilidad bidireccional.
 **ID:** FLUJO-TRACE | **Versión:** 1.0 | **Agente:** X-DD-PM
 **Misión**: Garantizar que el proyecto tenga una infraestructura de gestión completa y herede la historia existente.
 

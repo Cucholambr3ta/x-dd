@@ -3,6 +3,11 @@ description: Mantenimiento proactivo de dependencias y mitigación de vulnerabil
 ---
 
 # /dependency-update
+
+> **Estandar de documentacion:** Todo artefacto que produzca este workflow cumple
+> [`docs/DOC_STANDARD.md`](../../docs/DOC_STANDARD.md): sin emojis, diagramas Mermaid
+> obligatorios, tablas para datos estructurados, Gherkin donde aplique, secciones
+> minimas y trazabilidad bidireccional.
 **ID:** FLUJO-026 | **Versión:** 2.3.0 | **Nivel:** Táctico
 **Misión:** Mantenimiento proactivo de dependencias y mitigación de vulnerabilidades en la cadena de suministro.
 **Agentes Asignados:** X-DD Orchestrator (00), Swarm de Ejecución (03), 12_Dependency_Manager

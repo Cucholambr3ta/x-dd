@@ -2,6 +2,11 @@
 description: Discovery pre-Fase 1. Valida problema, persona y JTBD antes de invertir en spec. Produce DISCOVERY.md.
 ---
 # /ux-discovery
+
+> **Estandar de documentacion:** Todo artefacto que produzca este workflow cumple
+> [`docs/DOC_STANDARD.md`](../../docs/DOC_STANDARD.md): sin emojis, diagramas Mermaid
+> obligatorios, tablas para datos estructurados, Gherkin donde aplique, secciones
+> minimas y trazabilidad bidireccional.
 **ID:** FLUJO-UX-DISC | **Versión:** 1.0 | **Agente:** UX-Researcher + Product-Manager
 **Misión:** Asegurar que existe un problema real con persona y JTBD claros antes de gastar tokens en `/fase-requisitos`.
 

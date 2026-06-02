@@ -3422,6 +3422,27 @@
       "constraints": [],
       "triggers": [],
       "fallback_agent": null
+    },
+    {
+      "id": "specialized-researcher",
+      "name": "Researcher",
+      "category": "specialized",
+      "description": "Autonomous research agent that proactively investigates new Claude Code skills on GitHub, emerging agentic methodologies, dependency changelogs, and relevant papers, then proposes ranked, evidence-backed improvements. Every proposal requires human approval before it is applied.",
+      "color": "indigo",
+      "vibe": "Brings the outside world in. Finds what is new, judges what fits, proposes what matters.",
+      "prompt_file": "prompts/agents/specialized/specialized-researcher.md",
+      "ide_compat": [
+        "claude-code",
+        "opencode",
+        "mcp"
+      ],
+      "skills": [],
+      "constraints": [],
+      "triggers": [
+        "command:research",
+        "phase:retro"
+      ],
+      "fallback_agent": null
     }
   ],
   "composition_patterns": [

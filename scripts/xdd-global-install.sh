@@ -11,7 +11,10 @@
 # permite self-bootstrap = workflow detecta dir vacío y dispara xdd-init.sh inline.
 set -eu
 
-XDD_VERSION="$(cat "$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )/.." && pwd )/VERSION" 2>/dev/null || echo "0.1.0-dev")"
+# XDD_DATA_DIR: raíz de data dirs inyectada por xdd_cli._run_shell() en modo pipx/wheel.
+# Sin ella, BASH_SOURCE/../ en wheel apuntaba a xdd_cli/ sin VERSION → stale "0.1.0-dev".
+_XDD_DATA="${XDD_DATA_DIR:-"$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )/.." && pwd )"}"
+XDD_VERSION="$(cat "$_XDD_DATA/VERSION" 2>/dev/null || echo "0.1.0-dev")"
 XDD_ROOT="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )/.." && pwd )"
 
 usage() {

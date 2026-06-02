@@ -2,6 +2,11 @@
 description: Bootstrap de observabilidad. Define SLI/SLO, logs estructurados, métricas, tracing y dashboards.
 ---
 # /observability-init
+
+> **Estandar de documentacion:** Todo artefacto que produzca este workflow cumple
+> [`docs/DOC_STANDARD.md`](../../docs/DOC_STANDARD.md): sin emojis, diagramas Mermaid
+> obligatorios, tablas para datos estructurados, Gherkin donde aplique, secciones
+> minimas y trazabilidad bidireccional.
 **ID:** FLUJO-OBS | **Versión:** 1.0 | **Agente:** SRE + DevOps-Automator
 **Misión:** Que el sistema sea diagnosticable en producción sin acceder al código.
 

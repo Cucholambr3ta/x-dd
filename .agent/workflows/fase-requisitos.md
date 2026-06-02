@@ -3,6 +3,11 @@ description: Operacionalización del Artículo 1 (Filtro de Ambigüedad) mediant
 ---
 
 # /fase-requisitos
+
+> **Estandar de documentacion:** Todo artefacto que produzca este workflow cumple
+> [`docs/DOC_STANDARD.md`](../../docs/DOC_STANDARD.md): sin emojis, diagramas Mermaid
+> obligatorios, tablas para datos estructurados, Gherkin donde aplique, secciones
+> minimas y trazabilidad bidireccional.
 **ID:** FLUJO-003 | **Versión:** 3.0.0 | **Nivel:** Operativo (SDD Enabled)
 **Mission:** Operacionalización del Artículo 1 (Filtro de Ambigüedad) mediante elicitación de alta resolución y SDD (Spec-Driven Development).
 

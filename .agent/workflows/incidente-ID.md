@@ -3,6 +3,11 @@ description: Gestión de respuesta crítica a incidentes y hotfixes en producci�
 ---
 
 # /incidente-ID
+
+> **Estandar de documentacion:** Todo artefacto que produzca este workflow cumple
+> [`docs/DOC_STANDARD.md`](../../docs/DOC_STANDARD.md): sin emojis, diagramas Mermaid
+> obligatorios, tablas para datos estructurados, Gherkin donde aplique, secciones
+> minimas y trazabilidad bidireccional.
 **ID:** FLUJO-019 | **Versión:** 2.3.0 | **Nivel:** Táctico
 **Misión:** Gestión de respuesta crítica a incidentes y hotfixes en producción.
 **Agentes Asignados:** Swarm de Ejecución (03), Swarm de QA (04), Swarm de Consolidación (05)

@@ -78,7 +78,8 @@
         "personas",
         "skills-core",
         "observability",
-        "ahe-evolve"
+        "ahe-evolve",
+        "researcher"
       ]
     },
     "full": {
@@ -105,7 +106,8 @@
         "ahe-evolve",
         "protocols",
         "router",
-        "pentest"
+        "pentest",
+        "researcher"
       ]
     },
     "lean": {

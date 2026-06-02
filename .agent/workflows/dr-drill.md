@@ -2,6 +2,11 @@
 description: Define y prueba el plan de recuperación ante desastres. Produce DR_PLAN.md y log de drills.
 ---
 # /dr-drill
+
+> **Estandar de documentacion:** Todo artefacto que produzca este workflow cumple
+> [`docs/DOC_STANDARD.md`](../../docs/DOC_STANDARD.md): sin emojis, diagramas Mermaid
+> obligatorios, tablas para datos estructurados, Gherkin donde aplique, secciones
+> minimas y trazabilidad bidireccional.
 **ID:** FLUJO-DR | **Versión:** 1.0 | **Agente:** SRE + Chaos-Engineer
 **Misión:** RTO y RPO conocidos, probados y honrados. DR no es un PDF, es un músculo.
 

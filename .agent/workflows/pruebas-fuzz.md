@@ -3,6 +3,11 @@ description: Ejecución de pruebas destructivas mediante inyección de datos mal
 ---
 
 # /pruebas-fuzz
+
+> **Estandar de documentacion:** Todo artefacto que produzca este workflow cumple
+> [`docs/DOC_STANDARD.md`](../../docs/DOC_STANDARD.md): sin emojis, diagramas Mermaid
+> obligatorios, tablas para datos estructurados, Gherkin donde aplique, secciones
+> minimas y trazabilidad bidireccional.
 **ID:** FLUJO-033 | **Versión:** 2.3.0 | **Nivel:** Operativo
 **Mission:** Ejecución de pruebas destructivas mediante inyección de datos malformados en sandboxes aislados, garantizando la robustez y seguridad ante entradas inesperadas.
 **Orquestador:** X-DD Orchestrator (00)

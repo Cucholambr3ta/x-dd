@@ -2,6 +2,11 @@
 description: Diseña pipeline de datos con contratos, SLAs, DLQ y data quality checks.
 ---
 # /data-pipeline
+
+> **Estandar de documentacion:** Todo artefacto que produzca este workflow cumple
+> [`docs/DOC_STANDARD.md`](../../docs/DOC_STANDARD.md): sin emojis, diagramas Mermaid
+> obligatorios, tablas para datos estructurados, Gherkin donde aplique, secciones
+> minimas y trazabilidad bidireccional.
 **ID:** FLUJO-DATA | **Versión:** 1.0 | **Agente:** Data-Engineer + Software-Architect
 **Misión:** Datos confiables, trazables y con calidad medida — no "logs convertidos en tablas".
 

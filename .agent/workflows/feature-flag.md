@@ -2,6 +2,11 @@
 description: Crea, gobierna y retira feature flags. Mantiene FLAGS.md como inventario único.
 ---
 # /feature-flag
+
+> **Estandar de documentacion:** Todo artefacto que produzca este workflow cumple
+> [`docs/DOC_STANDARD.md`](../../docs/DOC_STANDARD.md): sin emojis, diagramas Mermaid
+> obligatorios, tablas para datos estructurados, Gherkin donde aplique, secciones
+> minimas y trazabilidad bidireccional.
 **ID:** FLUJO-FLAGS | **Versión:** 1.0 | **Agente:** Feature-Flag-Manager
 **Misión:** Desacoplar deploy de release y permitir kill switches sin riesgo.
 

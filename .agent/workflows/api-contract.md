@@ -2,6 +2,11 @@
 description: Define el contrato API (OpenAPI/AsyncAPI/GraphQL SDL) en Fase 2. Genera openapi.yaml + stubs Pact.
 ---
 # /api-contract
+
+> **Estandar de documentacion:** Todo artefacto que produzca este workflow cumple
+> [`docs/DOC_STANDARD.md`](../../docs/DOC_STANDARD.md): sin emojis, diagramas Mermaid
+> obligatorios, tablas para datos estructurados, Gherkin donde aplique, secciones
+> minimas y trazabilidad bidireccional.
 **ID:** FLUJO-API | **Versión:** 1.0 | **Agente:** Backend-Architect + API-Tester
 **Misión:** Convertir requisitos en un contrato API formal y versionado, antes de codificar.
 

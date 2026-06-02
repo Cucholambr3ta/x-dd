@@ -15,6 +15,11 @@ adr: docs/adr/0024-compaction-skill.md
 
 # /code-as-tool — Reducir token overhead de N tool calls
 
+> **Estandar de documentacion:** Todo artefacto que produzca este workflow cumple
+> [`docs/DOC_STANDARD.md`](../../docs/DOC_STANDARD.md): sin emojis, diagramas Mermaid
+> obligatorios, tablas para datos estructurados, Gherkin donde aplique, secciones
+> minimas y trazabilidad bidireccional.
+
 ## Propósito
 
 Cada MCP tool call gasta tokens en:

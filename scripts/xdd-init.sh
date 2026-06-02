@@ -4,7 +4,12 @@
 # Definidos en manifests/install-profiles.json + install-modules.json.
 set -eu
 
-XDD_VERSION="$(cat "$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )/.." && pwd )/VERSION" 2>/dev/null || echo "0.1.0-dev")"
+# XDD_DATA_DIR: raíz de data dirs (manifests/, templates/, VERSION, etc.).
+# Cuando el script corre desde una instalación pipx/wheel, _data_dir() de xdd_cli
+# inyecta esta variable para evitar el bug donde BASH_SOURCE/../ apuntaba al
+# directorio del paquete sin manifests ni VERSION (reportaba "0.1.0-dev" stale).
+_XDD_DATA="${XDD_DATA_DIR:-"$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )/.." && pwd )"}"
+XDD_VERSION="$(cat "$_XDD_DATA/VERSION" 2>/dev/null || echo "0.1.0-dev")"
 
 usage() {
   cat <<'EOF'
@@ -74,7 +79,7 @@ while [ $# -gt 0 ]; do
     --list-profiles)
       XDD_ROOT="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )/.." && pwd )"
       echo "Perfiles disponibles:"
-      list_profiles "$XDD_ROOT/manifests/install-profiles.json"
+      list_profiles "$_XDD_DATA/manifests/install-profiles.json"
       exit 0 ;;
     -*) echo "[xdd-init] ERROR: opción desconocida: $1" >&2; usage; exit 2 ;;
     *) DEST="$1"; shift ;;
@@ -113,11 +118,11 @@ if [ "$PIP_MODE" = "pip" ]; then
   # El tooling (scripts/, prompts/, .agent/, templates/) viene del paquete pip.
   echo "[xdd-init] Pip-mode: solo copiando artefactos editables (memoria, lecciones, profile)."
   for tmpl in memoria.md lecciones.md xdd.profile.yml; do
-    if [ ! -f "./$tmpl" ] && [ -f "$XDD_ROOT/templates/${tmpl%.md}.template.md" ]; then
-      cp "$XDD_ROOT/templates/${tmpl%.md}.template.md" "./$tmpl"
+    if [ ! -f "./$tmpl" ] && [ -f "$_XDD_DATA/templates/${tmpl%.md}.template.md" ]; then
+      cp "$_XDD_DATA/templates/${tmpl%.md}.template.md" "./$tmpl"
       echo "[xdd-init] Copiado: $tmpl (desde template)"
-    elif [ ! -f "./$tmpl" ] && [ -f "$XDD_ROOT/templates/${tmpl%.yml}.template.yml" ]; then
-      cp "$XDD_ROOT/templates/${tmpl%.yml}.template.yml" "./$tmpl"
+    elif [ ! -f "./$tmpl" ] && [ -f "$_XDD_DATA/templates/${tmpl%.yml}.template.yml" ]; then
+      cp "$_XDD_DATA/templates/${tmpl%.yml}.template.yml" "./$tmpl"
       echo "[xdd-init] Copiado: $tmpl (desde template)"
     elif [ ! -f "./$tmpl" ]; then
       echo "[xdd-init] WARN: template para $tmpl no encontrado" >&2
@@ -149,8 +154,8 @@ echo "[xdd-init] Legacy mode (copia completa). Recomendado: instala x-dd vía pi
 # MCP server wrapper check eliminado (v0.2 S22 — xdd-mcp-server removed).
 
 # Resolver módulos a instalar
-PROFILES_MANIFEST="$XDD_ROOT/manifests/install-profiles.json"
-MODULES_MANIFEST="$XDD_ROOT/manifests/install-modules.json"
+PROFILES_MANIFEST="$_XDD_DATA/manifests/install-profiles.json"
+MODULES_MANIFEST="$_XDD_DATA/manifests/install-modules.json"
 FILES_TO_COPY=""
 
 if [ -n "$MODULES_OVERRIDE" ]; then
@@ -219,16 +224,16 @@ while IFS= read -r f; do
 done <<< "$FILES_TO_COPY"
 
 # Templates de memoria (siempre, si no existen)
-if [ ! -f "./memoria.md" ] && [ -f "$XDD_ROOT/templates/memoria.template.md" ]; then
-  cp "$XDD_ROOT/templates/memoria.template.md" "./memoria.md"
+if [ ! -f "./memoria.md" ] && [ -f "$_XDD_DATA/templates/memoria.template.md" ]; then
+  cp "$_XDD_DATA/templates/memoria.template.md" "./memoria.md"
   echo "[xdd-init] memoria.md creado desde template."
 fi
-if [ ! -f "./lecciones.md" ] && [ -f "$XDD_ROOT/templates/lecciones.template.md" ]; then
-  cp "$XDD_ROOT/templates/lecciones.template.md" "./lecciones.md"
+if [ ! -f "./lecciones.md" ] && [ -f "$_XDD_DATA/templates/lecciones.template.md" ]; then
+  cp "$_XDD_DATA/templates/lecciones.template.md" "./lecciones.md"
   echo "[xdd-init] lecciones.md creado desde template."
 fi
-if [ ! -f "./xdd.profile.yml" ] && [ -f "$XDD_ROOT/templates/xdd.profile.template.yml" ]; then
-  cp "$XDD_ROOT/templates/xdd.profile.template.yml" "./xdd.profile.yml"
+if [ ! -f "./xdd.profile.yml" ] && [ -f "$_XDD_DATA/templates/xdd.profile.template.yml" ]; then
+  cp "$_XDD_DATA/templates/xdd.profile.template.yml" "./xdd.profile.yml"
   echo "[xdd-init] xdd.profile.yml creado desde template."
 fi
 

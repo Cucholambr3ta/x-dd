@@ -2,6 +2,11 @@
 description: Ejecución del cierre formal de una fase de desarrollo y actualización de la Memoria Viva de X-DD.
 ---
 # /cierre-fase
+
+> **Estandar de documentacion:** Todo artefacto que produzca este workflow cumple
+> [`docs/DOC_STANDARD.md`](../../docs/DOC_STANDARD.md): sin emojis, diagramas Mermaid
+> obligatorios, tablas para datos estructurados, Gherkin donde aplique, secciones
+> minimas y trazabilidad bidireccional.
 **ID:** FLUJO-CIERRE | **Versión:** 1.3 | **Agente:** Architect & QA-Reviewer
 **Misión:** Certificar el éxito de la fase y asegurar la persistencia del conocimiento (Learning Loop).
 

@@ -16,6 +16,11 @@ adr: docs/adr/0014-sdd-parity-clarify-cross-validate-constitution.md
 
 # /clarify — Detectar ambigüedad y resolver
 
+> **Estandar de documentacion:** Todo artefacto que produzca este workflow cumple
+> [`docs/DOC_STANDARD.md`](../../docs/DOC_STANDARD.md): sin emojis, diagramas Mermaid
+> obligatorios, tablas para datos estructurados, Gherkin donde aplique, secciones
+> minimas y trazabilidad bidireccional.
+
 ## Propósito
 Identificar términos vagos, supuestos no declarados, criterios de aceptación faltantes, dependencias implícitas. **Bloquea avance de fase si encuentra ambigüedad crítica** (alineado con principio "Ambigüedad Cero" del Art. 7).
 

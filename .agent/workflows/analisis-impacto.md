@@ -3,6 +3,11 @@ description: Evaluación multidimensional (Código, Infra, Seguridad, UX) de cam
 ---
 
 # /analisis-impacto
+
+> **Estandar de documentacion:** Todo artefacto que produzca este workflow cumple
+> [`docs/DOC_STANDARD.md`](../../docs/DOC_STANDARD.md): sin emojis, diagramas Mermaid
+> obligatorios, tablas para datos estructurados, Gherkin donde aplique, secciones
+> minimas y trazabilidad bidireccional.
 **ID:** FLUJO-038 | **Versión:** 2.3.0 | **Nivel:** Diseño Técnico
 **Mission:** Evaluación multidimensional (Código, Infra, Seguridad, UX) de cambios propuestos, garantizando la anticipación de regresiones y la clasificación de riesgo antes de la ejecución técnica.
 

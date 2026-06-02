@@ -3,6 +3,11 @@ description: Ensure project documentation is always synchronized with the source
 ---
 
 # /technical-documentation
+
+> **Estandar de documentacion:** Todo artefacto que produzca este workflow cumple
+> [`docs/DOC_STANDARD.md`](../../docs/DOC_STANDARD.md): sin emojis, diagramas Mermaid
+> obligatorios, tablas para datos estructurados, Gherkin donde aplique, secciones
+> minimas y trazabilidad bidireccional.
 **ID:** FLUJO-007 | **Versión:** 2.3.0
 **Mission:** Ensure project documentation is always synchronized with the source code. Produce high-quality artifacts (Manuals, API Guides, Architecture) by prioritizing "Source Code as Truth" and enforcing a strictly textual, icon-free standard.
 

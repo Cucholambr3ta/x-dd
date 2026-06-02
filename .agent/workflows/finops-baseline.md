@@ -2,6 +2,11 @@
 description: Establece presupuesto cloud, alertas, tagging y checklist mensual de rightsizing. Produce BUDGET.md.
 ---
 # /finops-baseline
+
+> **Estandar de documentacion:** Todo artefacto que produzca este workflow cumple
+> [`docs/DOC_STANDARD.md`](../../docs/DOC_STANDARD.md): sin emojis, diagramas Mermaid
+> obligatorios, tablas para datos estructurados, Gherkin donde aplique, secciones
+> minimas y trazabilidad bidireccional.
 **ID:** FLUJO-FINOPS | **Versión:** 1.0 | **Agente:** FinOps-Architect
 **Misión:** Cero sorpresas en factura cloud. Gobierno de costos como ciudadano de primera clase.
 

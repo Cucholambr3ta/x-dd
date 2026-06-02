@@ -3,6 +3,11 @@ description: Transformación del PRD en un plano de ejecución multioficio media
 ---
 
 # /plan-fases
+
+> **Estandar de documentacion:** Todo artefacto que produzca este workflow cumple
+> [`docs/DOC_STANDARD.md`](../../docs/DOC_STANDARD.md): sin emojis, diagramas Mermaid
+> obligatorios, tablas para datos estructurados, Gherkin donde aplique, secciones
+> minimas y trazabilidad bidireccional.
 **ID:** FLUJO-005 | **Versión:** 3.0.0 | **Nivel:** Diseño Técnico (Execution Plan)
 **Mission:** Transformación del PRD en un plano de ejecución mediante Roadmapping GSD y descomposición en Slices atómicos.
 

@@ -4,6 +4,11 @@ description: Workflow X-DD - Generador de Flujos
 
 # /generar-flujo
 
+> **Estandar de documentacion:** Todo artefacto que produzca este workflow cumple
+> [`docs/DOC_STANDARD.md`](../../docs/DOC_STANDARD.md): sin emojis, diagramas Mermaid
+> obligatorios, tablas para datos estructurados, Gherkin donde aplique, secciones
+> minimas y trazabilidad bidireccional.
+
 **ID:** S-GENERADOR-FLUJOS | **Versión:** 2.3.0 | **Nivel:** Sistema / Investigación
 **Mission:** Estandarizar y automatizar la creación de nuevos flujos de trabajo en el ecosistema, asegurando el cumplimiento de la nomenclatura establecida en el Artículo 10 y la estructura de metadatos de Antigravity.
 

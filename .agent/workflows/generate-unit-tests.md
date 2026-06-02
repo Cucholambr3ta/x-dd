@@ -3,6 +3,11 @@ description: Automatically generate unit tests with mocks for existing code modu
 ---
 
 # /generate-unit-tests
+
+> **Estandar de documentacion:** Todo artefacto que produzca este workflow cumple
+> [`docs/DOC_STANDARD.md`](../../docs/DOC_STANDARD.md): sin emojis, diagramas Mermaid
+> obligatorios, tablas para datos estructurados, Gherkin donde aplique, secciones
+> minimas y trazabilidad bidireccional.
 **ID:** FLUJO-000 | **Versión:** 2.3.0
 **Mission:** Automatically generate unit tests with mocks for existing code modules, aiming for a minimum 80% coverage and strict adherence to architectural contracts.
 

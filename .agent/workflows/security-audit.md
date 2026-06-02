@@ -3,6 +3,11 @@ description: Perform an exhaustive security audit (SAST/DAST/SCA) simulating con
 ---
 
 # /security-audit
+
+> **Estandar de documentacion:** Todo artefacto que produzca este workflow cumple
+> [`docs/DOC_STANDARD.md`](../../docs/DOC_STANDARD.md): sin emojis, diagramas Mermaid
+> obligatorios, tablas para datos estructurados, Gherkin donde aplique, secciones
+> minimas y trazabilidad bidireccional.
 **ID:** FLUJO-000 | **Versión:** 2.2.0
 **Mission:** Perform an exhaustive security audit (SAST/DAST/SCA) simulating controlled attacks in an isolated sandbox to identify and mitigate vulnerabilities before exploitation.
 

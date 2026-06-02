@@ -4,23 +4,31 @@ NO reescribe los scripts (respeta ADR-0008: consolidación a Click diferida).
 Cada entry-point es un dispatcher fino que ejecuta el script `scripts/xdd-*.py`
 correspondiente vía runpy, preservando argv. Empaqueta lo que ya existe.
 
-Resolución de `scripts/`:
-  1. XDD_SCRIPTS_DIR si está seteada.
-  2. instalación editable: scripts/ junto al repo (../../scripts desde src/xdd_cli).
-  3. data del wheel: scripts/ empaquetado dentro del paquete.
+Resolución de paths (misma lógica para scripts/ y data dirs):
+  1. Variable de entorno explícita (XDD_SCRIPTS_DIR / XDD_DATA_DIR).
+  2. Instalación editable: directorio junto al repo (../../scripts o ../../ desde src/xdd_cli).
+  3. Data del wheel: directorio empaquetado dentro del paquete (xdd_cli/<dir>).
+
+Bug histórico (pre-fix): solo se empaquetaba scripts/ en el wheel. Los scripts bash
+calculaban XDD_ROOT como dirname(BASH_SOURCE)/../, que en pipx apunta a xdd_cli/,
+sin manifests/VERSION/templates/etc. Resultado: xdd --version → "0.1.0-dev" (fallback)
+y xdd init --list-profiles → "manifest no disponible".
+Fix: pyproject.toml incluye todos los data dirs; _data_dir() los resuelve igual que
+_scripts_dir(); _run_shell() inyecta XDD_DATA_DIR para que los scripts bash lo usen.
 """
 from __future__ import annotations
 
 import os
 import runpy
+import subprocess
 import sys
 from pathlib import Path
+
 
 def _resolve_version() -> str:
     """Versión del paquete instalado; fallback literal si corre desde fuente."""
     try:
         from importlib.metadata import PackageNotFoundError, version
-
         return version("x-dd")
     except (PackageNotFoundError, ImportError):
         return "0.2.0"
@@ -45,6 +53,28 @@ def _scripts_dir() -> Path:
     raise FileNotFoundError(
         "No encuentro scripts/ X-DD. Setea XDD_SCRIPTS_DIR al directorio scripts/."
     )
+
+
+def _data_dir() -> Path:
+    """Raíz de los data dirs (manifests/, templates/, .agent/, skills/, docs/, VERSION).
+
+    Misma lógica de 3 niveles que _scripts_dir().
+    Los scripts bash reciben esta ruta como XDD_DATA_DIR para no depender de
+    dirname(BASH_SOURCE) relativo, que rompe en instalaciones pipx/wheel.
+    """
+    env = os.environ.get("XDD_DATA_DIR")
+    if env:
+        return Path(env)
+    here = Path(__file__).resolve().parent
+    # editable: repo_root/src/xdd_cli → repo_root/
+    repo_root = here.parent.parent
+    if (repo_root / "manifests").is_dir():
+        return repo_root
+    # wheel: data empaquetado dentro del paquete (xdd_cli/ contiene manifests/, etc.)
+    if (here / "manifests").is_dir():
+        return here
+    # Fallback silencioso: los scripts bash manejan el caso "no encontrado"
+    return here
 
 
 def _run(script_name: str) -> int:
@@ -87,14 +117,18 @@ def orchestrate() -> int:
 
 
 def _run_shell(script_name: str, args: list[str]) -> int:
-    """Ejecuta un scripts/*.sh con bash, preservando args."""
-    import subprocess
+    """Ejecuta un scripts/*.sh con bash, preservando args.
 
+    Inyecta XDD_DATA_DIR al entorno para que los scripts bash no dependan de
+    dirname(BASH_SOURCE)/../ relativo (que rompe en instalaciones pipx/wheel).
+    """
     script = _scripts_dir() / script_name
     if not script.exists():
         print(f"[xdd] script no encontrado: {script}", file=sys.stderr)
         return 2
-    return subprocess.call(["bash", str(script), *args])
+    env = os.environ.copy()
+    env.setdefault("XDD_DATA_DIR", str(_data_dir()))
+    return subprocess.call(["bash", str(script), *args], env=env)
 
 
 # Dispatcher unificado `xdd <subcomando>` (entry-point pipx, ADR-0045).

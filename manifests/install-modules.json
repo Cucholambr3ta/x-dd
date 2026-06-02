@@ -110,6 +110,16 @@
       "required": false,
       "available_from": "0.1.0-sprint9"
     },
+    "researcher": {
+      "description": "Investigacion autonoma del ecosistema: descubre skills Claude Code, changelogs y metodologias, propone mejoras rankeadas en RESEARCH.md (tabla research_proposals). Humano aprueba (Art. 2).",
+      "files": [
+        "scripts/xdd-researcher.py",
+        "prompts/agents/specialized/specialized-researcher.md",
+        ".agent/workflows/research.md"
+      ],
+      "required": false,
+      "requires": ["continuous-learning"]
+    },
     "orchestration": {
       "description": "Multi-agent orchestration runtime /orchestrate (Sprint 11).",
       "files": [
@@ -128,7 +138,7 @@
       "available_from": "0.1.0-sprint12"
     },
     "docs-governance": {
-      "description": "Documentación governance + guides core que CLAUDE.md/AGENTS.md referencian (constitucion, integration, retrofit, hooks, config, install).",
+      "description": "Documentación governance + guides core que CLAUDE.md/AGENTS.md referencian (constitucion, integration, retrofit, hooks, config, install, estándar de docs).",
       "files": [
         "docs/constitucion.md",
         "docs/X-DD_Integration_Guide.md",
@@ -136,6 +146,7 @@
         "docs/HOOKS.md",
         "docs/CONFIG.md",
         "docs/INSTALL_PROFILES.md",
+        "docs/DOC_STANDARD.md",
         "INSTALL.md",
         "AGENTS.md"
       ]

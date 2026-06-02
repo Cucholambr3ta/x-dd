@@ -3,6 +3,11 @@ description: Workflow X-DD
 ---
 
 # /deploy-prod
+
+> **Estandar de documentacion:** Todo artefacto que produzca este workflow cumple
+> [`docs/DOC_STANDARD.md`](../../docs/DOC_STANDARD.md): sin emojis, diagramas Mermaid
+> obligatorios, tablas para datos estructurados, Gherkin donde aplique, secciones
+> minimas y trazabilidad bidireccional.
 **ID:** FLUJO-018 | **Versión:** 2.3.0 (Art. 6 Interoperabilidad) | **Nivel:** Táctico
 **Orquestador:** X-DD Orchestrator (00)
 **Skills Requeridas:** `skill-gitflow-management.md`, `skill-deployment-details.md`, `skill-workflow-asset-protocol.md`

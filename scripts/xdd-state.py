@@ -99,6 +99,22 @@ CREATE TABLE IF NOT EXISTS evolutions (
   falsification_metric TEXT,       -- Texto: cómo medirás si funcionó
   falsification_outcome TEXT       -- null | passed | failed (next iter lo llena)
 );
+
+CREATE TABLE IF NOT EXISTS research_proposals (
+  id TEXT PRIMARY KEY,
+  scope TEXT NOT NULL,             -- system | project
+  topic TEXT,                      -- area investigada (ej: testing, security)
+  title TEXT NOT NULL,             -- titulo corto de la propuesta
+  source_url TEXT,                 -- link a skill/repo/changelog/paper
+  source_type TEXT,                -- github-skill | changelog | paper | framework
+  summary TEXT,                    -- resumen de que aporta
+  impact_score REAL DEFAULT 0.0,   -- 0.0-1.0 ranking de impacto estimado
+  compatibility TEXT,              -- compatible | needs-adaptation | incompatible
+  status TEXT DEFAULT 'proposed',  -- proposed | approved | applied | rejected
+  created_at TEXT NOT NULL,
+  reviewed_by TEXT,
+  reviewed_at TEXT
+);
 """
 
 
@@ -161,6 +177,33 @@ def update_orchestration(run_id: str, status: str, steps_done: int = 0,
         conn.close()
     except Exception:
         pass
+
+
+def record_research_proposal(proposal: dict, db_path: Path | None = None) -> None:
+    """Persiste una propuesta del investigador (xdd-researcher). Best-effort.
+
+    proposal espera claves: id, scope, topic, title, source_url, source_type,
+    summary, impact_score, compatibility. status default 'proposed'.
+    """
+    try:
+        conn = db(db_path)
+        conn.execute(
+            "INSERT OR REPLACE INTO research_proposals "
+            "(id, scope, topic, title, source_url, source_type, summary, "
+            "impact_score, compatibility, status, created_at) "
+            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'proposed', ?)",
+            (
+                proposal["id"], proposal["scope"], proposal.get("topic"),
+                proposal["title"], proposal.get("source_url"),
+                proposal.get("source_type"), proposal.get("summary"),
+                float(proposal.get("impact_score", 0.0)),
+                proposal.get("compatibility"), utcnow(),
+            ),
+        )
+        conn.commit()
+        conn.close()
+    except Exception:
+        pass  # tracking best-effort; no rompe el flujo del investigador
 
 
 def cmd_init(args):
@@ -441,6 +484,7 @@ def cmd_stats(args):
     high_conf = conn.execute("SELECT COUNT(*) FROM instincts WHERE confidence >= 0.5").fetchone()[0]
     cats = conn.execute("SELECT category, COUNT(*) c FROM instincts GROUP BY category").fetchall()
     evolutions = conn.execute("SELECT COUNT(*) FROM evolutions").fetchone()[0]
+    research = conn.execute("SELECT COUNT(*) FROM research_proposals").fetchone()[0]
     conn.close()
 
     data = {
@@ -449,6 +493,7 @@ def cmd_stats(args):
         "high_confidence": high_conf,
         "by_category": {r["category"]: r["c"] for r in cats},
         "evolutions": evolutions,
+        "research_proposals": research,
         "db_path": str(args.db),
     }
 
@@ -460,6 +505,7 @@ def cmd_stats(args):
         print(f"  High confidence (≥0.5): {high_conf}")
         print(f"  Promoted to skills/agents: {promoted}")
         print(f"  Evolutions proposed: {evolutions}")
+        print(f"  Research proposals: {research}")
         print(f"  By category:")
         for c, n in data["by_category"].items():
             print(f"    {c:<20} {n}")

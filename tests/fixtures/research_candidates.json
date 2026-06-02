@@ -1,0 +1,26 @@
+[
+  {
+    "scope": "system", "topic": "skills",
+    "title": "Claude Code skill: structured-output-validator",
+    "source_url": "https://github.com/example/cc-structured-output",
+    "source_type": "github-skill",
+    "summary": "Skill comunitaria que valida salidas estructuradas contra JSON schema.",
+    "impact_score": 0.72, "compatibility": "needs-adaptation"
+  },
+  {
+    "scope": "system", "topic": "observability",
+    "title": "OpenTelemetry GenAI semantic conventions update",
+    "source_url": "https://github.com/open-telemetry/semantic-conventions",
+    "source_type": "changelog",
+    "summary": "Nuevas convenciones de spans para llamadas LLM; alinear xdd-otel.py.",
+    "impact_score": 0.55, "compatibility": "compatible"
+  },
+  {
+    "scope": "project", "topic": "testing",
+    "title": "Mutation testing con mutmut para suites Python",
+    "source_url": "https://github.com/boxed/mutmut",
+    "source_type": "framework",
+    "summary": "Mutation testing para medir calidad real de la suite del proyecto.",
+    "impact_score": 0.63, "compatibility": "compatible"
+  }
+]
