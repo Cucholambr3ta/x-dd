@@ -47,6 +47,7 @@ Los workflows son guías ejecutables en formato Markdown que definen flujos paso
 
 ### 7. Documentación y Utilería de Soporte
 *   **`/technical-documentation` (`technical-documentation.md`)**: Generación de documentación técnica detallada en base a la arquitectura del código.
+*   **`/crear-skill` (`crear-skill.md`)**: Loop iterativo completo para crear o mejorar skills: captura intencion → draft SKILL.md → evals cuantitativos/cualitativos con runs paralelos (with-skill vs baseline) → iteracion basada en feedback → optimizacion de description para triggering accuracy → portabilidad a los 7 IDEs via xdd-adapt.sh. Patron inspirado en anthropics/skills/skill-creator.
 *   **`/skill-template-generator` (`skill-template-generator.md`)**: Plantillas y automatización para mantener la coherencia absoluta entre el código de las skills y su documentación (`SKILL.md`).
 *   **`/design-system-builder` (`design-system-builder.md`)**: Generación automatizada de tokens de diseño CSS para mantener la consistencia estética.
 *   **`/generar-flujo` (`generar-flujo.md`)**: Generador de archivos de flujos visuales `.canvas`.
