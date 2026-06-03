@@ -71,7 +71,8 @@
         "governance-runtime",
         "pentest",
         "lessons-engine",
-        "continuous-memory"
+        "continuous-memory",
+        "security-native"
       ]
     },
     "research": {
@@ -122,7 +123,8 @@
         "researcher",
         "continuous-memory",
         "lessons-engine",
-        "evol-dd-bootstrap"
+        "evol-dd-bootstrap",
+        "security-native"
       ]
     },
     "lean": {

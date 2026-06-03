@@ -57,6 +57,16 @@
         ],
         "exit_on_match": 2,
         "script": ".agent/hooks/scripts/pre-commit-gitflow.sh"
+      },
+      {
+        "id": "pre:build:security-scan",
+        "matcher": "Bash",
+        "description": "Escanea codigo fuente antes del gate Build (Fase 4). Bloquea si hay CRITICAL. Advierte si HIGH. Activar XDD_SEC_BLOCK_ON_HIGH=1 para modo estricto.",
+        "profile": [
+          "strict"
+        ],
+        "exit_on_match": 2,
+        "script": ".agent/hooks/scripts/pre-build-scan.sh"
       }
     ],
     "PostToolUse": [

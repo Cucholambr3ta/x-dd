@@ -273,6 +273,23 @@
         "templates/evol-dd.PROMPT.template.md"
       ],
       "available_from": "0.2.1"
+    },
+    "security-native": {
+      "description": "Capacidades de seguridad nativas: SAST (xdd-scan), validacion multi-stage (xdd-validate), patch generation (xdd-patch), crash analysis (xdd-crash). Sin dependencias externas — degrada elegantemente con semgrep/gitleaks/gdb si disponibles. Agente offsec con razonamiento adversarial RECON→ANALYZE→EXPLOIT→PATCH.",
+      "files": [
+        "scripts/xdd-scan.py",
+        "scripts/xdd-validate.py",
+        "scripts/xdd-patch.py",
+        "scripts/xdd-crash.py",
+        "prompts/tiers/analysis-guidance.md",
+        "prompts/tiers/exploit-guidance.md",
+        "prompts/agents/security/security-offsec-operator.md",
+        ".agent/hooks/scripts/pre-build-scan.sh"
+      ],
+      "requires": [
+        "agent-shield"
+      ],
+      "available_from": "0.2.1"
     }
   }
 }
