@@ -312,3 +312,24 @@ Hacer un workflow `/docs-sync` (post-v0.1.0) que detecte drift automáticamente 
 **Leccion:** Un pipeline estrictamente bloqueante necesita 2 guards en approve, no solo firma: (1) CADENA — verificar que todas las fases previas esten APROBADO+validas (reusar el validador existente); (2) SEGREGACION — registrar autor (set-author escribe .author) y bloquear si approver==author. Ambos con escape hatch env var documentado (XDD_SKIP_CHAIN, XDD_SKIP_SEGREGATION) para dev-solo. Es el patron worker->auditor a nivel de fase: quien produce no aprueba
 **Aplica a:** xdd-gate.py cmd_approve. Heredar a evol-gate.py (Inc 2). Patron reusable para cualquier gate de pipeline multi-fase
 **Fix aplicado:** _enforce_phase_chain + _enforce_segregation + cmd_set_author en xdd-gate.py. status muestra autor/aprobador/cadena. 9 tests en test_gate_fsm.py
+
+### [DOMINIO] Briefing como arbol bloqueante 16D — wireframes viven DENTRO del briefing, no en fase separada — 2026-06-04
+**Contexto:** Inc 3 — modelar el briefing inspirado en sistema externo donde 43 docs granulares emergen de un briefing exhaustivo. El diseño inicial de X-DD tenia wireframes como etapa post-briefing.
+**Problema:** Separar wireframes del briefing crea un gap temporal: el agente de build puede arrancar sin tener claro el diseno visual, generando componentes que luego rompen al aprobar los wireframes.
+**Causa raiz:** Wireframes vistos como "documentacion de diseno" separada de la "definicion del producto". En realidad son el acuerdo mas tangible del briefing — sin ellos el briefing no esta cerrado.
+**Leccion:** Wireframes son Dimension 16 del briefing (no etapa posterior). El briefing cierra SOLO cuando todas las 16 dimensiones tienen respuesta Y cada pantalla tiene HTML aprobado con tokens reales de D15. El HTML aprobado es la regla de diseno inmutable para el agente de build. Secuencia correcta: D15 (Design System → tokens) → D16 (wireframes con esos tokens) → gate cierre → doc-granular.
+**Aplica a:** .agent/workflows/briefing.md y cualquier proyecto generado con X-DD. El artefacto acuerdos/wireframes/<pantalla>.html es prerequisito de build (validado por _validate_phase).
+
+### [ARQUITECTURA] Gate checksum no debe incluir sus propios metarchivos — circular y no semantico — 2026-06-04
+**Contexto:** Al ejecutar cierre-fase post-Inc 3+4, el gate validate reporto checksum mismatch en build aunque la fase estaba APROBADO. Investigacion revelo que el checksum de .xdd/build/ incluia .approvers, .checksums, .signature — archivos que el propio gate modifica al aprobar.
+**Problema:** Cada `approve` modifica .approvers (append) y recalcula .checksums y .signature → el checksum almacenado queda invalido en la proxima validacion. Mismatch permanente e irreparable sin re-aprobar.
+**Causa raiz:** La funcion `checksum(path)` para directorios usaba `rglob("*")` sin filtrar metarchivos del gate. Diseno correcto: el checksum debe cubrir el CONTENIDO semantico (artefactos del proyecto), no los metadatos del gate mismo.
+**Leccion:** La funcion checksum de directorio debe excluir explicitamente los metarchivos del gate: .status, .checksums, .signature, .approvers, .author. Son metadatos de gobernanza, no artefactos verificables. Fix: `_GATE_META = {".status", ".checksums", ".signature", ".approvers", ".author"}` y filtrar en `rglob`.
+**Aplica a:** scripts/xdd-gate.py funcion `checksum()`. Heredar fix a evol-gate.py si usa mismo patron. Verificar en test: approve multiple veces sobre misma fase no debe invalidar checksum.
+
+### [PROCESO] doc-granular worker→auditor — N docs decididos por proyecto, no por plantilla — 2026-06-04
+**Contexto:** Inc 4 — implementar el patron de documentacion granular inspirado en sistema externo (43 docs en proyecto mediano, 93 en complejo). Primera propuesta fue una lista fija de dominios.
+**Problema:** Lista fija subrepresenta proyectos complejos y sobredocumenta proyectos simples. El sistema de referencia tenia el agente decidiendo el numero y granularidad de docs segun complejidad real del proyecto, no segun una plantilla.
+**Causa raiz:** Tentacion de dar estructura predecible vs. dejar al agente razonar sobre la complejidad real. La plantilla fija es mas controlable pero introduce evaluacion implicita ("esto no necesita doc propio") que X-DD rechaza.
+**Leccion:** Principio cero deuda tecnica aplicado a docs: "si es un dominio tecnico del proyecto, tiene doc". Sin evaluacion, sin "esto es obvio", sin limite de numero. El agente analiza TODOS los artefactos del briefing e identifica dominios con criterio: ¿hay suficiente complejidad para que un sub-agente necesite este doc como referencia independiente? El numero emerge del proyecto. Proyectos simples: 15-20 docs. Complejos: 50-100+.
+**Aplica a:** .agent/workflows/doc-granular.md y cualquier instancia del patron. El INDEX.md lo genera el agente tras analizar el briefing completo — no viene de una lista predefinida.

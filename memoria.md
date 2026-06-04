@@ -56,6 +56,27 @@
 
 ## Bitácora de Sesiones
 
+### Sesión 2026-06-04 — Incrementos 3+4: Briefing 16D + doc-granular worker→auditor (feature/briefing-acuerdos)
+- **Meta:** Completar los 4 incrementos del plan "Pipeline estrictamente bloqueante". Inc 3: briefing como arbol bloqueante 16 dimensiones + estructura /acuerdos. Inc 4: documentacion granular automatica con patron worker→auditor.
+- **Hitos Inc 3 (.agent/workflows/briefing.md):**
+  - 16 dimensiones como arbol bloqueante: Identidad, Usuarios, Plataformas, Stack, Arquitectura, Integraciones, Auth, Seguridad, Calidad, Datos-Privacidad, Observabilidad, CI/CD, Operaciones, Proceso, Design System, Pantallas
+  - D15 (Design System): genera acuerdos/design/tokens.md + components.md + assets.md
+  - D16 (Pantallas+Wireframes): wireframes HTML con tokens reales, parte del briefing (no etapa separada)
+  - Gate cierre: 14 artefactos idea/ + 3 design/ + N wireframes HTML — briefing no cierra hasta todos aprobados
+  - acuerdos/ creada automaticamente en bootstrap (7 subcarpetas): xdd-init.sh actualizado
+- **Hitos Inc 4 (.agent/workflows/doc-granular.md):**
+  - Principio cero deuda tecnica: sin evaluacion, si es dominio tecnico del proyecto tiene doc
+  - Pipeline 5 pasos: INVESTIGA (researcher) → VALIDA CLAIMS (fact-check) → ESCRIBE (technical-writer) → AUDITA (reviewer ≠ writer) → INDEXA (INDEX.md bidireccional)
+  - Orquestacion: xdd-orchestrate parallel_then_sync (documentos en paralelo, INDEX en sync)
+  - Gate: set-author writer, approve reviewer (segregacion Inc 1 reutilizada)
+  - N docs decididos por el agente segun complejidad del proyecto (15-20 simple, 50-100+ complejo)
+- **Fix gate (cierre-fase):** checksum() excluia metarchivos del gate (.approvers/.checksums/.signature/.author) — circular. Fix: _GATE_META filter en checksum() para directorios
+- **Heredado a Evol-DD:** briefing.md + doc-granular.md portados con evol- prefixes; acuerdos/ en evol-init.sh; publicado v0.2.5 (briefing) y v0.2.6 (doc-granular)
+- **QA:** gates todos APROBADO y validos post-fix checksum; tests gate verdes
+- **Commits:** 720353d (briefing) + 178cb54 (doc-granular) en feature/briefing-acuerdos
+- **Bloqueos:** bug gate checksum circular (metarchivos incluidos en hash del directorio) — resuelto en esta sesion
+- **Proxima sesion:** Merge feature/gate-fsm + feature/briefing-acuerdos a develop; /xdd historias workflow; potencial release con los 4 incrementos
+
 ### Sesión 2026-06-04 — Gate FSM enforcement (feature/gate-fsm) — Incremento 1
 - **Meta:** Pipeline estrictamente bloqueante (FSM con guards), inspirado en el flujo
   de un sistema de referencia (evol-agent): ninguna fase se salta, autor≠aprobador.

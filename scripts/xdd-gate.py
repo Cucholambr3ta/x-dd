@@ -65,8 +65,9 @@ def checksum(path: Path) -> str:
     if path.is_file():
         h.update(path.read_bytes())
     else:
+        _GATE_META = {".status", ".checksums", ".signature", ".approvers", ".author"}
         for f in sorted(path.rglob("*")):
-            if f.is_file():
+            if f.is_file() and f.name not in _GATE_META:
                 try:
                     h.update(f.relative_to(path).as_posix().encode())
                     h.update(f.read_bytes())
