@@ -305,6 +305,100 @@ def check_secdd(root: Path) -> list[str]:
     return errors
 
 
+# ── Atomicidad — 1 doc = 1 dominio tecnico ────────────────────────────────────
+
+# Palabras clave que indican dominios distintos. Si un documento menciona
+# DEMASIADOS dominios distintos en sus headings, viola atomicidad.
+_DOMAIN_KEYWORDS: dict[str, list[str]] = {
+    "auth":         ["autenticacion", "authentication", "oauth", "jwt", "session", "login"],
+    "db":           ["base de datos", "database", "schema", "migracion", "migration", "sql"],
+    "api":          ["endpoint", "rest", "graphql", "openapi", "contrato de api"],
+    "ui":           ["componente", "component", "wireframe", "frontend", "css", "html"],
+    "security":     ["stride", "amenaza", "threat", "sast", "dast", "pentest"],
+    "observability":["logging", "metrics", "alertas", "tracing", "slo", "sli"],
+    "cicd":         ["pipeline", "deploy", "ci/cd", "github actions", "docker"],
+    "testing":      ["test unitario", "unit test", "gherkin", "bdd", "coverage"],
+    "domain_model": ["bounded context", "aggregate", "domain event", "ubiquitous language"],
+}
+
+# Documentos que PUEDEN ser multi-dominio por diseño (indices, guias de adopcion)
+_ALLOWED_MULTI_DOMAIN = {
+    "INDEX.md", "README.md", "ONBOARDING.md", "RETROFIT_GUIDE.md",
+    "X-DD_Integration_Guide.md",
+}
+
+# Umbral de lineas minimas por tipo de documento (DOC_STANDARD v2.0 seccion 1.5)
+_LINE_THRESHOLDS: dict[str, int] = {
+    "ARQUITECTURA.md": 300,
+    "DOMAIN.md":       250,
+    "THREATS.md":      200,
+    "GATE.md":         150,
+    "constitucion.md": 200,
+    "PLAN_QA.md":      200,
+    "ONBOARDING.md":   200,
+    "SPEC.md":         150,
+    "FEATURES.md":     100,
+}
+_DEFAULT_MIN_LINES = 80  # minimo para cualquier doc granular
+
+
+def check_atomicity(doc_path: Path) -> list[str]:
+    """Verifica que el documento cubre un solo dominio tecnico (atomicidad).
+
+    Regla: si el documento menciona headings de 4+ dominios distintos,
+    viola atomicidad. Documentos de indice/guia estan exentos.
+    """
+    errors = []
+    if doc_path.name in _ALLOWED_MULTI_DOMAIN:
+        return []
+
+    content = _content(doc_path).lower()
+    if not content:
+        return []
+
+    # Solo analizar headings (lineas que empiezan con #)
+    heading_text = " ".join(
+        line.lstrip("#").strip()
+        for line in content.splitlines()
+        if line.startswith("#")
+    )
+
+    domains_present = [
+        domain for domain, kwds in _DOMAIN_KEYWORDS.items()
+        if any(kw in heading_text for kw in kwds)
+    ]
+
+    if len(domains_present) >= 4:
+        errors.append(
+            f"ATOMICIDAD: {doc_path.name} menciona {len(domains_present)} dominios distintos "
+            f"en headings ({', '.join(domains_present)}) — "
+            f"dividir en documentos separados (1 doc = 1 dominio)"
+        )
+    return errors
+
+
+def check_min_lines(doc_path: Path) -> list[str]:
+    """Verifica umbral minimo de lineas segun DOC_STANDARD v2.0 seccion 1.5."""
+    threshold = _LINE_THRESHOLDS.get(doc_path.name, _DEFAULT_MIN_LINES)
+    if not doc_path.exists():
+        return []
+    lines = len(_content(doc_path).splitlines())
+    if lines < threshold:
+        return [
+            f"PROFUNDIDAD: {doc_path.name} tiene {lines} lineas "
+            f"(minimo {threshold} segun DOC_STANDARD v2.0)"
+        ]
+    return []
+
+
+def check_doc_quality(root: Path, doc_path: Path) -> list[str]:
+    """Atomicidad + umbral de lineas para un documento especifico."""
+    errors = []
+    errors.extend(check_atomicity(doc_path))
+    errors.extend(check_min_lines(doc_path))
+    return errors
+
+
 # ── Dispatcher ────────────────────────────────────────────────────────────────
 
 PHASE_CHECKS: dict[str, list] = {
@@ -338,12 +432,33 @@ def main(argv=None) -> int:
         prog="xdd-discipline-check",
         description=__doc__,
     )
-    p.add_argument("phase", choices=list(PHASE_CHECKS.keys()), help="Fase a validar")
+    p.add_argument("phase", choices=list(PHASE_CHECKS.keys()) + ["doc"], help="Fase a validar, o 'doc' para validar un documento especifico")
     p.add_argument("--root", default=".", help="Raiz del proyecto (default: $PWD)")
+    p.add_argument("--doc", default=None, help="Path al documento a validar con check_doc_quality (atomicidad + lineas)")
     p.add_argument("--json", action="store_true", help="Salida JSON")
     args = p.parse_args(argv)
 
     root = Path(args.root).resolve()
+
+    # Modo doc: validar atomicidad + umbral de un doc especifico
+    if args.phase == "doc" or args.doc:
+        doc_path = Path(args.doc).resolve() if args.doc else None
+        if doc_path is None:
+            print("[xdd-discipline] --doc requerido con phase=doc", file=sys.stderr)
+            return 2
+        errors = check_doc_quality(root, doc_path)
+        if args.json:
+            import json
+            print(json.dumps({"doc": str(doc_path), "ok": not errors, "errors": errors}))
+            return 0 if not errors else 1
+        if errors:
+            print(f"[xdd-discipline] FALLO {doc_path.name}:")
+            for e in errors:
+                print(f"  - {e}")
+            return 1
+        print(f"[xdd-discipline] OK {doc_path.name}: atomico y suficiente.")
+        return 0
+
     errors = check_phase(root, args.phase)
 
     if args.json:

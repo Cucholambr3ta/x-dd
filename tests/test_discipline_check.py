@@ -405,3 +405,79 @@ def test_check_phase_retro_sin_checks(tmp_path):
     # retro no tiene validadores de disciplina
     errors = xdd_dc.check_phase(tmp_path, "retro")
     assert errors == []
+
+
+# ── Atomicidad ────────────────────────────────────────────────────────────────
+
+def test_atomicidad_doc_con_un_dominio_pasa(tmp_path):
+    """Doc que cubre solo autenticacion: atomico."""
+    doc = tmp_path / "AUTH.md"
+    doc.write_text(
+        "# Autenticacion\n\n## OAuth\n\nFlujo OAuth 2.0.\n\n"
+        "## JWT\n\nTokens de sesion.\n\n## Login\n\nEndpoint de autenticacion.\n"
+    )
+    errors = xdd_dc.check_atomicity(doc)
+    assert errors == []
+
+
+def test_atomicidad_doc_multi_dominio_falla(tmp_path):
+    """Doc que mezcla 4+ dominios en headings: viola atomicidad."""
+    doc = tmp_path / "GUIDE.md"
+    doc.write_text(
+        "# Guia\n\n## Autenticacion y OAuth\n\n## Base de datos y migracion\n\n"
+        "## Pipeline CI/CD y deploy\n\n## STRIDE y threat modeling\n\n"
+        "## Logging y metrics\n\n## Componentes frontend\n"
+    )
+    errors = xdd_dc.check_atomicity(doc)
+    assert errors
+    assert "ATOMICIDAD" in errors[0]
+
+
+def test_atomicidad_index_exento(tmp_path):
+    """INDEX.md puede ser multi-dominio por diseno."""
+    doc = tmp_path / "INDEX.md"
+    doc.write_text(
+        "# INDEX\n\n## Autenticacion\n\n## Base de datos\n\n"
+        "## CI/CD\n\n## Threats\n\n## Logging\n\n## Frontend\n"
+    )
+    errors = xdd_dc.check_atomicity(doc)
+    assert errors == []
+
+
+# ── Umbral de lineas ──────────────────────────────────────────────────────────
+
+def test_min_lines_sobre_umbral_pasa(tmp_path):
+    """Documento con suficientes lineas pasa."""
+    doc = tmp_path / "SPEC.md"
+    doc.write_text("\n".join(f"linea {i}" for i in range(200)))
+    errors = xdd_dc.check_min_lines(doc)
+    assert errors == []
+
+
+def test_min_lines_bajo_umbral_falla(tmp_path):
+    """SPEC.md con menos de 150 lineas falla (umbral definido)."""
+    doc = tmp_path / "SPEC.md"
+    doc.write_text("\n".join(f"linea {i}" for i in range(50)))
+    errors = xdd_dc.check_min_lines(doc)
+    assert errors
+    assert "PROFUNDIDAD" in errors[0]
+
+
+def test_min_lines_doc_generico_umbral_80(tmp_path):
+    """Doc sin umbral especifico usa default 80 lineas."""
+    doc = tmp_path / "MI-DOMINIO.md"
+    doc.write_text("\n".join(f"linea {i}" for i in range(30)))
+    errors = xdd_dc.check_min_lines(doc)
+    assert errors
+    assert "80" in errors[0]
+
+
+def test_doc_quality_atomico_y_suficiente(tmp_path):
+    """check_doc_quality: doc atomico y sobre umbral = sin errores."""
+    doc = tmp_path / "AUTH.md"
+    doc.write_text(
+        "# Autenticacion\n\n## Login\n\n"
+        + "\n".join(f"Contenido linea {i}" for i in range(100))
+    )
+    errors = xdd_dc.check_doc_quality(tmp_path, doc)
+    assert errors == []
