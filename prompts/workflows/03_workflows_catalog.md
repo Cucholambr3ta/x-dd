@@ -99,6 +99,7 @@ Los workflows son guías ejecutables en formato Markdown que definen flujos paso
 ### 13. Pipeline de Ejecucion (feature/sprint-memoria-lecciones + Inc 5-6)
 
 *   **`/xdd historias` (`xdd-historias.md`)**: Genera historias de usuario completas post-doc-granular. Lee `acuerdos/proyecto/` + wireframes e identifica TODAS las historias (HU/HT/HS). Por cada una crea 4 artefactos (propuesta, requisitos-escenarios, escenario-tecnico, checklist 50+ tareas) via pipeline worker-auditor. Genera `acuerdos/sprint.md` con plan de sprints. Auditor registra gaps en `acuerdos/lecciones/sprint-00.md`.
+*   **`/xdd sprint` (`xdd-sprint.md`)**: Orquestador del ciclo completo de un sprint. Compone equipo dinamico de subagentes segun componentes tecnicos detectados en `escenario-tecnico.md`. Ejecuta checklist atomico con auditor permanente (engineering-code-reviewer). Evaluacion pre-push (tests + shield + gitignore). GitFlow via `xdd-gitflow.sh`. Post-sprint lee lecciones y propone fixes o actualiza MEMORY.md.
 
 ### 12. Native Skills (feat/security-native + S26)
 *   **`/grill-me` (`grill-me.md`)**: Interrogatorio implacable de planes y diseños. Recorre árbol de decisiones rama a rama hasta que no quedan supuestos sin validar. Skill `xdd-grill-me`. Inspirado en mattpocock/skills grill-me (MIT).

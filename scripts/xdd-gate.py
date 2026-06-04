@@ -120,6 +120,25 @@ def cmd_init(root: Path, _args) -> int:
     return 0
 
 
+def _check_discipline(root: Path, phase: str) -> list[str]:
+    """Invoca xdd-discipline-check.py para validar CONTENIDO de los artefactos.
+
+    Activo solo con XDD_DISCIPLINE=1. Escape: XDD_SKIP_DISCIPLINE=1.
+    Importa el modulo dinamicamente para no crear dependencia circular.
+    """
+    import importlib.util
+    script = Path(__file__).parent / "xdd-discipline-check.py"
+    if not script.exists():
+        return []
+    try:
+        spec = importlib.util.spec_from_file_location("xdd_discipline_check", script)
+        mod = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(mod)
+        return mod.check_phase(root, phase)
+    except Exception as e:
+        return [f"[discipline-check] error al cargar validador: {e}"]
+
+
 def _check_flow_evidence(root: Path) -> list[str]:
     """Branch 2: si la fase build declara un flujo (.xdd/build/flow.json), exige
     evidencia de que se EJECUTÓ (.xdd/build/flow-trace.json con steps>0 y result).
@@ -173,6 +192,11 @@ def _validate_phase(root: Path, phase: str) -> tuple[bool, list[str]]:
 
     if phase == "build":
         errors.extend(_check_flow_evidence(root))
+
+    # Discipline checks — valida CONTENIDO de cada artefacto segun su disciplina -DD
+    # Activado con XDD_DISCIPLINE=1 (opt-in). Escape hatch: XDD_SKIP_DISCIPLINE=1.
+    if os.environ.get("XDD_DISCIPLINE") == "1":
+        errors.extend(_check_discipline(root, phase))
 
     if not sig_file.exists() or not cks_file.exists() or not apr_file.exists():
         if status == Status.APROBADO.value:
