@@ -1,7 +1,7 @@
 ---
 name: xdd-historias
 trigger: /xdd historias
-description: Genera historias de usuario completas post-doc-granular. Lee acuerdos/proyecto/ + acuerdos/wireframes/ e identifica todas las historias. Por cada una crea 4 artefactos (propuesta, requisitos-escenarios, escenario-tecnico, checklist-tareas) via pipeline worker-auditor. Genera acuerdos/sprint.md con plan de sprints. Sin evaluacion — si es una historia identificable, se documenta completa.
+description: Genera historias de usuario completas post-doc-granular. Lee acuerdos/proyecto/ + acuerdos/wireframes/ e identifica todas las historias. Por cada una crea 4 artefactos (propuesta, requisitos-escenarios, escenario-tecnico, checklist-tareas) via pipeline worker-auditor. Genera acuerdos/sprints/ (1 doc por sprint) con plan de sprints atomico. Sin evaluacion — si es una historia identificable, se documenta completa.
 phase: plan
 category: planning
 ---
@@ -49,7 +49,7 @@ Uno complejo genera 50-100+. El numero lo determina el proyecto, no el agente.
 - `HT` — Historia tecnica (infraestructura, setup, configuracion)
 - `HS` — Historia de seguridad (controles STDD, amenazas STRIDE)
 
-Producir: `acuerdos/sprint.md` borrador con el listado inicial de historias
+Producir: `acuerdos/sprints/INDEX.md` borrador con el listado inicial de historias
 (numeradas, tipo, titulo, estimacion preliminar en puntos de historia).
 
 ---
@@ -231,36 +231,73 @@ xdd-gate.py approve --phase plan --approver "engineering-code-reviewer"
 
 ---
 
-## 3. PLAN DE SPRINTS — `acuerdos/sprint.md`
+## 3. PLAN DE SPRINTS — `acuerdos/sprints/` (atomico — ADR-0050)
 
-Una vez que TODAS las historias estan aprobadas:
+Una vez que TODAS las historias estan aprobadas. **1 carpeta = plan, 1 doc = 1 sprint.**
+
+### Estructura
+
+```
+acuerdos/sprints/
+  INDEX.md / INDEX.json    (roadmap Mermaid + tabla: sprint, titulo, historias, pts, estado)
+  sprint-01.md / .json     (objetivo, historias, DoD, dependencias)
+  sprint-NN.md / .json
+acuerdos/sprint.md         → puntero delgado a sprints/INDEX.md (compat)
+```
+
+### Por cada sprint, `acuerdos/sprints/sprint-NN.md`
 
 ```markdown
-# Plan de Sprints — <Nombre Proyecto>
+# Sprint NN — <titulo>
 
-> Generado automaticamente post-historias. Cada sprint = 1 branch feature/sprint-NN-<titulo>.
-> Regla: 1 PR mergeada a develop antes de iniciar siguiente sprint.
+> Cubre el sprint NN. Objetivo y alcance especifico. NO mezcla otros sprints.
 
-## Resumen
+## Objetivo
+<Que capacidad queda disponible al cerrar este sprint>
 
-| Total historias | Total puntos | Sprints propuestos | Velocidad asumida |
-|----------------|-------------|-------------------|------------------|
-| N | NNN SP | N | N SP/sprint |
+## Historias asignadas
 
-## Sprints
+| ID | Tipo | Titulo | Puntos |
+|----|------|--------|--------|
+| HT-01 | tecnica | Setup inicial | N |
+| HU-02 | usuario | <titulo> | N |
 
-### Sprint 01 — <titulo>
-**Objetivo:** <que capacidad queda disponible al cerrar este sprint>
-**Historias:**
-- HT-01: Setup inicial (N SP)
-- HU-02: <titulo> (N SP)
-**Definition of Done:**
+## Dependencias
+- Requiere: sprint-NN-1 mergeado a develop
+- Habilita: sprint-NN+1
+
+## Definition of Done
 - Todos los tests verdes (unit + integration + security)
 - Shield 0 CRITICAL
 - PR mergeada a develop
+```
 
-### Sprint 02 — <titulo>
-...
+### INDEX maestro `acuerdos/sprints/INDEX.md`
+
+```markdown
+# INDEX — Plan de Sprints
+
+> Roadmap completo. 1 doc = 1 sprint. Trazabilidad sprint -> historias.
+
+## Roadmap
+
+\`\`\`mermaid
+flowchart LR
+  S1[sprint-01] --> S2[sprint-02] --> S3[sprint-03]
+\`\`\`
+
+| Sprint | Titulo | Historias | Puntos | Estado |
+|--------|--------|-----------|--------|--------|
+| sprint-01 | Setup | HT-01, HU-02 | N | Pendiente |
+```
+
+### Puntero de compat `acuerdos/sprint.md`
+
+```markdown
+# Plan de Sprints
+
+> Movido a acuerdos/sprints/ (ADR-0050 atomicidad).
+> Ver acuerdos/sprints/INDEX.md (humano) o INDEX.json (agentes, ahorro de tokens).
 ```
 
 **Criterios para organizar sprints:**
@@ -270,6 +307,11 @@ Una vez que TODAS las historias estan aprobadas:
 - No mas de N SP por sprint (N = velocidad estimada del equipo)
 - Ultimo sprint siempre incluye hardening final + observabilidad + docs
 
+**Tras escribir cada sprint-NN.md, sincronizar el JSON:**
+```bash
+python3 scripts/xdd-doc-sync.py sync-folder acuerdos/sprints
+```
+
 ---
 
 ## 4. GATE DE CIERRE
@@ -277,11 +319,18 @@ Una vez que TODAS las historias estan aprobadas:
 El workflow de historias cierra cuando:
 
 ```
-[ ] acuerdos/sprint.md existe con todos los sprints definidos
+[ ] acuerdos/sprints/ existe con INDEX.md + INDEX.json + un sprint-NN.md por sprint
+[ ] acuerdos/sprint.md es puntero a sprints/INDEX.md (compat)
+[ ] Cada sprint-NN.md tiene su .json sidecar (xdd-doc-sync)
 [ ] Cada acuerdos/historia-usuario-N/ tiene los 4 artefactos completos
 [ ] Cada historia tiene firma de aprobacion (auditor != writer)
 [ ] checklist-tareas.md >= 50 tareas en cada historia
 [ ] 0 gaps abiertos en ninguna historia
+```
+
+Verificar atomicidad de sprints:
+```bash
+python3 scripts/xdd-discipline-check.py folder --kind sprints --path acuerdos/sprints
 ```
 
 Verificacion:
