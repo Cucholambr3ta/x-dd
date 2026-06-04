@@ -128,3 +128,52 @@ def test_sprint_close_json_output(tmp_path, capsys):
     data = json.loads(lines[-1])
     assert data["ok"] is True
     assert data["sprint"] == "02"
+
+
+# ── MEMORY.md atomico (Inc 3) ─────────────────────────────────────────────────
+
+def test_sprint_close_crea_3_atomos(tmp_path):
+    run_sprint_close(tmp_path, sprint=1)
+    mem = tmp_path / "acuerdos" / "memoria"
+    assert (mem / "decisiones.md").exists()
+    assert (mem / "convenciones.md").exists()
+    assert (mem / "riesgos.md").exists()
+
+
+def test_memory_aggregate_tiene_banner_generado(tmp_path):
+    run_sprint_close(tmp_path, sprint=1)
+    content = (tmp_path / "acuerdos" / "memoria" / "MEMORY.md").read_text()
+    assert "GENERADO automaticamente" in content
+    assert "NO editar" in content
+
+
+def test_memory_aggregate_refleja_atomos(tmp_path):
+    run_sprint_close(tmp_path, sprint=1)
+    mem = tmp_path / "acuerdos" / "memoria"
+    # Editar un atomo
+    (mem / "decisiones.md").write_text(
+        "# Decisiones clave\n\n> Atomo.\n\n- Usar PostgreSQL.\n"
+    )
+    # Regenerar via sprint-close de nuevo
+    run_sprint_close(tmp_path, sprint=2)
+    aggregate = (mem / "MEMORY.md").read_text()
+    assert "Usar PostgreSQL" in aggregate
+
+
+def test_memory_split_migra_legacy(tmp_path):
+    mem = tmp_path / "acuerdos" / "memoria"
+    mem.mkdir(parents=True)
+    (mem / "MEMORY.md").write_text(
+        "# MEMORY.md\n\n## Decisiones clave\n- Usar Redis para cache.\n\n"
+        "## Convenciones\n- TDD obligatorio.\n\n## Riesgos activos\n- Vendor lock-in.\n"
+    )
+
+    class Args:
+        project = str(tmp_path)
+    xdd_memory.cmd_memory_split(Args())
+
+    assert "Usar Redis para cache" in (mem / "decisiones.md").read_text()
+    assert "TDD obligatorio" in (mem / "convenciones.md").read_text()
+    assert "Vendor lock-in" in (mem / "riesgos.md").read_text()
+    # El agregado ahora tiene banner generado
+    assert "GENERADO automaticamente" in (mem / "MEMORY.md").read_text()
