@@ -47,15 +47,15 @@ X-DD necesita ofrecer las 3 estrategias provider-agnostic.
 ## Consequences
 
 ### Positivas
-- ✅ Cuando context warning, agent tiene paths claros para reducir
-- ✅ Provider-agnostic: equipos eligen método según privacy/cost/quality tradeoff
-- ✅ `code-as-tool` pattern reduce 98%+ tokens en batch workflows
-- ✅ Default seguro: redact secrets pre-compact
+- SI Cuando context warning, agent tiene paths claros para reducir
+- SI Provider-agnostic: equipos eligen método según privacy/cost/quality tradeoff
+- SI `code-as-tool` pattern reduce 98%+ tokens en batch workflows
+- SI Default seguro: redact secrets pre-compact
 
 ### Negativas
-- ⚠️ LLMLingua y Claude Compaction requieren setup adicional (no built-in)
-- ⚠️ `truncate` fallback pierde middle context — workflows sensibles a orden deben evitar
-- ⚠️ `xdd-fs-context` MCP mode depende de Mirage/equivalent (external dep no incluida)
+- WARN LLMLingua y Claude Compaction requieren setup adicional (no built-in)
+- WARN `truncate` fallback pierde middle context — workflows sensibles a orden deben evitar
+- WARN `xdd-fs-context` MCP mode depende de Mirage/equivalent (external dep no incluida)
 
 ## Implementation Sprint 19
 

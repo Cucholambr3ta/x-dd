@@ -4,7 +4,7 @@
 **IDE:** OpenCode  
 **Versión doc:** 1.0  
 **Fecha:** 2026-05-28  
-**Estado adapter:** ✅ Implementado en `scripts/xdd-adapt.sh` (`adapt_opencode`, líneas 196-237)  
+**Estado adapter:** SI Implementado en `scripts/xdd-adapt.sh` (`adapt_opencode`, líneas 196-237)  
 **Referencias internas:** ADR-0034, ADR-0035, ADR-0036, ADR-0037, `docs/IDE_SETUP.md`, `docs/MCP_INTEGRATION.md`
 
 ---
@@ -32,14 +32,14 @@ OpenCode **no es** Claude Code, pero comparte suficiente de su arquitectura para
 
 | Capacidad | Claude Code | OpenCode | Cursor | Windsurf |
 |-----------|------------|----------|--------|----------|
-| Slash commands custom (`/workflow`) | ✅ `.claude/commands/*.md` | ✅ `.opencode/commands/*.md` | ❌ | ✅ `.windsurf/workflows/*.md` |
+| Slash commands custom (`/workflow`) | SI `.claude/commands/*.md` | SI `.opencode/commands/*.md` | NO | SI `.windsurf/workflows/*.md` |
 | Governance primario | `CLAUDE.md` | **`AGENTS.md`** (fallback `CLAUDE.md`) | `.cursor/rules/` | `.windsurf/rules/` |
 | MCP config key | `mcpServers` (`~/.claude/mcp_servers.json`) | **`mcp`** (`opencode.json`) | `mcpServers` | `mcpServers` global |
-| Skills auto-descubiertas | ✅ `.claude/skills/` | ✅ `.opencode/skills/` (doc) | ✅ `.cursor/skills/` | ❌ No documentado |
-| Agents nativos | ❌ | ✅ `opencode.json agent` + `.opencode/agents/*.md` | ❌ | ❌ |
-| `/init` generador AGENTS.md | ❌ | ✅ nativo | ❌ | ❌ |
-| `instructions` array extra | ❌ | ✅ `opencode.json instructions` | ❌ | ❌ |
-| Sub-agentes (Task) | Limitado | ✅ nativo (agent mode) | ✅ | ✅ |
+| Skills auto-descubiertas | SI `.claude/skills/` | SI `.opencode/skills/` (doc) | SI `.cursor/skills/` | NO No documentado |
+| Agents nativos | NO | SI `opencode.json agent` + `.opencode/agents/*.md` | NO | NO |
+| `/init` generador AGENTS.md | NO | SI nativo | NO | NO |
+| `instructions` array extra | NO | SI `opencode.json instructions` | NO | NO |
+| Sub-agentes (Task) | Limitado | SI nativo (agent mode) | SI | SI |
 
 **Consecuencia de diseño:** OpenCode es el IDE más compatible con el patrón Claude Code dentro del ecosistema X-DD, con 3 diferencias críticas: MCP key (`mcp` vs `mcpServers`), governance (`AGENTS.md` vs `CLAUDE.md`), y la existencia de agentes nativos OpenCode que **no deben confundirse** con los agentes del registry X-DD.
 
@@ -172,9 +172,9 @@ El adapter genera copia real de workflows en `.opencode/command/` **y también**
 
 ### 5.4 Anti-patterns workflows en OpenCode
 
-- ❌ Symlinks dentro de `.opencode/commands/` — OpenCode los rechaza (misma lección Claude Code)
-- ❌ Editar `.opencode/command/*.md` directamente — editar SSoT y re-ejecutar `xdd-adapt`
-- ❌ Rutas absolutas del host en el contenido de workflows
+- NO Symlinks dentro de `.opencode/commands/` — OpenCode los rechaza (misma lección Claude Code)
+- NO Editar `.opencode/command/*.md` directamente — editar SSoT y re-ejecutar `xdd-adapt`
+- NO Rutas absolutas del host en el contenido de workflows
 
 ---
 
@@ -191,7 +191,7 @@ El adapter genera copia real de workflows en `.opencode/command/` **y también**
 name: Backend Architect
 description: Senior backend architect specializing in scalable system design...
 color: blue
-emoji: 🏗️
+emoji: 
 ---
 ```
 
@@ -333,10 +333,10 @@ triggers:
 
 | IDE | `xdd-adapt` sincroniza skills |
 |-----|-------------------------------|
-| Antigravity | ✅ `skills/` → `.agents/skills/` |
-| Codex | ✅ `skills/` → `~/.codex/skills/` |
-| Cursor | ❌ No implementado |
-| **OpenCode** | ❌ **No implementado** |
+| Antigravity | SI `skills/` → `.agents/skills/` |
+| Codex | SI `skills/` → `~/.codex/skills/` |
+| Cursor | NO No implementado |
+| **OpenCode** | NO **No implementado** |
 
 **Workaround manual hoy:**
 
@@ -349,9 +349,9 @@ cp -r skills/* ~/.claude/skills/
 
 ### 7.5 Anti-patterns skills en OpenCode
 
-- ❌ Crear 180 skills (una por agente) — satura discovery
-- ❌ Description vaga ("Helps with code") — el agente no las descubre
-- ❌ Description en primera persona ("I can help you...")
+- NO Crear 180 skills (una por agente) — satura discovery
+- NO Description vaga ("Helps with code") — el agente no las descubre
+- NO Description en primera persona ("I can help you...")
 
 ---
 
@@ -396,7 +396,7 @@ description: Orquestador X-DD. Pipeline gated 6 fases.
 | Aspecto | Detalle |
 |---------|---------|
 | Formato | Markdown con frontmatter `description:` |
-| Copia real | ✅ NO symlink (OpenCode rechaza symlinks en commands) |
+| Copia real | SI NO symlink (OpenCode rechaza symlinks en commands) |
 | Invocación | `/xdd`, `/fase-requisitos`, etc. en TUI OpenCode |
 | Re-sync | Re-ejecutar `xdd-adapt opencode` tras editar SSoT |
 
@@ -408,7 +408,7 @@ ln -sf "$WF_DIR" "$DEST/.agent/workflows"
 
 | Aspecto | Detalle |
 |---------|---------|
-| Es symlink | ✅ Aceptable aquí (no es directorio de slash commands) |
+| Es symlink | SI Aceptable aquí (no es directorio de slash commands) |
 | Propósito | Lectura directa por el agente + resolución MCP |
 | Riesgo | Si OpenCode cambia su comportamiento, migrar a copia real |
 
@@ -466,7 +466,7 @@ PY
 }
 ```
 
-> ⚠️ **Verdad técnica:** OpenCode usa key `mcp` (no `mcpServers` como Claude Code/Cursor). Hay feature request abierto ([#28364](https://github.com/anomalyco/opencode/issues/28364)) para añadir compatibilidad con `mcpServers`. X-DD genera formato `mcp` nativo OpenCode. Si el issue se resuelve, el adapter podrá ofrecer ambos formatos.
+> WARN **Verdad técnica:** OpenCode usa key `mcp` (no `mcpServers` como Claude Code/Cursor). Hay feature request abierto ([#28364](https://github.com/anomalyco/opencode/issues/28364)) para añadir compatibilidad con `mcpServers`. X-DD genera formato `mcp` nativo OpenCode. Si el issue se resuelve, el adapter podrá ofrecer ambos formatos.
 
 Todos los IDEs MCP-capable consumen las mismas 6 tools:
 
@@ -574,13 +574,13 @@ Al crear artefactos en `personal/x-dd/`, aplicar estas reglas para que **todos**
 
 | Feature | OpenCode (hoy) | Cursor (hoy) | Windsurf (Sprint 26) | Antigravity | Codex |
 |---------|---------------|--------------|---------------------|-------------|-------|
-| Slash commands | ✅ `.opencode/command/*.md` | ❌ | ✅ `.windsurf/workflows/*.md` | ❌ | ❌ |
-| MCP config | ✅ `opencode.json` `mcp` key | ✅ `.cursor/mcp.json` | ✅ `~/.codeium/mcp_config.json` | ✅ `~/.gemini/config/mcp_config.json` | N/A |
-| Orchestrator trigger | ✅ `/trigger` | ⚠️ `@trigger` + MCP | ✅ `/trigger` + MCP | ❌ MCP only | ✅ description-based |
-| Sync skills SSoT | ❌ manual | ❌ manual | ❌ N/A (no convention) | ✅ `.agents/skills/` | ✅ `~/.codex/skills/` |
-| Agents index | ✅ `docs/equipo.md` | ❌ MCP only | ❌ MCP only | ❌ MCP only | ✅ `agents-index.json` |
-| Governance file | ✅ `AGENTS.md` (copia) | ✅ `CLAUDE.md` + rule | ✅ `.windsurf/rules/` | ✅ MCP + skills | ✅ SKILL orchestrator |
-| README local | ❌ backlog | ❌ backlog | ✅ `.windsurf/README-xdd.md` | ✅ `.antigravity/README-xdd.md` | ✅ en skill dir |
+| Slash commands | SI `.opencode/command/*.md` | NO | SI `.windsurf/workflows/*.md` | NO | NO |
+| MCP config | SI `opencode.json` `mcp` key | SI `.cursor/mcp.json` | SI `~/.codeium/mcp_config.json` | SI `~/.gemini/config/mcp_config.json` | N/A |
+| Orchestrator trigger | SI `/trigger` | WARN `@trigger` + MCP | SI `/trigger` + MCP | NO MCP only | SI description-based |
+| Sync skills SSoT | NO manual | NO manual | NO N/A (no convention) | SI `.agents/skills/` | SI `~/.codex/skills/` |
+| Agents index | SI `docs/equipo.md` | NO MCP only | NO MCP only | NO MCP only | SI `agents-index.json` |
+| Governance file | SI `AGENTS.md` (copia) | SI `CLAUDE.md` + rule | SI `.windsurf/rules/` | SI MCP + skills | SI SKILL orchestrator |
+| README local | NO backlog | NO backlog | SI `.windsurf/README-xdd.md` | SI `.antigravity/README-xdd.md` | SI en skill dir |
 | `.agent/` vs `.agents/` | `.agent/` singular | N/A | N/A | `.agents/` plural | N/A |
 
 ---
@@ -678,10 +678,10 @@ Si se usa el wrapper global de ADR-0035:
 
 ### Adapter OpenCode (`adapt_opencode` — estado actual)
 
-- [x] Generar `.opencode/command/*.md` (copia real) — ✅ implementado
-- [x] Symlink `.agent/workflows` → SSoT — ✅ implementado
-- [x] Copiar `AGENTS.md` si no existe — ✅ implementado
-- [x] Regenerar `docs/equipo.md` desde registry — ✅ implementado
+- [x] Generar `.opencode/command/*.md` (copia real) — SI implementado
+- [x] Symlink `.agent/workflows` → SSoT — SI implementado
+- [x] Copiar `AGENTS.md` si no existe — SI implementado
+- [x] Regenerar `docs/equipo.md` desde registry — SI implementado
 - [ ] **Copiar `skills/` → `.opencode/skills/`** (pendiente — copiar patrón Antigravity)
 - [ ] Generar `.opencode/README-xdd.md` (pendiente)
 - [ ] Opcional: generar `opencode.json` completo (hoy se asume que existe)

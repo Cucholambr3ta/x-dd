@@ -71,17 +71,17 @@ Machine-readable adapter del constitution.md humano. Espeja permissions + sandbo
 ## Consequences
 
 ### Positivas
-- ✅ Enterprise-ready: tool calls pasan por authz determinístico
-- ✅ <100ms target verificado en tests
-- ✅ Policy machine-readable + auditable
-- ✅ Hook activable per-profile (default no-op; strict activa)
-- ✅ Compat con xdd-sandbox: authz decide IF, sandbox decide HOW
-- ✅ AutoHarness 6-step governance integrado (parse→classify→permission→execute→sanitize→audit) via combinación de xdd-intent + xdd-authz + xdd-shield + xdd-otel + hooks
+- SI Enterprise-ready: tool calls pasan por authz determinístico
+- SI <100ms target verificado en tests
+- SI Policy machine-readable + auditable
+- SI Hook activable per-profile (default no-op; strict activa)
+- SI Compat con xdd-sandbox: authz decide IF, sandbox decide HOW
+- SI AutoHarness 6-step governance integrado (parse→classify→permission→execute→sanitize→audit) via combinación de xdd-intent + xdd-authz + xdd-shield + xdd-otel + hooks
 
 ### Negativas
-- ⚠️ Patterns regex no cubren todos los casos edge (false negatives posibles)
-- ⚠️ `require_approval` requiere orchestrator que sepa prompt humano (X-DD declara metadata, no fuerza UX)
-- ⚠️ Sin auditing trail SQL todavía (solo exit codes + JSON). Diferido a Sprint 22 evidence layer
+- WARN Patterns regex no cubren todos los casos edge (false negatives posibles)
+- WARN `require_approval` requiere orchestrator que sepa prompt humano (X-DD declara metadata, no fuerza UX)
+- WARN Sin auditing trail SQL todavía (solo exit codes + JSON). Diferido a Sprint 22 evidence layer
 
 ## Implementation Sprint 21
 

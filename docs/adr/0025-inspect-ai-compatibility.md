@@ -29,13 +29,13 @@ Suites Inspect AI pueden convertirse a X-DD format via adapter simple (JSONL lin
 ## Consequences
 
 ### Positivas
-- ✅ Inspect AI suites portables a X-DD sin escribir Python
-- ✅ Stdlib pure (regex + str ops)
-- ✅ Compat directa con LongMemEval cases que usan `includes` scorer
+- SI Inspect AI suites portables a X-DD sin escribir Python
+- SI Stdlib pure (regex + str ops)
+- SI Compat directa con LongMemEval cases que usan `includes` scorer
 
 ### Negativas
-- ⚠️ No cubre todos los Inspect AI scorers (faltan: F1, BLEU, etc.) — diferidos a v0.2.0
-- ⚠️ Solvers de Inspect AI no se importan (solo scorers)
+- WARN No cubre todos los Inspect AI scorers (faltan: F1, BLEU, etc.) — diferidos a v0.2.0
+- WARN Solvers de Inspect AI no se importan (solo scorers)
 
 ## Implementation Sprint 20
 

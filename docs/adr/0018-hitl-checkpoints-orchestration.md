@@ -32,15 +32,15 @@ X-DD no fuerza una UX específica de prompt (queda al orchestrator). Solo declar
 ## Consequences
 
 ### Positivas
-- ✅ Workflows complejos (deploy, release, migration) pueden pausar paso a paso
-- ✅ Declarativo en composition_patterns → versionable, auditable
-- ✅ Compatible con orquestadores existentes (cada uno implementa la UX del prompt)
-- ✅ Backwards compatible: patterns sin `hitl_after` siguen funcionando igual
+- SI Workflows complejos (deploy, release, migration) pueden pausar paso a paso
+- SI Declarativo en composition_patterns → versionable, auditable
+- SI Compatible con orquestadores existentes (cada uno implementa la UX del prompt)
+- SI Backwards compatible: patterns sin `hitl_after` siguen funcionando igual
 
 ### Negativas
-- ⚠️ Cumplimiento real depende del orquestador (X-DD no puede forzar pausa si el orchestrator lo ignora)
-- ⚠️ Sin timeout especificado → checkpoint puede bloquear indefinidamente
-- ⚠️ No incluye persistencia de la respuesta humana (qué se aprobó, por quién) → deferred a workflow superior
+- WARN Cumplimiento real depende del orquestador (X-DD no puede forzar pausa si el orchestrator lo ignora)
+- WARN Sin timeout especificado → checkpoint puede bloquear indefinidamente
+- WARN No incluye persistencia de la respuesta humana (qué se aprobó, por quién) → deferred a workflow superior
 
 ## Implementation Sprint 17
 

@@ -32,15 +32,15 @@ Sprint 20 introduce:
 ## Consequences
 
 ### Positivas
-- ✅ X-DD reproducible vs claims competidores
-- ✅ Meta-eval mide mejora ciclo a ciclo (alineado con AHE iterative loop)
-- ✅ Adapters thin: no duplica lógica upstream
-- ✅ Suites scaffolds permiten quick-start sin setup completo
+- SI X-DD reproducible vs claims competidores
+- SI Meta-eval mide mejora ciclo a ciclo (alineado con AHE iterative loop)
+- SI Adapters thin: no duplica lógica upstream
+- SI Suites scaffolds permiten quick-start sin setup completo
 
 ### Negativas
-- ⚠️ User debe setup external benchmark separadamente (clone repo + install deps)
-- ⚠️ Subsets iniciales acotados (20/50 tasks) por costo compute
-- ⚠️ Sin running de subsets en CI por default (cost prohibitive)
+- WARN User debe setup external benchmark separadamente (clone repo + install deps)
+- WARN Subsets iniciales acotados (20/50 tasks) por costo compute
+- WARN Sin running de subsets en CI por default (cost prohibitive)
 
 ## Implementation Sprint 20
 

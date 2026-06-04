@@ -61,15 +61,15 @@ Script bash que guía al usuario por 7 pasos:
 ## Consequences
 
 ### Positivas
-- ✅ Barrera de entrada baja: `bash scripts/xdd-wizard.sh` reemplaza necesidad de leer 3 archivos de docs
-- ✅ Workspace soporta monorepos parcialmente (Sprint 15 lo completará con 3 modos)
-- ✅ Schema extensible: `workspace:` aditivo, no rompe profile.yml existentes
-- ✅ Default seguro: `shared_gate_key=false` evita compartir secretos entre proyectos
+- SI Barrera de entrada baja: `bash scripts/xdd-wizard.sh` reemplaza necesidad de leer 3 archivos de docs
+- SI Workspace soporta monorepos parcialmente (Sprint 15 lo completará con 3 modos)
+- SI Schema extensible: `workspace:` aditivo, no rompe profile.yml existentes
+- SI Default seguro: `shared_gate_key=false` evita compartir secretos entre proyectos
 
 ### Negativas
-- ⚠️ Wizard sin TUI rica = UX text-mode (aceptable tradeoff por portabilidad)
-- ⚠️ Workspace mode no implementa todavía routing de workflows por proyecto — workflow runtime asume proyecto único (deferred a Sprint 15)
-- ⚠️ `shared_memory=true` puede generar cross-talk de instincts entre proyectos diferentes (mitigado por TF-IDF clustering Sprint 16)
+- WARN Wizard sin TUI rica = UX text-mode (aceptable tradeoff por portabilidad)
+- WARN Workspace mode no implementa todavía routing de workflows por proyecto — workflow runtime asume proyecto único (deferred a Sprint 15)
+- WARN `shared_memory=true` puede generar cross-talk de instincts entre proyectos diferentes (mitigado por TF-IDF clustering Sprint 16)
 
 ## Related
 

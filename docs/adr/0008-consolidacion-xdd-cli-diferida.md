@@ -4,7 +4,7 @@
 - **Estado:** Reemplazado por [ADR-0043](0043-pip-installable-supersede-0008.md) (2026-05-30)
 - **Decidido por:** Alejandro Placencia, Claude
 
-> ⚠️ **SUPERSEDED:** la consolidación dejó de estar diferida. ADR-0043 resuelve el
+> WARN **SUPERSEDED:** la consolidación dejó de estar diferida. ADR-0043 resuelve el
 > `pip install` por **empaquetado con entry-points sobre los scripts existentes**
 > (sin reescritura a Click/Typer), evitando el costo que motivó este diferimiento.
 

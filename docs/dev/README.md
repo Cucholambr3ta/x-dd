@@ -1,6 +1,6 @@
 # docs/dev — Material de desarrollo interno
 
-> ⚠️ **No es parte del producto liberado.** Este directorio contiene guías de
+> WARN **No es parte del producto liberado.** Este directorio contiene guías de
 > **desarrollo del propio framework X-DD** — cómo se crean agentes, skills y workflows
 > para cada IDE soportado. Son referencia para contribuir a X-DD, no documentación de
 > usuario final.

@@ -523,12 +523,12 @@
 Las 3 fases ya completadas de X-DD aplicado a sí mismo están **APROBADAS y FIRMADAS**:
 
 ```
-✓ briefing  APROBADO  (firma cffaf210…)
-✓ spec      APROBADO  (firma 4fc4d8e6…)
-✓ plan      APROBADO  (firma 232d9368…)
+OK briefing  APROBADO  (firma cffaf210…)
+OK spec      APROBADO  (firma 4fc4d8e6…)
+OK plan      APROBADO  (firma 232d9368…)
 ```
 
-Transiciones validadas: `briefing→spec`, `spec→plan`, `plan→build` ✓.
+Transiciones validadas: `briefing→spec`, `spec→plan`, `plan→build` OK.
 
 ### Changed — Sprint 4
 

@@ -21,9 +21,9 @@ Tres canales hoy, con realidades de update muy distintas:
 
 | Canal | Update hoy |
 |-------|-----------|
-| Repo X-DD (contribuidores) | `git pull` ✅ |
-| `xdd-init` copia a proyecto | **nada** ❌ (congelado) |
-| `xdd-global-install` (slash command) | re-correr el script ⚠️ manual |
+| Repo X-DD (contribuidores) | `git pull` SI |
+| `xdd-init` copia a proyecto | **nada** NO (congelado) |
+| `xdd-global-install` (slash command) | re-correr el script WARN manual |
 
 El agujero es el canal de copia, que es el del usuario típico.
 

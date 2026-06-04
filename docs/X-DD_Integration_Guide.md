@@ -25,14 +25,14 @@
 
 | Metodología | Fase del Pipeline | Estado | Agentes dedicados |
 |-------------|-------------------|--------|-------------------|
-| **SDD** | Fases 1–6 (completo) | ✅ Completo | `Orchestrator` + `Product-Manager` |
-| **BDD** | Fase 1 + Fase 5 | ✅ Listo | `Rapid-Prototyper` + `QA-Reviewer` |
-| **ATDD** | Fase 1 + Fase 5 | ✅ Listo | `QA-Reviewer` + `Architect` |
-| **FDD** | Fase 1 + Fase 3 | ✅ Listo | `Product-Manager` + `Project-Manager` |
-| **TDD** | Fase 4 (Build) | ✅ Listo | `Builder` + `Reviewer` |
-| **DDD** | Fase 2 (Spec) | ✅ Listo | `Architect` + `Domain-Expert` |
-| **SecDD/STDD** | Fase 4 + Fase 5 | ✅ Listo | `Security-Engineer` + `SecOps` |
-| **Threat-Driven** | Fase 2 (Spec) | ✅ Listo | `Threat-Detection-Engineer` + `SecOps` |
+| **SDD** | Fases 1–6 (completo) | Completo | `Orchestrator` + `Product-Manager` |
+| **BDD** | Fase 1 + Fase 5 | Listo | `Rapid-Prototyper` + `QA-Reviewer` |
+| **ATDD** | Fase 1 + Fase 5 | Listo | `QA-Reviewer` + `Architect` |
+| **FDD** | Fase 1 + Fase 3 | Listo | `Product-Manager` + `Project-Manager` |
+| **TDD** | Fase 4 (Build) | Listo | `Builder` + `Reviewer` |
+| **DDD** | Fase 2 (Spec) | Listo | `Architect` + `Domain-Expert` |
+| **SecDD/STDD** | Fase 4 + Fase 5 | Listo | `Security-Engineer` + `SecOps` |
+| **Threat-Driven** | Fase 2 (Spec) | Listo | `Threat-Detection-Engineer` + `SecOps` |
 
 ### Mitigación de gaps
 
@@ -76,10 +76,10 @@ FASE 6 (Retro)     ──► Sin cambios (Learning Loop)
 │                                                                                  │
 │  + FDD           + DDD              + FDD        + TDD       + BDD              │
 │  (catálogo)      (dominio)          (por valor)  (first)     (exec)             │
-│  + BDD           + Threat Model     │            + STDD 🛡️   + ATDD             │
-│  (features)      (THREATS.md) 🛡️   │            (sec tests) + SAST 🛡️          │
-│  + ATDD          │                  │            │           + DAST 🛡️          │
-│  (criterios)     │                  │            │           + Secrets 🛡️       │
+│  + BDD           + Threat Model     │            + STDD      + ATDD             │
+│  (features)      (THREATS.md)       │            (sec tests) + SAST             │
+│  + ATDD          │                  │            │           + DAST             │
+│  (criterios)     │                  │            │           + Secrets          │
 │                                                                                  │
 │              [APROBADO]         [APROBADO]   [APROBADO]                         │
 │         (SPEC+DOMAIN+THREATS)                                                   │
@@ -94,10 +94,10 @@ FASE 6 (Retro)     ──► Sin cambios (Learning Loop)
 | **BDD** | Fase 1 + 5 | `Rapid-Prototyper` + `Reviewer` | `tests/features/*.feature` |
 | **ATDD** | Fase 1 + 5 | `Architect` + `QA-Reviewer` | `tests/acceptance/*.test.ts` |
 | **DDD** | Fase 2 | `Architect` | `docs/specs/DOMAIN.md` |
-| **Threat-Driven** 🛡️ | Fase 2 | `SecOps` + `Architect` | `docs/specs/THREATS.md` |
+| **Threat-Driven** | Fase 2 | `SecOps` + `Architect` | `docs/specs/THREATS.md` |
 | **TDD** | Fase 4 | `Builder` | `tests/unit/*.test.ts` (antes de `src/`) |
-| **STDD** 🛡️ | Fase 4 | `Builder` + `SecOps` | `tests/security/**/*.security.test.ts` |
-| **SecDD** 🛡️ | Fase 5 | `Reviewer` + `SecOps` | SAST + DAST + Secrets reports |
+| **STDD** | Fase 4 | `Builder` + `SecOps` | `tests/security/**/*.security.test.ts` |
+| **SecDD** | Fase 5 | `Reviewer` + `SecOps` | SAST + DAST + Secrets reports |
 | **SDD** | Todas | `Orchestrator` | `SPEC.md` |
 
 ---
@@ -191,9 +191,9 @@ Feature 1: [acción] [resultado] [objeto] — alta prioridad, 1 día
 ```
 Por cada subtarea de tipo "lógica de negocio":
 
-  1. 🔴 ROJO     — Test que describe lo que la función DEBE hacer (falla, no existe)
-  2. 🟢 VERDE    — Mínimo código para que el test pase (sin sobre-ingeniería)
-  3. 🔵 REFACTOR — Mejorar sin romper el test (SOLID, DRY, Clean Code)
+  1. [ROJO]     — Test que describe lo que la función DEBE hacer (falla, no existe)
+  2. [VERDE]    — Mínimo código para que el test pase (sin sobre-ingeniería)
+  3. [REFACTOR] — Mejorar sin romper el test (SOLID, DRY, Clean Code)
 ```
 
 | Aplica TDD | No aplica TDD |
@@ -213,8 +213,8 @@ Por cada subtarea de tipo "lógica de negocio":
 | Tier | Tipo | Qué valida | Nuevo |
 |------|------|-----------|-------|
 | **Tier 1** | Estático | Linters, tipos, tests unitarios TDD | Sin cambios |
-| **Tier 2** | Funcional | Tests E2E + **archivos .feature (BDD)** + **tests de aceptación (ATDD)** | ✅ |
-| **Tier 3** | LLM-Judge | Calidad semántica + **coherencia con DOMAIN.md** | ✅ Ampliado |
+| **Tier 2** | Funcional | Tests E2E + **archivos .feature (BDD)** + **tests de aceptación (ATDD)** | SI |
+| **Tier 3** | LLM-Judge | Calidad semántica + **coherencia con DOMAIN.md** | SI Ampliado |
 
 **Tier 3:** El LLM-Judge verifica que el código use el vocabulario del DOMAIN.md. Un método `calculateBillingPeriod` cuando el dominio define `computeCycleTotals` es drift semántico reportable.
 
@@ -228,7 +228,7 @@ Por cada subtarea de tipo "lógica de negocio":
 
 **Threat-Driven** (Fase 2): aplica STRIDE sobre el `DOMAIN.md` para identificar amenazas antes de codificar → produce `THREATS.md`.
 
-**STDD** (Fase 4): extiende TDD con security tests escritos *antes* del código. Ciclo: 🔴 test funcional falla → 🔴🛡️ security test falla → 🟢 implementación con controles → 🔵 refactor + hardening.
+**STDD** (Fase 4): extiende TDD con security tests escritos *antes* del código. Ciclo: [ROJO] test funcional falla → [ROJO-SEC] security test falla → [VERDE] implementación con controles → [REFACTOR] refactor + hardening.
 
 **SecDD** (Fase 5): herramientas automatizadas que escanean código y aplicación en ejecución (SAST, DAST, Secrets, SCA).
 
@@ -247,10 +247,10 @@ SecOps (bajo demanda)    →  Ataca el sistema como adversario real — Red Team
 ```
 Para cada función en THREATS.md con "security test requerido":
 
-  1. 🔴        TDD test funcional   → falla (función no existe)
-  2. 🔴🛡️      STDD security test   → falla (función no existe)
-  3. 🟢        Implementación mínima → ambos tests pasan
-  4. 🔵        Refactor + hardening  → ambos tests siguen en verde
+  1. [ROJO]        TDD test funcional   → falla (función no existe)
+  2. [ROJO-SEC]    STDD security test   → falla (función no existe)
+  3. [VERDE]       Implementación mínima → ambos tests pasan
+  4. [REFACTOR]    Refactor + hardening  → ambos tests siguen en verde
 ```
 
 | Requiere STDD | No requiere STDD |
@@ -277,12 +277,12 @@ tests/security/
 
 | Tier | Tipo | Herramienta | Bloquea merge |
 |------|------|-------------|---------------|
-| Tier 1 | SAST | **Semgrep** | ✅ |
-| Tier 1 | Secrets | **Gitleaks** | ✅ |
-| Tier 1 | SCA | **npm audit / Trivy** | ✅ |
-| Tier 2 | DAST | **OWASP ZAP** | ✅ (producción) |
-| Tier 2 | DAST | **Nuclei** | ✅ (producción) |
-| Tier 2 | Security tests | **Vitest** (STDD) | ✅ |
+| Tier 1 | SAST | **Semgrep** | SI |
+| Tier 1 | Secrets | **Gitleaks** | SI |
+| Tier 1 | SCA | **npm audit / Trivy** | SI |
+| Tier 2 | DAST | **OWASP ZAP** | SI (producción) |
+| Tier 2 | DAST | **Nuclei** | SI (producción) |
+| Tier 2 | Security tests | **Vitest** (STDD) | SI |
 | Tier 3 | Red Team | **SecOps** | Manual |
 
 ```bash
@@ -335,15 +335,15 @@ nuclei -u $STAGING_URL -t cves/ -t vulnerabilities/
 
 | Escenario | FDD | DDD | SDD | ATDD | BDD | TDD | Threat | STDD | SecDD |
 |-----------|:---:|:---:|:---:|:----:|:---:|:---:|:------:|:----:|:-----:|
-| Módulo nuevo con lógica compleja | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| Feature con usuario definido | ✅ | ⚠️ | ✅ | ✅ | ✅ | ✅ | ⚠️ | ✅ | ✅ |
-| Tool interna / script | ✅ | ❌ | ✅ | ❌ | ❌ | ✅ | ❌ | ❌ | ⚠️ |
-| Bugfix > 20 líneas | ❌ | ❌ | ✅ | ❌ | ❌ | ✅ | ❌ | ⚠️ | ❌ |
-| Refactoring de dominio | ❌ | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ❌ | ⚠️ |
-| Integración con sistema externo | ✅ | ⚠️ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| Infraestructura / DevOps | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| Módulo nuevo con lógica compleja | SI | SI | SI | SI | SI | SI | SI | SI | SI |
+| Feature con usuario definido | SI | WARN | SI | SI | SI | SI | WARN | SI | SI |
+| Tool interna / script | SI | NO | SI | NO | NO | SI | NO | NO | WARN |
+| Bugfix > 20 líneas | NO | NO | SI | NO | NO | SI | NO | WARN | NO |
+| Refactoring de dominio | NO | SI | SI | NO | NO | SI | NO | NO | WARN |
+| Integración con sistema externo | SI | WARN | SI | SI | SI | SI | SI | SI | SI |
+| Infraestructura / DevOps | SI | SI | SI | SI | SI | SI | SI | SI | SI |
 
-> ⚠️ = Opcional según complejidad
+> WARN = Opcional según complejidad
 
 ---
 
@@ -379,7 +379,7 @@ PROJ-NombreProyecto/
 │   ├── specs/
 │   │   ├── SPEC.md            ← Especificación técnica (DRIFT-ZERO)
 │   │   ├── DOMAIN.md          ← DDD: modelo de dominio
-│   │   └── THREATS.md         ← Threat-Driven: modelo de amenazas 🛡️
+│   │   └── THREATS.md         ← Threat-Driven: modelo de amenazas
 │   └── plans/
 │       ├── PLAN.md            ← Reorganizado por features (FDD)
 │       └── archive/
@@ -390,7 +390,7 @@ PROJ-NombreProyecto/
 │   ├── unit/                  ← TDD: tests unitarios (antes de src/)
 │   ├── features/              ← BDD: archivos Cucumber .feature
 │   ├── acceptance/            ← ATDD: tests de aceptación
-│   ├── security/              ← STDD: security tests 🛡️
+│   ├── security/              ← STDD: security tests
 │   │   ├── injection/
 │   │   ├── auth/
 │   │   ├── authz/
@@ -425,22 +425,22 @@ PROJ-NombreProyecto/
 | `skill-ddd-modeler` | Architect | Bounded contexts, aggregates, ubiquitous language |
 | `skill-bdd-writer` | Architect | Convierte requisitos en `.feature` Gherkin ejecutables |
 | `skill-atdd-generator` | QA-Reviewer | Genera stubs de acceptance tests desde criterios |
-| `skill-threat-modeler` 🛡️ | SecOps | STRIDE sobre DOMAIN.md, genera THREATS.md |
-| `skill-stdd-coach` 🛡️ | Builder + SecOps | Ciclo STDD, payloads adversariales |
-| `skill-devsecops-pipeline` 🛡️ | SecOps | Integra Semgrep, Gitleaks, Trivy, ZAP, Nuclei |
+| `skill-threat-modeler` | SecOps | STRIDE sobre DOMAIN.md, genera THREATS.md |
+| `skill-stdd-coach` | Builder + SecOps | Ciclo STDD, payloads adversariales |
+| `skill-devsecops-pipeline` | SecOps | Integra Semgrep, Gitleaks, Trivy, ZAP, Nuclei |
 
 ### Nuevos workflows
 
 | Comando | Fase | Propósito |
 |---------|------|-----------|
 | `/domain-model` | Fase 2 | Genera `DOMAIN.md` con Architect + Domain-Expert |
-| `/threat-model` 🛡️ | Fase 2 | Genera `THREATS.md` con SecOps + Architect |
+| `/threat-model` | Fase 2 | Genera `THREATS.md` con SecOps + Architect |
 | `/feature-catalog` | Fase 1 | Genera `FEATURES.md` con RICE/MoSCoW |
 | `/bdd-generate` | Fase 1 | Convierte REQUIREMENTS.md en archivos `.feature` |
 | `/tdd-cycle` | Fase 4 | Guía ciclo Rojo-Verde-Refactor para una función |
-| `/stdd-cycle` 🛡️ | Fase 4 | Ciclo STDD para función/endpoint crítico |
+| `/stdd-cycle` | Fase 4 | Ciclo STDD para función/endpoint crítico |
 | `/atdd-verify` | Fase 5 | Ejecuta acceptance tests y genera reporte |
-| `/security-scan` 🛡️ | Fase 5 | SAST + Secrets + SCA consolidado |
+| `/security-scan` | Fase 5 | SAST + Secrets + SCA consolidado |
 
 ### Modificaciones a workflows existentes
 
@@ -496,7 +496,7 @@ En curso:    SecOps ejecuta /advanced-agentic-pentesting antes de cada release
 [ ] Tier 2 ejecuta .feature files en /qa-review
 [ ] REQUIREMENTS.md referencia los archivos .feature correspondientes
 
-─── Seguridad 🛡️ ────────────────────────────────────────────────────────
+─── Seguridad ───────────────────────────────────────────────────────────
 [ ] docs/specs/THREATS.md aprobado (proyectos con datos sensibles)
 [ ] Ninguna amenaza CRÍTICA sin control documentado
 [ ] SEC-REQ-* del THREATS.md copiados al SPEC.md
@@ -507,7 +507,7 @@ En curso:    SecOps ejecuta /advanced-agentic-pentesting antes de cada release
 [ ] OWASP ZAP / Nuclei configurados para staging
 [ ] SecOps ejecuta /advanced-agentic-pentesting antes de cada release
 
-─── Contexto y Memoria 🧠 ───────────────────────────────────────────────
+─── Contexto y Memoria ──────────────────────────────────────────────────
 [ ] MemPalace inicializado: mempalace init + mempalace mine
 [ ] .claude/settings.json con PostToolUse hook activo
 [ ] scripts/xdd-start.sh copiado al proyecto

@@ -30,13 +30,13 @@ Cursor **no es** Claude Code. Antes de diseñar el adapter hay que internalizar 
 
 | Capacidad | Claude Code / OpenCode / Copilot | Cursor |
 |-----------|----------------------------------|--------|
-| Slash commands custom (`/workflow`) | ✅ vía archivos en carpetas IDE | ❌ **No existe** |
-| Registro automático de N workflows | ✅ copia a commands/prompts | ❌ **No existe** |
-| Catálogo nativo de agentes | ❌ (X-DD lo resuelve) | ❌ |
-| Rules con @mention | Parcial / distinto | ✅ **Mecanismo principal** |
-| Skills auto-descubiertas | Vía convención IDE | ✅ `.cursor/skills/` |
-| MCP tools | ✅ | ✅ `.cursor/mcp.json` |
-| Subagents paralelos | Limitado | ✅ Task tool nativo |
+| Slash commands custom (`/workflow`) | SI vía archivos en carpetas IDE | NO **No existe** |
+| Registro automático de N workflows | SI copia a commands/prompts | NO **No existe** |
+| Catálogo nativo de agentes | NO (X-DD lo resuelve) | NO |
+| Rules con @mention | Parcial / distinto | SI **Mecanismo principal** |
+| Skills auto-descubiertas | Vía convención IDE | SI `.cursor/skills/` |
+| MCP tools | SI | SI `.cursor/mcp.json` |
+| Subagents paralelos | Limitado | SI Task tool nativo |
 
 **Consecuencia de diseño:** en Cursor, el orquestador X-DD se activa con **`@<trigger>`** (rule) y/o **MCP `xdd_invoke_workflow`**, nunca con `/trigger` nativo.
 
@@ -162,10 +162,10 @@ A diferencia de `adapt_claude_code()` y `adapt_opencode()`, **`adapt_cursor()` N
 
 ### 5.4 Anti-patterns workflows en Cursor
 
-- ❌ Esperar `/plan-fases` como slash nativo
-- ❌ Crear 54 rules `.mdc` (una por workflow) — satura el rule picker
-- ❌ Duplicar workflows fuera de `.agent/workflows/`
-- ❌ Symlinks en paths de config (Cursor puede rechazarlos, misma lección que Claude Code)
+- NO Esperar `/plan-fases` como slash nativo
+- NO Crear 54 rules `.mdc` (una por workflow) — satura el rule picker
+- NO Duplicar workflows fuera de `.agent/workflows/`
+- NO Symlinks en paths de config (Cursor puede rechazarlos, misma lección que Claude Code)
 
 ---
 
@@ -182,7 +182,7 @@ A diferencia de `adapt_claude_code()` y `adapt_opencode()`, **`adapt_cursor()` N
 name: Backend Architect
 description: Senior backend architect specializing in scalable system design...
 color: blue
-emoji: 🏗️
+emoji: 
 ---
 ```
 
@@ -342,9 +342,9 @@ triggers:
 
 | IDE | `xdd-adapt` sincroniza skills |
 |-----|-------------------------------|
-| Antigravity | ✅ `skills/` → `.agents/skills/` |
-| Codex | ✅ `skills/` → `~/.codex/skills/` |
-| **Cursor** | ❌ **No implementado** |
+| Antigravity | SI `skills/` → `.agents/skills/` |
+| Codex | SI `skills/` → `~/.codex/skills/` |
+| **Cursor** | NO **No implementado** |
 
 **Workaround manual hoy:**
 
@@ -359,10 +359,10 @@ cp -r skills/* .cursor/skills/
 
 ### 7.6 Anti-patterns skills en Cursor
 
-- ❌ Crear 180 skills (una por agente) — satura discovery (lección Codex aplicable)
-- ❌ Poner skills en `~/.cursor/skills-cursor/`
-- ❌ Description vaga ("Helps with code") — el agente no las descubre
-- ❌ Description en primera persona ("I can help you...")
+- NO Crear 180 skills (una por agente) — satura discovery (lección Codex aplicable)
+- NO Poner skills en `~/.cursor/skills-cursor/`
+- NO Description vaga ("Helps with code") — el agente no las descubre
+- NO Description en primera persona ("I can help you...")
 
 ---
 
@@ -546,12 +546,12 @@ Para guiar al agente diseñador sobre **próximos pasos del adapter**:
 
 | Feature | Antigravity | Codex | Cursor (hoy) | Cursor (recomendado) |
 |---------|-------------|-------|--------------|----------------------|
-| MCP config | ✅ merge global | N/A | ✅ project `.cursor/mcp.json` | ✅ + opción wrapper global |
+| MCP config | SI merge global | N/A | SI project `.cursor/mcp.json` | SI + opción wrapper global |
 | Orchestrator rule/skill | skills + MCP | SKILL global | rule `.mdc` only | rule + skill orchestrator |
-| Sync skills SSoT | ✅ `.agents/skills/` | ✅ `~/.codex/skills/` | ❌ manual | ✅ `.cursor/skills/` |
-| Agents index | MCP | ✅ agents-index.json | MCP only | MCP + optional `references/` en skill |
-| Workflows index | MCP | ✅ workflows-index.md | MCP only | MCP (suficiente) |
-| README local | ✅ `.antigravity/README-xdd.md` | ✅ `.codex/README-xdd.md` | ❌ | ✅ `.cursor/README-xdd.md` |
+| Sync skills SSoT | SI `.agents/skills/` | SI `~/.codex/skills/` | NO manual | SI `.cursor/skills/` |
+| Agents index | MCP | SI agents-index.json | MCP only | MCP + optional `references/` en skill |
+| Workflows index | MCP | SI workflows-index.md | MCP only | MCP (suficiente) |
+| README local | SI `.antigravity/README-xdd.md` | SI `.codex/README-xdd.md` | NO | SI `.cursor/README-xdd.md` |
 | Project README | — | — | — | documentar @trigger vs /trigger |
 
 ---

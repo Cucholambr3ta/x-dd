@@ -150,12 +150,12 @@ bash scripts/xdd-global-install.sh
 bash scripts/xdd-global-install.sh --check
 
 # Resultado esperado:
-#  ✓ claude-code: ~/.claude/commands/xdd.md
-#  ✓ opencode: ~/.config/opencode/command/xdd.md
-#  ✓ cursor: ~/.cursor/rules/xdd.mdc
-#  ✓ windsurf: ~/.codeium/workflows/xdd.md
-#  ✓ vscode-copilot: ~/.config/Code/User/prompts/xdd.prompt.md
-#  ✓ codex: ~/.codex/skills/xdd-orchestrator/SKILL.md
+#  OK claude-code: ~/.claude/commands/xdd.md
+#  OK opencode: ~/.config/opencode/command/xdd.md
+#  OK cursor: ~/.cursor/rules/xdd.mdc
+#  OK windsurf: ~/.codeium/workflows/xdd.md
+#  OK vscode-copilot: ~/.config/Code/User/prompts/xdd.prompt.md
+#  OK codex: ~/.codex/skills/xdd-orchestrator/SKILL.md
 
 # Flujo nuevo (post Sprint 29):
 mkdir mi-proyecto && cd $_

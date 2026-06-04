@@ -44,31 +44,31 @@ GitNexus se integra como **companion tier-1 paralelo a MemPalace** en v0.1.0:
 ## Consequences
 
 ### Positivas
-- ✅ Cierra gap real "AI ignora blast radius" (problema documentado en research)
-- ✅ MCP nativo → consumible sin adapter X-DD-específico
-- ✅ Compat con orquestadores existentes (Claude Code, Cursor, etc.) — GitNexus expone su propio MCP server
-- ✅ `/analisis-impacto` workflow existente (X-DD) puede invocar GitNexus pre-condition para grafo de deps preciso
-- ✅ Patrón consistente con MemPalace (mismo flujo doctor + start + DEPENDENCIES)
-- ✅ Stack divergente (TS) no afecta X-DD (interop sólo vía MCP, no comparte libs)
+- SI Cierra gap real "AI ignora blast radius" (problema documentado en research)
+- SI MCP nativo → consumible sin adapter X-DD-específico
+- SI Compat con orquestadores existentes (Claude Code, Cursor, etc.) — GitNexus expone su propio MCP server
+- SI `/analisis-impacto` workflow existente (X-DD) puede invocar GitNexus pre-condition para grafo de deps preciso
+- SI Patrón consistente con MemPalace (mismo flujo doctor + start + DEPENDENCIES)
+- SI Stack divergente (TS) no afecta X-DD (interop sólo vía MCP, no comparte libs)
 
 ### Negativas
-- ⚠️ License PolyForm Noncomm requiere disclaimer + decision consciente del user comercial
-- ⚠️ Dep adicional para mantener (Node + npm requeridos)
-- ⚠️ Index inicial puede tomar segundos-minutos en codebases grandes (warning en log)
-- ⚠️ Overlap parcial con xdd-fs-context (Sprint 19) — política: GitNexus = upgrade; xdd-fs-context = baseline zero-dep
+- WARN License PolyForm Noncomm requiere disclaimer + decision consciente del user comercial
+- WARN Dep adicional para mantener (Node + npm requeridos)
+- WARN Index inicial puede tomar segundos-minutos en codebases grandes (warning en log)
+- WARN Overlap parcial con xdd-fs-context (Sprint 19) — política: GitNexus = upgrade; xdd-fs-context = baseline zero-dep
 
 ## License analysis (PolyForm Noncommercial 1.0.0)
 
 | Caso de uso | ¿Gratis? |
 |---|---|
-| Uso personal | ✅ Sí |
-| Research / academic | ✅ Sí |
-| Educational | ✅ Sí |
-| Non-profit | ✅ Sí |
-| Open source contributions | ✅ Sí |
-| Commercial SaaS / product | ❌ Requiere paid license |
-| Consultoría con cliente | ❌ Requiere paid license |
-| Internal corporate tools | ❌ Requiere paid license |
+| Uso personal | SI Sí |
+| Research / academic | SI Sí |
+| Educational | SI Sí |
+| Non-profit | SI Sí |
+| Open source contributions | SI Sí |
+| Commercial SaaS / product | NO Requiere paid license |
+| Consultoría con cliente | NO Requiere paid license |
+| Internal corporate tools | NO Requiere paid license |
 
 X-DD MIT NO se contamina por **consumir** GitNexus MCP server. PolyForm Noncomm restringe **modificación + redistribución comercial**, no consumo client-side. Análogo a usar Slack en un proyecto MIT — no contamina.
 

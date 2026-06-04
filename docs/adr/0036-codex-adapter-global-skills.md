@@ -49,16 +49,16 @@ Sprint follow-up añade `target codex` a `xdd-adapt.sh`:
 ## Consequences
 
 ### Positivas
-- ✅ Codex = 7° IDE soportado (X-DD pipeline accesible desde OpenAI Codex)
-- ✅ Pattern orchestrator + index = escalable (180 agentes sin saturar)
-- ✅ 6 X-DD skills propias compat directo (frontmatter X-DD name+description = subset Codex)
-- ✅ Auto-detect → cero pasos manuales si user tiene Codex instalado
-- ✅ Override env var = testeable + setup custom
+- SI Codex = 7° IDE soportado (X-DD pipeline accesible desde OpenAI Codex)
+- SI Pattern orchestrator + index = escalable (180 agentes sin saturar)
+- SI 6 X-DD skills propias compat directo (frontmatter X-DD name+description = subset Codex)
+- SI Auto-detect → cero pasos manuales si user tiene Codex instalado
+- SI Override env var = testeable + setup custom
 
 ### Negativas
-- ⚠️ Skills GLOBAL → todas las skills X-DD se ven en TODOS los proyectos Codex del user (aceptable, son governance/devops)
-- ⚠️ `agents-index.json` deviene de registry — si user actualiza X-DD upstream, re-correr `xdd-adapt codex` necesario
-- ⚠️ Codex helper script asume project root tiene `.agent/workflows/` — global install (Sprint 25) ya cubre esto
+- WARN Skills GLOBAL → todas las skills X-DD se ven en TODOS los proyectos Codex del user (aceptable, son governance/devops)
+- WARN `agents-index.json` deviene de registry — si user actualiza X-DD upstream, re-correr `xdd-adapt codex` necesario
+- WARN Codex helper script asume project root tiene `.agent/workflows/` — global install (Sprint 25) ya cubre esto
 
 ## Implementation
 

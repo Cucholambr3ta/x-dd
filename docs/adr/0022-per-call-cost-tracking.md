@@ -38,16 +38,16 @@ Integración futura:
 ## Consequences
 
 ### Positivas
-- ✅ Enterprise-ready: cost por session/task/model auditable
-- ✅ Local-first: no envía data a SaaS
-- ✅ Pricing override por proyecto (model custom, enterprise rates)
-- ✅ Compat con xdd-router.py (Sprint 17) para tradeoffs cost/calidad
-- ✅ Reports `--by=day` permiten trends
+- SI Enterprise-ready: cost por session/task/model auditable
+- SI Local-first: no envía data a SaaS
+- SI Pricing override por proyecto (model custom, enterprise rates)
+- SI Compat con xdd-router.py (Sprint 17) para tradeoffs cost/calidad
+- SI Reports `--by=day` permiten trends
 
 ### Negativas
-- ⚠️ Pricing table requiere actualización manual (cuando Anthropic/OpenAI suben precios)
-- ⚠️ Token counts deben suministrarse desde orchestrator (X-DD no cuenta tokens por sí mismo)
-- ⚠️ Sin alerting (threshold breach) en v0.1.0 — diferido a Sprint 19 context_budget
+- WARN Pricing table requiere actualización manual (cuando Anthropic/OpenAI suben precios)
+- WARN Token counts deben suministrarse desde orchestrator (X-DD no cuenta tokens por sí mismo)
+- WARN Sin alerting (threshold breach) en v0.1.0 — diferido a Sprint 19 context_budget
 
 ## Implementation Sprint 18
 

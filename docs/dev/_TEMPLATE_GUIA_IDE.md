@@ -19,11 +19,11 @@
 
 | Capacidad | Claude Code (ref) | [IDE_NAME] |
 |---|---|---|
-| Slash commands locales | ✅ | [IDE_VALUE] |
-| Triggers de Chat | ✅ | [IDE_VALUE] |
-| Rules de archivos | ✅ | [IDE_VALUE] |
+| Slash commands locales | SI | [IDE_VALUE] |
+| Triggers de Chat | SI | [IDE_VALUE] |
+| Rules de archivos | SI | [IDE_VALUE] |
 | Skills locales | manual | [IDE_VALUE] |
-| MCP | ✅ | [IDE_VALUE] |
+| MCP | SI | [IDE_VALUE] |
 
 ## 3. Arquitectura X-DD → [IDE_NAME] [IDE_SPECIFIC]
 [Diagrama flowchart o descripción del flujo SSoT → runtime]
