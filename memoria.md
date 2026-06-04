@@ -16,15 +16,15 @@
 - **Plan macro:** MAXIMALISTA EXTENDIDO. 23.5d (S0-13) + ~34d (S14-23) = ~57.5d invertidos. Restan ~0.5d (release).
 - **Último hito:** GitNexus tier-1 companion mergeado (PR #32) — paralelo MemPalace en xdd-doctor + xdd-start + ADR-0033.
 - **Workspace global:** instalado en `<workspace>/` (post-purga framework legacy). Backup tar.gz en `~/<workspace>-backup.tar.gz`.
-- **Próximo paso:** sync docs (este branch) → Release v0.1.0 cuando user autorice.
+- **Próximo paso:** Incremento 2 — heredar gate FSM (cadena + segregación) a Evol-DD + publicar.
 
 ## Stats actuales (post-PR #40 + Codex adapter)
 - **~330+ tests verdes** (S14-25 cumulativos)
 - **40+ PRs cerrados** preservados (delete_branch_on_merge=false estricto)
-- **55 workflows** X-DD
+- **60 workflows** X-DD (+5 native skills: grill-me, fact-check, idea-refine, prompt-master, agent-browser)
 - **180 agentes** (1 renombrado security-pentest-operator)
 - **5 composition_patterns**
-- **6 skills** propios (xdd-talk-compact, agent-eval, xdd-ai-review, xdd-compact, xdd-fs-context, xdd-sandbox)
+- **11 skills** propios (xdd-talk-compact, agent-eval, xdd-ai-review, xdd-compact, xdd-fs-context, xdd-sandbox + xdd-grill-me, xdd-fact-check, xdd-idea-refine, xdd-prompt-master, xdd-agent-browser)
 - **14 hooks** event-driven (8 base + 6 stage middleware S18)
 - **6 install profiles** + **24 modules** (14 base + 10 nuevos PR #39 Sprints 13-25)
 - **36 ADRs** Nygard (10 base + 26 nuevos S14-25 + 0033 GitNexus + 0034 Universal IDE + 0035 Global install + 0036 Codex)
@@ -55,6 +55,44 @@
 ---
 
 ## Bitácora de Sesiones
+
+### Sesión 2026-06-04 — Gate FSM enforcement (feature/gate-fsm) — Incremento 1
+- **Meta:** Pipeline estrictamente bloqueante (FSM con guards), inspirado en el flujo
+  de un sistema de referencia (evol-agent): ninguna fase se salta, autor≠aprobador.
+- **Contexto:** Plan diluido en 4 incrementos independientes (gate verde obligatorio
+  por incremento, sin deuda). Esta sesión: SOLO Incremento 1 en X-DD.
+- **Hitos (scripts/xdd-gate.py):**
+  - I1.1 `_enforce_phase_chain`: approve fase N exige fases 0..N-1 APROBADO+válidas
+    (reusa _validate_phase). Escape hatch XDD_SKIP_CHAIN=1
+  - I1.2 `_enforce_segregation` + comando `set-author`: registra autor del artefacto
+    (.xdd/<fase>/.author), approve bloquea si approver==author. Escape hatch
+    XDD_SKIP_SEGREGATION=1. Es el patrón worker→auditor a nivel de fase
+  - I1.3 status ampliado: muestra autor, aprobador, cadena intacta
+  - I1.4 tests/test_gate_fsm.py (9 casos) + docs/GATE.md sección Enforcement FSM
+- **QA:** 29 tests gate verdes (9 nuevos + 20 existentes), shield 0 CRITICAL
+- **Commit:** 290dc29 en feature/gate-fsm (renombrado de feat/ por hook GitFlow)
+- **Diferidos:** Inc 2 (heredar a Evol-DD), Inc 3 (/acuerdos + wireframe-freeze),
+  Inc 4 (doc-granular worker→auditor→índice). Documentados en plan
+- **Próxima sesión:** Incremento 2 — heredar gate FSM a Evol-DD + publicar
+
+### Sesión 2026-06-03 — 5 skills nativas + 5 workflows (feat/security-native)
+- **Meta:** Incorporar 5 herramientas externas como skills y workflows 100% nativos X-DD.
+- **Skills creadas (skills/):**
+  - `xdd-grill-me` — Interrogatorio implacable de planes (inspirado en mattpocock/skills grill-me MIT)
+  - `xdd-fact-check` — Verificación SIFT+CRAAP+MFS 11 pasos (inspirado en petar-nauka/fact-check-skill)
+  - `xdd-idea-refine` — Refinamiento divergente→convergente (inspirado en addyosmani/agent-skills MIT)
+  - `xdd-prompt-master` — Prompt engineering 30+ tools, routing anti-CoT (inspirado en nidhinjs/prompt-master)
+  - `xdd-agent-browser` — Browser automation CLI Rust CDP (inspirado en vercel-labs/agent-browser)
+- **Workflows creados (.agent/workflows/ + .claude/commands/ copias reales):**
+  - `/grill-me`, `/fact-check`, `/idea-refine`, `/prompt-master`, `/agent-browser`
+- **Catálogo actualizado:** `prompts/workflows/03_workflows_catalog.md` — Sección 12 Native Skills
+- **Lint:** 0 errores, 0 warnings post-integración
+- **Decisiones:**
+  - Skills son nativas (no wrappers que llaman externos) — lógica completa en SKILL.md
+  - `.claude/commands/` usa copias reales (lección symlinks, Sprints 24-27)
+  - `xdd-prompt-master` complementa `/mejorar-prompt` (internos X-DD) — no lo reemplaza
+  - `xdd-agent-browser` requiere `agent-browser` CLI instalado; skill documenta install
+- **Integración workflows existentes:** grill-me↔clarify+brainstorm, fact-check↔research+security-audit, idea-refine↔brainstorm+ux-discovery, prompt-master↔mejorar-prompt+evolve, agent-browser↔pruebas-humo+a11y-audit+deploy-prod
 
 ### Sesión 2026-05-28 — Codex adapter (7° IDE) + ADR-0036
 - **Meta:** Soporte Codex (OpenAI CLI) per guía oficial provista user. Skills GLOBAL + orchestrator pattern + agents-index (NO N skills).
