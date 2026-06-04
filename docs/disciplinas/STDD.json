@@ -1,0 +1,27 @@
+{
+  "doc": "STDD.md",
+  "dominio": "disciplinas",
+  "subdominio": "STDD",
+  "resumen": "**Version:** 1.0 | **Fecha:** 2026-06-04 | **Gobernanza:** Constitucion X-DD v1.5",
+  "secciones": [
+    "indice",
+    "que-es-stdd-en-x-dd",
+    "el-ciclo-stdd-extendido",
+    "mapeo-stride-a-stubs-de-security-tests",
+    "cuando-aplica-stdd",
+    "stdd-en-el-pipeline",
+    "estructura-de-tests-de-seguridad",
+    "definition-of-done-stdd",
+    "agentes-involucrados"
+  ],
+  "entidades": [],
+  "trazabilidad": {
+    "origen": [],
+    "relacionados": []
+  },
+  "tokens_md": 2397,
+  "lineas": 248,
+  "checksum_md": "465f55b9134b7276",
+  "actualizado": "2026-06-04T20:23:23.986834+00:00",
+  "tokens_json": 102
+}

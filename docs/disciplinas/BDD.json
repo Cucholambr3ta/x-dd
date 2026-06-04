@@ -1,0 +1,27 @@
+{
+  "doc": "BDD.md",
+  "dominio": "disciplinas",
+  "subdominio": "BDD",
+  "resumen": "**Version:** 1.0 | **Fecha:** 2026-06-04 | **Gobernanza:** Constitucion X-DD v1.5",
+  "secciones": [
+    "indice",
+    "que-es-bdd-en-x-dd",
+    "formato-gherkin",
+    "estructura-de-tres-tiers-de-escenarios",
+    "bdd-en-el-pipeline",
+    "integracion-con-playwright-y-cucumber",
+    "artefactos-bdd",
+    "definition-of-done-bdd",
+    "agentes-involucrados"
+  ],
+  "entidades": [],
+  "trazabilidad": {
+    "origen": [],
+    "relacionados": []
+  },
+  "tokens_md": 2477,
+  "lineas": 279,
+  "checksum_md": "fde4bbd935660eb7",
+  "actualizado": "2026-06-04T20:23:23.976139+00:00",
+  "tokens_json": 100
+}

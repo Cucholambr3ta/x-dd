@@ -1,0 +1,28 @@
+{
+  "doc": "SDD.md",
+  "dominio": "disciplinas",
+  "subdominio": "SDD",
+  "resumen": "**Version:** 1.0 | **Fecha:** 2026-06-04 | **Gobernanza:** Constitucion X-DD v1.5",
+  "secciones": [
+    "indice",
+    "que-es-sdd",
+    "principio-operativo",
+    "donde-entra-en-el-pipeline",
+    "artefacto-principal-specmd",
+    "requisitos-funcionales",
+    "definition-of-done-sdd",
+    "como-el-gate-aplica-sdd",
+    "relacion-con-otras-disciplinas",
+    "agentes-involucrados"
+  ],
+  "entidades": [],
+  "trazabilidad": {
+    "origen": [],
+    "relacionados": []
+  },
+  "tokens_md": 2196,
+  "lineas": 218,
+  "checksum_md": "e8d46a952bf14771",
+  "actualizado": "2026-06-04T20:23:23.983459+00:00",
+  "tokens_json": 103
+}

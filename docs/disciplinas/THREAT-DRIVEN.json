@@ -1,0 +1,28 @@
+{
+  "doc": "THREAT-DRIVEN.md",
+  "dominio": "disciplinas",
+  "subdominio": "THREAT-DRIVEN",
+  "resumen": "**Version:** 1.0 | **Fecha:** 2026-06-04 | **Gobernanza:** Constitucion X-DD v1.5",
+  "secciones": [
+    "indice",
+    "que-es-threat-driven-development-en-x-dd",
+    "metodologia-stride",
+    "el-proceso-de-threat-modeling",
+    "formato-thr-nnn",
+    "activos-y-actores-adversariales",
+    "analisis-por-aggregate",
+    "documentacion-de-controles",
+    "threat-driven-en-el-pipeline",
+    "agentes-involucrados"
+  ],
+  "entidades": [],
+  "trazabilidad": {
+    "origen": [],
+    "relacionados": []
+  },
+  "tokens_md": 2693,
+  "lineas": 267,
+  "checksum_md": "82ac6b02dabecc9d",
+  "actualizado": "2026-06-04T20:23:23.998604+00:00",
+  "tokens_json": 110
+}

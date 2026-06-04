@@ -1,0 +1,27 @@
+{
+  "doc": "TDD.md",
+  "dominio": "disciplinas",
+  "subdominio": "TDD",
+  "resumen": "**Version:** 1.0 | **Fecha:** 2026-06-04 | **Gobernanza:** Constitucion X-DD v1.5",
+  "secciones": [
+    "indice",
+    "que-es-tdd-en-x-dd",
+    "el-ciclo-rojo-verde-refactor",
+    "cuando-aplica-tdd-y-cuando-no",
+    "tdd-en-el-pipeline",
+    "mandato-constitucional-art-8",
+    "estructura-de-tests-unitarios",
+    "definition-of-done-tdd",
+    "agentes-involucrados"
+  ],
+  "entidades": [],
+  "trazabilidad": {
+    "origen": [],
+    "relacionados": []
+  },
+  "tokens_md": 2409,
+  "lineas": 287,
+  "checksum_md": "830048315feda154",
+  "actualizado": "2026-06-04T20:23:23.994622+00:00",
+  "tokens_json": 102
+}

@@ -1,0 +1,28 @@
+{
+  "doc": "FDD.md",
+  "dominio": "disciplinas",
+  "subdominio": "FDD",
+  "resumen": "**Version:** 1.0 | **Fecha:** 2026-06-04 | **Gobernanza:** Constitucion X-DD v1.5",
+  "secciones": [
+    "indice",
+    "que-es-fdd",
+    "catalogo-de-features-featuresmd",
+    "epica-nombre",
+    "fdd-en-el-pipeline",
+    "formato-feat-nnn",
+    "priorizacion-rice-y-moscow",
+    "plan-por-features-verticales",
+    "definition-of-done-fdd",
+    "agentes-involucrados"
+  ],
+  "entidades": [],
+  "trazabilidad": {
+    "origen": [],
+    "relacionados": []
+  },
+  "tokens_md": 2131,
+  "lineas": 233,
+  "checksum_md": "8d8f010d3e0c48a6",
+  "actualizado": "2026-06-04T20:23:23.980042+00:00",
+  "tokens_json": 102
+}
