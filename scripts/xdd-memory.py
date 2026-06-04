@@ -477,6 +477,97 @@ def cmd_gc(args) -> int:
     return 0
 
 
+def _sprint_num_str(sprint: int | str) -> str:
+    """Normaliza sprint a string de 2 dígitos: 1 → '01', '3' → '03', '12' → '12'."""
+    return f"{int(sprint):02d}"
+
+
+def cmd_sprint_close(args) -> int:
+    """Cierre de sprint — escribe acuerdos/memoria/sprint-NN.md y acuerdos/lecciones/sprint-NN.md."""
+    project = Path(args.project)
+    sprint = _sprint_num_str(args.sprint)
+    today = today_str()
+
+    # Directorios destino (dentro de acuerdos/)
+    acuerdos = project / "acuerdos"
+    memoria_dir = acuerdos / "memoria"
+    lecciones_dir = acuerdos / "lecciones"
+    memoria_dir.mkdir(parents=True, exist_ok=True)
+    lecciones_dir.mkdir(parents=True, exist_ok=True)
+
+    sprint_memoria = memoria_dir / f"sprint-{sprint}.md"
+    sprint_lecciones = lecciones_dir / f"sprint-{sprint}.md"
+
+    # --- memoria/sprint-NN.md ---
+    if sprint_memoria.exists() and not args.force:
+        print(f"[xdd-memory] acuerdos/memoria/sprint-{sprint}.md ya existe. Usa --force para sobreescribir.")
+    else:
+        memoria_content = args.memoria or f"# Memoria Sprint {sprint} — {today}\n\n> Completar post-sprint: hitos, bloqueos, proxima sesion.\n\n## Hitos\n\n-\n\n## Bloqueos\n\n-\n\n## Proxima sesion\n\n-\n"
+        sprint_memoria.write_text(memoria_content, encoding="utf-8")
+        print(f"[xdd-memory] ✓ acuerdos/memoria/sprint-{sprint}.md creado.")
+
+    # --- lecciones/sprint-NN.md ---
+    if sprint_lecciones.exists() and not args.force:
+        print(f"[xdd-memory] acuerdos/lecciones/sprint-{sprint}.md ya existe. Usa --force para sobreescribir.")
+    else:
+        lecciones_content = args.lecciones or f"# Lecciones Sprint {sprint} — {today}\n\n> Formato: CATEGORIA / Contexto / Problema / Causa raiz / Leccion / Aplica a.\n\n"
+        sprint_lecciones.write_text(lecciones_content, encoding="utf-8")
+        print(f"[xdd-memory] ✓ acuerdos/lecciones/sprint-{sprint}.md creado.")
+
+    # --- actualizar lecciones/INDEX.md ---
+    index_path = lecciones_dir / "INDEX.md"
+    _update_lecciones_index(index_path, sprint, today)
+    print(f"[xdd-memory] ✓ acuerdos/lecciones/INDEX.md actualizado.")
+
+    # --- actualizar acuerdos/memoria/MEMORY.md (hechos persistentes) ---
+    memory_md = memoria_dir / "MEMORY.md"
+    if not memory_md.exists():
+        memory_md.write_text(
+            "# MEMORY.md — Hechos persistentes del proyecto\n\n"
+            "> Actualizado en cada cierre de sprint. Solo hechos duraderos, no log temporal.\n\n"
+            "## Decisiones clave\n\n-\n\n## Convenciones del proyecto\n\n-\n\n"
+            "## Riesgos activos\n\n-\n",
+            encoding="utf-8",
+        )
+        print("[xdd-memory] ✓ acuerdos/memoria/MEMORY.md inicializado.")
+
+    if args.json:
+        print(json.dumps({
+            "ok": True,
+            "sprint": sprint,
+            "memoria": str(sprint_memoria),
+            "lecciones": str(sprint_lecciones),
+            "index": str(index_path),
+        }))
+    return 0
+
+
+def _update_lecciones_index(index_path: Path, sprint: str, today: str) -> None:
+    """Añade o actualiza la entrada del sprint en INDEX.md."""
+    entry_line = f"| sprint-{sprint} | [sprint-{sprint}.md](sprint-{sprint}.md) | {today} |"
+    header = (
+        "# INDEX — Lecciones por Sprint\n\n"
+        "> Indice de lecciones separadas por sprint. Categorias: ARQUITECTURA, SEGURIDAD, DOMINIO, TESTING, DEVOPS, PROCESO, HERRAMIENTAS.\n\n"
+        "| Sprint | Archivo | Fecha cierre |\n"
+        "|--------|---------|-------------|\n"
+    )
+
+    if not index_path.exists():
+        index_path.write_text(header + entry_line + "\n", encoding="utf-8")
+        return
+
+    content = index_path.read_text(encoding="utf-8")
+    marker = f"| sprint-{sprint} |"
+    if marker in content:
+        # Actualizar linea existente
+        lines = content.splitlines()
+        lines = [entry_line if line.startswith(marker) else line for line in lines]
+        index_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    else:
+        # Añadir al final
+        index_path.write_text(content.rstrip("\n") + "\n" + entry_line + "\n", encoding="utf-8")
+
+
 def cmd_stats(args) -> int:
     """Estadisticas del sistema de memoria."""
     project = Path(args.project)
@@ -546,6 +637,13 @@ def build_parser() -> argparse.ArgumentParser:
     # stats
     sub.add_parser("stats", help="Estadisticas del sistema de memoria")
 
+    # sprint-close
+    psc = sub.add_parser("sprint-close", help="Cierre de sprint — crea acuerdos/memoria/sprint-NN.md y acuerdos/lecciones/sprint-NN.md")
+    psc.add_argument("--sprint", required=True, help="Numero de sprint (1, 2, '01', etc.)")
+    psc.add_argument("--memoria", default=None, help="Contenido markdown para memoria/sprint-NN.md (opcional)")
+    psc.add_argument("--lecciones", default=None, help="Contenido markdown para lecciones/sprint-NN.md (opcional)")
+    psc.add_argument("--force", action="store_true", help="Sobreescribir si ya existe")
+
     return p
 
 
@@ -558,6 +656,7 @@ def main(argv=None) -> int:
         "search": cmd_search,
         "gc": cmd_gc,
         "stats": cmd_stats,
+        "sprint-close": cmd_sprint_close,
     }
     fn = dispatch.get(args.cmd)
     if fn is None:

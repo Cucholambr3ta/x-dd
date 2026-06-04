@@ -293,11 +293,15 @@ if [ ! -d "./acuerdos" ]; then
     > acuerdos/wireframes/README.md
   printf "# Proyecto\n\nN documentos granulares por dominio tecnico (generados post-briefing).\n" \
     > acuerdos/proyecto/README.md
-  printf "# Memoria por Sprint\n\nArchivos separados por sprint.\n" \
+  printf "# Memoria por Sprint\n\nArchivos separados por sprint. Generados con: xdd-memory.py sprint-close --sprint=NN\n" \
     > acuerdos/memoria/README.md
-  printf "# Lecciones por Sprint\n\nLecciones separadas por sprint.\n" \
+  printf "# MEMORY.md — Hechos persistentes del proyecto\n\n> Actualizado en cada cierre de sprint. Solo hechos duraderos, no log temporal.\n\n## Decisiones clave\n\n-\n\n## Convenciones del proyecto\n\n-\n\n## Riesgos activos\n\n-\n" \
+    > acuerdos/memoria/MEMORY.md
+  printf "# Lecciones por Sprint\n\nArchivos separados por sprint. Generados con: xdd-memory.py sprint-close --sprint=NN\n" \
     > acuerdos/lecciones/README.md
-  echo "[xdd-init] ✓ acuerdos/ creado (7 subcarpetas — base para /xdd briefing)."
+  printf "# INDEX — Lecciones por Sprint\n\n> Indice de lecciones separadas por sprint. Categorias: ARQUITECTURA, SEGURIDAD, DOMINIO, TESTING, DEVOPS, PROCESO, HERRAMIENTAS.\n\n| Sprint | Archivo | Fecha cierre |\n|--------|---------|-------------|\n" \
+    > acuerdos/lecciones/INDEX.md
+  echo "[xdd-init] ✓ acuerdos/ creado (7 subcarpetas + MEMORY.md + INDEX.md — base para /xdd briefing)."
 fi
 
 # Git init si no es repo
