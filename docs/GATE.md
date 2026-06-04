@@ -31,11 +31,48 @@ workflow de Briefing).
 | `init` | Genera `.gate-key` si no existe (idempotente) | 0 |
 | `validate --phase X` | Valida estado + checksums + firma de una fase | 0 OK / 1 fail |
 | `transition --phase X --to Y` | Comprueba que `X→Y` es secuencial y `X` está APROBADO | 0 OK / 1 bloqueado |
-| `approve --phase X --approver NAME` | Marca `X` como APROBADO, captura checksums, firma | 0 OK / 1 falta artefacto / 2 falta key/approver |
-| `status` | Resumen de las 6 fases (humano o `--json`) | 0 |
+| `set-author --phase X --author NAME` | Registra el autor del artefacto de `X` (para separación de privilegios) | 0 OK / 2 falta autor |
+| `approve --phase X --approver NAME` | Marca `X` como APROBADO (enforce cadena + autor≠aprobador), captura checksums, firma | 0 OK / 1 bloqueado / 2 falta key/approver |
+| `status` | Resumen de las 6 fases con autor/aprobador/cadena (humano o `--json`) | 0 |
 
 Todos los comandos aceptan `--json` para salida machine-readable y `--project-root PATH`
 para apuntar a otro proyecto.
+
+## Enforcement FSM (máquina de estados estrictamente bloqueante)
+
+`approve` aplica dos guards que hacen el pipeline **estrictamente bloqueante** — ninguna
+fase se firma fuera de orden ni un agente aprueba su propio trabajo:
+
+### 1. Cadena de fases previas (no saltar)
+
+Antes de firmar la fase N, `approve` verifica que TODAS las fases `0..N-1` estén
+`APROBADO` con firma válida (reusa `validate`). Si falta una → **BLOQUEADO** (exit 1).
+
+```bash
+xdd-gate.py approve --phase plan --approver bob
+# ✗ plan: BLOQUEADO — cadena de fases incompleta:
+#   - fase previa 'briefing' no aprobada/valida
+#   - fase previa 'spec' no aprobada/valida
+```
+
+Escape hatch: `XDD_SKIP_CHAIN=1` (warning visible).
+
+### 2. Separación autor ≠ aprobador
+
+El agente/orquestador registra el autor al generar el artefacto:
+`xdd-gate.py set-author --phase spec --author writer-agent`. Al aprobar, si el
+aprobador coincide con el autor → **BLOQUEADO** (separación de privilegios).
+
+```bash
+xdd-gate.py set-author --phase spec --author alice
+xdd-gate.py approve --phase spec --approver alice
+# ✗ spec: BLOQUEADO — aprobador 'alice' es el autor del artefacto de 'spec'.
+```
+
+Escape hatch: `XDD_SKIP_SEGREGATION=1` (permite dev-solo, warning visible).
+
+> Este es el patrón **worker → auditor** a nivel de fase: quien produce no aprueba.
+> El mismo principio se aplica por tarea en los workflows de documentación granular.
 
 ## Flujo típico de uso
 
@@ -138,10 +175,14 @@ Repudiation) y vector V4 (gate sin firma criptográfica).
 
 ## Tests
 
-Suite completa en [tests/test_gate.py](../tests/test_gate.py) — 17 casos cubriendo
+Suite completa en [tests/test_gate.py](../tests/test_gate.py) — casos cubriendo
 init idempotente, approve con/sin key/approver, validate detecta tampering en
 artefactos/firmas/keys, transition secuencial vs no-secuencial.
 
+Enforcement FSM en [tests/test_gate_fsm.py](../tests/test_gate_fsm.py) — 9 casos:
+cadena de fases (plan bloqueado sin briefing/spec), separación autor≠aprobador,
+overrides `XDD_SKIP_CHAIN`/`XDD_SKIP_SEGREGATION`, set-author, status con autor/aprobador.
+
 ```bash
-python3 -m pytest tests/test_gate.py -v
+python3 -m pytest tests/test_gate.py tests/test_gate_fsm.py -v
 ```

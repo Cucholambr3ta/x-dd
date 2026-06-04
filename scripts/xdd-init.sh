@@ -195,6 +195,47 @@ else
   FILES_TO_COPY=".agent .claude prompts scripts templates CLAUDE.md"
 fi
 
+# === .gitignore — PRIMERO que todo ===
+# Generado ANTES de copiar cualquier archivo para que git no trackee framework pollution.
+# Contiene reglas para separar archivos del PROYECTO (commiteables) del FRAMEWORK (no).
+if [ ! -f "./.gitignore" ]; then
+  if [ -f "$_XDD_DATA/templates/gitignore.template" ]; then
+    cp "$_XDD_DATA/templates/gitignore.template" "./.gitignore"
+    echo "[xdd-init] ✓ .gitignore generado (separa proyecto de framework)."
+  else
+    # Fallback minimal si no hay template
+    cat > ./.gitignore <<'GITIGNORE'
+# X-DD framework (tooling — no pertenece al proyecto)
+scripts/
+prompts/
+skills/
+templates/
+evals/
+schemas/
+MEJORAS-X-DD.md
+INSTALL.md
+DEPENDENCIES.md
+.xdd/
+.evol/
+dialog/
+tool_result/
+__pycache__/
+*.pyc
+.venv/
+node_modules/
+.env
+.env.*
+*.key
+.gate-key
+GITIGNORE
+    echo "[xdd-init] ✓ .gitignore generado (fallback minimal)."
+  fi
+elif grep -q "X-DD framework" ./.gitignore 2>/dev/null; then
+  echo "[xdd-init] SKIP .gitignore (ya tiene reglas X-DD)."
+else
+  echo "[xdd-init] WARN: .gitignore existe pero sin reglas X-DD — revisar manualmente." >&2
+fi
+
 echo "[xdd-init] Archivos a instalar:"
 echo "$FILES_TO_COPY" | sed 's/^/  - /'
 
@@ -235,6 +276,32 @@ fi
 if [ ! -f "./xdd.profile.yml" ] && [ -f "$_XDD_DATA/templates/xdd.profile.template.yml" ]; then
   cp "$_XDD_DATA/templates/xdd.profile.template.yml" "./xdd.profile.yml"
   echo "[xdd-init] xdd.profile.yml creado desde template."
+fi
+
+# === Estructura /acuerdos (cero deuda tecnica — base del briefing arbol 16 dimensiones) ===
+if [ ! -d "./acuerdos" ]; then
+  mkdir -p acuerdos/idea acuerdos/research acuerdos/design \
+           acuerdos/wireframes acuerdos/proyecto \
+           acuerdos/memoria acuerdos/lecciones
+  printf "# Idea\n\nIdea original del proyecto. Ver idea.md (generado por /xdd briefing).\n" \
+    > acuerdos/idea/README.md
+  printf "# Research\n\nInvestigacion por dominio tecnico (generada post-briefing).\n" \
+    > acuerdos/research/README.md
+  printf "# Design System\n\ntokens.md + components.md + assets.md (Dimension 15 del briefing).\n" \
+    > acuerdos/design/README.md
+  printf "# Wireframes\n\nHTML aprobado por pantalla (Dimension 16). Regla de diseno inmutable.\n" \
+    > acuerdos/wireframes/README.md
+  printf "# Proyecto\n\nN documentos granulares por dominio tecnico (generados post-briefing).\n" \
+    > acuerdos/proyecto/README.md
+  printf "# Memoria por Sprint\n\nArchivos separados por sprint. Generados con: xdd-memory.py sprint-close --sprint=NN\n" \
+    > acuerdos/memoria/README.md
+  printf "# MEMORY.md — Hechos persistentes del proyecto\n\n> Actualizado en cada cierre de sprint. Solo hechos duraderos, no log temporal.\n\n## Decisiones clave\n\n-\n\n## Convenciones del proyecto\n\n-\n\n## Riesgos activos\n\n-\n" \
+    > acuerdos/memoria/MEMORY.md
+  printf "# Lecciones por Sprint\n\nArchivos separados por sprint. Generados con: xdd-memory.py sprint-close --sprint=NN\n" \
+    > acuerdos/lecciones/README.md
+  printf "# INDEX — Lecciones por Sprint\n\n> Indice de lecciones separadas por sprint. Categorias: ARQUITECTURA, SEGURIDAD, DOMINIO, TESTING, DEVOPS, PROCESO, HERRAMIENTAS.\n\n| Sprint | Archivo | Fecha cierre |\n|--------|---------|-------------|\n" \
+    > acuerdos/lecciones/INDEX.md
+  echo "[xdd-init] ✓ acuerdos/ creado (7 subcarpetas + MEMORY.md + INDEX.md — base para /xdd briefing)."
 fi
 
 # Git init si no es repo

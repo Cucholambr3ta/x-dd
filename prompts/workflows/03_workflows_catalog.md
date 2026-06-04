@@ -47,6 +47,7 @@ Los workflows son guías ejecutables en formato Markdown que definen flujos paso
 
 ### 7. Documentación y Utilería de Soporte
 *   **`/technical-documentation` (`technical-documentation.md`)**: Generación de documentación técnica detallada en base a la arquitectura del código.
+*   **`/crear-skill` (`crear-skill.md`)**: Loop iterativo completo para crear o mejorar skills: captura intencion → draft SKILL.md → evals cuantitativos/cualitativos con runs paralelos (with-skill vs baseline) → iteracion basada en feedback → optimizacion de description para triggering accuracy → portabilidad a los 7 IDEs via xdd-adapt.sh. Patron inspirado en anthropics/skills/skill-creator.
 *   **`/skill-template-generator` (`skill-template-generator.md`)**: Plantillas y automatización para mantener la coherencia absoluta entre el código de las skills y su documentación (`SKILL.md`).
 *   **`/design-system-builder` (`design-system-builder.md`)**: Generación automatizada de tokens de diseño CSS para mantener la consistencia estética.
 *   **`/generar-flujo` (`generar-flujo.md`)**: Generador de archivos de flujos visuales `.canvas`.
@@ -94,6 +95,18 @@ Los workflows son guías ejecutables en formato Markdown que definen flujos paso
 *   **`/cross-validate` (`cross-validate.md`)**: Detecta drift entre pares de artefactos (MISSING/CONFLICT/ORPHAN). Bloquea gate si MISSING o CONFLICT.
 *   **`/brainstorm` (`brainstorm.md`)**: Genera ideas sin filtrar para problem space exploration. Invoca party mode (Sprint 17). Inspirado en BMAD.
 *   **`/code-as-tool` (`code-as-tool.md`)**: Pattern Code Execution with MCP. Wrap N tool calls homogéneos en 1 script (98%+ reducción tokens).
+
+### 13. Pipeline de Ejecucion (feature/sprint-memoria-lecciones + Inc 5-6)
+
+*   **`/xdd historias` (`xdd-historias.md`)**: Genera historias de usuario completas post-doc-granular. Lee `acuerdos/proyecto/` + wireframes e identifica TODAS las historias (HU/HT/HS). Por cada una crea 4 artefactos (propuesta, requisitos-escenarios, escenario-tecnico, checklist 50+ tareas) via pipeline worker-auditor. Genera `acuerdos/sprint.md` con plan de sprints. Auditor registra gaps en `acuerdos/lecciones/sprint-00.md`.
+*   **`/xdd sprint` (`xdd-sprint.md`)**: Orquestador del ciclo completo de un sprint. Compone equipo dinamico de subagentes segun componentes tecnicos detectados en `escenario-tecnico.md`. Ejecuta checklist atomico con auditor permanente (engineering-code-reviewer). Evaluacion pre-push (tests + shield + gitignore). GitFlow via `xdd-gitflow.sh`. Post-sprint lee lecciones y propone fixes o actualiza MEMORY.md.
+
+### 12. Native Skills (feat/security-native + S26)
+*   **`/grill-me` (`grill-me.md`)**: Interrogatorio implacable de planes y diseños. Recorre árbol de decisiones rama a rama hasta que no quedan supuestos sin validar. Skill `xdd-grill-me`. Inspirado en mattpocock/skills grill-me (MIT).
+*   **`/fact-check` (`fact-check.md`)**: Verificación de claims externos con pipeline SIFT + CRAAP + MFS scoring (11 pasos). Produce Fact-Check Report auditado. Skill `xdd-fact-check`. Integrado en `/research` y `/security-audit`.
+*   **`/idea-refine` (`idea-refine.md`)**: Refinamiento divergente→convergente de ideas brutas en propuestas accionables. Complementa `/brainstorm` con convergencia y lista "No Hacemos" explícita. Skill `xdd-idea-refine`.
+*   **`/prompt-master` (`prompt-master.md`)**: Generación de prompts optimizados para 30+ herramientas de IA. Routing por tool conventions, reglas hard anti-CoT en modelos de razonamiento. Complementa `/mejorar-prompt` para targets externos. Skill `xdd-prompt-master`.
+*   **`/agent-browser` (`agent-browser.md`)**: Automatización browser nativa via CLI Rust (CDP directo, sin Node.js). Navegación, interacción por refs del accessibility tree, screenshots, auth vault. Integrado en `/pruebas-humo`, `/a11y-audit`, `/deploy-prod`. Skill `xdd-agent-browser`.
 
 ---
 

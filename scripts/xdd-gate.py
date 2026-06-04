@@ -65,8 +65,9 @@ def checksum(path: Path) -> str:
     if path.is_file():
         h.update(path.read_bytes())
     else:
+        _GATE_META = {".status", ".checksums", ".signature", ".approvers", ".author"}
         for f in sorted(path.rglob("*")):
-            if f.is_file():
+            if f.is_file() and f.name not in _GATE_META:
                 try:
                     h.update(f.relative_to(path).as_posix().encode())
                     h.update(f.read_bytes())
@@ -117,6 +118,25 @@ def cmd_init(root: Path, _args) -> int:
         pass
     print(f"[gate] {p} creado (256-bit). NO commitearlo (debe estar en .gitignore).")
     return 0
+
+
+def _check_discipline(root: Path, phase: str) -> list[str]:
+    """Invoca xdd-discipline-check.py para validar CONTENIDO de los artefactos.
+
+    Activo solo con XDD_DISCIPLINE=1. Escape: XDD_SKIP_DISCIPLINE=1.
+    Importa el modulo dinamicamente para no crear dependencia circular.
+    """
+    import importlib.util
+    script = Path(__file__).parent / "xdd-discipline-check.py"
+    if not script.exists():
+        return []
+    try:
+        spec = importlib.util.spec_from_file_location("xdd_discipline_check", script)
+        mod = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(mod)
+        return mod.check_phase(root, phase)
+    except Exception as e:
+        return [f"[discipline-check] error al cargar validador: {e}"]
 
 
 def _check_flow_evidence(root: Path) -> list[str]:
@@ -172,6 +192,11 @@ def _validate_phase(root: Path, phase: str) -> tuple[bool, list[str]]:
 
     if phase == "build":
         errors.extend(_check_flow_evidence(root))
+
+    # Discipline checks — valida CONTENIDO de cada artefacto segun su disciplina -DD
+    # Activado con XDD_DISCIPLINE=1 (opt-in). Escape hatch: XDD_SKIP_DISCIPLINE=1.
+    if os.environ.get("XDD_DISCIPLINE") == "1":
+        errors.extend(_check_discipline(root, phase))
 
     if not sig_file.exists() or not cks_file.exists() or not apr_file.exists():
         if status == Status.APROBADO.value:
@@ -262,6 +287,65 @@ def cmd_transition(root: Path, args) -> int:
     return 0 if ok else 1
 
 
+def _enforce_phase_chain(root: Path, phase: str) -> list[str]:
+    """FSM: una fase no se firma sin que TODAS las previas esten APROBADAS y validas.
+
+    Reusa _validate_phase() para cada fase 0..N-1. Devuelve lista de errores (vacia
+    si la cadena esta intacta). Escape hatch: XDD_SKIP_CHAIN=1.
+    """
+    if os.environ.get("XDD_SKIP_CHAIN") == "1":
+        print("[gate] ⚠ XDD_SKIP_CHAIN=1 — cadena de fases previas OMITIDA (override).",
+              file=sys.stderr)
+        return []
+    idx = PHASE_IDS.index(phase)
+    errors: list[str] = []
+    for prev in PHASE_IDS[:idx]:
+        ok, _errs = _validate_phase(root, prev)
+        if not ok:
+            errors.append(
+                f"fase previa {prev!r} no aprobada/valida (no se puede firmar {phase!r})")
+    return errors
+
+
+def _enforce_segregation(root: Path, phase: str, approver: str) -> str | None:
+    """Separacion autor != aprobador (separacion de privilegios).
+
+    Si existe .xdd/<phase>/.author y coincide con el aprobador → bloquea.
+    Escape hatch: XDD_SKIP_SEGREGATION=1. Devuelve mensaje de error o None.
+    """
+    author_file = root / ".xdd" / phase / ".author"
+    if not author_file.exists():
+        return None  # sin autor registrado, no se puede comparar
+    author = author_file.read_text().strip()
+    if author and author == approver:
+        if os.environ.get("XDD_SKIP_SEGREGATION") == "1":
+            print(f"[gate] ⚠ XDD_SKIP_SEGREGATION=1 — autor==aprobador ({approver}) "
+                  "permitido (override).", file=sys.stderr)
+            return None
+        return (f"aprobador {approver!r} es el autor del artefacto de {phase!r}. "
+                "Separacion de privilegios: el aprobador no puede ser el autor. "
+                "Override explicito: XDD_SKIP_SEGREGATION=1")
+    return None
+
+
+def cmd_set_author(root: Path, args) -> int:
+    """Registra el autor del artefacto de una fase (.xdd/<phase>/.author)."""
+    phase = args.phase
+    if phase not in PHASE_IDS:
+        print(f"[gate] Fase desconocida: {phase}", file=sys.stderr)
+        return 2
+    author = args.author or os.environ.get("XDD_AUTHOR", "")
+    if not author:
+        print("[gate] ✗ falta autor. Pasá --author NAME o exportá XDD_AUTHOR=...",
+              file=sys.stderr)
+        return 2
+    pdir = root / ".xdd" / phase
+    pdir.mkdir(parents=True, exist_ok=True)
+    (pdir / ".author").write_text(author + "\n")
+    print(f"[gate] ✓ autor de {phase}: {author}")
+    return 0
+
+
 def cmd_approve(root: Path, args) -> int:
     phase = args.phase
     if phase not in PHASE_IDS:
@@ -270,6 +354,15 @@ def cmd_approve(root: Path, args) -> int:
 
     pdir = root / ".xdd" / phase
     pdir.mkdir(parents=True, exist_ok=True)
+
+    # FSM: cadena de fases previas aprobadas (I1.1)
+    chain_errs = _enforce_phase_chain(root, phase)
+    if chain_errs:
+        print(f"[gate] ✗ {phase}: BLOQUEADO — cadena de fases incompleta:",
+              file=sys.stderr)
+        for e in chain_errs:
+            print(f"  - {e}", file=sys.stderr)
+        return 1
 
     missing = [a for a in PHASE_ARTIFACTS[phase] if not (root / a).exists()]
     if missing:
@@ -284,6 +377,12 @@ def cmd_approve(root: Path, args) -> int:
         print("[gate] ✗ falta aprobador. Pasá --approver NAME o exportá "
               "XDD_APPROVER=...", file=sys.stderr)
         return 2
+
+    # Separacion autor != aprobador (I1.2)
+    seg_err = _enforce_segregation(root, phase, approver)
+    if seg_err:
+        print(f"[gate] ✗ {phase}: BLOQUEADO — {seg_err}", file=sys.stderr)
+        return 1
 
     try:
         key = load_gate_key(root)
@@ -322,6 +421,16 @@ def cmd_status(root: Path, args) -> int:
             entry["status"] = sf.read_text().strip() if sf.exists() else "MISSING"
             ok, errs = _validate_phase(root, phase)
             entry["valid"] = ok
+            # I1.3: autor + aprobador + cadena intacta
+            af = pdir / ".author"
+            if af.exists():
+                entry["author"] = af.read_text().strip()
+            aprf = pdir / ".approvers"
+            if aprf.exists():
+                lines = [l for l in aprf.read_text().splitlines() if l.strip()]
+                if lines and " | " in lines[-1]:
+                    entry["approver"] = lines[-1].split(" | ", 1)[0]
+            entry["chain_ok"] = not _enforce_phase_chain(root, phase)
             if errs:
                 entry["errors"] = errs
         result.append(entry)
@@ -330,7 +439,12 @@ def cmd_status(root: Path, args) -> int:
     else:
         for e in result:
             mark = "✓" if e.get("valid") else ("⚠" if e.get("exists") else "·")
-            print(f"  {mark} {e['phase']:9} {e.get('status', 'NO INICIADA')}")
+            extra = ""
+            if e.get("author") or e.get("approver"):
+                extra = f"  [autor={e.get('author', '-')} aprob={e.get('approver', '-')}]"
+            if e.get("exists") and not e.get("chain_ok", True):
+                extra += " ⛓cadena-rota"
+            print(f"  {mark} {e['phase']:9} {e.get('status', 'NO INICIADA')}{extra}")
     return 0
 
 
@@ -360,6 +474,11 @@ def build_parser() -> argparse.ArgumentParser:
     p_ap.add_argument("--approver", help="Nombre o XDD_APPROVER env")
     p_ap.add_argument("--json", action="store_true")
     p_ap.set_defaults(func=cmd_approve)
+
+    p_au = sub.add_parser("set-author", help="Registra el autor del artefacto de una fase")
+    p_au.add_argument("--phase", required=True, choices=PHASE_IDS)
+    p_au.add_argument("--author", help="Nombre o XDD_AUTHOR env")
+    p_au.set_defaults(func=cmd_set_author)
 
     p_st = sub.add_parser("status", help="Resumen de estado de todas las fases")
     p_st.add_argument("--json", action="store_true")
