@@ -347,3 +347,24 @@ Hacer un workflow `/docs-sync` (post-v0.1.0) que detecte drift automáticamente 
 **Causa raiz:** Tentacion de dar estructura predecible vs. dejar al agente razonar sobre la complejidad real. La plantilla fija es mas controlable pero introduce evaluacion implicita ("esto no necesita doc propio") que X-DD rechaza.
 **Leccion:** Principio cero deuda tecnica aplicado a docs: "si es un dominio tecnico del proyecto, tiene doc". Sin evaluacion, sin "esto es obvio", sin limite de numero. El agente analiza TODOS los artefactos del briefing e identifica dominios con criterio: ¿hay suficiente complejidad para que un sub-agente necesite este doc como referencia independiente? El numero emerge del proyecto. Proyectos simples: 15-20 docs. Complejos: 50-100+.
 **Aplica a:** .agent/workflows/doc-granular.md y cualquier instancia del patron. El INDEX.md lo genera el agente tras analizar el briefing completo — no viene de una lista predefinida.
+
+### [HERRAMIENTAS] sed no maneja emojis Unicode multibyte — usar Python — 2026-06-04
+**Contexto:** Purga masiva emojis en 52 docs/ de X-DD.
+**Problema:** sed falla con "expresion sin terminar" para emojis ZWJ (✅, ⚠️). Caracter FE0F rompe el parser.
+**Causa raiz:** sed procesa bytes, no codepoints. Emojis con variacion FE0F son multibyte; sed interpreta FE0F como delimitador regex.
+**Leccion:** Para operaciones masivas Unicode: Python con `re.compile(pattern, re.UNICODE)`. sed solo para ASCII puro.
+**Aplica a:** Cualquier purga de caracteres Unicode en X-DD y proyectos generados.
+
+### [ARQUITECTURA] Atomicidad != granularidad — dimensiones ortogonales de calidad documental — 2026-06-04
+**Contexto:** Discusion sobre nivel de detalle en docs generados por X-DD.
+**Problema:** X-DD usaba "granularidad" como criterio pero la metrica correcta es "atomicidad": 1 doc = 1 unidad semantica indivisible.
+**Causa raiz:** Granularidad = profundidad dentro del doc. Atomicidad = cohesion del scope. X-DD_Integration_Guide.md viola atomicidad al mezclar 9 disciplinas en 1 doc.
+**Leccion:** 1 doc = 1 dominio tecnico, sin mezclar responsabilidades. X-DD_Integration_Guide.md debe dividirse en 9 docs (SDD.md, FDD.md, DDD.md...). Tambien aplica a workflows: 1 workflow = 1 operacion.
+**Aplica a:** doc-granular workflow, DOC_STANDARD.md, discipline-check.
+
+### [PROCESO] Docs del framework vs docs del proyecto — scope distinto — 2026-06-04
+**Contexto:** Audit buscando FUNCIONALES.md en X-DD.
+**Problema:** FUNCIONALES.md es artefacto generado POR X-DD para proyectos, no del framework mismo.
+**Causa raiz:** X-DD tiene dos niveles: (1) docs del framework (constitucion, GATE, ARQUITECTURA) y (2) artefactos generados (SPEC.md, DOMAIN.md, FUNCIONALES.md).
+**Leccion:** Distinguir nivel framework (docs/) vs nivel proyecto (acuerdos/proyecto/). Checklist de auditoria debe especificar el nivel objetivo.
+**Aplica a:** Futuras auditorias de X-DD y evol-dd.

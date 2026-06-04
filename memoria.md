@@ -368,3 +368,15 @@
 - **Decisiones:** ver tabla arriba (ADR-0000 a 0009).
 - **Bloqueos:** ninguno.
 - **Próxima sesión:** Sprint 1 — declarar MemPalace como dep externa, reescribir sección README, crear `DEPENDENCIES.md`, producir `.xdd/spec/DOMAIN.md` y `.xdd/spec/THREATS.md`.
+
+### Sesion 2026-06-04 — DOC_STANDARD v2.0 + purga emojis + docs criticos (feature/docs-granular-standard)
+- **Meta:** Elevar calidad documental de X-DD al nivel del pipeline doc-granular implementado.
+- **Hitos:**
+  - DOC_STANDARD.md v2.0: criterios cuantitativos (umbrales lineas, criterios rechazo, FSM worker-auditor)
+  - constitucion.md: 69→388 lineas — 9 articulos + Mermaid pipeline + schema memoria.md
+  - GATE.md: 188→555 lineas — FSM, HMAC protocol, threat model, recovery procedures
+  - ARQUITECTURA.md: nuevo (309 lineas) — C4 Context/Container/Component, ADR table, riesgos
+  - Purga emojis: 0 en 52 docs/ via Python unicode-safe
+- **Discusion:** atomicidad vs granularidad — X-DD_Integration_Guide.md viola atomicidad (9 disciplinas en 1 doc)
+- **QA:** 409 tests verdes, shield 0 CRITICAL
+- **Proxima sesion:** Refactorizar Integration_Guide.md en 9 docs atomicos + heredar a evol-dd
