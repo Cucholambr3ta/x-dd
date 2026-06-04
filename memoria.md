@@ -56,6 +56,24 @@
 
 ## Bitácora de Sesiones
 
+### Sesion 2026-06-04 — Inc 5+6: memoria/lecciones por sprint + /xdd historias (feature/sprint-memoria-lecciones)
+- **Meta:** Capa de ejecucion del pipeline: memoria granular por sprint y generacion de historias de usuario completas.
+- **Hitos Inc 5 (xdd-memory.py sprint-close):**
+  - Nuevo subcomando sprint-close: crea acuerdos/memoria/sprint-NN.md + acuerdos/lecciones/sprint-NN.md
+  - INDEX.md idempotente, MEMORY.md inicializado en primer close
+  - xdd-init.sh genera MEMORY.md + INDEX.md en bootstrap
+  - cierre-fase.md v1.4: usa sprint-close, guarda XDD_NO_ORGANIZE para repo-fuente
+  - 11 tests nuevos (384 total)
+- **Hitos Inc 6 (/xdd historias):**
+  - Workflow completo: lee acuerdos/proyecto/ + wireframes, identifica TODAS las historias (HU/HT/HS)
+  - 4 artefactos por historia: propuesta, requisitos-escenarios (Gherkin), escenario-tecnico (Mermaid), checklist (>=50 tareas)
+  - Pipeline worker→auditor: auditor verifica checklist min 50 + cobertura STDD, registra gaps en lecciones
+  - acuerdos/sprint.md con plan de sprints, DoD, estimaciones
+- **Bug detectado:** argparse --project debe ir ANTES del subcomando — tests directos no capturan
+- **QA:** 384 tests verdes, shield 0 CRITICAL, lint 0 errores
+- **Commits:** e34c236 (Inc 5) + 29f4015 (Inc 6) en feature/sprint-memoria-lecciones
+- **Proxima sesion:** Inc 7 (xdd-gitflow.sh) + Inc 8 (xdd-sprint.md) + Inc 9 (discipline-check)
+
 ### Sesión 2026-06-04 — Incrementos 3+4: Briefing 16D + doc-granular worker→auditor (feature/briefing-acuerdos)
 - **Meta:** Completar los 4 incrementos del plan "Pipeline estrictamente bloqueante". Inc 3: briefing como arbol bloqueante 16 dimensiones + estructura /acuerdos. Inc 4: documentacion granular automatica con patron worker→auditor.
 - **Hitos Inc 3 (.agent/workflows/briefing.md):**

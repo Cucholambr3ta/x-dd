@@ -313,6 +313,20 @@ Hacer un workflow `/docs-sync` (post-v0.1.0) que detecte drift automáticamente 
 **Aplica a:** xdd-gate.py cmd_approve. Heredar a evol-gate.py (Inc 2). Patron reusable para cualquier gate de pipeline multi-fase
 **Fix aplicado:** _enforce_phase_chain + _enforce_segregation + cmd_set_author en xdd-gate.py. status muestra autor/aprobador/cadena. 9 tests en test_gate_fsm.py
 
+### [HERRAMIENTAS] argparse global args deben ir ANTES del subcomando — CLI confusa si no — 2026-06-04
+**Contexto:** Inc 5 — nuevo subcomando `sprint-close` en xdd-memory.py. Argumentos globales definidos antes del subparser (--project, --json).
+**Problema:** `xdd-memory.py sprint-close --sprint=01 --project=.` falla con "unrecognized arguments: --project=.". El arg global debe ir ANTES del subcomando: `xdd-memory.py --project=. sprint-close --sprint=01`.
+**Causa raiz:** argparse procesa subcomandos secuencialmente — args definidos en el parser principal no se heredan al namespace del subparser si se pasan despues del subcomando.
+**Leccion:** En CLIs con subcomandos argparse: documentar en help que args globales van ANTES del subcomando. Considerar add_help_on_each_subparser o parents=[common_parser] para propagar. Tests que usan la funcion directamente no detectan este bug — necesitan tambien probar via subprocess o argv.
+**Aplica a:** xdd-memory.py, xdd-gate.py, cualquier CLI con argparse + subparsers en X-DD. Fix: añadir nota en --help y considerar add_subparsers(parser_class) con parents comunes.
+
+### [PROCESO] Memoria/lecciones monoliticas escalan mal — separar por sprint desde inicio — 2026-06-04
+**Contexto:** Inc 5 — el usuario noto que memoria.md y lecciones.md eran archivos monoliticos que crecian sin estructura temporal. El sistema xdd-memory.py ya tenia el patron MEMORY.md + memory/YYYY-MM-DD.md pero no se aplicaba a lecciones del proyecto.
+**Problema:** Un solo archivo lecciones.md con 300+ lineas hace imposible buscar por sprint, correlacionar con errores especificos, o comparar velocidad de aprendizaje entre sprints. Mismo problema con memoria.md.
+**Causa raiz:** Patron de journal diario existia para memoria conversacional (xdd-memory.py) pero no se extrapoló a los artefactos de proyecto hasta que el relato del sistema externo lo hizo explicito.
+**Leccion:** Desde el inicio de un proyecto: lecciones y memoria separadas por sprint (acuerdos/lecciones/sprint-NN.md, acuerdos/memoria/sprint-NN.md). MEMORY.md para hechos persistentes. INDEX.md como indice navegable. El mismo patron del journal diario aplicado a granularidad de sprint. Backward compat: mantener root lecciones.md/memoria.md hasta migracion completa.
+**Aplica a:** Todos los proyectos generados por X-DD via xdd-init.sh. xdd-memory.py sprint-close es el comando de cierre. cierre-fase v1.4 lo integra.
+
 ### [DOMINIO] Briefing como arbol bloqueante 16D — wireframes viven DENTRO del briefing, no en fase separada — 2026-06-04
 **Contexto:** Inc 3 — modelar el briefing inspirado en sistema externo donde 43 docs granulares emergen de un briefing exhaustivo. El diseño inicial de X-DD tenia wireframes como etapa post-briefing.
 **Problema:** Separar wireframes del briefing crea un gap temporal: el agente de build puede arrancar sin tener claro el diseno visual, generando componentes que luego rompen al aprobar los wireframes.
