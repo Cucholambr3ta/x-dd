@@ -71,7 +71,7 @@ flowchart TD
     S4 --> S5["5. Por cada amenaza CRITICA:\ndefinir control obligatorio\n+ generar SEC-REQ-NNN"]
     S5 --> S6["6. Copiar SEC-REQ-NNN\nal SPEC.md"]
     S6 --> S7["7. Generar stubs STDD\nen tests/security/\npor cada amenaza con\n'security test requerido'"]
-    S7 --> REVIEW{SecOps + Architect\nrevisan THREATS.md}
+    S7 --> REVIEW{"SecOps + Architect revisan THREATS.md"}
     REVIEW -->|"gaps"| S3
     REVIEW -->|"aprobado"| GATE["Gate Fase 2\nTHREATS.md firmado"]
 ```

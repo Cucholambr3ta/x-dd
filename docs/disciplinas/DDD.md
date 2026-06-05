@@ -64,7 +64,7 @@ flowchart LR
     UL -->|"vocabulario obligatorio"| API["Contratos API\n(endpoints, esquemas)"]
     UL -->|"vocabulario obligatorio"| FEAT[".feature files\n(Gherkin)"]
     UL -->|"vocabulario obligatorio"| SPEC["SPEC.md\n(requisitos)"]
-    CODE -->|"Tier 3 QA detecta drift"| DRIFT{Drift semantico?}
+    CODE -->|"Tier 3 QA detecta drift"| DRIFT{"Drift semantico?"}
     DRIFT -->|"SI"| REPORT["Reportado en\nlecciones.md"]
     DRIFT -->|"NO"| OK["Coherencia confirmada"]
 ```
@@ -264,7 +264,7 @@ flowchart TD
     D1 --> D2["Identificar Bounded Contexts\ny Ubiquitous Language"]
     D2 --> D3["Modelar Core Aggregates\ny Domain Events"]
     D3 --> D4["DOMAIN.md borrador"]
-    D4 --> D5{Revisor aprueba?}
+    D4 --> D5{"Revisor aprueba?"}
     D5 -->|"NO — gaps"| D2
     D5 -->|"SI"| D6["Gate aprueba DOMAIN.md\n(HMAC-SHA256)"]
     D6 --> F3["Fase 3 — Plan\nPLAN.md usa terminos del dominio"]

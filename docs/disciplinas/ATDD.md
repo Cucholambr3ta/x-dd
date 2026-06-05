@@ -140,7 +140,7 @@ Documenta que el fallo es esperado, no un bug del test.
 flowchart TD
     F1["Fase 1 — Briefing"] --> CA["Criterios de aceptacion\nen FEATURES.md"]
     CA --> STUB["QA-Reviewer escribe\nstubs .acceptance.test.ts"]
-    STUB --> FAIL{Stubs fallan?}
+    STUB --> FAIL{"Stubs fallan?"}
     FAIL -->|"NO — error en el stub"| FIX["Corregir stub"]
     FIX --> FAIL
     FAIL -->|"SI — correcto"| G1{Gate 1}
@@ -148,11 +148,11 @@ flowchart TD
     F2 --> F3["Fase 3 — Plan"]
     F3 --> F4["Fase 4 — Build"]
     F4 --> IMPL["Builder implementa feature\nverificando que stubs pasen"]
-    IMPL --> PASS{Tests pasan?}
+    IMPL --> PASS{"Tests pasan?"}
     PASS -->|"NO"| IMPL
     PASS -->|"SI"| G4{Gate 4}
     G4 --> F5["Fase 5 — QA\nTier 2 ejecuta acceptance tests"]
-    F5 --> TIER2{100% passing?}
+    F5 --> TIER2{"100% passing?"}
     TIER2 -->|"NO"| BLOCK["Merge bloqueado"]
     TIER2 -->|"SI"| OK["Feature ENTREGADO"]
 ```

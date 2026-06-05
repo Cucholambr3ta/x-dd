@@ -49,7 +49,7 @@ flowchart TD
     R1 --> R2["2. ROJO-SEC — STDD\nSecurity test falla\n(funcion no existe y no protege)"]
     R2 --> G1["3. VERDE\nImplementacion minima\nambos tests pasan\n(funcional + seguro)"]
     G1 --> REF["4. REFACTOR + HARDENING\nMejorar calidad del codigo\nReforzar controles de seguridad\nAmbos tests siguen en verde"]
-    REF --> NEXT{Siguiente funcion?}
+    REF --> NEXT{"Siguiente funcion?"}
     NEXT -->|"SI"| START
     NEXT -->|"NO"| DONE["Feature completo\ncon propiedades de seguridad verificadas"]
 
@@ -163,14 +163,14 @@ requerido = SI", entonces STDD es obligatorio.
 ```mermaid
 flowchart TD
     THREATS["THREATS.md\n(amenazas con security test requerido)"] --> STUBS["Security-Engineer\ngenera stubs STDD en Fase 4"]
-    STUBS --> FAIL{Stubs fallan?}
+    STUBS --> FAIL{"Stubs fallan?"}
     FAIL -->|"NO"| FIX["Corregir stub\n(no detecta la amenaza)"]
     FIX --> FAIL
     FAIL -->|"SI — correcto"| CYCLE["Builder ejecuta ciclo STDD\nRojo-TDD + Rojo-SEC\n+ Verde + Refactor+Hardening"]
-    CYCLE --> ALL_PASS{Todos los tests\npasan?}
+    CYCLE --> ALL_PASS{"Todos los tests\npasan?"}
     ALL_PASS -->|"NO"| CYCLE
     ALL_PASS -->|"SI"| TIER2["Fase 5 — QA Tier 2\nnpx vitest run tests/security/"]
-    TIER2 --> BLOCK{Algun test\nfalla?}
+    TIER2 --> BLOCK{"Algun test\nfalla?"}
     BLOCK -->|"SI"| MERGE_BLOCKED["Merge bloqueado\nhasta corregir"]
     BLOCK -->|"NO"| OK["Feature aprobado"]
 ```

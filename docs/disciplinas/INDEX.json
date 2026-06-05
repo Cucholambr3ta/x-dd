@@ -5,7 +5,7 @@
       "subdominio": "ATDD",
       "doc": "ATDD.md",
       "resumen": "**Version:** 1.0 | **Fecha:** 2026-06-04 | **Gobernanza:** Constitucion X-DD v1.5",
-      "tokens_md": 2257,
+      "tokens_md": 2258,
       "entidades": []
     },
     {
@@ -40,33 +40,33 @@
       "subdominio": "STDD",
       "doc": "STDD.md",
       "resumen": "**Version:** 1.0 | **Fecha:** 2026-06-04 | **Gobernanza:** Constitucion X-DD v1.5",
-      "tokens_md": 2397,
+      "tokens_md": 2398,
       "entidades": []
     },
     {
       "subdominio": "SecDD",
       "doc": "SecDD.md",
       "resumen": "**Version:** 1.0 | **Fecha:** 2026-06-04 | **Gobernanza:** Constitucion X-DD v1.5",
-      "tokens_md": 2261,
+      "tokens_md": 2262,
       "entidades": []
     },
     {
       "subdominio": "TDD",
       "doc": "TDD.md",
       "resumen": "**Version:** 1.0 | **Fecha:** 2026-06-04 | **Gobernanza:** Constitucion X-DD v1.5",
-      "tokens_md": 2409,
+      "tokens_md": 2405,
       "entidades": []
     },
     {
       "subdominio": "THREAT-DRIVEN",
       "doc": "THREAT-DRIVEN.md",
       "resumen": "**Version:** 1.0 | **Fecha:** 2026-06-04 | **Gobernanza:** Constitucion X-DD v1.5",
-      "tokens_md": 2693,
+      "tokens_md": 2694,
       "entidades": []
     }
   ],
   "total_docs": 9,
   "total_tokens_md": 21423,
-  "actualizado": "2026-06-04T23:45:28.538986+00:00",
+  "actualizado": "2026-06-05T02:30:46.579566+00:00",
   "total_tokens_json": 330
 }

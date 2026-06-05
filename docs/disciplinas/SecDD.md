@@ -178,9 +178,9 @@ flowchart TD
     T1 --> SAST["Semgrep\nnpx semgrep --config=auto src/"]
     T1 --> SEC["Gitleaks\ngitleaks detect --source=."]
     T1 --> SCA["npm audit\nnpm audit --audit-level=high"]
-    SAST --> RESULT1{Hallazgos\ncriticos/altos?}
-    SEC --> RESULT2{Secretos\ndetectados?}
-    SCA --> RESULT3{CVEs\ncriticos/altos?}
+    SAST --> RESULT1{"Hallazgos\ncriticos/altos?"}
+    SEC --> RESULT2{"Secretos\ndetectados?"}
+    SCA --> RESULT3{"CVEs\ncriticos/altos?"}
     RESULT1 -->|"SI"| BLOCK["Merge BLOQUEADO\nCorregir antes de avanzar"]
     RESULT2 -->|"SI"| BLOCK
     RESULT3 -->|"SI"| BLOCK
@@ -189,13 +189,13 @@ flowchart TD
     RESULT3 -->|"NO"| T2
     T2 --> ZAP["OWASP ZAP\nzap-baseline.py -t $STAGING_URL"]
     T2 --> NUC["Nuclei\nnuclei -u $STAGING_URL -t cves/"]
-    ZAP --> RESULT4{Hallazgos\ncriticos/altos?}
+    ZAP --> RESULT4{"Hallazgos\ncriticos/altos?"}
     NUC --> RESULT4
     RESULT4 -->|"SI"| BLOCK
     RESULT4 -->|"NO"| REPORT["Generar QA_REPORT.md"]
     BLOCK --> FIX["Equipo corrige\nhallazgos"]
     FIX --> T1
-    REPORT --> GATE5{Gate Fase 5\naprobado?}
+    REPORT --> GATE5{"Gate Fase 5\naprobado?"}
     GATE5 -->|"SI"| RELEASE["Release a produccion"]
     GATE5 -->|"NO"| BLOCK
 ```
