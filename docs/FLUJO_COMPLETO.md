@@ -27,7 +27,9 @@ Tres pilares lo sostienen:
 
 ```mermaid
 flowchart TD
-    A[Usuario describe idea] --> B[FASE 1: BRIEFING]
+    S0["Paso 0: /xdd setup-repo"] --> S05["Paso 0.5: /xdd idea (decanta en atomos)"]
+    S05 --> S07["Paso 0.7: /xdd discovery (RESEARCH pre-briefing: entender)"]
+    S07 --> B[FASE 1: BRIEFING]
     B -->|gate firma| C[FASE 2: SPEC]
     C -->|gate firma| D[FASE 3: PLAN]
     D -->|gate firma| E[FASE 4: BUILD]
@@ -35,6 +37,8 @@ flowchart TD
     F -->|gate firma| G[FASE 6: RETRO]
     G --> H["Deploy / Release"]
 
+    S05 -.->|produce| S05a["acuerdos/idea/*.md (atomos)"]
+    S07 -.->|produce| S07a["acuerdos/discovery/*.md + sintesis"]
     B -.->|produce| B1["acuerdos/idea + design + wireframes"]
     C -.->|produce| C1["acuerdos/proyecto + docs/domain + features"]
     D -.->|produce| D1["acuerdos/historia-usuario + sprints"]
@@ -114,6 +118,11 @@ aprobado es la regla de diseno inmutable para el agente de build.
 Al cerrar el briefing, el agente lee TODOS los artefactos y genera documentacion tecnica
 atomica. Principio cero deuda: si es un dominio tecnico, tiene su carpeta; si es un
 subdominio, tiene su archivo.
+
+> **Dos research distintos.** El PASO 1 INVESTIGA de doc-granular es el RESEARCH
+> post-briefing (`acuerdos/research/<dominio>/`): investiga COMO construir cada dominio
+> tecnico. Es distinto del DISCOVERY pre-briefing (`acuerdos/discovery/`), que investigo
+> QUE es la idea antes de preguntar. Discovery = entender; research = como construir.
 
 ```mermaid
 flowchart TD
@@ -410,7 +419,10 @@ proyecto/
 ```mermaid
 flowchart TD
     U[Usuario: idea] --> INIT["xdd-init.sh: crea estructura"]
-    INIT --> BR["/xdd briefing: 16D + wireframes"]
+    INIT --> RP["/xdd setup-repo: repo + GitFlow"]
+    RP --> ID["/xdd idea: decanta en atomos"]
+    ID --> DSC["/xdd discovery: research pre-briefing"]
+    DSC --> BR["/xdd briefing: 16D + wireframes"]
     BR --> GATE1{gate approve briefing}
     GATE1 --> DG["/xdd doc-granular: docs atomicos"]
     DG --> GATE2{gate approve spec}
