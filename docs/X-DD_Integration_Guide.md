@@ -62,8 +62,9 @@ FASE 6 (Retro)     Sin cambios (Learning Loop)
 ```
 
 La regla de composicion: cada proyecto define su "nivel X-DD" segun la complejidad.
-No todos los proyectos necesitan las 9 disciplinas. El arbol de decision (seccion 4)
-determina que camino tomar.
+No todos los proyectos necesitan las 31 disciplinas (9 base + 22 extendidas). El arbol
+de decision (seccion 4) determina que camino tomar; el registro canonico con fase, ejecutor
+y fuentes esta en [`docs/disciplinas/INDEX.md`](./disciplinas/INDEX.md).
 
 ---
 
@@ -201,7 +202,7 @@ PROJ-NombreProyecto/
 
 ### Para proyectos existentes (no greenfield)
 
-La adopcion de las 9 disciplinas en un proyecto existente se hace de forma progresiva.
+La adopcion de las disciplinas (9 base + las extendidas que apliquen) en un proyecto existente se hace de forma progresiva.
 El orden recomendado minimiza la friccion y maximiza el valor inmediato.
 
 | Prioridad | Disciplina | Tiempo de setup | Valor inmediato |

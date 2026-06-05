@@ -335,7 +335,7 @@ secciones, entidades, trazabilidad, tokens, checksum. Si el MD cambia sin re-syn
 
 ---
 
-## 12. Las 9 disciplinas y donde entran
+## 12. Las disciplinas y donde entran (9 base + 22 extendidas = 31)
 
 ```mermaid
 flowchart LR
@@ -350,7 +350,10 @@ flowchart LR
     Q[QA] --> SECDD[SecDD: SAST+DAST]
 ```
 
-Son 9 disciplinas, cada una con su doc atomico en `docs/disciplinas/`:
+El diagrama muestra las **9 base** (nucleo de la Constitucion). El sistema integra ademas
+**22 disciplinas extendidas** activables por profile, para un total de **31**; el registro
+completo con fase, ejecutor y fuentes esta en [`docs/disciplinas/INDEX.md`](./disciplinas/INDEX.md).
+Las 9 base, cada una con su doc atomico en `docs/disciplinas/`:
 
 | # | Disciplina | Aporta | Fase | Doc atomico |
 |---|------------|--------|------|-------------|
@@ -390,7 +393,7 @@ proyecto/
     domain/                   DDD por aggregate + UBIQUITOUS_LANGUAGE
     features/                 FDD por feature
     privacy/                  PII por categoria
-    disciplinas/              9 disciplinas atomicas
+    disciplinas/              31 disciplinas atomicas (9 base + 22 extendidas)
   api/openapi/fragments/      1 yaml por recurso
   openapi.yaml                raiz generada (merge de fragments)
   src/ tests/                 codigo y pruebas

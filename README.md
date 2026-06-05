@@ -33,10 +33,12 @@ Briefing → Spec → Plan → Build → QA → Retro
    └─ cada flecha es un gate firmado que bloquea el avance sin aprobación válida ─┘
 ```
 
-## Lo que hace a X-DD distinto: 9 disciplinas, una sola corriente
+## Lo que hace a X-DD distinto: 31 disciplinas, una sola corriente
 
-X-DD no inventa una metodología nueva: **integra nueve** *-Driven Development* como capas sobre
-el pipeline gated, cada una entrando en la fase donde aporta.
+X-DD no inventa una metodología nueva: **integra 31** *-Driven Development* (9 base + 22
+extendidas activables por profile) como capas sobre el pipeline gated, cada una entrando en
+la fase donde aporta. La tabla muestra las 9 base; el registro completo con fase, ejecutor y
+fuentes está en [`docs/disciplinas/INDEX.md`](docs/disciplinas/INDEX.md).
 
 | Disciplina | Qué aporta | Dónde entra |
 |---|---|---|
@@ -93,7 +95,7 @@ Dos integraciones externas (opcionales, nunca bundled) cubren lo que un agente s
 |---|---|---|---|---|
 | **Gobernanza de fases** | ✅ 6 fases + gate HMAC | ❌ | ❌ | ❌ |
 | **Aprobador ≠ autor** | ✅ firmado criptográfico | ❌ | ❌ | ❌ |
-| **9 metodologías integradas** | ✅ SDD+FDD+BDD+TDD+… | parcial | parcial | ❌ |
+| **31 metodologías integradas** | ✅ 9 base + 22 extendidas | parcial | parcial | ❌ |
 | **Validación de ejecución real** | ✅ `xdd-flow` | ❌ | ❌ | ❌ |
 | **Dogfooding real** | ✅ X-DD se desarrolla con X-DD | ❌ | ❌ | ❌ |
 | **7 IDEs desde una fuente** | ✅ | parcial | ❌ | ❌ |
