@@ -12,16 +12,22 @@
     "bloqueo-de-ci-y-criterio-de-merge",
     "artefactos-atdd",
     "definition-of-done-atdd",
-    "agentes-involucrados"
+    "agentes-involucrados",
+    "fuentes"
   ],
   "entidades": [],
   "trazabilidad": {
     "origen": [],
     "relacionados": []
   },
-  "tokens_md": 2258,
-  "lineas": 256,
-  "checksum_md": "c223b3ff2cc7ac28",
-  "actualizado": "2026-06-05T02:30:46.564923+00:00",
-  "tokens_json": 103
+  "fuentes": [
+    "https://en.wikipedia.org/wiki/Acceptance_test%E2%80%93driven_development",
+    "https://www.oreilly.com/library/view/atdd-by-example/9780132542883/",
+    "https://gojko.net/books/specification-by-example/"
+  ],
+  "tokens_md": 2419,
+  "lineas": 267,
+  "checksum_md": "91222c378caef742",
+  "actualizado": "2026-06-05T07:27:42.948458+00:00",
+  "tokens_json": 134
 }

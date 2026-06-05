@@ -12,16 +12,22 @@
     "secdd-en-el-pipeline",
     "arbol-de-decision-de-seguridad",
     "definition-of-done-secdd",
-    "agentes-involucrados"
+    "agentes-involucrados",
+    "fuentes"
   ],
   "entidades": [],
   "trazabilidad": {
     "origen": [],
     "relacionados": []
   },
-  "tokens_md": 2262,
-  "lineas": 259,
-  "checksum_md": "cbe472b1b4dbaa78",
-  "actualizado": "2026-06-05T02:30:46.573659+00:00",
-  "tokens_json": 105
+  "fuentes": [
+    "https://owaspsamm.org/",
+    "https://owasp.org/www-project-devsecops-guideline/",
+    "https://owasp.org/www-project-application-security-verification-standard/"
+  ],
+  "tokens_md": 2416,
+  "lineas": 270,
+  "checksum_md": "eb2644bc37f6ba9c",
+  "actualizado": "2026-06-05T07:27:42.957448+00:00",
+  "tokens_json": 131
 }

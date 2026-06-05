@@ -13,16 +13,22 @@
     "definition-of-done-sdd",
     "como-el-gate-aplica-sdd",
     "relacion-con-otras-disciplinas",
-    "agentes-involucrados"
+    "agentes-involucrados",
+    "fuentes"
   ],
   "entidades": [],
   "trazabilidad": {
     "origen": [],
     "relacionados": []
   },
-  "tokens_md": 2196,
-  "lineas": 218,
-  "checksum_md": "e8d46a952bf14771",
-  "actualizado": "2026-06-04T20:23:23.983459+00:00",
-  "tokens_json": 103
+  "fuentes": [
+    "https://github.com/github/spec-kit",
+    "https://github.blog/ai-and-ml/generative-ai/spec-driven-development-with-ai-get-started-with-a-new-open-source-toolkit/",
+    "https://standards.ieee.org/ieee/830/1222/"
+  ],
+  "tokens_md": 2363,
+  "lineas": 229,
+  "checksum_md": "db33a91f68ac2cd8",
+  "actualizado": "2026-06-05T07:27:42.954549+00:00",
+  "tokens_json": 135
 }

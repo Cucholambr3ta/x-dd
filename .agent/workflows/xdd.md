@@ -53,6 +53,26 @@ El orquestador `/x-dd` disparará el siguiente subagente según el dominio y sus
 - **Seguridad y Red Team (Shannon)**: Invoca a `SecOps` (Skill: `skill-shannon-secops`).
 - **Mantenimiento y Deuda**: Invoca a `Maintainer`.
 
+## 2.5 INYECCIÓN DE DISCIPLINAS POR PROFILE
+
+El sistema integra **31 disciplinas *-Driven** (9 base + 22 extendidas). Registro:
+[`docs/disciplinas/INDEX.md`](../../docs/disciplinas/INDEX.md) — cada ficha declara su fase y su
+`executor` (workflow que la ejecuta).
+
+Al iniciar una fase, el orquestador:
+
+1. Lee `xdd.profile.yml` → bloque `methodologies:` (las disciplinas activas del proyecto).
+2. Por cada disciplina cuya **fase** coincide con la fase actual, inyecta su capa: invoca su
+   `executor` (workflow mapeado, skill nueva, o aplica la regla declarativa si `executor: null`),
+   genera sus artefactos I/O y aplica sus criterios de éxito como **sub-gate** de la fase.
+3. Resuelve el **DAG de dependencias** entre disciplinas antes de inyectar (ej. `chaos` exige
+   `odd_obs`+`threat_driven`; `slodriven` exige `odd_obs`+`pdd`). No inyecta una disciplina cuyas
+   dependencias no estén activas o satisfechas.
+4. NO inyecta disciplinas que el profile no declara — activación estricta por caso de uso.
+
+> **Regla de fuentes (DOC_STANDARD 1.7):** todo documento producto de investigación web cita el
+> link de su fuente. El validador `validate-disciplinas.py` bloquea fichas sin `fuentes[]`.
+
 ## 3. GATED PIPELINE (ART. 2)
 - El orquestador debe exigir la palabra "APROBADO" antes de realizar cambios persistentes o masivos.
 

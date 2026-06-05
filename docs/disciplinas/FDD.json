@@ -13,16 +13,22 @@
     "priorizacion-rice-y-moscow",
     "plan-por-features-verticales",
     "definition-of-done-fdd",
-    "agentes-involucrados"
+    "agentes-involucrados",
+    "fuentes"
   ],
   "entidades": [],
   "trazabilidad": {
     "origen": [],
     "relacionados": []
   },
-  "tokens_md": 2131,
-  "lineas": 233,
-  "checksum_md": "8d8f010d3e0c48a6",
-  "actualizado": "2026-06-04T20:23:23.980042+00:00",
-  "tokens_json": 102
+  "fuentes": [
+    "https://en.wikipedia.org/wiki/Feature-driven_development",
+    "https://www.oreilly.com/library/view/a-practical-guide/9780130676153/",
+    "https://www.intercom.com/blog/rice-simple-prioritization-for-product-managers/"
+  ],
+  "tokens_md": 2312,
+  "lineas": 244,
+  "checksum_md": "57734d5b28f5b408",
+  "actualizado": "2026-06-05T07:27:42.953173+00:00",
+  "tokens_json": 135
 }

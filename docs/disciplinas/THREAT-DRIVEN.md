@@ -262,6 +262,17 @@ flowchart LR
 
 ---
 
+## 10. Fuentes
+
+Respaldo bibliografico de la disciplina. El threat modeling con STRIDE se sustenta en las siguientes
+fuentes (verificadas via `/xdd fact-check`).
+
+| Tipo | Fuente | Aporte |
+|------|--------|--------|
+| Origen del modelo | [STRIDE — Microsoft Threat Modeling](https://learn.microsoft.com/en-us/azure/security/develop/threat-modeling-tool-threats) | STRIDE (Spoofing, Tampering, Repudiation, Information disclosure, DoS, Elevation) creado en Microsoft |
+| Metodologia | [OWASP Threat Modeling](https://owasp.org/www-community/Threat_Modeling) | Proceso de modelado de amenazas y construccion del DFD |
+| Manifiesto | [Threat Modeling Manifesto](https://www.threatmodelingmanifesto.org/) | Principios y valores consensuados de la disciplina |
+
 > **Mantenido por:** SecOps + Architect
 > **Gobernado por:** Constitucion X-DD v1.5, Art. 2
 > **Ver tambien:** [STDD.md](./STDD.md) | [SecDD.md](./SecDD.md) | [DDD.md](./DDD.md) | [INDEX.md](./INDEX.md)

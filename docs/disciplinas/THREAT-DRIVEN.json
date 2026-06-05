@@ -13,16 +13,22 @@
     "analisis-por-aggregate",
     "documentacion-de-controles",
     "threat-driven-en-el-pipeline",
-    "agentes-involucrados"
+    "agentes-involucrados",
+    "fuentes"
   ],
   "entidades": [],
   "trazabilidad": {
     "origen": [],
     "relacionados": []
   },
-  "tokens_md": 2694,
-  "lineas": 267,
-  "checksum_md": "7f4cbc505d91de7b",
-  "actualizado": "2026-06-05T02:30:46.578726+00:00",
-  "tokens_json": 110
+  "fuentes": [
+    "https://learn.microsoft.com/en-us/azure/security/develop/threat-modeling-tool-threats",
+    "https://owasp.org/www-community/Threat_Modeling",
+    "https://www.threatmodelingmanifesto.org/"
+  ],
+  "tokens_md": 2844,
+  "lineas": 278,
+  "checksum_md": "4e56f5b38ac6f844",
+  "actualizado": "2026-06-05T07:27:42.960644+00:00",
+  "tokens_json": 139
 }

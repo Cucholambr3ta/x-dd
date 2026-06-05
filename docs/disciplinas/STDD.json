@@ -12,16 +12,22 @@
     "stdd-en-el-pipeline",
     "estructura-de-tests-de-seguridad",
     "definition-of-done-stdd",
-    "agentes-involucrados"
+    "agentes-involucrados",
+    "fuentes"
   ],
   "entidades": [],
   "trazabilidad": {
     "origen": [],
     "relacionados": []
   },
-  "tokens_md": 2398,
-  "lineas": 248,
-  "checksum_md": "64cd02b14993c0b1",
-  "actualizado": "2026-06-05T02:30:46.571356+00:00",
-  "tokens_json": 102
+  "fuentes": [
+    "https://owasp.org/www-project-web-security-testing-guide/",
+    "https://owasp.org/www-project-application-security-verification-standard/",
+    "https://owasp.org/www-project-top-ten/"
+  ],
+  "tokens_md": 2556,
+  "lineas": 259,
+  "checksum_md": "019d7fc834b17403",
+  "actualizado": "2026-06-05T07:27:42.956018+00:00",
+  "tokens_json": 131
 }

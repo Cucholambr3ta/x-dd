@@ -146,24 +146,38 @@ como pipeline gated: investiga, valida claims, escribe, audita — con writer !=
 Cada documento tiene su propio grupo trabajando simultaneamente; el INDEX se genera en el
 sync final cuando todos los grupos cerraron (ver seccion 3).
 
-### PASO 1 — INVESTIGA (worker: specialized-researcher)
+### PASO 1 — INVESTIGA (worker: specialized-researcher) — RESEARCH post-briefing
 
-El researcher LEE primero `acuerdos/idea/idea.md` seccion "Prompt de investigacion": esa
-tabla declara que temas/links investigar y que preguntas responder (el contrato de entrada
-generado en el briefing). De ahi obtiene la direccion. Sin ese prompt, no hay que investigar.
+Este es el SEGUNDO research del pipeline (research, no discovery). Discovery (pre-briefing)
+ya entendio QUE es la idea; este research investiga COMO construir cada dominio tecnico.
+
+El researcher parte de lo ya entendido: lee `acuerdos/discovery/INDEX.md` (sintesis de la
+idea) + `acuerdos/idea/` (atomos) + las dimensiones del briefing. Sobre esa base, profundiza
+en la implementacion del subdominio especifico.
 
 ```
-Tarea: investigar el subdominio "<carpeta>/<nombre>.md" para el proyecto
+Tarea: investigar COMO construir el subdominio "<carpeta>/<nombre>.md"
 Contexto:
-  - acuerdos/idea/idea.md (Prompt de investigacion — QUE investigar)
-  - acuerdos/idea/<artefactos-relevantes>.md (dimensiones del briefing)
+  - acuerdos/discovery/INDEX.md (la idea ya entendida — que es, decisiones sugeridas)
+  - acuerdos/discovery/<tema>/ (investigacion pre-briefing relevante)
+  - acuerdos/idea/<atomos-relevantes>.md
+  - dimensiones del briefing (stack, arquitectura, integraciones)
 Output: acuerdos/research/<carpeta>/<nombre>/investigacion.md
-  - Responder las preguntas del prompt de investigacion relevantes a este subdominio
+  - Como implementar este subdominio con el stack decidido
   - Mejores practicas especificas del subdominio
   - Patrones recomendados para el stack del proyecto
   - Riesgos conocidos y mitigaciones
-  - Referencias (RFCs, docs oficiales, ejemplos reales)
+  - Referencias (RFCs, docs oficiales, ejemplos reales) — CON URL de cada fuente
 ```
+
+> **Regla de fuentes (DOC_STANDARD 1.7) — OBLIGATORIA:** todo claim producto de investigacion
+> web lleva el link de su fuente (inline o en seccion **Fuentes**). El sidecar captura las URLs
+> en `fuentes[]`. El auditor RECHAZA un doc con material investigado sin fuente citada.
+
+---
+
+> Discovery (acuerdos/discovery/) = entender la idea, pre-briefing.
+> Research (acuerdos/research/) = como construir cada dominio, post-briefing. Distintos.
 
 ### PASO 2 — VALIDA CLAIMS (worker: fact-check)
 

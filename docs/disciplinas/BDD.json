@@ -12,16 +12,23 @@
     "integracion-con-playwright-y-cucumber",
     "artefactos-bdd",
     "definition-of-done-bdd",
-    "agentes-involucrados"
+    "agentes-involucrados",
+    "fuentes"
   ],
   "entidades": [],
   "trazabilidad": {
     "origen": [],
     "relacionados": []
   },
-  "tokens_md": 2477,
-  "lineas": 279,
-  "checksum_md": "fde4bbd935660eb7",
-  "actualizado": "2026-06-04T20:23:23.976139+00:00",
-  "tokens_json": 100
+  "fuentes": [
+    "https://dannorth.net/introducing-bdd/",
+    "https://cucumber.io/docs/gherkin/reference/",
+    "https://cucumber.io/docs/",
+    "https://www.agilealliance.org/glossary/bdd/"
+  ],
+  "tokens_md": 2667,
+  "lineas": 291,
+  "checksum_md": "65b9022c3f566da9",
+  "actualizado": "2026-06-05T07:27:42.950077+00:00",
+  "tokens_json": 128
 }
