@@ -144,10 +144,17 @@ Por cada documento identificado, ejecutar en paralelo (xdd-orchestrate parallel_
 
 ### PASO 1 — INVESTIGA (worker: specialized-researcher)
 
+El researcher LEE primero `acuerdos/idea/idea.md` seccion "Prompt de investigacion": esa
+tabla declara que temas/links investigar y que preguntas responder (el contrato de entrada
+generado en el briefing). De ahi obtiene la direccion. Sin ese prompt, no hay que investigar.
+
 ```
 Tarea: investigar el subdominio "<carpeta>/<nombre>.md" para el proyecto
-Contexto: leer acuerdos/idea/<artefactos-relevantes>.md
+Contexto:
+  - acuerdos/idea/idea.md (Prompt de investigacion — QUE investigar)
+  - acuerdos/idea/<artefactos-relevantes>.md (dimensiones del briefing)
 Output: acuerdos/research/<carpeta>/<nombre>/investigacion.md
+  - Responder las preguntas del prompt de investigacion relevantes a este subdominio
   - Mejores practicas especificas del subdominio
   - Patrones recomendados para el stack del proyecto
   - Riesgos conocidos y mitigaciones
