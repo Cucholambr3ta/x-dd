@@ -405,3 +405,178 @@ def test_check_phase_retro_sin_checks(tmp_path):
     # retro no tiene validadores de disciplina
     errors = xdd_dc.check_phase(tmp_path, "retro")
     assert errors == []
+
+
+# ── Atomicidad ────────────────────────────────────────────────────────────────
+
+def test_atomicidad_doc_con_un_dominio_pasa(tmp_path):
+    """Doc que cubre solo autenticacion: atomico."""
+    doc = tmp_path / "AUTH.md"
+    doc.write_text(
+        "# Autenticacion\n\n## OAuth\n\nFlujo OAuth 2.0.\n\n"
+        "## JWT\n\nTokens de sesion.\n\n## Login\n\nEndpoint de autenticacion.\n"
+    )
+    errors = xdd_dc.check_atomicity(doc)
+    assert errors == []
+
+
+def test_atomicidad_doc_multi_dominio_falla(tmp_path):
+    """Doc que mezcla 4+ dominios en headings: viola atomicidad."""
+    doc = tmp_path / "GUIDE.md"
+    doc.write_text(
+        "# Guia\n\n## Autenticacion y OAuth\n\n## Base de datos y migracion\n\n"
+        "## Pipeline CI/CD y deploy\n\n## STRIDE y threat modeling\n\n"
+        "## Logging y metrics\n\n## Componentes frontend\n"
+    )
+    errors = xdd_dc.check_atomicity(doc)
+    assert errors
+    assert "ATOMICIDAD" in errors[0]
+
+
+def test_atomicidad_index_exento(tmp_path):
+    """INDEX.md puede ser multi-dominio por diseno."""
+    doc = tmp_path / "INDEX.md"
+    doc.write_text(
+        "# INDEX\n\n## Autenticacion\n\n## Base de datos\n\n"
+        "## CI/CD\n\n## Threats\n\n## Logging\n\n## Frontend\n"
+    )
+    errors = xdd_dc.check_atomicity(doc)
+    assert errors == []
+
+
+# ── Umbral de lineas ──────────────────────────────────────────────────────────
+
+def test_min_lines_sobre_umbral_pasa(tmp_path):
+    """Documento con suficientes lineas pasa."""
+    doc = tmp_path / "SPEC.md"
+    doc.write_text("\n".join(f"linea {i}" for i in range(200)))
+    errors = xdd_dc.check_min_lines(doc)
+    assert errors == []
+
+
+def test_min_lines_bajo_umbral_falla(tmp_path):
+    """SPEC.md con menos de 150 lineas falla (umbral definido)."""
+    doc = tmp_path / "SPEC.md"
+    doc.write_text("\n".join(f"linea {i}" for i in range(50)))
+    errors = xdd_dc.check_min_lines(doc)
+    assert errors
+    assert "PROFUNDIDAD" in errors[0]
+
+
+def test_min_lines_doc_generico_umbral_80(tmp_path):
+    """Doc sin umbral especifico usa default 80 lineas."""
+    doc = tmp_path / "MI-DOMINIO.md"
+    doc.write_text("\n".join(f"linea {i}" for i in range(30)))
+    errors = xdd_dc.check_min_lines(doc)
+    assert errors
+    assert "80" in errors[0]
+
+
+def test_doc_quality_atomico_y_suficiente(tmp_path):
+    """check_doc_quality: doc atomico y sobre umbral = sin errores."""
+    doc = tmp_path / "AUTH.md"
+    doc.write_text(
+        "# Autenticacion\n\n## Login\n\n"
+        + "\n".join(f"Contenido linea {i}" for i in range(100))
+    )
+    errors = xdd_dc.check_doc_quality(tmp_path, doc)
+    assert errors == []
+
+
+# ── JSON sidecar + atomic folder (Inc 0/1) ────────────────────────────────────
+
+import json as _json
+import hashlib as _hashlib
+import importlib.util as _ilu
+
+_ds_spec = _ilu.spec_from_file_location(
+    "xdd_doc_sync", Path(__file__).parent.parent / "scripts" / "xdd-doc-sync.py"
+)
+_doc_sync = _ilu.module_from_spec(_ds_spec)
+_ds_spec.loader.exec_module(_doc_sync)
+
+
+def _atom(folder, name, lines=40, dominio_kw="autenticacion"):
+    folder.mkdir(parents=True, exist_ok=True)
+    doc = folder / f"{name}.md"
+    body = "\n".join(f"Linea {i} sobre {dominio_kw}." for i in range(lines))
+    doc.write_text(f"# {name}\n\n> Cubre {name}.\n\n## Detalle\n\n{body}\n")
+    return doc
+
+
+def _make_index(folder):
+    (folder / "INDEX.md").write_text(
+        "# INDEX\n\n| Doc | Resumen |\n|-----|--------|\n| a.md | x |\n"
+    )
+
+
+def test_json_sidecar_falta_json(tmp_path):
+    doc = _atom(tmp_path, "esquemas")
+    errors = xdd_dc.check_json_sidecar(doc)
+    assert errors
+    assert "JSON-SIDECAR" in errors[0]
+
+
+def test_json_sidecar_ok(tmp_path):
+    doc = _atom(tmp_path, "esquemas")
+    _doc_sync.sync_doc(doc)
+    assert xdd_dc.check_json_sidecar(doc) == []
+
+
+def test_json_sidecar_detecta_drift(tmp_path):
+    doc = _atom(tmp_path, "esquemas")
+    _doc_sync.sync_doc(doc)
+    doc.write_text(doc.read_text() + "\n## Extra\n\nNuevo.\n")  # cambio sin re-sync
+    errors = xdd_dc.check_json_sidecar(doc)
+    assert errors
+    assert "drift" in errors[0].lower()
+
+
+def test_atomic_folder_ok(tmp_path):
+    folder = tmp_path / "sprints"
+    folder.mkdir(parents=True)
+    a = _atom(folder, "sprint-01")
+    _doc_sync.sync_doc(a)
+    _make_index(folder)
+    _doc_sync.sync_folder(folder)  # genera INDEX.json
+    errors = xdd_dc.check_atomic_folder(folder)
+    assert errors == [], f"Errores inesperados: {errors}"
+
+
+def test_atomic_folder_falla_sin_index(tmp_path):
+    folder = tmp_path / "sprints"
+    a = _atom(folder, "sprint-01")
+    _doc_sync.sync_doc(a)
+    errors = xdd_dc.check_atomic_folder(folder)
+    assert any("INDEX" in e for e in errors)
+
+
+def test_atomic_folder_falla_sin_json(tmp_path):
+    folder = tmp_path / "sprints"
+    folder.mkdir(parents=True)
+    _atom(folder, "sprint-01")  # sin sync → sin .json
+    _make_index(folder)
+    errors = xdd_dc.check_atomic_folder(folder)
+    assert any("JSON-SIDECAR" in e for e in errors)
+
+
+def test_atomic_folder_falla_atomo_corto(tmp_path):
+    folder = tmp_path / "sprints"
+    folder.mkdir(parents=True)
+    a = _atom(folder, "sprint-01", lines=5)  # < 30 lineas
+    _doc_sync.sync_doc(a)
+    _make_index(folder)
+    _doc_sync.sync_folder(folder)
+    errors = xdd_dc.check_atomic_folder(folder)
+    assert any("minimo" in e.lower() for e in errors)
+
+
+def test_folder_kinds_dispatch(tmp_path):
+    folder = tmp_path / "docs" / "features"
+    folder.mkdir(parents=True)
+    a = _atom(folder, "login")
+    _doc_sync.sync_doc(a)
+    _make_index(folder)
+    _doc_sync.sync_folder(folder)
+    errors = xdd_dc.check_features_atomic(tmp_path)
+    assert errors == []

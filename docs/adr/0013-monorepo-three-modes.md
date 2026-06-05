@@ -83,17 +83,17 @@ monorepo:
 ## Consequences
 
 ### Positivas
-- ✅ Cubre 3 patrones reales de uso de monorepos
-- ✅ Schema explícito → adopters declaran intent, no se asume
-- ✅ Backwards compatible con projects no-monorepo (sin sección `monorepo:`)
-- ✅ Compatible con todas las tools monorepo (nx/turborepo/pnpm/yarn/lerna/bazel/cargo/go)
-- ✅ Hybrid mode habilita el patrón "1 product, N microservices" sin custom tooling
+- SI Cubre 3 patrones reales de uso de monorepos
+- SI Schema explícito → adopters declaran intent, no se asume
+- SI Backwards compatible con projects no-monorepo (sin sección `monorepo:`)
+- SI Compatible con todas las tools monorepo (nx/turborepo/pnpm/yarn/lerna/bazel/cargo/go)
+- SI Hybrid mode habilita el patrón "1 product, N microservices" sin custom tooling
 
 ### Negativas
-- ⚠️ 3 modos = 3 paths de testing necesarios (cobertura tests bats)
-- ⚠️ Hybrid añade complejidad: gate keeper debe entender ownership de fase
-- ⚠️ `shared` y `isolated` ya cubren 80% de casos — riesgo de over-engineering
-- ⚠️ Runtime de workflows asume ahora opcionalmente `--package=<name>` flag (TODO Sprint 16)
+- WARN 3 modos = 3 paths de testing necesarios (cobertura tests bats)
+- WARN Hybrid añade complejidad: gate keeper debe entender ownership de fase
+- WARN `shared` y `isolated` ya cubren 80% de casos — riesgo de over-engineering
+- WARN Runtime de workflows asume ahora opcionalmente `--package=<name>` flag (TODO Sprint 16)
 
 ## Implementation in Sprint 15
 

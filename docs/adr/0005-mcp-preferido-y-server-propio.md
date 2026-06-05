@@ -4,7 +4,7 @@
 - **Estado:** Deprecado por [ADR-0044](0044-deprecar-mcp-no-necesario.md) (2026-05-30) — borrado en v0.2.0
 - **Decidido por:** Alejandro Placencia, Claude
 
-> ⚠️ **DEPRECADO v0.2.0:** el piloto agentix demostró que la orquestación X-DD no
+> WARN **DEPRECADO v0.2.0:** el piloto agentix demostró que la orquestación X-DD no
 > requiere MCP (copia real a IDEs cubre el caso). MCP queda deprecado: sigue presente
 > y funcional en v0.1.x, pero se eliminará en v0.2.0. Ver ADR-0044.
 

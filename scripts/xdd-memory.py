@@ -482,6 +482,72 @@ def _sprint_num_str(sprint: int | str) -> str:
     return f"{int(sprint):02d}"
 
 
+# ── MEMORY.md atomico (ADR-0050) ───────────────────────────────────────────────
+
+_MEMORY_ATOMS = {
+    "decisiones.md": ("Decisiones clave", "Decisiones de arquitectura y producto persistentes."),
+    "convenciones.md": ("Convenciones", "Estandares de codigo y patrones del proyecto."),
+    "riesgos.md": ("Riesgos activos", "Riesgos vigentes y mitigaciones."),
+}
+
+
+def _ensure_memory_atoms(memoria_dir: Path) -> None:
+    """Crea los 3 atomos de MEMORY si faltan."""
+    memoria_dir.mkdir(parents=True, exist_ok=True)
+    for fname, (titulo, desc) in _MEMORY_ATOMS.items():
+        atom = memoria_dir / fname
+        if not atom.exists():
+            atom.write_text(f"# {titulo}\n\n> Atomo de MEMORY. {desc}\n\n-\n", encoding="utf-8")
+
+
+def _regen_memory_aggregate(memoria_dir: Path) -> None:
+    """Regenera MEMORY.md concatenando los 3 atomos (con banner GENERADO)."""
+    parts = [
+        "# MEMORY.md — Hechos persistentes del proyecto",
+        "",
+        "> GENERADO automaticamente desde los atomos (decisiones/convenciones/riesgos).",
+        "> NO editar este archivo: editar el atomo correspondiente y regenerar via",
+        "> `xdd-memory.py sprint-close` o `xdd-memory.py memory-split`.",
+        "",
+    ]
+    for fname in _MEMORY_ATOMS:
+        atom = memoria_dir / fname
+        if atom.exists():
+            parts.append(atom.read_text(encoding="utf-8").rstrip())
+            parts.append("")
+    (memoria_dir / "MEMORY.md").write_text("\n".join(parts) + "\n", encoding="utf-8")
+
+
+def cmd_memory_split(args) -> int:
+    """Migra un MEMORY.md monolitico legacy a los 3 atomos (idempotente)."""
+    project = Path(args.project)
+    memoria_dir = project / "acuerdos" / "memoria"
+    memory_md = memoria_dir / "MEMORY.md"
+    _ensure_memory_atoms(memoria_dir)
+
+    if memory_md.exists():
+        content = memory_md.read_text(encoding="utf-8")
+        # Parsear secciones del monolitico legacy a los atomos
+        section_map = {
+            "decisiones.md": r"(?is)##\s*decisiones[^\n]*\n(.*?)(?=^##\s|\Z)",
+            "convenciones.md": r"(?is)##\s*convenciones[^\n]*\n(.*?)(?=^##\s|\Z)",
+            "riesgos.md": r"(?is)##\s*riesgos[^\n]*\n(.*?)(?=^##\s|\Z)",
+        }
+        # Solo migrar si NO es ya un agregado generado
+        if "GENERADO automaticamente" not in content:
+            for fname, pattern in section_map.items():
+                m = re.search(pattern, content, re.MULTILINE)
+                if m and m.group(1).strip() and m.group(1).strip() != "-":
+                    titulo, desc = _MEMORY_ATOMS[fname]
+                    atom_content = f"# {titulo}\n\n> Atomo de MEMORY. {desc}\n\n{m.group(1).strip()}\n"
+                    (memoria_dir / fname).write_text(atom_content, encoding="utf-8")
+                    print(f"[xdd-memory] migrado seccion -> {fname}")
+
+    _regen_memory_aggregate(memoria_dir)
+    print("[xdd-memory] ✓ MEMORY.md migrado a 3 atomos + agregado regenerado.")
+    return 0
+
+
 def cmd_sprint_close(args) -> int:
     """Cierre de sprint — escribe acuerdos/memoria/sprint-NN.md y acuerdos/lecciones/sprint-NN.md."""
     project = Path(args.project)
@@ -519,17 +585,10 @@ def cmd_sprint_close(args) -> int:
     _update_lecciones_index(index_path, sprint, today)
     print(f"[xdd-memory] ✓ acuerdos/lecciones/INDEX.md actualizado.")
 
-    # --- actualizar acuerdos/memoria/MEMORY.md (hechos persistentes) ---
-    memory_md = memoria_dir / "MEMORY.md"
-    if not memory_md.exists():
-        memory_md.write_text(
-            "# MEMORY.md — Hechos persistentes del proyecto\n\n"
-            "> Actualizado en cada cierre de sprint. Solo hechos duraderos, no log temporal.\n\n"
-            "## Decisiones clave\n\n-\n\n## Convenciones del proyecto\n\n-\n\n"
-            "## Riesgos activos\n\n-\n",
-            encoding="utf-8",
-        )
-        print("[xdd-memory] ✓ acuerdos/memoria/MEMORY.md inicializado.")
+    # --- MEMORY.md atomico: 3 atomos + agregado generado (ADR-0050) ---
+    _ensure_memory_atoms(memoria_dir)
+    _regen_memory_aggregate(memoria_dir)
+    print("[xdd-memory] ✓ acuerdos/memoria/ atomos (decisiones/convenciones/riesgos) + MEMORY.md regenerado.")
 
     if args.json:
         print(json.dumps({
@@ -644,6 +703,8 @@ def build_parser() -> argparse.ArgumentParser:
     psc.add_argument("--lecciones", default=None, help="Contenido markdown para lecciones/sprint-NN.md (opcional)")
     psc.add_argument("--force", action="store_true", help="Sobreescribir si ya existe")
 
+    pms = sub.add_parser("memory-split", help="Migra MEMORY.md monolitico a 3 atomos (decisiones/convenciones/riesgos)")
+
     return p
 
 
@@ -657,6 +718,7 @@ def main(argv=None) -> int:
         "gc": cmd_gc,
         "stats": cmd_stats,
         "sprint-close": cmd_sprint_close,
+        "memory-split": cmd_memory_split,
     }
     fn = dispatch.get(args.cmd)
     if fn is None:

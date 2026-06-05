@@ -66,8 +66,9 @@ Ejecuta ANTES de pasar a Seccion 1:
   # Luego editar acuerdos/memoria/sprint-NN.md con el contenido del sprint
   ```
 
-- **`acuerdos/memoria/MEMORY.md`** — actualizar solo si hay hechos persistentes nuevos
-  (decisiones de arquitectura, convenciones, riesgos activos).
+- **`acuerdos/memoria/` atomos** — si hay hechos persistentes nuevos, editar el atomo
+  apropiado: `decisiones.md`, `convenciones.md` o `riesgos.md`. NO editar MEMORY.md
+  directamente: es un agregado generado. `sprint-close` regenera MEMORY.md desde los atomos.
 - **`acuerdos/lecciones/INDEX.md`** — actualizado automaticamente por `sprint-close`.
 - **`memoria.md` root** — mantener por backward compat: appendear resumen del sprint.
 - **`CLAUDE.md`** — actualizar "Estado Actual" y "Proximo Hito".

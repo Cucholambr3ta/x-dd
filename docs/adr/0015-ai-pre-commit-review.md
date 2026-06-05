@@ -35,16 +35,16 @@ Sprint 16 introduce `skill xdd-ai-review` provider-agnostic:
 ## Consequences
 
 ### Positivas
-- ✅ Pre-commit AI review como ciudadano de primera clase X-DD
-- ✅ Provider-agnostic: equipos eligen su stack (privacy: local; velocidad: Haiku; calidad: gpt-4)
-- ✅ Default seguro: redacta secrets antes de enviar al LLM
-- ✅ Compatible con `--no-verify` de developer (override consciente, no bypass silencioso)
-- ✅ Inspiración registrada (gga) sin contaminar licencia
+- SI Pre-commit AI review como ciudadano de primera clase X-DD
+- SI Provider-agnostic: equipos eligen su stack (privacy: local; velocidad: Haiku; calidad: gpt-4)
+- SI Default seguro: redacta secrets antes de enviar al LLM
+- SI Compatible con `--no-verify` de developer (override consciente, no bypass silencioso)
+- SI Inspiración registrada (gga) sin contaminar licencia
 
 ### Negativas
-- ⚠️ Costo per commit (~$0.001 con Haiku) — mitigado: opcional, default disabled
-- ⚠️ Latencia ~2-5s por commit con cloud provider — mitigado: local Ollama option
-- ⚠️ Skill no incluye runtime ejecutable propio — adopters implementan invocación específica de su provider
+- WARN Costo per commit (~$0.001 con Haiku) — mitigado: opcional, default disabled
+- WARN Latencia ~2-5s por commit con cloud provider — mitigado: local Ollama option
+- WARN Skill no incluye runtime ejecutable propio — adopters implementan invocación específica de su provider
 
 ## Related
 

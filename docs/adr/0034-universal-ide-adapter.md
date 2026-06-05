@@ -25,12 +25,12 @@ Sprint 24 reescribe adapter como **universal**:
 ### 2. Seis IDEs soportados
 | Target | Output | Slash nativo |
 |---|---|---|
-| `claude-code` | `.claude/commands/*.md` + `.mcp.json` | ✅ `/trigger` |
-| `opencode` | `.opencode/command/*.md` + AGENTS.md + `.agent/workflows/` | ✅ |
-| `cursor` | `.cursor/rules/*.mdc` + `.cursor/mcp.json` | ⚠️ `@trigger` + MCP |
-| `windsurf` | `.windsurf/rules/*.md` + `.windsurf/mcp.json` | ⚠️ MCP |
-| `vscode-copilot` | `.github/prompts/*.prompt.md` + `.vscode/mcp.json` | ✅ `/trigger` en Copilot Chat |
-| `antigravity` | `.antigravity/mcp.json` + README | ❌ solo MCP tools |
+| `claude-code` | `.claude/commands/*.md` + `.mcp.json` | SI `/trigger` |
+| `opencode` | `.opencode/command/*.md` + AGENTS.md + `.agent/workflows/` | SI |
+| `cursor` | `.cursor/rules/*.mdc` + `.cursor/mcp.json` | WARN `@trigger` + MCP |
+| `windsurf` | `.windsurf/rules/*.md` + `.windsurf/mcp.json` | WARN MCP |
+| `vscode-copilot` | `.github/prompts/*.prompt.md` + `.vscode/mcp.json` | SI `/trigger` en Copilot Chat |
+| `antigravity` | `.antigravity/mcp.json` + README | NO solo MCP tools |
 
 ### 3. MCP auto-config por IDE
 `gen_mcp_json()` genera `mcp.json` en formato correcto:
@@ -54,17 +54,17 @@ Tras bootstrap, `xdd-init.sh` detecta IDEs presentes (CLI `command -v` o config 
 ## Consequences
 
 ### Positivas
-- ✅ `xdd-init` → 6 IDEs configurados automáticamente, cero pasos manuales
-- ✅ Symlink bug eliminado (copia real) → `/helios` visible en Claude Code + Copilot
-- ✅ MCP auto-config → Cursor/Windsurf/Antigravity listos sin escribir json a mano
-- ✅ Trigger custom (Helios) propaga a todos los formatos
-- ✅ Honestidad: matriz declara qué IDE da slash real vs MCP-only
+- SI `xdd-init` → 6 IDEs configurados automáticamente, cero pasos manuales
+- SI Symlink bug eliminado (copia real) → `/helios` visible en Claude Code + Copilot
+- SI MCP auto-config → Cursor/Windsurf/Antigravity listos sin escribir json a mano
+- SI Trigger custom (Helios) propaga a todos los formatos
+- SI Honestidad: matriz declara qué IDE da slash real vs MCP-only
 
 ### Negativas
-- ⚠️ Commands duplicados (copia real) — re-correr adapter tras editar workflow SSoT. Mitigación: `xdd-adapt all` idempotente; futuro hook post-edit re-sync
-- ⚠️ Antigravity/Cursor no tendrán `/trigger` slash (limitación IDE, no X-DD)
-- ⚠️ `.github/prompts/` puede colisionar con prompts existentes del proyecto (cp sobreescribe; documentar)
-- ⚠️ Auto-detect heurístico (config dirs) puede falsos-positivos (`.github` ⇒ vscode-copilot aunque no use Copilot). Aceptable: genera config inerte si IDE ausente
+- WARN Commands duplicados (copia real) — re-correr adapter tras editar workflow SSoT. Mitigación: `xdd-adapt all` idempotente; futuro hook post-edit re-sync
+- WARN Antigravity/Cursor no tendrán `/trigger` slash (limitación IDE, no X-DD)
+- WARN `.github/prompts/` puede colisionar con prompts existentes del proyecto (cp sobreescribe; documentar)
+- WARN Auto-detect heurístico (config dirs) puede falsos-positivos (`.github` ⇒ vscode-copilot aunque no use Copilot). Aceptable: genera config inerte si IDE ausente
 
 ## Implementation Sprint 24
 

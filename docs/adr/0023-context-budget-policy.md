@@ -39,15 +39,15 @@ Sprint 19 introduce:
 ## Consequences
 
 ### Positivas
-- ✅ Alerts antes de OOM/400
-- ✅ Hook activable per-profile (default no-op, `strict` activa)
-- ✅ Compatible con compact skill (Sprint 19 companion) — warning trigger compact
-- ✅ Opt-in: proyectos sin `context_budget:` mantienen comportamiento anterior
+- SI Alerts antes de OOM/400
+- SI Hook activable per-profile (default no-op, `strict` activa)
+- SI Compatible con compact skill (Sprint 19 companion) — warning trigger compact
+- SI Opt-in: proyectos sin `context_budget:` mantienen comportamiento anterior
 
 ### Negativas
-- ⚠️ Heurística stdlib subestima 5-15% vs tiktoken — aceptable para alert
-- ⚠️ Hook depende de orchestrator pasar `XDD_TOKENS_ESTIMATE` env var (no auto-detecta)
-- ⚠️ Budget único — no diferencia entre system prompt + history (deferred v0.2.0)
+- WARN Heurística stdlib subestima 5-15% vs tiktoken — aceptable para alert
+- WARN Hook depende de orchestrator pasar `XDD_TOKENS_ESTIMATE` env var (no auto-detecta)
+- WARN Budget único — no diferencia entre system prompt + history (deferred v0.2.0)
 
 ## Implementation Sprint 19
 

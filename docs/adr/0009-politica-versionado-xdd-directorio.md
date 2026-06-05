@@ -18,13 +18,13 @@ ADR-0001 establece "todo visible y commiteable" como principio general — pero 
 
 | Path | Commiteable | Motivo |
 |------|-------------|--------|
-| `.xdd/<fase>/*.md` | ✅ Sí | Dogfooding visible (ADR-0001). |
-| `.xdd/<fase>/.status` | ✅ Sí | Auditoría pública del estado del pipeline. |
-| `.xdd/<fase>/.checksums` | ✅ Sí | Permite verificar integridad sin la key (solo prueba que el contenido no cambió post-aprobación). |
-| `.xdd/<fase>/.approvers` | ✅ Sí | Trazabilidad de quién aprobó y cuándo. |
-| `.xdd/<fase>/.signature` | ✅ Sí | Sin la `.gate-key` la firma es opaca pero verificable por quien la tenga. |
-| `.xdd/.gate-key` | ❌ **No (gitignored)** | Secreto. Compromiso permitiría reescribir firmas. |
-| `.xdd/build/sprint-N/` | ✅ Sí | Sub-reportes por sprint de la Fase 4-Build. |
+| `.xdd/<fase>/*.md` | SI Sí | Dogfooding visible (ADR-0001). |
+| `.xdd/<fase>/.status` | SI Sí | Auditoría pública del estado del pipeline. |
+| `.xdd/<fase>/.checksums` | SI Sí | Permite verificar integridad sin la key (solo prueba que el contenido no cambió post-aprobación). |
+| `.xdd/<fase>/.approvers` | SI Sí | Trazabilidad de quién aprobó y cuándo. |
+| `.xdd/<fase>/.signature` | SI Sí | Sin la `.gate-key` la firma es opaca pero verificable por quien la tenga. |
+| `.xdd/.gate-key` | NO **No (gitignored)** | Secreto. Compromiso permitiría reescribir firmas. |
+| `.xdd/build/sprint-N/` | SI Sí | Sub-reportes por sprint de la Fase 4-Build. |
 
 `.gitignore` añade explícitamente:
 ```

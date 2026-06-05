@@ -18,9 +18,11 @@ category: execution
 
 ## 0. Pre-flight
 
-1. Verificar que `acuerdos/sprint.md` existe (generado por `/xdd historias`).
-2. Leer `acuerdos/sprint.md` para identificar el sprint a ejecutar.
-3. Si `--sprint=NN` no se pasa: tomar el primer sprint sin branch en git.
+1. Verificar que `acuerdos/sprints/INDEX.json` existe (generado por `/xdd historias`).
+   Fallback legacy: `acuerdos/sprint.md`.
+2. Leer `acuerdos/sprints/INDEX.json` (ahorro de tokens — NO cargar todos los sprint-NN.md)
+   para identificar el sprint a ejecutar y su estado.
+3. Si `--sprint=NN` no se pasa: tomar el primer sprint sin branch en git desde el INDEX.
 4. Verificar que la branch del sprint anterior esta mergeada en develop:
    ```bash
    bash scripts/xdd-gitflow.sh sprint-start --sprint=NN --title=<titulo>
@@ -32,11 +34,12 @@ category: execution
 
 ## 1. LECTURA DE LA HISTORIA
 
-El agente lee TODAS las historias asignadas al sprint actual en `acuerdos/sprint.md`:
+El agente carga SOLO el sprint a ejecutar: `acuerdos/sprints/sprint-NN.md` (su .json ya fue
+leido en pre-flight para mapear). De ahi obtiene las historias asignadas.
 
 ```bash
-# Extraer historias del sprint NN de acuerdos/sprint.md
-grep -A 20 "Sprint NN" acuerdos/sprint.md
+# Leer el sprint especifico (no todo el plan)
+cat acuerdos/sprints/sprint-NN.md
 ```
 
 Por cada historia del sprint, leer:
@@ -238,7 +241,7 @@ Una vez mergeada la PR:
 
 ```mermaid
 flowchart TD
-    A[Leer acuerdos/sprint.md] --> B[Identificar historias del sprint]
+    A[Leer acuerdos/sprints/INDEX.json] --> B[Identificar historias del sprint]
     B --> C[Componer equipo dinamico]
     C --> D[sprint-start via xdd-gitflow.sh]
     D --> E{Por cada historia}

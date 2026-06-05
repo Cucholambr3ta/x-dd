@@ -72,17 +72,17 @@ Implementa ADR-0017 spec:
 ## Consequences
 
 ### Positivas
-- ✅ Política explicita migra skill ↔ workflow
-- ✅ 2 nuevos patterns cubren cases research-validated
-- ✅ Bundle ecosystem funciona: pack/verify/install/inspect
-- ✅ security-bundle demo distributable
-- ✅ License whitelist rechaza AGPL/proprietary (mantiene MIT pure)
-- ✅ HMAC signature en manifest = audit trail
+- SI Política explicita migra skill ↔ workflow
+- SI 2 nuevos patterns cubren cases research-validated
+- SI Bundle ecosystem funciona: pack/verify/install/inspect
+- SI security-bundle demo distributable
+- SI License whitelist rechaza AGPL/proprietary (mantiene MIT pure)
+- SI HMAC signature en manifest = audit trail
 
 ### Negativas
-- ⚠️ Bundles no GUI install yet (solo CLI)
-- ⚠️ Migration policy es guía, no scripted (manual judgment per case)
-- ⚠️ HMAC key default público — production should override (Sprint 4 gate-key pattern)
+- WARN Bundles no GUI install yet (solo CLI)
+- WARN Migration policy es guía, no scripted (manual judgment per case)
+- WARN HMAC key default público — production should override (Sprint 4 gate-key pattern)
 
 ## Implementation Sprint 23
 

@@ -62,11 +62,11 @@ monorepo:
 
 | Pregunta | isolated | shared | hybrid |
 |---|---|---|---|
-| ¿Releases independientes? | ✅ | ❌ | ⚠️ por package |
-| ¿Spec única raíz? | ❌ | ✅ | ✅ |
-| ¿1 gate keeper? | ❌ N | ✅ 1 | ⚠️ 1+N |
-| ¿Mejor para teams pequeños? | ❌ | ✅ | ⚠️ |
-| ¿Mejor para teams grandes? | ⚠️ | ❌ | ✅ |
+| ¿Releases independientes? | SI | NO | WARN por package |
+| ¿Spec única raíz? | NO | SI | SI |
+| ¿1 gate keeper? | NO N | SI 1 | WARN 1+N |
+| ¿Mejor para teams pequeños? | NO | SI | WARN |
+| ¿Mejor para teams grandes? | WARN | NO | SI |
 
 ## Defaults por tool (suggest)
 

@@ -53,16 +53,16 @@ Cada propuesta ahora incluye rationale_evidence + predicted_impact + falsificati
 ## Consequences
 
 ### Positivas
-- ✅ Continuous learning científico: evidence + prediction + falsification
-- ✅ Trace replay (Sprint 18) feeds Experience layer
-- ✅ Frozen transfer experiments documentables/reproducibles
-- ✅ Meta-eval (Sprint 20) consume falsification_outcome para guarded promotion
-- ✅ Schema idempotent migration (proyectos existentes upgrade sin breaking)
+- SI Continuous learning científico: evidence + prediction + falsification
+- SI Trace replay (Sprint 18) feeds Experience layer
+- SI Frozen transfer experiments documentables/reproducibles
+- SI Meta-eval (Sprint 20) consume falsification_outcome para guarded promotion
+- SI Schema idempotent migration (proyectos existentes upgrade sin breaking)
 
 ### Negativas
-- ⚠️ `predicted_impact` y `falsification_metric` autogenerados con templates — manual refinement recommended
-- ⚠️ `falsification_outcome` requires manual flag o pipeline futuro (no auto-fill v0.1.0)
-- ⚠️ Frozen transfer asume estructura skills/ + registry compatible source ↔ target
+- WARN `predicted_impact` y `falsification_metric` autogenerados con templates — manual refinement recommended
+- WARN `falsification_outcome` requires manual flag o pipeline futuro (no auto-fill v0.1.0)
+- WARN Frozen transfer asume estructura skills/ + registry compatible source ↔ target
 
 ## Implementation Sprint 22
 

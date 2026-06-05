@@ -1,0 +1,34 @@
+{
+  "doc": "DDD.md",
+  "dominio": "disciplinas",
+  "subdominio": "DDD",
+  "resumen": "**Version:** 1.0 | **Fecha:** 2026-06-04 | **Gobernanza:** Constitucion X-DD v1.5",
+  "secciones": [
+    "indice",
+    "que-es-ddd-en-x-dd",
+    "ubiquitous-language",
+    "bounded-contexts",
+    "context-map",
+    "core-aggregates",
+    "domain-events",
+    "artefacto-domainmd",
+    "ubiquitous-language",
+    "bounded-contexts",
+    "context-map",
+    "core-aggregates",
+    "domain-events",
+    "glosario-de-errores-de-dominio",
+    "ddd-en-el-pipeline",
+    "agentes-involucrados"
+  ],
+  "entidades": [],
+  "trazabilidad": {
+    "origen": [],
+    "relacionados": []
+  },
+  "tokens_md": 2602,
+  "lineas": 298,
+  "checksum_md": "82c2ad49ed490d82",
+  "actualizado": "2026-06-04T20:23:34.974735+00:00",
+  "tokens_json": 117
+}

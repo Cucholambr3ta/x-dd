@@ -4,7 +4,7 @@
 - **Estado:** Aceptado (parte MCP deprecada por [ADR-0044](0044-deprecar-mcp-no-necesario.md), 2026-05-30)
 - **Decidido por:** Alejandro Placencia, Claude
 
-> ⚠️ **Parte MCP DEPRECADA v0.2.0:** los adapters de copia real (Claude Code, OpenCode,
+> WARN **Parte MCP DEPRECADA v0.2.0:** los adapters de copia real (Claude Code, OpenCode,
 > +5 IDEs) siguen siendo el camino vigente. La integración vía **MCP genérico** queda
 > deprecada y se eliminará en v0.2.0 (ver ADR-0044). El resto de este ADR sigue vigente.
 

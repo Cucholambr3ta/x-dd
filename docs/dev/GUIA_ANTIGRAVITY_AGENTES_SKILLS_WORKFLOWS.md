@@ -25,12 +25,12 @@ Antigravity opera bajo su propio paradigma de extensibilidad agéntica basado en
 
 | Capacidad | Claude Code / OpenCode / Copilot | Antigravity |
 |-----------|----------------------------------|-------------|
-| **Slash commands locales (ejecutables)** | ✅ Vía archivos en carpetas del IDE | ❌ **No soportado** (sandbox del host) |
-| **Triggers de Chat / Slash commands en Chat** | ✅ Nativos en CLI | ✅ **Soportado** (vía `triggers` en `SKILL.md`) |
-| **Rules basadas en archivos de texto** | ✅ Rules de sistema locales | ❌ (Usa MCP / Skills nativas) |
-| **Skills locales auto-descubiertas** | Vía convención IDE | ✅ `.agents/skills/` (plural) |
-| **Integración MCP** | ✅ `mcp_servers.json` estándar | ✅ `mcp_config.json` con metakey custom |
-| **Delegación paralela / Subagentes** | Limitado | ✅ Cascade Runtime nativo |
+| **Slash commands locales (ejecutables)** | SI Vía archivos en carpetas del IDE | NO **No soportado** (sandbox del host) |
+| **Triggers de Chat / Slash commands en Chat** | SI Nativos en CLI | SI **Soportado** (vía `triggers` en `SKILL.md`) |
+| **Rules basadas en archivos de texto** | SI Rules de sistema locales | NO (Usa MCP / Skills nativas) |
+| **Skills locales auto-descubiertas** | Vía convención IDE | SI `.agents/skills/` (plural) |
+| **Integración MCP** | SI `mcp_servers.json` estándar | SI `mcp_config.json` con metakey custom |
+| **Delegación paralela / Subagentes** | Limitado | SI Cascade Runtime nativo |
 
 **Consecuencia directa de diseño:** En Antigravity, el orquestador principal X-DD y sus workflows asociados se invocan a través de herramientas de contexto del **MCP server** (`xdd_invoke_workflow`) o escribiendo directamente sus **triggers conversacionales** (como `/${TRIGGER}` o `/compact`) definidos en las **Skills locales**, emulando la experiencia de comandos slash en la CLI de Cascade.
 
@@ -285,10 +285,10 @@ Al agregar o modificar componentes del ecosistema de X-DD, es obligatorio verifi
 | Capacidad / Feature | Antigravity | Cursor | Codex |
 |---------------------|-------------|--------|-------|
 | **Ubicación MCP config** | Global (`~/.gemini/config/`) | Local (`.cursor/mcp.json`) | N/A (Solo CLI/global) |
-| **Soporte wrapper global** | ✅ Integrado sin `cwd` | ❌ Solo `cwd` absoluto hoy | ✅ Sincronización global |
-| **Copia física de Skills** | ✅ Auto a `.agents/skills/` | ❌ Requiere copia manual | ✅ Auto a `~/.codex/skills/` |
-| **Rules de contexto** | ❌ (Usa Skills) | ✅ `.cursor/rules/` (.mdc) | ❌ (Usa SKILL orchestrator) |
-| **README de ayuda local** | ✅ `.antigravity/README-xdd.md`| ❌ No generado | ✅ `.codex/README-xdd.md` |
+| **Soporte wrapper global** | SI Integrado sin `cwd` | NO Solo `cwd` absoluto hoy | SI Sincronización global |
+| **Copia física de Skills** | SI Auto a `.agents/skills/` | NO Requiere copia manual | SI Auto a `~/.codex/skills/` |
+| **Rules de contexto** | NO (Usa Skills) | SI `.cursor/rules/` (.mdc) | NO (Usa SKILL orchestrator) |
+| **README de ayuda local** | SI `.antigravity/README-xdd.md`| NO No generado | SI `.codex/README-xdd.md` |
 
 ---
 

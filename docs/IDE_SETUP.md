@@ -19,15 +19,15 @@ XDD_NO_ADAPT=1 bash scripts/xdd-init.sh /tu/proyecto
 
 | IDE | Trigger | Mecanismo | Archivos generados |
 |---|---|---|---|
-| **Claude Code** | `/helios` slash ✅ | slash command real | `.claude/commands/*.md` + `.mcp.json` |
-| **OpenCode** | `/helios` slash ✅ | command + workflows | `.opencode/command/*.md` + `AGENTS.md` |
-| **VSCode + Copilot** | `/helios` slash ✅ | prompt files | `.github/prompts/*.prompt.md` + `.vscode/mcp.json` |
-| **Cursor** | `@helios` + MCP ⚠️ | rules + MCP | `.cursor/rules/*.mdc` + `.cursor/mcp.json` |
-| **Windsurf** | MCP tool ⚠️ | rules + MCP | `.windsurf/rules/*.md` + `.windsurf/mcp.json` |
-| **Antigravity** | `/<trigger>` o MCP ✅ | MCP + local skills | `~/.gemini/config/mcp_config.json` (merge) + `.agents/skills/` |
-| **Codex** | `/<trigger>` (description-based) ✅ | global skills | `~/.codex/skills/<trigger>-orchestrator/` (SKILL.md + agents-index.json) |
+| **Claude Code** | `/helios` slash SI | slash command real | `.claude/commands/*.md` + `.mcp.json` |
+| **OpenCode** | `/helios` slash SI | command + workflows | `.opencode/command/*.md` + `AGENTS.md` |
+| **VSCode + Copilot** | `/helios` slash SI | prompt files | `.github/prompts/*.prompt.md` + `.vscode/mcp.json` |
+| **Cursor** | `@helios` + MCP WARN | rules + MCP | `.cursor/rules/*.mdc` + `.cursor/mcp.json` |
+| **Windsurf** | MCP tool WARN | rules + MCP | `.windsurf/rules/*.md` + `.windsurf/mcp.json` |
+| **Antigravity** | `/<trigger>` o MCP SI | MCP + local skills | `~/.gemini/config/mcp_config.json` (merge) + `.agents/skills/` |
+| **Codex** | `/<trigger>` (description-based) SI | global skills | `~/.codex/skills/<trigger>-orchestrator/` (SKILL.md + agents-index.json) |
 
-> ⚠️ **Verdad técnica:** La ejecución nativa de scripts de terminal mediante slash commands locales directos solo está soportada en Claude Code, OpenCode y VSCode Copilot. Cursor y Windsurf usan MCP tools u `@-mention`. Antigravity emula la experiencia de slash commands en el chat mediante el sistema de triggers conversacionales definidos en `.agents/skills/*.md`.
+> WARN **Verdad técnica:** La ejecución nativa de scripts de terminal mediante slash commands locales directos solo está soportada en Claude Code, OpenCode y VSCode Copilot. Cursor y Windsurf usan MCP tools u `@-mention`. Antigravity emula la experiencia de slash commands en el chat mediante el sistema de triggers conversacionales definidos en `.agents/skills/*.md`.
 
 ## Por IDE
 

@@ -304,6 +304,43 @@ if [ ! -d "./acuerdos" ]; then
   echo "[xdd-init] ✓ acuerdos/ creado (7 subcarpetas + MEMORY.md + INDEX.md — base para /xdd briefing)."
 fi
 
+# === Esqueleto de carpetas atomicas (ADR-0050 — idempotente, corre siempre) ===
+# Estructura: 1 carpeta = 1 dominio. Cada carpeta tiene INDEX.md + INDEX.json.
+_seed_atomic_index() {
+  local dir="$1" titulo="$2"
+  mkdir -p "$dir"
+  if [ ! -f "$dir/INDEX.md" ]; then
+    printf "# INDEX — %s\n\n> Indice atomico. 1 doc = 1 concepto. Generado/actualizado automaticamente.\n\n| Documento | Resumen | Trazabilidad |\n|-----------|---------|-------------|\n" "$titulo" \
+      > "$dir/INDEX.md"
+  fi
+  if [ ! -f "$dir/INDEX.json" ]; then
+    printf '{\n  "dominio": "%s",\n  "docs": [],\n  "total_docs": 0,\n  "total_tokens_md": 0\n}\n' "$(basename "$dir")" \
+      > "$dir/INDEX.json"
+  fi
+}
+
+# Carpetas atomicas del pipeline (Inc 2-8)
+_seed_atomic_index "acuerdos/sprints"   "Plan de Sprints"
+_seed_atomic_index "docs/features"      "Catalogo de Features (FDD)"
+_seed_atomic_index "docs/domain"        "Modelo de Dominio (DDD)"
+_seed_atomic_index "docs/privacy"       "Inventario de Privacidad (PII)"
+_seed_atomic_index "api/openapi/fragments" "Fragmentos OpenAPI por recurso"
+
+# UBIQUITOUS_LANGUAGE.md stub (glosario cross-cutting, exento de atomicidad)
+if [ ! -f "docs/domain/UBIQUITOUS_LANGUAGE.md" ]; then
+  printf "# Ubiquitous Language\n\n> Glosario del dominio. Vocabulario obligatorio (Constitucion Art. 9).\n\n| Termino | Definicion | Sinonimos prohibidos |\n|---------|------------|---------------------|\n" \
+    > "docs/domain/UBIQUITOUS_LANGUAGE.md"
+fi
+
+# MEMORY.md → 3 atomos (decisiones/convenciones/riesgos) — idempotente
+if [ -d "acuerdos/memoria" ]; then
+  [ -f "acuerdos/memoria/decisiones.md" ] || printf "# Decisiones clave\n\n> Atomo de MEMORY. Decisiones de arquitectura y producto persistentes.\n\n-\n" > "acuerdos/memoria/decisiones.md"
+  [ -f "acuerdos/memoria/convenciones.md" ] || printf "# Convenciones\n\n> Atomo de MEMORY. Estandares de codigo y patrones del proyecto.\n\n-\n" > "acuerdos/memoria/convenciones.md"
+  [ -f "acuerdos/memoria/riesgos.md" ] || printf "# Riesgos activos\n\n> Atomo de MEMORY. Riesgos vigentes y mitigaciones.\n\n-\n" > "acuerdos/memoria/riesgos.md"
+fi
+
+echo "[xdd-init] ✓ esqueleto atomico creado (sprints/, features/, domain/, privacy/, openapi/ + INDEX.json)."
+
 # Git init si no es repo
 if [ ! -d ".git" ]; then
   git init -q

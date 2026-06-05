@@ -155,7 +155,7 @@ Añadido `[ -d "$HOME/.codeium" ]` — instalación Windsurf típica no pone CLI
 ### Doc actualizada
 
 `docs/dev/GUIA_WINDSURF_AGENTES_SKILLS_WORKFLOWS.md`:
-- Header: estado adapter → "✅ Implementación completa (Sprint 26 / ADR-0037)"
+- Header: estado adapter → "SI Implementación completa (Sprint 26 / ADR-0037)"
 - Sección 2: "Sprint 26 resuelve los gaps"
 - Sección 4 matriz: actualiza workflows + MCP path
 - Sección 5.3: reescribe "qué hace el adapter" con outputs reales

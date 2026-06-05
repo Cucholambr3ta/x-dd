@@ -68,7 +68,7 @@ X-DD prioriza Bash sobre Node para:
 
 ## Roadmap (post-v0.1.0)
 
-- **v0.1.1** — ✅ materializador `xdd hooks` (hooks.json → settings.json) + post-commit
+- **v0.1.1** — APROBADO materializador `xdd hooks` (hooks.json → settings.json) + post-commit
   GitNexus + flock MemPalace. Cierra el gap "definido ≠ ejecutándose".
 - **Sprint 9** — `stop:pattern-extraction` deja de ser stub y escribe instincts a SQLite.
 - **Sprint 12** — `pre:bash:agent-shield` integrado: análisis estático de comandos.
