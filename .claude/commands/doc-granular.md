@@ -140,7 +140,11 @@ Proyectos simples: 5-8 dominios, 15-25 docs. Complejos: 15+ dominios, 60-120 doc
 
 ## 2. PIPELINE WORKER → AUDITOR POR DOCUMENTO
 
-Por cada documento identificado, ejecutar en paralelo (xdd-orchestrate parallel_then_sync):
+Por cada documento se despliega un GRUPO de 4 roles independiente, en paralelo across todos
+los documentos (xdd-orchestrate parallel_then_sync). Dentro del grupo, los 4 roles corren
+como pipeline gated: investiga, valida claims, escribe, audita — con writer != auditor.
+Cada documento tiene su propio grupo trabajando simultaneamente; el INDEX se genera en el
+sync final cuando todos los grupos cerraron (ver seccion 3).
 
 ### PASO 1 — INVESTIGA (worker: specialized-researcher)
 
@@ -287,25 +291,67 @@ flowchart TD
 
 ---
 
-## 3. ORQUESTACION
+## 3. ORQUESTACION — grupo de 4 roles por documento, en paralelo
+
+`parallel_then_sync` despliega un GRUPO de 4 roles independiente POR DOCUMENTO, en paralelo
+across todos los documentos. Dentro de cada grupo, los 4 roles corren como pipeline gated
+(researcher -> fact-check -> writer -> auditor; writer != auditor). El sync final genera el
+INDEX cuando todos los grupos terminaron.
+
+```mermaid
+flowchart TD
+    START[Lista de documentos identificados] --> FAN{Fan-out paralelo}
+    FAN --> G1[Grupo doc db/esquemas]
+    FAN --> G2[Grupo doc api/contratos]
+    FAN --> GN[Grupo doc N]
+
+    subgraph GRUPO["Cada grupo = pipeline 4 roles gated"]
+        R[researcher investiga] --> FC[fact-check valida claims]
+        FC --> W[writer redacta]
+        W --> A[auditor revisa - writer != auditor]
+        A -->|gap| W
+        A -->|aprobado| OK[doc + .json sidecar]
+    end
+
+    G1 & G2 & GN --> SYNC[sync: genera INDEX.md + INDEX.json]
+```
 
 ```python
 # xdd-orchestrate.py parallel_then_sync
 {
   "pattern": "parallel_then_sync",
   "parallel_tasks": [
-    # Un task por DOCUMENTO (no por dominio)
-    {"agent": "specialized-researcher", "task": "investigar db/esquemas"},
-    {"agent": "specialized-researcher", "task": "investigar db/migraciones"},
-    {"agent": "specialized-researcher", "task": "investigar api/contratos"},
-    # ... un task por cada documento identificado
+    # Un GRUPO de 4 roles por DOCUMENTO (no solo el researcher)
+    {
+      "doc": "db/esquemas",
+      "pipeline": [
+        {"agent": "specialized-researcher", "role": "investiga"},
+        {"agent": "fact-check", "role": "valida claims"},
+        {"agent": "engineering-technical-writer", "role": "escribe"},
+        {"agent": "engineering-reviewer", "role": "audita (!= writer)"}
+      ]
+    },
+    {
+      "doc": "api/contratos",
+      "pipeline": [
+        {"agent": "specialized-researcher", "role": "investiga"},
+        {"agent": "fact-check", "role": "valida claims"},
+        {"agent": "engineering-technical-writer", "role": "escribe"},
+        {"agent": "engineering-reviewer", "role": "audita (!= writer)"}
+      ]
+    }
+    # ... un grupo de 4 roles por cada documento identificado
   ],
   "sync_task": {
     "agent": "engineering-technical-writer",
-    "task": "generar INDEX.md con trazabilidad bidireccional"
+    "task": "generar INDEX.md + INDEX.json con trazabilidad bidireccional"
   }
 }
 ```
+
+Cada grupo es autonomo: investiga su tema, valida, escribe y se auto-audita sin depender de
+otros grupos. La separacion writer != auditor (segregacion del gate) se aplica DENTRO de
+cada grupo. El sync espera a que TODOS los grupos cierren antes de indexar.
 
 ---
 

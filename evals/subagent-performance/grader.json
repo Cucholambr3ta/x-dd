@@ -1,0 +1,4 @@
+{
+  "type": "structural",
+  "regex": "score:\\s*(100|[7-9][0-9])"
+}

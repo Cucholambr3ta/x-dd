@@ -194,9 +194,38 @@ El evaluador escribe en `acuerdos/memoria/sprint-NN.md`:
 
 Si todos los checks pasan: APROBADO para push.
 
+### 5.5 Evaluacion de desempeno de subagentes (ANTES del gitflow)
+
+Antes de cerrar el sprint con GitFlow, evaluar el DESEMPENO de cada subagente que trabajo
+en el sprint. Esto detecta trabajo incompleto, alucinaciones no capturadas por el auditor,
+o entregables de baja calidad — y BLOQUEA el gitflow si el score es bajo.
+
+```bash
+# Eval harness sobre los entregables del sprint
+python3 scripts/xdd-eval.py run --suite subagent-performance
+```
+
+Ademas, rubrica por subagente (el evaluador engineering-qa-engineer la completa):
+
+| Subagente | Tareas asignadas | Completadas | Audit pass-rate | Iteraciones rework | Score |
+|-----------|------------------|-------------|-----------------|--------------------|-------|
+| engineering-backend-developer | N | M | X% | Y | 0-100 |
+| engineering-frontend-developer | ... | ... | ... | ... | ... |
+
+Fuentes de la rubrica:
+- Tareas completadas: checks marcados en `checklist-tareas.md` de cada historia.
+- Audit pass-rate: cuantas tareas paso el auditor a la primera vs rechazos.
+- Iteraciones de rework: entradas en `acuerdos/lecciones/sprint-NN.md` atribuidas a ese subagente.
+
+Escribir la tabla en `acuerdos/memoria/sprint-NN.md` (seccion "Evaluacion de Subagentes").
+
+GATE: si `xdd-eval.py` retorna score por debajo del umbral, o algun subagente tiene
+audit pass-rate < 70%, o quedan tareas del checklist sin completar -> BLOQUEAR el gitflow.
+El sprint NO cierra hasta que el desempeno sea aceptable. Registrar el bloqueo en lecciones.
+
 ---
 
-## 6. GITFLOW — CIERRE DEL SPRINT
+## 6. GITFLOW — CIERRE DEL SPRINT (solo si 5.5 paso)
 
 ```bash
 bash scripts/xdd-gitflow.sh sprint-close --sprint=NN
