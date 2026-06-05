@@ -26,7 +26,7 @@
       "subdominio": "ATDD",
       "doc": "ATDD.md",
       "resumen": "**Version:** 1.0 | **Fecha:** 2026-06-04 | **Gobernanza:** Constitucion X-DD v1.5",
-      "tokens_md": 2419,
+      "tokens_md": 2423,
       "entidades": []
     },
     {
@@ -68,7 +68,7 @@
       "subdominio": "DDD",
       "doc": "DDD.md",
       "resumen": "**Version:** 1.0 | **Fecha:** 2026-06-04 | **Gobernanza:** Constitucion X-DD v1.5",
-      "tokens_md": 2768,
+      "tokens_md": 2774,
       "entidades": []
     },
     {
@@ -103,7 +103,7 @@
       "subdominio": "FDD",
       "doc": "FDD.md",
       "resumen": "**Version:** 1.0 | **Fecha:** 2026-06-04 | **Gobernanza:** Constitucion X-DD v1.5",
-      "tokens_md": 2312,
+      "tokens_md": 2315,
       "entidades": []
     },
     {
@@ -180,28 +180,28 @@
       "subdominio": "STDD",
       "doc": "STDD.md",
       "resumen": "**Version:** 1.0 | **Fecha:** 2026-06-04 | **Gobernanza:** Constitucion X-DD v1.5",
-      "tokens_md": 2556,
+      "tokens_md": 2564,
       "entidades": []
     },
     {
       "subdominio": "SecDD",
       "doc": "SecDD.md",
       "resumen": "**Version:** 1.0 | **Fecha:** 2026-06-04 | **Gobernanza:** Constitucion X-DD v1.5",
-      "tokens_md": 2416,
+      "tokens_md": 2421,
       "entidades": []
     },
     {
       "subdominio": "TDD",
       "doc": "TDD.md",
       "resumen": "**Version:** 1.0 | **Fecha:** 2026-06-04 | **Gobernanza:** Constitucion X-DD v1.5",
-      "tokens_md": 2565,
+      "tokens_md": 2567,
       "entidades": []
     },
     {
       "subdominio": "THREAT-DRIVEN",
       "doc": "THREAT-DRIVEN.md",
       "resumen": "**Version:** 1.0 | **Fecha:** 2026-06-04 | **Gobernanza:** Constitucion X-DD v1.5",
-      "tokens_md": 2844,
+      "tokens_md": 2855,
       "entidades": []
     },
     {
@@ -220,7 +220,7 @@
     }
   ],
   "total_docs": 31,
-  "total_tokens_md": 51486,
-  "actualizado": "2026-06-05T07:47:21.086573+00:00",
+  "total_tokens_md": 51525,
+  "actualizado": "2026-06-05T15:23:01.796353+00:00",
   "total_tokens_json": 1093
 }

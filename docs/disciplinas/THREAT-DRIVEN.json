@@ -26,9 +26,9 @@
     "https://owasp.org/www-community/Threat_Modeling",
     "https://www.threatmodelingmanifesto.org/"
   ],
-  "tokens_md": 2844,
+  "tokens_md": 2855,
   "lineas": 278,
-  "checksum_md": "4e56f5b38ac6f844",
-  "actualizado": "2026-06-05T07:27:42.960644+00:00",
+  "checksum_md": "bb2f2ab1d61aa653",
+  "actualizado": "2026-06-05T15:23:01.795764+00:00",
   "tokens_json": 139
 }

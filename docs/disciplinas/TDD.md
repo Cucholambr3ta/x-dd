@@ -152,14 +152,14 @@ Rojo-Verde-Refactor antes de avanzar a la siguiente subtarea.
 flowchart TD
     F4["Fase 4 — Build"] --> TASK["Subtarea: logica de negocio"]
     TASK --> TIPO{"Tipo de codigo?"}
-    TIPO -->|"Logica de negocio"| TDD_CYCLE["Ciclo TDD\nRojo-Verde-Refactor"]
-    TIPO -->|"Scaffolding/Config/UI"| DIRECTO["Implementacion directa\n(sin TDD)"]
-    TDD_CYCLE --> RED["1. ROJO\nEscribir test que falla"]
-    RED --> GREEN["2. VERDE\nCodigo minimo para pasar"]
-    GREEN --> REF["3. REFACTOR\nMejorar sin romper test"]
+    TIPO -->|"Logica de negocio"| TDD_CYCLE["Ciclo TDD<br/>Rojo-Verde-Refactor"]
+    TIPO -->|"Scaffolding/Config/UI"| DIRECTO["Implementacion directa<br/>(sin TDD)"]
+    TDD_CYCLE --> RED["1. ROJO<br/>Escribir test que falla"]
+    RED --> GREEN["2. VERDE<br/>Codigo minimo para pasar"]
+    GREEN --> REF["3. REFACTOR<br/>Mejorar sin romper test"]
     REF --> NEXT{"Siguiente subtarea?"}
     NEXT -->|"SI"| TASK
-    NEXT -->|"NO"| TIER1["Tier 1 CI\nnpx vitest run tests/unit/"]
+    NEXT -->|"NO"| TIER1["Tier 1 CI<br/>npx vitest run tests/unit/"]
     DIRECTO --> NEXT
     TIER1 --> DONE{"100% passing?"}
     DONE -->|"NO"| RED
