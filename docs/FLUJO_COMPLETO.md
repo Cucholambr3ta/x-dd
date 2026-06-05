@@ -35,12 +35,12 @@ flowchart TD
     F -->|gate firma| G[FASE 6: RETRO]
     G --> H["Deploy / Release"]
 
-    B -.produce.-> B1["acuerdos/idea + design + wireframes"]
-    C -.produce.-> C1["acuerdos/proyecto + docs/domain + features"]
-    D -.produce.-> D1["acuerdos/historia-usuario + sprints"]
-    E -.produce.-> E1[codigo src + tests]
-    F -.produce.-> F1[QA report por tier]
-    G -.produce.-> G1[memoria + lecciones por sprint]
+    B -.->|produce| B1["acuerdos/idea + design + wireframes"]
+    C -.->|produce| C1["acuerdos/proyecto + docs/domain + features"]
+    D -.->|produce| D1["acuerdos/historia-usuario + sprints"]
+    E -.->|produce| E1[codigo src + tests]
+    F -.->|produce| F1[QA report por tier]
+    G -.->|produce| G1[memoria + lecciones por sprint]
 ```
 
 Regla inquebrantable: el gate de la fase N exige que las fases 0..N-1 esten APROBADO
