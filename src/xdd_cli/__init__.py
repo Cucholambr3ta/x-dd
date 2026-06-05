@@ -31,7 +31,7 @@ def _resolve_version() -> str:
         from importlib.metadata import PackageNotFoundError, version
         return version("x-dd")
     except (PackageNotFoundError, ImportError):
-        return "0.2.0"
+        return "0.3.0"
 
 
 __version__ = _resolve_version()
