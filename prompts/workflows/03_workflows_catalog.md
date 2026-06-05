@@ -1,6 +1,6 @@
 # ⚙️ Catálogo Maestro de Workflows: Ecosistema X-DD
 
-Este documento describe los **29 workflows operativos** configurados en `.agent/workflows/`, explicando cómo guían el ciclo de vida del desarrollo agéntico e interactúan con la memoria local de **MemPalace**.
+Este documento describe los **35 workflows operativos** configurados en `.agent/workflows/`, explicando cómo guían el ciclo de vida del desarrollo agéntico e interactúan con la memoria local de **MemPalace**. Incluye las 6 skills de disciplinas extendidas (sección 8.5) que materializan las metodologías del registro `docs/disciplinas/`.
 
 ---
 
@@ -82,6 +82,15 @@ Los workflows son guías ejecutables en formato Markdown que definen flujos paso
 *   **`/mobile-release` (`mobile-release.md`)**: Release a App Store / Play Store. Signing, beta tracks, rollout escalonado.
 *   **`/data-pipeline` (`data-pipeline.md`)**: Pipeline de datos con contratos, SLAs, DLQ, calidad y lineage.
 *   **`/ml-eval` (`ml-eval.md`)**: Evaluación de modelos ML/LLM. Golden sets, drift detection, A/B con feature flags.
+
+#### 8.5 Disciplinas extendidas — gaps (activación por `methodologies:` en `xdd.profile.yml`)
+Skills que materializan disciplinas del registro `docs/disciplinas/` sin cobertura previa. Ver [`docs/disciplinas/INDEX.md`](../../docs/disciplinas/INDEX.md).
+*   **`/xdd ux-driven` (`ux-driven.md`)**: UX-Driven (UXDD). User journeys, mensajes de UI sin jerga y microinteracciones, en Briefing. Disciplina `UXDD.md`.
+*   **`/xdd event-sourcing` (`event-sourcing.md`)**: Event Sourcing (ESDD). Event store + aggregates con replay determinista, en Spec. Disciplina `ESDD.md`.
+*   **`/xdd api-versioning` (`api-versioning.md`)**: API Versioning (APIVDD). Estrategia de versionado + deprecation schedule, en Plan. Disciplina `APIVDD.md`.
+*   **`/xdd iac-driven` (`iac-driven.md`)**: Infrastructure-as-Code (IODD). Recursos como codigo modular recreable, en Spec. Disciplina `IODD.md`.
+*   **`/xdd debt-budget` (`debt-budget.md`)**: Technical Debt Budgeting (DebtBudgetDD). Presupuesto + ledger de deuda, en Plan. Disciplina `DebtBudgetDD.md`.
+*   **`/xdd use-case-driven` (`use-case-driven.md`)**: Use-Case-Driven (UDD). Casos de uso como unidad de diseno, en Briefing. Disciplina `UDD.md`.
 
 ### 9. Continuous Learning (Sprint 9)
 *   **`/evolve` (`evolve.md`)**: Cluster instincts acumulados en SQLite (`~/.xdd/state.db`) → propone skills/agents/commands nuevos. Humano aprueba (T6.1) antes de promover. Inspirado en ECC `/evolve`.
