@@ -18,6 +18,9 @@ category: planning
 
 Antes de comenzar:
 
+0. **Setup del repositorio (paso 0 — lo PRIMERO).** Ejecutar `/xdd setup-repo` si no se
+   hizo aun: pregunta ubicacion (existente / crear en nube / solo local) y modo (dev /
+   colaborativo), configura GitFlow main-develop. Ver `setup-repo.md` y ADR-0052.
 1. Leer `memoria.md` + `lecciones.md` (Art. 3).
 2. Crear estructura de trabajo:
 
