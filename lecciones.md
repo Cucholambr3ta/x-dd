@@ -368,3 +368,10 @@ Hacer un workflow `/docs-sync` (post-v0.1.0) que detecte drift automáticamente 
 **Causa raiz:** X-DD tiene dos niveles: (1) docs del framework (constitucion, GATE, ARQUITECTURA) y (2) artefactos generados (SPEC.md, DOMAIN.md, FUNCIONALES.md).
 **Leccion:** Distinguir nivel framework (docs/) vs nivel proyecto (acuerdos/proyecto/). Checklist de auditoria debe especificar el nivel objetivo.
 **Aplica a:** Futuras auditorias de X-DD y evol-dd.
+
+### [HERRAMIENTAS] Labels Mermaid: \n, comillas simples y parentesis sin comillas rompen el render — 2026-06-05
+**Contexto:** Render de los diagramas del registro de disciplinas (INDEX.md + fichas) en el preview de VSCode (extension bierner.markdown-mermaid, bundle Mermaid 11.12).
+**Problema:** "No diagram type detected matching given configuration" — el parser fallaba y no pintaba el diagrama. Tres causas encadenadas, descubiertas en pasadas sucesivas: (1) `\n` literal en labels `["a\nb"]`; (2) comillas simples embebidas `["...'x'..."]`; (3) labels de `subgraph X[...]` con `(parentesis)` o `—` em-dash SIN comillas.
+**Causa raiz:** El bundle browser de Mermaid es mas estricto que `mmdc` CLI (11.14/11.15), que toleraba (1) y (2) y me despisto al renderizar "OK". `\n` no es salto valido (necesita `<br/>`). Comillas/parentesis sin escape desincronizan el lexer. En `subgraph`, el label DEBE ir entre comillas dobles si tiene caracteres especiales.
+**Leccion:** Para labels Mermaid: salto = `<br/>` (nunca `\n`); todo label con caracteres especiales `() / — ' "` va entre comillas dobles `["..."]`, incluido `subgraph ID["..."]`. Verificar con el MISMO engine del consumidor, no solo `mmdc` (CLI es mas permisivo). Para barrido masivo: extraer todos los bloques ```mermaid``` y renderizar 1 a 1; el primer bloque que no produce SVG es el culpable, con su `Parse error on line N` relativo al bloque.
+**Aplica a:** Todo doc con Mermaid en X-DD y proyectos generados; doc-granular, INDEX de disciplinas, guias dev.

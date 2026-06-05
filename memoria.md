@@ -74,6 +74,21 @@
 - **Commits:** e34c236 (Inc 5) + 29f4015 (Inc 6) en feature/sprint-memoria-lecciones
 - **Proxima sesion:** Inc 7 (xdd-gitflow.sh) + Inc 8 (xdd-sprint.md) + Inc 9 (discipline-check)
 
+### Sesión 2026-06-05 — Upgrade 31 metodologías + merge develop + fix Mermaid (feature/disciplinas-31-metodologias → develop)
+- **Meta:** Integrar las 22 metodologías de `ultimate-update.md` al sistema (registro de disciplinas), mergear a develop, explicar el sistema y arreglar el render Mermaid.
+- **Hitos disciplinas (Lotes A-E, mergeados a develop con merge commit `8ddda84`):**
+  - Registro `docs/disciplinas/` extendido 9→31 fichas (9 base + 22 nuevas), 0 colisiones de ID. Cada ficha: propósito, cuándo aplicar, I/O, pipeline Mermaid, integración, criterios, DoD, agentes, Fuentes.
+  - Sección **Fuentes** en las 9 base + 22 nuevas; sidecars con `fuentes[]` (116 URLs). `xdd-doc-sync.py` con `_extract_sources()`.
+  - 6 skills gap (`/xdd ux-driven|event-sourcing|api-versioning|iac-driven|debt-budget|use-case-driven`); catálogo 29→35.
+  - 4 workflows extendidos: dr-drill (Chaos), data-pipeline (EDA+CDCDD), privacy-review (Compliance), dependency-update (DeprecationDD).
+  - `xdd.profile.yml` bloque `methodologies:` + orquestador (`/xdd`+`/anmax`) inyección por profile + DAG; Constitución 9→31; DOC_STANDARD 1.7 (citar fuente web); `validate-disciplinas.py` (31/31 strict, bloquea `fuentes[]` vacío).
+- **Activación por caso de uso:** el proyecto declara subset en `methodologies:`; el orquestador inyecta solo esas capas en su fase, resuelve el DAG (ej. chaos exige odd_obs+threat), aplica criterios como sub-gate. No inyecta lo no declarado.
+- **Fix Mermaid (3 commits develop):** `97932a6` (\n→<br/> en 7 fichas base + INDEX), `7af157a` (comillas simples en labels), `1c19d4b` (subgraph labels con ()/— sin comillas en GUIA_VSCODE dev-doc). Ground truth: 127 bloques renderizados con mmdc, solo 1 fallaba (el dev-doc). Disciplinas quedó limpio. Lección registrada en lecciones.md.
+- **Herencia Evol-DD (Lote F, v0.3.2):** port completo con branding evol; 31 fichas, 6 skills `/evol`, 4 extensiones, validador, DOC_STANDARD 1.7. Mergeado a develop + mismos 2 fixes Mermaid.
+- **QA:** validate-disciplinas 31/31 strict (ambos repos); lint X-DD 0/0, Evol-DD 87 OK; sin drift de sidecars post-resync.
+- **Estado:** develop con 9 commits sin pushear (X-DD) / 5+ (Evol-DD). 0 agentes permanentes nuevos (Evol sigue en 16 + efímeros).
+- **Próxima sesión:** push de ambos develop; decidir release (X-DD pendiente v0.1.0, Evol-DD v0.3.2); revisar dev-docs restantes por mismo patrón Mermaid.
+
 ### Sesión 2026-06-04 — Incrementos 3+4: Briefing 16D + doc-granular worker→auditor (feature/briefing-acuerdos)
 - **Meta:** Completar los 4 incrementos del plan "Pipeline estrictamente bloqueante". Inc 3: briefing como arbol bloqueante 16 dimensiones + estructura /acuerdos. Inc 4: documentacion granular automatica con patron worker→auditor.
 - **Hitos Inc 3 (.agent/workflows/briefing.md):**
