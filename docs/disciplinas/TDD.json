@@ -12,16 +12,22 @@
     "mandato-constitucional-art-8",
     "estructura-de-tests-unitarios",
     "definition-of-done-tdd",
-    "agentes-involucrados"
+    "agentes-involucrados",
+    "fuentes"
   ],
   "entidades": [],
   "trazabilidad": {
     "origen": [],
     "relacionados": []
   },
-  "tokens_md": 2405,
-  "lineas": 287,
-  "checksum_md": "bcd09e83e192b372",
-  "actualizado": "2026-06-05T02:30:46.576184+00:00",
-  "tokens_json": 102
+  "fuentes": [
+    "https://www.oreilly.com/library/view/test-driven-development/0321146530/",
+    "https://blog.cleancoder.com/uncle-bob/2014/12/17/TheCyclesOfTDD.html",
+    "https://martinfowler.com/bliki/TestDrivenDevelopment.html"
+  ],
+  "tokens_md": 2565,
+  "lineas": 298,
+  "checksum_md": "f9494ca3ef255d1f",
+  "actualizado": "2026-06-05T07:27:42.959059+00:00",
+  "tokens_json": 134
 }

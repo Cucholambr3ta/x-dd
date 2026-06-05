@@ -5,68 +5,68 @@
       "subdominio": "ATDD",
       "doc": "ATDD.md",
       "resumen": "**Version:** 1.0 | **Fecha:** 2026-06-04 | **Gobernanza:** Constitucion X-DD v1.5",
-      "tokens_md": 2258,
+      "tokens_md": 2419,
       "entidades": []
     },
     {
       "subdominio": "BDD",
       "doc": "BDD.md",
       "resumen": "**Version:** 1.0 | **Fecha:** 2026-06-04 | **Gobernanza:** Constitucion X-DD v1.5",
-      "tokens_md": 2477,
+      "tokens_md": 2667,
       "entidades": []
     },
     {
       "subdominio": "DDD",
       "doc": "DDD.md",
       "resumen": "**Version:** 1.0 | **Fecha:** 2026-06-04 | **Gobernanza:** Constitucion X-DD v1.5",
-      "tokens_md": 2602,
+      "tokens_md": 2768,
       "entidades": []
     },
     {
       "subdominio": "FDD",
       "doc": "FDD.md",
       "resumen": "**Version:** 1.0 | **Fecha:** 2026-06-04 | **Gobernanza:** Constitucion X-DD v1.5",
-      "tokens_md": 2131,
+      "tokens_md": 2312,
       "entidades": []
     },
     {
       "subdominio": "SDD",
       "doc": "SDD.md",
       "resumen": "**Version:** 1.0 | **Fecha:** 2026-06-04 | **Gobernanza:** Constitucion X-DD v1.5",
-      "tokens_md": 2196,
+      "tokens_md": 2363,
       "entidades": []
     },
     {
       "subdominio": "STDD",
       "doc": "STDD.md",
       "resumen": "**Version:** 1.0 | **Fecha:** 2026-06-04 | **Gobernanza:** Constitucion X-DD v1.5",
-      "tokens_md": 2398,
+      "tokens_md": 2556,
       "entidades": []
     },
     {
       "subdominio": "SecDD",
       "doc": "SecDD.md",
       "resumen": "**Version:** 1.0 | **Fecha:** 2026-06-04 | **Gobernanza:** Constitucion X-DD v1.5",
-      "tokens_md": 2262,
+      "tokens_md": 2416,
       "entidades": []
     },
     {
       "subdominio": "TDD",
       "doc": "TDD.md",
       "resumen": "**Version:** 1.0 | **Fecha:** 2026-06-04 | **Gobernanza:** Constitucion X-DD v1.5",
-      "tokens_md": 2405,
+      "tokens_md": 2565,
       "entidades": []
     },
     {
       "subdominio": "THREAT-DRIVEN",
       "doc": "THREAT-DRIVEN.md",
       "resumen": "**Version:** 1.0 | **Fecha:** 2026-06-04 | **Gobernanza:** Constitucion X-DD v1.5",
-      "tokens_md": 2694,
+      "tokens_md": 2844,
       "entidades": []
     }
   ],
   "total_docs": 9,
-  "total_tokens_md": 21423,
-  "actualizado": "2026-06-05T02:30:46.579566+00:00",
+  "total_tokens_md": 22910,
+  "actualizado": "2026-06-05T07:27:42.961112+00:00",
   "total_tokens_json": 330
 }

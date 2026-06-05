@@ -19,16 +19,22 @@
     "domain-events",
     "glosario-de-errores-de-dominio",
     "ddd-en-el-pipeline",
-    "agentes-involucrados"
+    "agentes-involucrados",
+    "fuentes"
   ],
   "entidades": [],
   "trazabilidad": {
     "origen": [],
     "relacionados": []
   },
-  "tokens_md": 2602,
-  "lineas": 298,
-  "checksum_md": "51b99b00cbf97b34",
-  "actualizado": "2026-06-05T02:30:46.568440+00:00",
-  "tokens_json": 117
+  "fuentes": [
+    "https://www.domainlanguage.com/ddd/",
+    "https://www.domainlanguage.com/wp-content/uploads/2016/05/DDD_Reference_2015-03.pdf",
+    "https://www.oreilly.com/library/view/implementing-domain-driven-design/9780133039900/"
+  ],
+  "tokens_md": 2768,
+  "lineas": 309,
+  "checksum_md": "a10badf67e8e103e",
+  "actualizado": "2026-06-05T07:27:42.951799+00:00",
+  "tokens_json": 150
 }
