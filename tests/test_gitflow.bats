@@ -134,3 +134,45 @@ teardown() {
   [[ "$output" == *"No es un repositorio git"* ]]
   rm -rf "$tmp"
 }
+
+# ── setup repo: --local / --create (ADR-0052) ────────────────────────────────
+
+@test "setup --local: escribe remote marker local + skip remoto" {
+  run bash "$SCRIPT" setup --mode=dev --local
+  [ "$status" -eq 0 ]
+  [ "$(cat .xdd/gitflow.remote)" = "local" ]
+}
+
+@test "setup --create: requiere gh — err accionable si ausente" {
+  # Stub PATH sin gh
+  stubdir="$(mktemp -d)"
+  ln -s "$(command -v git)" "$stubdir/git"
+  ln -s "$(command -v bash)" "$stubdir/bash"
+  ln -s "$(command -v mktemp)" "$stubdir/mktemp" 2>/dev/null || true
+  run env PATH="$stubdir" bash "$SCRIPT" setup --mode=dev --create --name=x
+  [ "$status" -ne 0 ]
+  [[ "$output" == *"gh"* ]]
+  rm -rf "$stubdir"
+}
+
+@test "setup --create: con gh stub crea repo + remote marker" {
+  stubdir="$(mktemp -d)"
+  cat > "$stubdir/gh" << 'STUB'
+#!/bin/bash
+case "$1" in
+  auth) exit 0 ;;
+  repo) [ "$2" = "create" ] && { git remote add origin "https://github.com/t/$3.git" 2>/dev/null; exit 0; } ;;
+esac
+exit 0
+STUB
+  chmod +x "$stubdir/gh"
+  run env PATH="$stubdir:$PATH" bash "$SCRIPT" setup --mode=dev --create --name=myrepo --visibility=private
+  [ "$status" -eq 0 ]
+  [ "$(cat .xdd/gitflow.remote)" = "remote" ]
+  rm -rf "$stubdir"
+}
+
+@test "setup --visibility invalida falla" {
+  run bash "$SCRIPT" setup --mode=dev --local --visibility=secret
+  [ "$status" -ne 0 ]
+}

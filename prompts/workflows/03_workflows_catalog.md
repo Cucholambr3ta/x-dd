@@ -96,6 +96,10 @@ Los workflows son guías ejecutables en formato Markdown que definen flujos paso
 *   **`/brainstorm` (`brainstorm.md`)**: Genera ideas sin filtrar para problem space exploration. Invoca party mode (Sprint 17). Inspirado en BMAD.
 *   **`/code-as-tool` (`code-as-tool.md`)**: Pattern Code Execution with MCP. Wrap N tool calls homogéneos en 1 script (98%+ reducción tokens).
 
+### 14. Setup inicial (feature/relato-gaps)
+
+*   **`/xdd setup-repo` (`setup-repo.md`)**: Paso 0 del pipeline, ANTES del briefing. Pregunta una a una: ubicacion del repo (existente / crear en nube via `gh repo create` / solo local) y modo (dev-solo PR auto-merge / colaborativo PR con reviewer). Configura GitFlow main-develop. ADR-0052. Crea repos en la nube autonomamente (private por default, gh-gated).
+
 ### 13. Pipeline de Ejecucion (feature/sprint-memoria-lecciones + Inc 5-6)
 
 *   **`/xdd historias` (`xdd-historias.md`)**: Genera historias de usuario completas post-doc-granular. Lee `acuerdos/proyecto/` + wireframes e identifica TODAS las historias (HU/HT/HS). Por cada una crea 4 artefactos (propuesta, requisitos-escenarios, escenario-tecnico, checklist 50+ tareas) via pipeline worker-auditor. Genera `acuerdos/sprint.md` con plan de sprints. Auditor registra gaps en `acuerdos/lecciones/sprint-00.md`.

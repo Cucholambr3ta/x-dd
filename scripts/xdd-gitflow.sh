@@ -2,7 +2,7 @@
 # xdd-gitflow.sh — GitFlow automatizado por sprint para proyectos X-DD.
 #
 # Subcomandos:
-#   setup   --mode=dev|collab [--remote=URL]   Configura GitFlow inicial del proyecto
+#   setup   --mode=dev|collab [--create|--local|--remote=URL] [--name=N] [--visibility=private|public]
 #   sprint-start --sprint=NN --title=<titulo>  Crea branch feature/sprint-NN-<titulo>
 #   sprint-close --sprint=NN                   Crea PR y verifica merge antes de continuar
 #   pre-push                                    Hook pre-push: gitignore + gitleaks
@@ -60,6 +60,38 @@ save_mode() {
   chmod 600 "$GITFLOW_STATE"
 }
 
+GITFLOW_REMOTE_STATE="${XDD_DIR}/gitflow.remote"
+
+_save_remote_mode() {
+  # "remote" o "local" — sprint-close consulta esto para decidir si hace push
+  mkdir -p "$XDD_DIR"
+  echo "$1" > "$GITFLOW_REMOTE_STATE"
+  chmod 600 "$GITFLOW_REMOTE_STATE"
+}
+
+_get_remote_mode() {
+  [ -f "$GITFLOW_REMOTE_STATE" ] && cat "$GITFLOW_REMOTE_STATE" || echo "remote"
+}
+
+_create_remote_repo() {
+  # Crea repo en GitHub de forma autonoma (gh repo create). ADR-0052.
+  local name="$1" visibility="$2"
+  command -v gh >/dev/null 2>&1 || err "gh CLI no instalado. Instalar: https://cli.github.com/ o usar --remote=URL"
+  gh auth status >/dev/null 2>&1 || err "gh no autenticado. Correr: gh auth login"
+
+  # Nombre por defecto: nombre del directorio actual
+  [ -z "$name" ] && name="$(basename "$(pwd)")"
+
+  log "Creando repo GitHub: $name ($visibility)..."
+  if gh repo create "$name" --"$visibility" --source=. --remote=origin 2>/dev/null; then
+    local url
+    url="$(git remote get-url origin 2>/dev/null || echo "?")"
+    log "Repo creado y origin configurado: $url"
+  else
+    err "gh repo create fallo. Verificar que el nombre '$name' no exista ya en tu cuenta."
+  fi
+}
+
 ensure_git() {
   git rev-parse --git-dir >/dev/null 2>&1 || err "No es un repositorio git. Ejecutar desde la raiz del proyecto."
 }
@@ -73,16 +105,25 @@ current_branch() {
 cmd_setup() {
   local mode="dev"
   local remote=""
+  local create=0
+  local local_only=0
+  local repo_name=""
+  local visibility="private"
 
   while [ $# -gt 0 ]; do
     case "$1" in
       --mode=*) mode="${1#*=}"; shift ;;
       --remote=*) remote="${1#*=}"; shift ;;
+      --create) create=1; shift ;;
+      --local) local_only=1; shift ;;
+      --name=*) repo_name="${1#*=}"; shift ;;
+      --visibility=*) visibility="${1#*=}"; shift ;;
       *) err "Argumento desconocido: $1" ;;
     esac
   done
 
   [ "$mode" = "dev" ] || [ "$mode" = "collab" ] || err "Modo invalido: $mode. Usar dev o collab."
+  [ "$visibility" = "private" ] || [ "$visibility" = "public" ] || err "Visibility invalida: usar private o public."
 
   ensure_git
 
@@ -107,8 +148,14 @@ cmd_setup() {
     log "Branch develop creada."
   fi
 
-  # Configurar remote si se provee
-  if [ -n "$remote" ]; then
+  # Resolucion del remoto: local-only / crear-nube / remoto-existente
+  if [ "$local_only" = "1" ]; then
+    _save_remote_mode "local"
+    log "Modo local-only: sin remoto. No se hara push (sprint-close mantiene local)."
+  elif [ "$create" = "1" ]; then
+    _create_remote_repo "$repo_name" "$visibility"
+    _save_remote_mode "remote"
+  elif [ -n "$remote" ]; then
     if git remote get-url origin >/dev/null 2>&1; then
       git remote set-url origin "$remote"
       log "Remote origin actualizado: $remote"
@@ -116,6 +163,7 @@ cmd_setup() {
       git remote add origin "$remote"
       log "Remote origin añadido: $remote"
     fi
+    _save_remote_mode "remote"
   fi
 
   # Guardar modo
@@ -216,6 +264,13 @@ cmd_sprint_close() {
   # Actualizar memoria del sprint
   if command -v python3 >/dev/null 2>&1; then
     python3 "${SCRIPT_DIR}/xdd-memory.py" --project="$(pwd)" sprint-close --sprint="$sprint" 2>/dev/null || true
+  fi
+
+  # Si es modo local-only: no hacer push ni PR (ADR-0052)
+  if [ "$(_get_remote_mode)" = "local" ]; then
+    log "Modo local-only: sprint cerrado sin push remoto ni PR."
+    log "Sprint $snum cerrado (local)."
+    return 0
   fi
 
   # Push a la branch actual
@@ -429,7 +484,7 @@ xdd-gitflow.sh v${VERSION} — GitFlow automatizado para proyectos X-DD
 Uso: xdd-gitflow.sh <subcomando> [opciones]
 
 Subcomandos:
-  setup         --mode=dev|collab [--remote=URL]
+  setup         --mode=dev|collab [--create|--local|--remote=URL] [--name=N] [--visibility=private|public]
   sprint-start  --sprint=NN --title=<titulo> [--type=feature|fix]
   sprint-close  --sprint=NN
   pre-push
