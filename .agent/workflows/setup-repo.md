@@ -81,9 +81,23 @@ flowchart LR
 Cada sprint = 1 branch nueva. Antes del siguiente sprint, sprint-start verifica que la
 PR anterior este mergeada a develop. En local-only no hay push ni PR (todo local).
 
-## 5. POST — continuar al briefing
+## 5. DOCUMENTAR HERRAMIENTAS DE SEGURIDAD (antes de instalar nada)
 
-Configurado el repo, el siguiente paso es:
+Tras configurar el repo, documentar TODO el arsenal de seguridad en el README ANTES de
+que el usuario instale nada. Asi sabe que se usara y que debe instalar para cobertura
+completa:
+
+```bash
+python3 scripts/xdd-security-inventory.py readme --write README.md
+```
+
+Esto añade/actualiza la seccion "## Herramientas de Seguridad" con: nativas (sin instalar),
+externas (estado instalado/faltante + comando de instalacion), y el mapeo
+componente -> herramientas. El usuario decide que externas instalar.
+
+## 6. POST — continuar al briefing
+
+Configurado el repo y documentadas las herramientas, el siguiente paso es:
 
 ```
 /xdd briefing

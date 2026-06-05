@@ -174,11 +174,23 @@ Estructura obligatoria del checklist:
 - [ ] Verificar happy path en entorno local
 ...
 
-## Tests de seguridad (STDD)
+## Tests de seguridad (STDD) — arsenal por componente (GENERADO)
+El writer lee los componentes del escenario-tecnico.md de ESTA historia (auth, api, db,
+parser, ui, binary, deps) e invoca el inventory para generar las tareas obligatorias:
+
+```bash
+python3 scripts/xdd-security-inventory.py checklist --components=<los detectados> --format=md
+```
+
+Embeber su salida aqui. Incluye nativas (scan, shield, crash, fuzz — sin instalar) +
+externas instaladas (semgrep/gitleaks/trivy/nuclei/zap si doctor las detecta) + skip con
+instruccion si faltan. Si la historia toca auth/api, incluye pentest agentico + exploit
+verify. Cada tarea tiene comando exacto + criterio de aceptacion.
+
+Ademas, por cada amenaza STRIDE de THREATS.md relacionada con esta historia:
 - [ ] Escribir test de seguridad para amenaza <STRIDE-REF>
 - [ ] Verificar que el test falla antes de implementar control
 - [ ] Implementar control y verificar test verde
-...
 
 ## Observabilidad
 - [ ] Añadir log estructurado en <punto critico>
