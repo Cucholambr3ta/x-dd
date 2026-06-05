@@ -35,14 +35,14 @@ Fuente oficial (Copilot customizations, MCP servers): https://code.visualstudio.
 
 ```mermaid
 flowchart TB
-  subgraph SSoT[SSoT — repo X-DD]
+  subgraph SSoT["SSoT — repo X-DD"]
     WF[".agent/workflows/*.md"]
     AG["prompts/agents/**/*.md"]
     REG["prompts/agents/registry.json"]
     SK["skills/*/SKILL.md"]
   end
 
-  subgraph Adapter[VSCode adapter (xdd-adapt)]
+  subgraph Adapter["VSCode adapter (xdd-adapt)"]
     PROMPT[".github/prompts/*.prompt.md (Copilot)"]
     VS_MCP[".vscode/mcp.json (key: servers)"]
     VSTASKS[".vscode/tasks.json"]
