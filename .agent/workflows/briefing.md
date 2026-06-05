@@ -16,18 +16,31 @@ category: planning
 
 ## 0. Pre-flight
 
-Antes de comenzar:
+El briefing es el 4o paso del pipeline. ANTES deben haberse ejecutado, en orden:
 
-0. **Setup del repositorio (paso 0 — lo PRIMERO).** Ejecutar `/xdd setup-repo` si no se
-   hizo aun: pregunta ubicacion (existente / crear en nube / solo local) y modo (dev /
-   colaborativo), configura GitFlow main-develop. Ver `setup-repo.md` y ADR-0052.
-1. Leer `memoria.md` + `lecciones.md` (Art. 3).
-2. Crear estructura de trabajo:
+```
+0.   /xdd setup-repo   — configura repo (existente/nube/local) + modo (dev/collab). ADR-0052.
+0.5  /xdd idea         — decanta la idea del usuario en atomos (acuerdos/idea/).
+0.7  /xdd discovery    — investiga cada atomo para ENTENDER la idea (acuerdos/discovery/).
+1.   /xdd briefing     — ESTE workflow. Pregunta CON el contexto ya investigado.
+```
+
+Verificaciones antes de comenzar:
+
+1. **Discovery cerrado:** verificar que `acuerdos/discovery/INDEX.md` existe. Si NO ->
+   ABORT. Ejecutar `/xdd idea` + `/xdd discovery` primero. El briefing no pregunta sin
+   haber entendido la idea.
+2. Leer `acuerdos/memoria/MEMORY.md` + `lecciones.md` (Art. 3).
+3. **Leer la sintesis de discovery** (`acuerdos/discovery/INDEX.md`): que entendio el
+   agente de la idea, decisiones tecnicas sugeridas, preguntas abiertas. El briefing usa
+   este contexto para hacer preguntas precisas — no pregunta lo que ya investigo.
+4. Verificar estructura de trabajo (xdd-init la crea):
 
 ```
 acuerdos/
-  idea/              ← archivo original del usuario + idea.md
-  research/          ← investigacion por dominio (post-briefing)
+  idea/              ← atomos de la idea decantada (por /xdd idea)
+  discovery/         ← investigacion pre-briefing por tema (por /xdd discovery)
+  research/          ← investigacion por dominio (post-briefing, en doc-granular)
   design/            ← tokens aprobados (colores, tipografias, assets)
   wireframes/        ← <pantalla>.html aprobados
   proyecto/          ← N docs granulares (generados post-briefing)
@@ -35,29 +48,10 @@ acuerdos/
   lecciones/         ← lecciones por sprint
 ```
 
-3. **Generar `acuerdos/idea/idea.md` — el puntapie del pipeline.** Es el contrato de
-   entrada de toda la fase de investigacion. Contiene DOS secciones:
+5. Registrar inicio en `memoria.md`.
 
-   Seccion 1 — Solicitud original (verbatim). Citar textual lo que el usuario pidio. El
-   archivo entregado (si lo hubo) se guarda junto en `acuerdos/idea/`.
-
-   Seccion 2 — Prompt de investigacion. Por cada tema, libreria, proyecto o mejora
-   mencionada, una fila:
-
-   ```markdown
-   ## Prompt de investigacion
-
-   | Tema/Link a investigar | Por que importa | Preguntas a responder | Artefacto esperado |
-   |------------------------|-----------------|----------------------|--------------------|
-   | <tema o URL> | <relevancia> | <que debe quedar claro> | acuerdos/research/<tema>/investigacion.md |
-   ```
-
-   Si la solicitud cita repos/proyectos externos como referencia, cada uno es una fila
-   con su URL y las preguntas que el research debe responder. Este prompt es lo que el
-   `specialized-researcher` lee en doc-granular PASO 1 — sin el, el research no tiene
-   direccion.
-
-4. Registrar inicio en `memoria.md`.
+> El briefing ya NO genera idea.md ni prompt de investigacion — eso lo hacen `/xdd idea`
+> (decanta en atomos) y `/xdd discovery` (investiga). El briefing solo pregunta con contexto.
 
 ---
 

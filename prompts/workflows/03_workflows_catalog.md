@@ -99,6 +99,8 @@ Los workflows son guías ejecutables en formato Markdown que definen flujos paso
 ### 14. Setup inicial (feature/relato-gaps)
 
 *   **`/xdd setup-repo` (`setup-repo.md`)**: Paso 0 del pipeline, ANTES del briefing. Pregunta una a una: ubicacion del repo (existente / crear en nube via `gh repo create` / solo local) y modo (dev-solo PR auto-merge / colaborativo PR con reviewer). Configura GitFlow main-develop. ADR-0052. Crea repos en la nube autonomamente (private por default, gh-gated).
+*   **`/xdd idea` (`idea.md`)**: Paso 0.5, despues de setup-repo, antes de discovery. Decanta la idea cruda del usuario (prompt + links + archivos) en atomos `acuerdos/idea/<tema>.md` — 1 por tema/proyecto/link. Adaptativo: cita la solicitud, preserva input estructurado, NO genera idea.md monolitico. Genera INDEX.md + INDEX.json. Cada atomo apunta a su artefacto de discovery.
+*   **`/xdd discovery` (`discovery.md`)**: Paso 0.7, research PRE-briefing. Por cada atomo de idea investiga el tema/link (pipeline researcher->fact-check->writer) para ENTENDER que es, que aporta, como funciona. Produce `acuerdos/discovery/<tema>/investigacion.md` + sintesis `INDEX.md`. RECIEN entonces se habilita el briefing. Distinto de `/ux-discovery` (UX) y del research post-briefing en doc-granular (como construir).
 
 ### 13. Pipeline de Ejecucion (feature/sprint-memoria-lecciones + Inc 5-6)
 
