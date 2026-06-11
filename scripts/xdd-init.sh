@@ -4,7 +4,12 @@
 # Definidos en manifests/install-profiles.json + install-modules.json.
 set -eu
 
-XDD_VERSION="$(cat "$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )/.." && pwd )/VERSION" 2>/dev/null || echo "0.1.0-dev")"
+# XDD_DATA_DIR: raíz de data dirs (manifests/, templates/, VERSION, etc.).
+# Cuando el script corre desde una instalación pipx/wheel, _data_dir() de xdd_cli
+# inyecta esta variable para evitar el bug donde BASH_SOURCE/../ apuntaba al
+# directorio del paquete sin manifests ni VERSION (reportaba "0.1.0-dev" stale).
+_XDD_DATA="${XDD_DATA_DIR:-"$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )/.." && pwd )"}"
+XDD_VERSION="$(cat "$_XDD_DATA/VERSION" 2>/dev/null || echo "0.1.0-dev")"
 
 usage() {
   cat <<'EOF'
@@ -56,6 +61,10 @@ for name, p in d['profiles'].items():
 PROFILE="core"
 MODULES_OVERRIDE=""
 DEST=""
+# S20: modo de distribución. En v0.2 el modo pip es el recomendado (ADR-0048).
+# --pip-mode: solo copia editables (memoria/lecciones/profile); tooling viene de pip.
+# --legacy: copia todo (comportamiento v0.1.x, para entornos sin pip).
+PIP_MODE="auto"  # auto: usa pip si x-dd está instalado, legacy si no.
 
 while [ $# -gt 0 ]; do
   case "$1" in
@@ -65,10 +74,12 @@ while [ $# -gt 0 ]; do
     --profile) PROFILE="$2"; shift 2 ;;
     --modules=*) MODULES_OVERRIDE="${1#--modules=}"; shift ;;
     --modules) MODULES_OVERRIDE="$2"; shift 2 ;;
+    --pip-mode) PIP_MODE="pip"; shift ;;
+    --legacy) PIP_MODE="legacy"; shift ;;
     --list-profiles)
       XDD_ROOT="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )/.." && pwd )"
       echo "Perfiles disponibles:"
-      list_profiles "$XDD_ROOT/manifests/install-profiles.json"
+      list_profiles "$_XDD_DATA/manifests/install-profiles.json"
       exit 0 ;;
     -*) echo "[xdd-init] ERROR: opción desconocida: $1" >&2; usage; exit 2 ;;
     *) DEST="$1"; shift ;;
@@ -91,28 +102,60 @@ echo "[xdd-init] Origen: $XDD_ROOT"
 echo "[xdd-init] Destino: $DEST"
 echo "[xdd-init] Perfil: $PROFILE"
 
-# === Sprint 32 / ADR-0042: lean profile requires wrapper global ===
-LEAN_PROFS_MANIFEST="$XDD_ROOT/manifests/install-profiles.json"
-if [ "$PROFILE" = "lean" ] && [ -f "$LEAN_PROFS_MANIFEST" ] && command -v python3 >/dev/null 2>&1; then
-  REQUIRES_WRAPPER=$(python3 -c "
-import json
-p = json.load(open('$LEAN_PROFS_MANIFEST'))['profiles'].get('lean', {})
-print('1' if p.get('requires_wrapper_global') else '0')
-" 2>/dev/null || echo "0")
-  if [ "$REQUIRES_WRAPPER" = "1" ]; then
-    if [ ! -x "$HOME/.local/bin/xdd-mcp-server" ]; then
-      echo "[xdd-init] ⚠ WARN: perfil 'lean' requiere wrapper global xdd-mcp-server pero NO está instalado."
-      echo "[xdd-init]   Ejecuta primero: bash $XDD_ROOT/scripts/xdd-mcp-install-global.sh"
-      echo "[xdd-init]   Continuando — bootstrap funcionará pero MCP runtime fallará hasta instalar wrapper."
-    else
-      echo "[xdd-init] ✓ wrapper global xdd-mcp-server detectado (~/.local/bin/xdd-mcp-server)"
-    fi
+# === S20: modo pip vs legacy (ADR-0048) ===
+# auto-detect: si x-dd está pip-instalado, usar pip-mode (solo editables).
+if [ "$PIP_MODE" = "auto" ]; then
+  if python3 -c "import importlib.metadata; importlib.metadata.version('x-dd')" 2>/dev/null; then
+    PIP_MODE="pip"
+  else
+    PIP_MODE="legacy"
   fi
 fi
+echo "[xdd-init] Modo distribución: $PIP_MODE"
+
+if [ "$PIP_MODE" = "pip" ]; then
+  # Modo pip (v0.2 recomendado): solo copia artefactos EDITABLES del proyecto.
+  # El tooling (scripts/, prompts/, .agent/, templates/) viene del paquete pip.
+  echo "[xdd-init] Pip-mode: solo copiando artefactos editables (memoria, lecciones, profile)."
+  for tmpl in memoria.md lecciones.md xdd.profile.yml; do
+    if [ ! -f "./$tmpl" ] && [ -f "$_XDD_DATA/templates/${tmpl%.md}.template.md" ]; then
+      cp "$_XDD_DATA/templates/${tmpl%.md}.template.md" "./$tmpl"
+      echo "[xdd-init] Copiado: $tmpl (desde template)"
+    elif [ ! -f "./$tmpl" ] && [ -f "$_XDD_DATA/templates/${tmpl%.yml}.template.yml" ]; then
+      cp "$_XDD_DATA/templates/${tmpl%.yml}.template.yml" "./$tmpl"
+      echo "[xdd-init] Copiado: $tmpl (desde template)"
+    elif [ ! -f "./$tmpl" ]; then
+      echo "[xdd-init] WARN: template para $tmpl no encontrado" >&2
+    else
+      echo "[xdd-init] SKIP existente: $tmpl"
+    fi
+  done
+  if [ ! -d ".git" ]; then git init -q; echo "[xdd-init] Repositorio git inicializado."; fi
+  chmod +x "$XDD_ROOT/scripts/"*.sh 2>/dev/null || true
+  # Auto-adapt + hooks (usan XDD_ROOT del pip)
+  if [ "${XDD_NO_ADAPT:-0}" != "1" ]; then
+    bash "$XDD_ROOT/scripts/xdd-adapt.sh" all --dest="$DEST" 2>&1 | sed 's/^/  /' || true
+  fi
+  if [ "${XDD_NO_HOOKS:-0}" != "1" ]; then
+    python3 "$XDD_ROOT/scripts/xdd-hooks-install.py" install 2>&1 | sed 's/^/  /' || true
+  fi
+  if [ "${XDD_NO_GITHOOK:-0}" != "1" ] && [ -d ".git" ]; then
+    git config core.hooksPath "$XDD_ROOT/scripts/hooks"
+    echo "[xdd-init] ✓ git hook post-commit activado (apunta a XDD_ROOT)"
+  fi
+  echo "[xdd-init] ✓ Modo pip completo. Tooling vía pip; editables en $DEST."
+  echo "[xdd-init]   Para actualizar: xdd update"
+  exit 0
+fi
+
+# === Legacy mode (v0.1.x compat) — continúa con el bootstrap completo ===
+echo "[xdd-init] Legacy mode (copia completa). Recomendado: instala x-dd vía pip para Modo pip."
+
+# MCP server wrapper check eliminado (v0.2 S22 — xdd-mcp-server removed).
 
 # Resolver módulos a instalar
-PROFILES_MANIFEST="$XDD_ROOT/manifests/install-profiles.json"
-MODULES_MANIFEST="$XDD_ROOT/manifests/install-modules.json"
+PROFILES_MANIFEST="$_XDD_DATA/manifests/install-profiles.json"
+MODULES_MANIFEST="$_XDD_DATA/manifests/install-modules.json"
 FILES_TO_COPY=""
 
 if [ -n "$MODULES_OVERRIDE" ]; then
@@ -152,6 +195,47 @@ else
   FILES_TO_COPY=".agent .claude prompts scripts templates CLAUDE.md"
 fi
 
+# === .gitignore — PRIMERO que todo ===
+# Generado ANTES de copiar cualquier archivo para que git no trackee framework pollution.
+# Contiene reglas para separar archivos del PROYECTO (commiteables) del FRAMEWORK (no).
+if [ ! -f "./.gitignore" ]; then
+  if [ -f "$_XDD_DATA/templates/gitignore.template" ]; then
+    cp "$_XDD_DATA/templates/gitignore.template" "./.gitignore"
+    echo "[xdd-init] ✓ .gitignore generado (separa proyecto de framework)."
+  else
+    # Fallback minimal si no hay template
+    cat > ./.gitignore <<'GITIGNORE'
+# X-DD framework (tooling — no pertenece al proyecto)
+scripts/
+prompts/
+skills/
+templates/
+evals/
+schemas/
+MEJORAS-X-DD.md
+INSTALL.md
+DEPENDENCIES.md
+.xdd/
+.evol/
+dialog/
+tool_result/
+__pycache__/
+*.pyc
+.venv/
+node_modules/
+.env
+.env.*
+*.key
+.gate-key
+GITIGNORE
+    echo "[xdd-init] ✓ .gitignore generado (fallback minimal)."
+  fi
+elif grep -q "X-DD framework" ./.gitignore 2>/dev/null; then
+  echo "[xdd-init] SKIP .gitignore (ya tiene reglas X-DD)."
+else
+  echo "[xdd-init] WARN: .gitignore existe pero sin reglas X-DD — revisar manualmente." >&2
+fi
+
 echo "[xdd-init] Archivos a instalar:"
 echo "$FILES_TO_COPY" | sed 's/^/  - /'
 
@@ -181,18 +265,87 @@ while IFS= read -r f; do
 done <<< "$FILES_TO_COPY"
 
 # Templates de memoria (siempre, si no existen)
-if [ ! -f "./memoria.md" ] && [ -f "$XDD_ROOT/templates/memoria.template.md" ]; then
-  cp "$XDD_ROOT/templates/memoria.template.md" "./memoria.md"
+if [ ! -f "./memoria.md" ] && [ -f "$_XDD_DATA/templates/memoria.template.md" ]; then
+  cp "$_XDD_DATA/templates/memoria.template.md" "./memoria.md"
   echo "[xdd-init] memoria.md creado desde template."
 fi
-if [ ! -f "./lecciones.md" ] && [ -f "$XDD_ROOT/templates/lecciones.template.md" ]; then
-  cp "$XDD_ROOT/templates/lecciones.template.md" "./lecciones.md"
+if [ ! -f "./lecciones.md" ] && [ -f "$_XDD_DATA/templates/lecciones.template.md" ]; then
+  cp "$_XDD_DATA/templates/lecciones.template.md" "./lecciones.md"
   echo "[xdd-init] lecciones.md creado desde template."
 fi
-if [ ! -f "./xdd.profile.yml" ] && [ -f "$XDD_ROOT/templates/xdd.profile.template.yml" ]; then
-  cp "$XDD_ROOT/templates/xdd.profile.template.yml" "./xdd.profile.yml"
+if [ ! -f "./xdd.profile.yml" ] && [ -f "$_XDD_DATA/templates/xdd.profile.template.yml" ]; then
+  cp "$_XDD_DATA/templates/xdd.profile.template.yml" "./xdd.profile.yml"
   echo "[xdd-init] xdd.profile.yml creado desde template."
 fi
+
+# === Estructura /acuerdos (cero deuda tecnica — base del briefing arbol 16 dimensiones) ===
+if [ ! -d "./acuerdos" ]; then
+  mkdir -p acuerdos/idea acuerdos/discovery acuerdos/research acuerdos/design \
+           acuerdos/wireframes acuerdos/proyecto \
+           acuerdos/memoria acuerdos/lecciones
+  printf "# Idea\n\nIdea decantada en atomos (por /xdd idea). 1 atomo por tema/proyecto/link.\n" \
+    > acuerdos/idea/README.md
+  printf "# Discovery\n\nResearch PRE-briefing: investigacion por tema para ENTENDER la idea\n(por /xdd discovery). Distinto de research/ (post-briefing, como construir).\n" \
+    > acuerdos/discovery/README.md
+  printf "# INDEX — Idea decantada\n\n> Solicitud del usuario decantada en atomos. Cada uno dispara discovery.\n\n| Atomo | Tema | Fuente | Artefacto discovery |\n|-------|------|--------|---------------------|\n" \
+    > acuerdos/idea/INDEX.md
+  printf "# INDEX — Discovery\n\n> Que entendio el agente de la idea, tras investigar cada tema.\n\n| Tema | Que es | Que aporta | Decision sugerida |\n|------|--------|-----------|-------------------|\n" \
+    > acuerdos/discovery/INDEX.md
+  printf "# Research\n\nInvestigacion por dominio tecnico POST-briefing: como construir cada dominio\n(en doc-granular). Distinto de discovery/ (pre-briefing, entender la idea).\n" \
+    > acuerdos/research/README.md
+  printf "# Design System\n\ntokens.md + components.md + assets.md (Dimension 15 del briefing).\n" \
+    > acuerdos/design/README.md
+  printf "# Wireframes\n\nHTML aprobado por pantalla (Dimension 16). Regla de diseno inmutable.\n" \
+    > acuerdos/wireframes/README.md
+  printf "# Proyecto\n\nN documentos granulares por dominio tecnico (generados post-briefing).\n" \
+    > acuerdos/proyecto/README.md
+  printf "# Memoria por Sprint\n\nArchivos separados por sprint. Generados con: xdd-memory.py sprint-close --sprint=NN\n" \
+    > acuerdos/memoria/README.md
+  printf "# MEMORY.md — Hechos persistentes del proyecto\n\n> Actualizado en cada cierre de sprint. Solo hechos duraderos, no log temporal.\n\n## Decisiones clave\n\n-\n\n## Convenciones del proyecto\n\n-\n\n## Riesgos activos\n\n-\n" \
+    > acuerdos/memoria/MEMORY.md
+  printf "# Lecciones por Sprint\n\nArchivos separados por sprint. Generados con: xdd-memory.py sprint-close --sprint=NN\n" \
+    > acuerdos/lecciones/README.md
+  printf "# INDEX — Lecciones por Sprint\n\n> Indice de lecciones separadas por sprint. Categorias: ARQUITECTURA, SEGURIDAD, DOMINIO, TESTING, DEVOPS, PROCESO, HERRAMIENTAS.\n\n| Sprint | Archivo | Fecha cierre |\n|--------|---------|-------------|\n" \
+    > acuerdos/lecciones/INDEX.md
+  echo "[xdd-init] ✓ acuerdos/ creado (7 subcarpetas + MEMORY.md + INDEX.md — base para /xdd briefing)."
+fi
+
+# === Esqueleto de carpetas atomicas (ADR-0050 — idempotente, corre siempre) ===
+# Estructura: 1 carpeta = 1 dominio. Cada carpeta tiene INDEX.md + INDEX.json.
+_seed_atomic_index() {
+  local dir="$1" titulo="$2"
+  mkdir -p "$dir"
+  if [ ! -f "$dir/INDEX.md" ]; then
+    printf "# INDEX — %s\n\n> Indice atomico. 1 doc = 1 concepto. Generado/actualizado automaticamente.\n\n| Documento | Resumen | Trazabilidad |\n|-----------|---------|-------------|\n" "$titulo" \
+      > "$dir/INDEX.md"
+  fi
+  if [ ! -f "$dir/INDEX.json" ]; then
+    printf '{\n  "dominio": "%s",\n  "docs": [],\n  "total_docs": 0,\n  "total_tokens_md": 0\n}\n' "$(basename "$dir")" \
+      > "$dir/INDEX.json"
+  fi
+}
+
+# Carpetas atomicas del pipeline (Inc 2-8)
+_seed_atomic_index "acuerdos/sprints"   "Plan de Sprints"
+_seed_atomic_index "docs/features"      "Catalogo de Features (FDD)"
+_seed_atomic_index "docs/domain"        "Modelo de Dominio (DDD)"
+_seed_atomic_index "docs/privacy"       "Inventario de Privacidad (PII)"
+_seed_atomic_index "api/openapi/fragments" "Fragmentos OpenAPI por recurso"
+
+# UBIQUITOUS_LANGUAGE.md stub (glosario cross-cutting, exento de atomicidad)
+if [ ! -f "docs/domain/UBIQUITOUS_LANGUAGE.md" ]; then
+  printf "# Ubiquitous Language\n\n> Glosario del dominio. Vocabulario obligatorio (Constitucion Art. 9).\n\n| Termino | Definicion | Sinonimos prohibidos |\n|---------|------------|---------------------|\n" \
+    > "docs/domain/UBIQUITOUS_LANGUAGE.md"
+fi
+
+# MEMORY.md → 3 atomos (decisiones/convenciones/riesgos) — idempotente
+if [ -d "acuerdos/memoria" ]; then
+  [ -f "acuerdos/memoria/decisiones.md" ] || printf "# Decisiones clave\n\n> Atomo de MEMORY. Decisiones de arquitectura y producto persistentes.\n\n-\n" > "acuerdos/memoria/decisiones.md"
+  [ -f "acuerdos/memoria/convenciones.md" ] || printf "# Convenciones\n\n> Atomo de MEMORY. Estandares de codigo y patrones del proyecto.\n\n-\n" > "acuerdos/memoria/convenciones.md"
+  [ -f "acuerdos/memoria/riesgos.md" ] || printf "# Riesgos activos\n\n> Atomo de MEMORY. Riesgos vigentes y mitigaciones.\n\n-\n" > "acuerdos/memoria/riesgos.md"
+fi
+
+echo "[xdd-init] ✓ esqueleto atomico creado (sprints/, features/, domain/, privacy/, openapi/ + INDEX.json)."
 
 # Git init si no es repo
 if [ ! -d ".git" ]; then
@@ -202,6 +355,15 @@ fi
 
 # Marcar scripts como ejecutables
 chmod +x ./scripts/*.sh ./scripts/hooks/* ./.agent/hooks/scripts/*.sh 2>/dev/null || true
+
+# === Instalar git hook post-commit (re-index MemPalace + GitNexus tras commit) ===
+# Antes sólo lo hacía xdd-start.sh; ahora también xdd-init para que quede activo
+# desde el bootstrap. Idempotente. Opt-out: XDD_NO_GITHOOK=1.
+if [ "${XDD_NO_GITHOOK:-0}" != "1" ] && [ -d ".git" ] && [ -f "./scripts/hooks/post-commit" ]; then
+  git config core.hooksPath ./scripts/hooks
+  chmod +x ./scripts/hooks/post-commit 2>/dev/null || true
+  echo "[xdd-init] ✓ git hook post-commit activado (core.hooksPath=./scripts/hooks)"
+fi
 
 # === Auto-detect IDEs + auto-adapt (Sprint 24) ===
 # Detecta IDEs presentes (CLI o config dir) y genera config óptima por cada uno.
@@ -224,6 +386,20 @@ if [ "${XDD_NO_ADAPT:-0}" != "1" ] && [ -f "./scripts/xdd-adapt.sh" ]; then
   done
   echo "[xdd-init] ✓ IDE adapters generados (copia real + MCP auto-config)."
   echo "[xdd-init]   Override: XDD_NO_ADAPT=1 para saltar. Manual: bash scripts/xdd-adapt.sh all"
+fi
+
+# === Materializar hooks X-DD en Claude Code settings (gap post-v0.1.1) ===
+# hooks.json (SSoT) → ~/.claude/settings.json. Sin esto, mempalace mine no se dispara
+# en Edit/Write. Idempotente, no destructivo (preserva hooks ajenos). Opt-out: XDD_NO_HOOKS=1.
+# Se corre desde $XDD_ROOT (no DEST): el script lee $XDD_ROOT/.agent/hooks/hooks.json,
+# y el CWD aquí es DEST (que puede no tener scripts/ según el perfil).
+if [ "${XDD_NO_HOOKS:-0}" != "1" ] && [ -f "$XDD_ROOT/scripts/xdd-hooks-install.py" ]; then
+  if python3 "$XDD_ROOT/scripts/xdd-hooks-install.py" install 2>&1 | sed 's/^/  /'; then
+    echo "[xdd-init] ✓ hooks X-DD materializados en ~/.claude/settings.json"
+  else
+    echo "[xdd-init] WARN: materialización de hooks falló (no bloqueante)"
+  fi
+  echo "[xdd-init]   Override: XDD_NO_HOOKS=1. Perfil: XDD_HOOK_PROFILE=minimal|standard|strict"
 fi
 
 # === Auto-trigger xdd-brand.sh si profile tiene branding custom (Sprint 28 / ADR-0038) ===

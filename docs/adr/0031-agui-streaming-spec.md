@@ -29,15 +29,15 @@ Sprint 23 introduce `scripts/xdd-agui.py`:
 ## Consequences
 
 ### Positivas
-- ✅ Frontends pueden consumir X-DD events nativamente
-- ✅ hitl_request event integra con ADR-0018 HITL checkpoints
-- ✅ Compatible con tool_call → xdd-intent → xdd-authz pipeline
-- ✅ Stream JSONL = simple parse, no needs WebSocket libs
+- SI Frontends pueden consumir X-DD events nativamente
+- SI hitl_request event integra con ADR-0018 HITL checkpoints
+- SI Compatible con tool_call → xdd-intent → xdd-authz pipeline
+- SI Stream JSONL = simple parse, no needs WebSocket libs
 
 ### Negativas
-- ⚠️ stdout streaming limita a 1 cliente concurrente per orchestrate run
-- ⚠️ Real-time UI needs adapter (futuro xdd-agui-server v0.2.0)
-- ⚠️ Backwards compat: orchestrate stdout cambia con `stream` mode (opt-in)
+- WARN stdout streaming limita a 1 cliente concurrente per orchestrate run
+- WARN Real-time UI needs adapter (futuro xdd-agui-server v0.2.0)
+- WARN Backwards compat: orchestrate stdout cambia con `stream` mode (opt-in)
 
 ## Implementation Sprint 23
 

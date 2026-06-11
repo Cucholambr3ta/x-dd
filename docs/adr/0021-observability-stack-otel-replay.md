@@ -48,16 +48,16 @@ Cada uno con stub script en `.agent/hooks/scripts/`. Profile `strict` activa tod
 ## Consequences
 
 ### Positivas
-- ✅ Interop con AgentOps, Langfuse, OpenLLMetry, OpenInference sin parsers custom
-- ✅ Replay sesiones para debug regresiones (NexAU-AHE pattern)
-- ✅ 6-stage middleware da control fine-grained sin acoplar a un orchestrator específico
-- ✅ Local-first: trace data nunca sale del proyecto sin export explícito
-- ✅ Stdlib pure baseline → cero deps nuevas
+- SI Interop con AgentOps, Langfuse, OpenLLMetry, OpenInference sin parsers custom
+- SI Replay sesiones para debug regresiones (NexAU-AHE pattern)
+- SI 6-stage middleware da control fine-grained sin acoplar a un orchestrator específico
+- SI Local-first: trace data nunca sale del proyecto sin export explícito
+- SI Stdlib pure baseline → cero deps nuevas
 
 ### Negativas
-- ⚠️ Stubs hooks 6-stage no auto-activos hasta orchestrators los soporten (Claude Code, OpenCode, Cursor adapt)
-- ⚠️ Pricing tabla en `xdd-cost.py` requiere mantenimiento manual (no auto-fetch de provider APIs)
-- ⚠️ `.xdd/traces/` puede crecer fast en sesiones largas → Sprint 22 añade trace-summarize compactador
+- WARN Stubs hooks 6-stage no auto-activos hasta orchestrators los soporten (Claude Code, OpenCode, Cursor adapt)
+- WARN Pricing tabla en `xdd-cost.py` requiere mantenimiento manual (no auto-fetch de provider APIs)
+- WARN `.xdd/traces/` puede crecer fast en sesiones largas → Sprint 22 añade trace-summarize compactador
 
 ## Implementation Sprint 18
 

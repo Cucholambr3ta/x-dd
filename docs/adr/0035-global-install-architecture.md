@@ -62,20 +62,20 @@ def get_xdd_dir(project_root):        # STRICTAMENTE local (phase artifacts aisl
 ## Consequences
 
 ### Positivas
-- ✅ **Install once → sirve a N proyectos** (modelo MemPalace/GitNexus)
-- ✅ Workspace switching en IDE → MCP arranca en proyecto activo automático
-- ✅ Update X-DD upstream → todos los proyectos del user al instante (un `git pull` en X-DD repo)
-- ✅ Cero pollution per-proyecto (no copia xdd-mcp-server/ + .agent/ a cada uno)
-- ✅ Local-first: proyectos con workflows/agents custom toman prioridad
-- ✅ `.agents/skills/` resuelve convención Antigravity sin breaking OpenCode
-- ✅ Backwards compat 100% (constants viejos + cwd legacy mode disponibles)
-- ✅ Phase artifacts aislados estrictamente per-proyecto (security: T4.3)
+- SI **Install once → sirve a N proyectos** (modelo MemPalace/GitNexus)
+- SI Workspace switching en IDE → MCP arranca en proyecto activo automático
+- SI Update X-DD upstream → todos los proyectos del user al instante (un `git pull` en X-DD repo)
+- SI Cero pollution per-proyecto (no copia xdd-mcp-server/ + .agent/ a cada uno)
+- SI Local-first: proyectos con workflows/agents custom toman prioridad
+- SI `.agents/skills/` resuelve convención Antigravity sin breaking OpenCode
+- SI Backwards compat 100% (constants viejos + cwd legacy mode disponibles)
+- SI Phase artifacts aislados estrictamente per-proyecto (security: T4.3)
 
 ### Negativas
-- ⚠️ Wrapper requiere `~/.local/bin` en PATH (warning instalador si falta)
-- ⚠️ XDD_ROOT baked en wrapper — si user mueve X-DD repo, re-correr installer
-- ⚠️ `.agents/skills/` duplica contenido de `skills/` source (acceptable: convención IDE-específica)
-- ⚠️ `pip install` packaging diferido a v0.2.0
+- WARN Wrapper requiere `~/.local/bin` en PATH (warning instalador si falta)
+- WARN XDD_ROOT baked en wrapper — si user mueve X-DD repo, re-correr installer
+- WARN `.agents/skills/` duplica contenido de `skills/` source (acceptable: convención IDE-específica)
+- WARN `pip install` packaging diferido a v0.2.0
 
 ## Implementation Sprint 25
 

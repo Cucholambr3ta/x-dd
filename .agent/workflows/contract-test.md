@@ -2,6 +2,11 @@
 description: Tests de contrato consumer-driven (Pact) en Fase 5. Verifica compatibilidad entre servicios.
 ---
 # /contract-test
+
+> **Estandar de documentacion:** Todo artefacto que produzca este workflow cumple
+> [`docs/DOC_STANDARD.md`](../../docs/DOC_STANDARD.md): sin emojis, diagramas Mermaid
+> obligatorios, tablas para datos estructurados, Gherkin donde aplique, secciones
+> minimas y trazabilidad bidireccional.
 **ID:** FLUJO-CDC | **Versión:** 1.0 | **Agente:** Contract-Testing-Engineer + API-Tester
 **Misión:** Detectar rupturas de contrato API antes del deploy, no en producción.
 

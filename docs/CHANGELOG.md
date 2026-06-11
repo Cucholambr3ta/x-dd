@@ -9,6 +9,64 @@
 
 ## [Unreleased] — main
 
+## [0.2.0] — 2026-05-31
+
+> Release mayor. Cero deuda técnica. Notas user-facing en [RELEASES/v0.2.0.md](../RELEASES/v0.2.0.md).
+
+### BREAKING
+- **MCP server eliminado** (ADR-0044): xdd-mcp-server/, xdd-mcp-install-global.sh, tests MCP borrados. IDEs activan vía /trigger + .agents/skills/ — sin servidor necesario.
+- **Distribución híbrida** (ADR-0048): xdd-init --pip-mode (default si x-dd pip-instalado): solo copia editables. `xdd update` y `xdd migrate` para transición v0.1→v0.2.
+- Python 3.12→**3.10** (floor arbitrario: cero features 3.11/3.12 usadas).
+
+### Added (S7-S22)
+- Orchestration runtime real: invoke_agent_exec con AnthropicProvider lazy (degradación sin key).
+- Middleware 6-stage OTel/cost: ba/wm/wt/am/aa hooks funcionales (span-start/end, cost-record).
+- Sync points formales (parallel_then_sync): gate real, timeout, persistencia SQLite.
+- Sprint tracking SQLite + `xdd metrics` cruzadas (S10-S12).
+- Pattern-extraction OTel traces + temporal-awareness PreToolUse hook (S11/S13).
+- Judge-subagents (xdd-meta-eval judge): veredicto AI o fallback numérico (S14).
+- AG-UI mapper completo, bundle.schema.json, context check-segmented, A2A server stdlib (S15-S18).
+- `xdd update` non-destructivo + `xdd migrate` automático (S20-S21).
+- GitNexus opt-in por defecto (ADR-0049): PolyForm-NC incompatible con uso comercial.
+- Modo degradado documentado (Base/Completo), docs/modos.md, doctor mempalace_mode/gitnexus_enabled.
+- README 30s: tabla comparativa honesta + dogfooding + dos paths install.
+- grader.json (stdlib), make_parser() DRY, wrapper mempalace_mine, pytest-cov + 23 tests core nuevos.
+
+## [0.1.2] — 2026-05-30
+
+> Reconexión del flujo de auto-update (hooks) + endurecimiento de hooks.
+> Notas user-facing en [RELEASES/v0.1.2.md](../RELEASES/v0.1.2.md).
+
+### Added
+- **Materializador de hooks** (`scripts/xdd-hooks-install.py`, `xdd hooks`): traduce
+  `.agent/hooks/hooks.json` (SSoT) → `~/.claude/settings.json`. Cierra el gap donde
+  los hooks estaban definidos y validados pero **nunca se ejecutaban** (Claude Code
+  lee settings.json, no hooks.json). Merge no-destructivo, filtra por perfil, marca
+  los propios con `_xdd_id`. Subcomandos install/sync/status + --dry-run + --project.
+- **GitNexus auto-update** en `scripts/hooks/post-commit` (antes sólo MemPalace; no
+  tenía automatización).
+- `xdd-doctor`: sección **[Hooks / auto-update]** (post-commit activo + hooks materializados).
+
+### Changed
+- `xdd-init` instala el git post-commit (antes sólo `xdd-start`) y materializa hooks.
+- Lock MemPalace: `flock -n` skip-if-running en hooks (palace global único) → elimina
+  el error "palace held by PID" con mines concurrentes.
+
+### Fixed
+- **Seguridad — patrón anti fork-bomb roto**: `:(){.*}` no detectaba `:(){ :|:& };:`
+  (en ERE `()` = grupo vacío, `{` = cuantificador inválido). Reemplazado por la firma
+  real; `\s`→`[[:space:]]`. ~5 sprints de falsa protección.
+- **Falso positivo `rm`**: el patrón bloqueaba cualquier ruta absoluta tras `rm -f`
+  (p.ej. `rm -f /tmp/x`). Refinado a raíz + dirs de sistema + `~`.
+- **Guarda repo-fuente**: `post:write:auto-organize` y `post:edit:mempalace-index`
+  no-op fuera de un repo X-DD / en el repo-fuente (el settings global los activaba en
+  todos los repos; auto-organize llegaba a gitignorear código versionado del fuente).
+
+### Tests
+- `test_hooks_install.py` (12) + `test_manifests.test_hooks_materializables` cierran el
+  gap "schema-válido ≠ ejecutándose". `hooks.bats` 20 casos (positivos + negativos,
+  payloads en base64). Total: 306 pytest.
+
 ## [0.1.1] — 2026-05-30
 
 > Release de hardening. Notas user-facing en [RELEASES/v0.1.1.md](../RELEASES/v0.1.1.md).
@@ -465,12 +523,12 @@
 Las 3 fases ya completadas de X-DD aplicado a sí mismo están **APROBADAS y FIRMADAS**:
 
 ```
-✓ briefing  APROBADO  (firma cffaf210…)
-✓ spec      APROBADO  (firma 4fc4d8e6…)
-✓ plan      APROBADO  (firma 232d9368…)
+OK briefing  APROBADO  (firma cffaf210…)
+OK spec      APROBADO  (firma 4fc4d8e6…)
+OK plan      APROBADO  (firma 232d9368…)
 ```
 
-Transiciones validadas: `briefing→spec`, `spec→plan`, `plan→build` ✓.
+Transiciones validadas: `briefing→spec`, `spec→plan`, `plan→build` OK.
 
 ### Changed — Sprint 4
 

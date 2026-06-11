@@ -1,0 +1,2 @@
+{"input":"Subagente con checklist 100% completo, audit pass 95%, 0 rework","output":"Subagente backend: tareas 20/20, audit pass-rate 95%, rework 0. score: 95 APROBADO"}
+{"input":"Subagente con desempeno aceptable","output":"Subagente frontend: tareas 18/20, audit pass-rate 80%, rework 1. score: 82 APROBADO"}

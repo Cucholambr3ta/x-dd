@@ -9,7 +9,9 @@
         "core",
         "workflows-core",
         "memory",
-        "docs-governance"
+        "docs-governance",
+        "lessons-engine",
+        "continuous-memory"
       ]
     },
     "core": {
@@ -24,7 +26,9 @@
         "docs-governance",
         "personas",
         "skills-core",
-        "mcp-server-global"
+        "lessons-engine",
+        "hooks-runtime",
+        "continuous-memory"
       ]
     },
     "developer": {
@@ -35,18 +39,19 @@
         "agents-core",
         "gate-keeper",
         "hooks-runtime",
-        "mcp-server",
         "platform-configs",
         "memory",
         "ci-runtime",
         "docs-governance",
         "personas",
         "skills-core",
-        "mcp-server-global",
         "workspace-monorepo",
         "observability",
         "governance-runtime",
-        "router"
+        "router",
+        "continuous-memory",
+        "lessons-engine",
+        "evol-dd-bootstrap"
       ]
     },
     "security": {
@@ -63,9 +68,11 @@
         "docs-governance",
         "personas",
         "skills-core",
-        "mcp-server-global",
         "governance-runtime",
-        "pentest"
+        "pentest",
+        "lessons-engine",
+        "continuous-memory",
+        "security-native"
       ]
     },
     "research": {
@@ -81,9 +88,11 @@
         "docs-governance",
         "personas",
         "skills-core",
-        "mcp-server-global",
         "observability",
-        "ahe-evolve"
+        "ahe-evolve",
+        "researcher",
+        "continuous-memory",
+        "lessons-engine"
       ]
     },
     "full": {
@@ -94,7 +103,6 @@
         "agents-core",
         "gate-keeper",
         "hooks-runtime",
-        "mcp-server",
         "platform-configs",
         "memory",
         "ci-runtime",
@@ -105,14 +113,18 @@
         "docs-governance",
         "personas",
         "skills-core",
-        "mcp-server-global",
         "workspace-monorepo",
         "observability",
         "governance-runtime",
         "ahe-evolve",
         "protocols",
         "router",
-        "pentest"
+        "pentest",
+        "researcher",
+        "continuous-memory",
+        "lessons-engine",
+        "evol-dd-bootstrap",
+        "security-native"
       ]
     },
     "lean": {
@@ -122,7 +134,9 @@
         "workflows-essential",
         "memory",
         "platform-configs",
-        "gate-keeper"
+        "gate-keeper",
+        "lessons-engine",
+        "continuous-memory"
       ],
       "requires_wrapper_global": true,
       "max_size_mb": 5

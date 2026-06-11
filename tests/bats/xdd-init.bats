@@ -69,3 +69,15 @@ teardown() {
   [ "$status" -eq 0 ]
   [[ "$output" == *"SKIP existente"* ]]
 }
+
+@test "xdd-init instala git post-commit cuando el hook está presente (gap post-v0.1.1)" {
+  # Perfil developer copia scripts/ (incluye scripts/hooks/post-commit).
+  XDD_NO_ADAPT=1 XDD_NO_HOOKS=1 bash scripts/xdd-init.sh "$DEST" --profile=developer >/dev/null 2>&1
+  if [ -f "$DEST/scripts/hooks/post-commit" ]; then
+    run git -C "$DEST" config --get core.hooksPath
+    [ "$status" -eq 0 ]
+    [[ "$output" == *"scripts/hooks"* ]]
+  else
+    skip "perfil developer no copió scripts/hooks/post-commit"
+  fi
+}

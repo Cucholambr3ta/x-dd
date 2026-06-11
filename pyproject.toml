@@ -4,10 +4,10 @@ build-backend = "hatchling.build"
 
 [project]
 name = "x-dd"
-version = "0.1.1"
+version = "0.3.0"
 description = "X-DD — Gated pipeline multi-metodología (*-Driven Development) con gate keeper HMAC. CLI + tooling. Stdlib-first."
 readme = "README.md"
-requires-python = ">=3.12"
+requires-python = ">=3.10"
 license = { text = "MIT" }
 authors = [{ name = "Alejandro Placencia" }]
 keywords = ["agents", "llm", "orchestration", "pipeline", "gated", "sdd", "tdd", "ddd"]
@@ -15,6 +15,8 @@ classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
     "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Topic :: Software Development :: Quality Assurance",
 ]
@@ -44,9 +46,19 @@ xdd-orchestrate = "xdd_cli:orchestrate"
 [tool.hatch.build.targets.wheel]
 packages = ["src/xdd_cli"]
 
-# Empaqueta scripts/ como data dentro del paquete (resolución wheel en xdd_cli).
+# Empaqueta todos los data dirs que los scripts consumen via XDD_ROOT.
+# Bug raíz (fix): originalmente solo incluía scripts/ → XDD_ROOT relativo apuntaba
+# al directorio del paquete instalado (xdd_cli/), sin manifests/VERSION/templates/etc.
+# Resultado: xdd --version reportaba "0.1.0-dev" (fallback) y --list-profiles fallaba.
+# Fix: incluir TODOS los dirs de datos para que _data_dir() los encuentre en wheel.
 [tool.hatch.build.targets.wheel.force-include]
-"scripts" = "xdd_cli/scripts"
+"scripts"   = "xdd_cli/scripts"
+"manifests" = "xdd_cli/manifests"
+"templates" = "xdd_cli/templates"
+"skills"    = "xdd_cli/skills"
+".agent"    = "xdd_cli/agent"
+"docs"      = "xdd_cli/docs"
+"VERSION"   = "xdd_cli/VERSION"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

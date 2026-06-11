@@ -3,7 +3,10 @@
 # No aborta al primer fallo: lista todo y reporta al final.
 set -u
 
-XDD_VERSION="$(cat "$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )/.." && pwd )/VERSION" 2>/dev/null || echo "0.1.0-dev")"
+# XDD_DATA_DIR: raíz de data dirs inyectada por xdd_cli._run_shell() en modo pipx/wheel.
+# Sin ella, BASH_SOURCE/../ en wheel apuntaba a xdd_cli/ sin VERSION → stale "0.1.0-dev".
+_XDD_DATA="${XDD_DATA_DIR:-"$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )/.." && pwd )"}"
+XDD_VERSION="$(cat "$_XDD_DATA/VERSION" 2>/dev/null || echo "0.1.0-dev")"
 SCRIPT_NAME="xdd-doctor"
 
 # --- CLI flags ---
@@ -205,6 +208,30 @@ check_xdd_config() {
   fi
 }
 
+# Verifica el cableado de hooks (gap detectado post-v0.1.1):
+#  - git post-commit instalado (core.hooksPath → ./scripts/hooks)
+#  - hooks X-DD materializados en ~/.claude/settings.json (marcador _xdd_id)
+check_hooks() {
+  hp=$(git config --get core.hooksPath 2>/dev/null || echo "")
+  if [ "$hp" = "./scripts/hooks" ] && [ -x "./scripts/hooks/post-commit" ]; then
+    [ $JSON_OUTPUT -eq 0 ] && printf "  ✓ %s\n" "git post-commit activo (core.hooksPath)"
+    PASS=$((PASS+1)); json_check "git-post-commit" "ok" "" "" "no"
+  else
+    [ $JSON_OUTPUT -eq 0 ] && printf "  ⚠ %s\n" "git post-commit NO activo (corre: xdd-init o xdd-start)"
+    WARN=$((WARN+1)); json_check "git-post-commit" "warn" "" "" "no"
+  fi
+
+  settings="$HOME/.claude/settings.json"
+  if [ -f "$settings" ] && command -v python3 >/dev/null 2>&1 \
+     && python3 -c "import json,sys; d=json.load(open('$settings')); sys.exit(0 if any('_xdd_id' in g for v in d.get('hooks',{}).values() for g in v) else 1)" 2>/dev/null; then
+    [ $JSON_OUTPUT -eq 0 ] && printf "  ✓ %s\n" "hooks X-DD materializados (~/.claude/settings.json)"
+    PASS=$((PASS+1)); json_check "hooks-materializados" "ok" "" "" "no"
+  else
+    [ $JSON_OUTPUT -eq 0 ] && printf "  ⚠ %s\n" "hooks X-DD NO materializados (corre: xdd hooks install)"
+    WARN=$((WARN+1)); json_check "hooks-materializados" "warn" "" "" "no"
+  fi
+}
+
 # --- Main ---
 
 if [ $JSON_OUTPUT -eq 0 ]; then
@@ -245,6 +272,9 @@ done
 if [ $JSON_OUTPUT -eq 0 ]; then echo; echo "[Configuración X-DD]"; fi
 check_xdd_config
 
+if [ $JSON_OUTPUT -eq 0 ]; then echo; echo "[Hooks / auto-update]"; fi
+check_hooks
+
 # Detección de perfil (declarado)
 PROFILE=""
 if [ -f "xdd.profile.yml" ]; then
@@ -254,6 +284,24 @@ if [ -f "xdd.profile.yml" ]; then
   fi
 fi
 
+# Modo operativo: COMPLETO (MemPalace disponible) vs BASE (sin MemPalace)
+MEMPALACE_MODE="base"
+command -v mempalace >/dev/null 2>&1 && MEMPALACE_MODE="complete"
+
+GITNEXUS_ENABLED="false"
+[ "${XDD_GITNEXUS:-0}" = "1" ] && GITNEXUS_ENABLED="true"
+
+if [ $JSON_OUTPUT -eq 0 ]; then
+  printf "\n[Modo operativo] "
+  if [ "$MEMPALACE_MODE" = "complete" ]; then
+    printf "COMPLETO (MemPalace activo — continuidad semántica entre sesiones)\n"
+  else
+    printf "BASE (sin MemPalace — pipeline funciona; sin continuidad semántica automática)\n"
+    printf "  → Para Modo Completo instala MemPalace: ver docs/modos.md\n"
+  fi
+  printf "  GitNexus: %s\n" "${GITNEXUS_ENABLED} (XDD_GITNEXUS=${XDD_GITNEXUS:-0})"
+fi
+
 # --- Salida ---
 if [ $JSON_OUTPUT -eq 1 ]; then
   printf '{\n'
@@ -261,6 +309,8 @@ if [ $JSON_OUTPUT -eq 1 ]; then
   printf '  "version": "%s",\n' "$XDD_VERSION"
   printf '  "timestamp": "%s",\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
   printf '  "profile": "%s",\n' "${PROFILE:-unknown}"
+  printf '  "mempalace_mode": "%s",\n' "$MEMPALACE_MODE"
+  printf '  "gitnexus_enabled": %s,\n' "$GITNEXUS_ENABLED"
   printf '  "summary": {"pass": %d, "warn": %d, "fail": %d},\n' "$PASS" "$WARN" "$FAIL"
   printf '  "checks": [\n'
   local_n=${#CHECKS_JSON[@]}

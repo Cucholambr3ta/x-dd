@@ -40,6 +40,6 @@ Lista de task_ids a correr (default: primeros 20 alfabético).
 ## Files
 
 - `cases.jsonl`: lista de casos a evaluar (1 line = 1 task)
-- `grader.yaml`: config grader (`type: pass_at_one_external`)
+- `grader.json`: config grader (`type: pass_at_one_external`)
 - `subset.json`: subset selection
 - `README.md`: este archivo

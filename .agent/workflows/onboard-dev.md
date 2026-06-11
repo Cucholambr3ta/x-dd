@@ -2,6 +2,11 @@
 description: Onboarding de developer nuevo. Tour del repo, setup verificado y primer PR meaningful en 5 días.
 ---
 # /onboard-dev
+
+> **Estandar de documentacion:** Todo artefacto que produzca este workflow cumple
+> [`docs/DOC_STANDARD.md`](../../docs/DOC_STANDARD.md): sin emojis, diagramas Mermaid
+> obligatorios, tablas para datos estructurados, Gherkin donde aplique, secciones
+> minimas y trazabilidad bidireccional.
 **ID:** FLUJO-ONB | **Versión:** 1.0 | **Agente:** Dev-Onboarding-Coach + Codebase-Onboarding-Engineer
 **Misión:** Que un dev nuevo sea productivo en ≤ 5 días con cero ambigüedad.
 

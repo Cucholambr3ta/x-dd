@@ -2,6 +2,11 @@
 description: Release de app móvil (iOS/Android). Signing, store submission, beta tracks, rollout escalonado.
 ---
 # /mobile-release
+
+> **Estandar de documentacion:** Todo artefacto que produzca este workflow cumple
+> [`docs/DOC_STANDARD.md`](../../docs/DOC_STANDARD.md): sin emojis, diagramas Mermaid
+> obligatorios, tablas para datos estructurados, Gherkin donde aplique, secciones
+> minimas y trazabilidad bidireccional.
 **ID:** FLUJO-MOB-REL | **Versión:** 1.0 | **Agente:** Mobile-App-Builder + Release-Manager
 **Misión:** Publicar a App Store y Play Store sin sustos. Beta, rollout escalonado, kill switches listos.
 

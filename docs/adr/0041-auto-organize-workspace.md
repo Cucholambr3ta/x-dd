@@ -133,9 +133,9 @@ Rechazada. Over-engineering. YAML declarativo + 8 reglas cubre 95% de los casos.
 
 ### Tests
 
-- ✅ `xdd-organize.bats` — 16/16 verde
-- ✅ Regresión: 67/67 verde (Sprints 26/28/29/30 sin tocar)
-- ✅ Lint workflows: 0 errores
+- SI `xdd-organize.bats` — 16/16 verde
+- SI Regresión: 67/67 verde (Sprints 26/28/29/30 sin tocar)
+- SI Lint workflows: 0 errores
 
 ### Smoke test usuario
 

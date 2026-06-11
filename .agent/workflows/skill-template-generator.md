@@ -3,6 +3,11 @@ description: Implement a template-driven documentation system (gstack pattern) t
 ---
 
 # /skill-template-generator
+
+> **Estandar de documentacion:** Todo artefacto que produzca este workflow cumple
+> [`docs/DOC_STANDARD.md`](../../docs/DOC_STANDARD.md): sin emojis, diagramas Mermaid
+> obligatorios, tablas para datos estructurados, Gherkin donde aplique, secciones
+> minimas y trazabilidad bidireccional.
 **ID:** FLUJO-000 | **Versión:** 2.3.0
 **Mission:** Implement a template-driven documentation system (gstack pattern) to eliminate divergence between skill implementation (code) and documentation (SKILL.md).
 

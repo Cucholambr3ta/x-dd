@@ -18,7 +18,6 @@ Spec instinct:
 """
 from __future__ import annotations
 
-import argparse
 import hashlib
 import json
 import os
@@ -28,7 +27,7 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from _xdd_common import read_version, utcnow_iso as utcnow  # noqa: E402
+from _xdd_common import make_parser, read_version, utcnow_iso as utcnow  # noqa: E402
 
 __version__ = read_version()
 
@@ -62,6 +61,28 @@ CREATE INDEX IF NOT EXISTS idx_confidence ON instincts(confidence DESC);
 CREATE INDEX IF NOT EXISTS idx_last_seen ON instincts(last_seen DESC);
 CREATE INDEX IF NOT EXISTS idx_promoted ON instincts(promoted);
 
+CREATE TABLE IF NOT EXISTS sprints (
+  id TEXT PRIMARY KEY,
+  name TEXT NOT NULL,
+  status TEXT DEFAULT 'active',  -- active | closed
+  started_at TEXT NOT NULL,
+  closed_at TEXT,
+  goal TEXT
+);
+
+CREATE TABLE IF NOT EXISTS orchestrations (
+  run_id TEXT PRIMARY KEY,
+  pattern_name TEXT NOT NULL,
+  orchestration_type TEXT NOT NULL,
+  status TEXT DEFAULT 'running',  -- running | completed | failed | sync_waiting
+  started_at TEXT NOT NULL,
+  completed_at TEXT,
+  exec_mode INTEGER DEFAULT 0,
+  steps_total INTEGER DEFAULT 0,
+  steps_done INTEGER DEFAULT 0,
+  sync_point TEXT
+);
+
 CREATE TABLE IF NOT EXISTS evolutions (
   cluster_id TEXT PRIMARY KEY,
   proposed_type TEXT NOT NULL,
@@ -77,6 +98,22 @@ CREATE TABLE IF NOT EXISTS evolutions (
   predicted_impact TEXT,           -- Texto: qué metric esperás mejorar
   falsification_metric TEXT,       -- Texto: cómo medirás si funcionó
   falsification_outcome TEXT       -- null | passed | failed (next iter lo llena)
+);
+
+CREATE TABLE IF NOT EXISTS research_proposals (
+  id TEXT PRIMARY KEY,
+  scope TEXT NOT NULL,             -- system | project
+  topic TEXT,                      -- area investigada (ej: testing, security)
+  title TEXT NOT NULL,             -- titulo corto de la propuesta
+  source_url TEXT,                 -- link a skill/repo/changelog/paper
+  source_type TEXT,                -- github-skill | changelog | paper | framework
+  summary TEXT,                    -- resumen de que aporta
+  impact_score REAL DEFAULT 0.0,   -- 0.0-1.0 ranking de impacto estimado
+  compatibility TEXT,              -- compatible | needs-adaptation | incompatible
+  status TEXT DEFAULT 'proposed',  -- proposed | approved | applied | rejected
+  created_at TEXT NOT NULL,
+  reviewed_by TEXT,
+  reviewed_at TEXT
 );
 """
 
@@ -105,6 +142,68 @@ def db(path: Path = None) -> sqlite3.Connection:
     conn.executescript(SCHEMA)
     _migrate_evolutions(conn)
     return conn
+
+
+def record_orchestration(run_id: str, pattern_name: str, orch_type: str,
+                          exec_mode: bool = False, steps_total: int = 0,
+                          db_path: Path | None = None) -> None:
+    """Registra el inicio de una orquestación en la DB de estado (S9)."""
+    try:
+        conn = db(db_path)
+        conn.execute(
+            "INSERT OR REPLACE INTO orchestrations "
+            "(run_id, pattern_name, orchestration_type, status, started_at, exec_mode, steps_total) "
+            "VALUES (?, ?, ?, 'running', ?, ?, ?)",
+            (run_id, pattern_name, orch_type, utcnow(), int(exec_mode), steps_total),
+        )
+        conn.commit()
+        conn.close()
+    except Exception:
+        pass  # no-op si DB no disponible; tracking es best-effort
+
+
+def update_orchestration(run_id: str, status: str, steps_done: int = 0,
+                          sync_point: str | None = None, db_path: Path | None = None) -> None:
+    """Actualiza estado de una orquestación. Status: completed | failed | sync_waiting."""
+    try:
+        conn = db(db_path)
+        completed = utcnow() if status in ("completed", "failed") else None
+        conn.execute(
+            "UPDATE orchestrations SET status=?, steps_done=?, sync_point=?, completed_at=? "
+            "WHERE run_id=?",
+            (status, steps_done, sync_point, completed, run_id),
+        )
+        conn.commit()
+        conn.close()
+    except Exception:
+        pass
+
+
+def record_research_proposal(proposal: dict, db_path: Path | None = None) -> None:
+    """Persiste una propuesta del investigador (xdd-researcher). Best-effort.
+
+    proposal espera claves: id, scope, topic, title, source_url, source_type,
+    summary, impact_score, compatibility. status default 'proposed'.
+    """
+    try:
+        conn = db(db_path)
+        conn.execute(
+            "INSERT OR REPLACE INTO research_proposals "
+            "(id, scope, topic, title, source_url, source_type, summary, "
+            "impact_score, compatibility, status, created_at) "
+            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'proposed', ?)",
+            (
+                proposal["id"], proposal["scope"], proposal.get("topic"),
+                proposal["title"], proposal.get("source_url"),
+                proposal.get("source_type"), proposal.get("summary"),
+                float(proposal.get("impact_score", 0.0)),
+                proposal.get("compatibility"), utcnow(),
+            ),
+        )
+        conn.commit()
+        conn.close()
+    except Exception:
+        pass  # tracking best-effort; no rompe el flujo del investigador
 
 
 def cmd_init(args):
@@ -385,6 +484,7 @@ def cmd_stats(args):
     high_conf = conn.execute("SELECT COUNT(*) FROM instincts WHERE confidence >= 0.5").fetchone()[0]
     cats = conn.execute("SELECT category, COUNT(*) c FROM instincts GROUP BY category").fetchall()
     evolutions = conn.execute("SELECT COUNT(*) FROM evolutions").fetchone()[0]
+    research = conn.execute("SELECT COUNT(*) FROM research_proposals").fetchone()[0]
     conn.close()
 
     data = {
@@ -393,6 +493,7 @@ def cmd_stats(args):
         "high_confidence": high_conf,
         "by_category": {r["category"]: r["c"] for r in cats},
         "evolutions": evolutions,
+        "research_proposals": research,
         "db_path": str(args.db),
     }
 
@@ -404,19 +505,102 @@ def cmd_stats(args):
         print(f"  High confidence (≥0.5): {high_conf}")
         print(f"  Promoted to skills/agents: {promoted}")
         print(f"  Evolutions proposed: {evolutions}")
+        print(f"  Research proposals: {research}")
         print(f"  By category:")
         for c, n in data["by_category"].items():
             print(f"    {c:<20} {n}")
     return 0
 
 
+def cmd_sprint_start(args):
+    """S10: registra el inicio de un sprint en la DB."""
+    conn = db(args.db)
+    sid = args.id or f"sprint_{utcnow()[:10]}"
+    conn.execute(
+        "INSERT OR REPLACE INTO sprints (id, name, status, started_at, goal) VALUES (?,?,?,?,?)",
+        (sid, args.name or sid, "active", utcnow(), args.goal or ""),
+    )
+    conn.commit(); conn.close()
+    print(f"[state] ✓ sprint {sid!r} iniciado.")
+    return 0
+
+
+def cmd_sprint_close(args):
+    """S10: cierra el sprint activo."""
+    conn = db(args.db)
+    sid = args.id
+    if not sid:
+        row = conn.execute(
+            "SELECT id FROM sprints WHERE status='active' ORDER BY started_at DESC LIMIT 1"
+        ).fetchone()
+        sid = row["id"] if row else None
+    if not sid:
+        print("[state] sin sprint activo.", file=sys.stderr); conn.close(); return 1
+    conn.execute("UPDATE sprints SET status='closed', closed_at=? WHERE id=?",
+                 (utcnow(), sid))
+    conn.commit(); conn.close()
+    print(f"[state] ✓ sprint {sid!r} cerrado.")
+    return 0
+
+
+def cmd_sprint_status(args):
+    """S10: muestra sprints recientes."""
+    conn = db(args.db)
+    rows = conn.execute(
+        "SELECT id, name, status, started_at, closed_at, goal FROM sprints "
+        "ORDER BY started_at DESC LIMIT 10"
+    ).fetchall()
+    conn.close()
+    if args.json:
+        print(json.dumps([dict(r) for r in rows], indent=2))
+    else:
+        for r in rows:
+            icon = "▶" if r["status"] == "active" else "✓"
+            print(f"  {icon} {r['id']:<30} {r['status']:<8} {r['started_at'][:10]}")
+    return 0
+
+
+def cmd_metrics(args):
+    """S12: métricas de pipeline cruzadas (instincts, sprints, orchestrations)."""
+    conn = db(args.db)
+    instincts_total = conn.execute("SELECT COUNT(*) FROM instincts").fetchone()[0]
+    instincts_highconf = conn.execute(
+        "SELECT COUNT(*) FROM instincts WHERE confidence >= 0.5").fetchone()[0]
+    sprints_done = conn.execute(
+        "SELECT COUNT(*) FROM sprints WHERE status='closed'").fetchone()[0]
+    sprints_active = conn.execute(
+        "SELECT COUNT(*) FROM sprints WHERE status='active'").fetchone()[0]
+    orcs_total = conn.execute("SELECT COUNT(*) FROM orchestrations").fetchone()[0]
+    orcs_ok = conn.execute(
+        "SELECT COUNT(*) FROM orchestrations WHERE status='completed'").fetchone()[0]
+    conn.close()
+
+    data = {
+        "instincts_total": instincts_total,
+        "instincts_high_confidence": instincts_highconf,
+        "sprints_closed": sprints_done,
+        "sprints_active": sprints_active,
+        "orchestrations_total": orcs_total,
+        "orchestrations_completed": orcs_ok,
+        "db_path": str(args.db),
+    }
+    if args.json:
+        print(json.dumps(data, indent=2))
+    else:
+        print(f"[state] metrics — {data['db_path']}")
+        print(f"  Instincts: {instincts_total} total, {instincts_highconf} high-confidence")
+        print(f"  Sprints: {sprints_active} activos, {sprints_done} cerrados")
+        print(f"  Orchestrations: {orcs_ok}/{orcs_total} completadas")
+    return 0
+
+
 def build_parser():
-    p = argparse.ArgumentParser(prog="xdd-state",
-        description="State store SQLite para continuous learning (Sprint 9).")
-    p.add_argument("-v", "--version", action="version", version=f"xdd-state v{__version__}")
+    p, sub = make_parser(
+        "xdd-state",
+        "State store SQLite para continuous learning (Sprint 9).",
+    )
     p.add_argument("--db", type=Path, default=DEFAULT_DB,
                    help=f"Path SQLite (default: {DEFAULT_DB})")
-    sub = p.add_subparsers(dest="command", required=True)
 
     p_init = sub.add_parser("init", help="Crear schema")
     p_init.set_defaults(func=cmd_init)
@@ -459,6 +643,26 @@ def build_parser():
     p_st = sub.add_parser("stats", help="Métricas")
     p_st.add_argument("--json", action="store_true")
     p_st.set_defaults(func=cmd_stats)
+
+    # S10: sprint tracking
+    p_ss = sub.add_parser("sprint-start", help="Inicia un sprint en la DB")
+    p_ss.add_argument("--id", help="ID del sprint (default: fecha)")
+    p_ss.add_argument("--name", help="Nombre descriptivo")
+    p_ss.add_argument("--goal", help="Objetivo del sprint")
+    p_ss.set_defaults(func=cmd_sprint_start)
+
+    p_sc = sub.add_parser("sprint-close", help="Cierra el sprint activo")
+    p_sc.add_argument("--id", help="ID explícito (default: activo más reciente)")
+    p_sc.set_defaults(func=cmd_sprint_close)
+
+    p_sst = sub.add_parser("sprint-status", help="Sprints recientes")
+    p_sst.add_argument("--json", action="store_true")
+    p_sst.set_defaults(func=cmd_sprint_status)
+
+    # S12: métricas de pipeline
+    p_met = sub.add_parser("metrics", help="Métricas cruzadas de pipeline (S12)")
+    p_met.add_argument("--json", action="store_true")
+    p_met.set_defaults(func=cmd_metrics)
 
     return p
 

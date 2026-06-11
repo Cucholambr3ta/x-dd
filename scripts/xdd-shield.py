@@ -18,7 +18,6 @@ Reglas hoy: ~12 (subset cuidado vs 102 de ECC AgentShield).
 """
 from __future__ import annotations
 
-import argparse
 import json
 import re
 import sys
@@ -26,7 +25,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from _xdd_common import read_version, utcnow_iso as utcnow  # noqa: E402
+from _xdd_common import make_parser, read_version, utcnow_iso as utcnow  # noqa: E402
 
 __version__ = read_version()
 ROOT = Path(__file__).resolve().parent.parent
@@ -196,8 +195,8 @@ RULES = [
     rule_hooks_no_absolute_paths,
     rule_workflows_have_description,
     rule_agents_registry_consistent,
-    rule_mcp_tools_no_exec,
-    rule_mcp_get_artifacts_whitelist,
+    # rule_mcp_tools_no_exec and rule_mcp_get_artifacts_whitelist removed —
+    # xdd-mcp-server eliminated in v0.2 (ADR-0044).
     rule_gate_key_gitignored,
     rule_workflow_has_gate_integration,
     rule_agents_have_constraints,
@@ -267,10 +266,7 @@ def cmd_audit(args):
 
 
 def build_parser():
-    p = argparse.ArgumentParser(prog="xdd-shield",
-        description="AgentShield: audit estático del framework X-DD (Sprint 12).")
-    p.add_argument("-v", "--version", action="version", version=f"xdd-shield v{__version__}")
-    sub = p.add_subparsers(dest="command", required=True)
+    p, sub = make_parser("xdd-shield", "AgentShield: audit estático del framework X-DD (Sprint 12).")
 
     p_a = sub.add_parser("audit", help="Corre todas las reglas")
     p_a.add_argument("--severity", choices=["info", "warning", "high", "crit"],

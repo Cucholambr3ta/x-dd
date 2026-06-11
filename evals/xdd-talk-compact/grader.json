@@ -1,0 +1,7 @@
+{
+  "type": "token_count_reduction",
+  "baseline_output_field": "baseline",
+  "test_output_field": "compact",
+  "threshold_pct": 50,
+  "ignore_code_blocks": true
+}

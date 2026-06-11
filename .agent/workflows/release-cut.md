@@ -2,6 +2,11 @@
 description: Corte de release con semver, CHANGELOG automático y release notes user-facing.
 ---
 # /release-cut
+
+> **Estandar de documentacion:** Todo artefacto que produzca este workflow cumple
+> [`docs/DOC_STANDARD.md`](../../docs/DOC_STANDARD.md): sin emojis, diagramas Mermaid
+> obligatorios, tablas para datos estructurados, Gherkin donde aplique, secciones
+> minimas y trazabilidad bidireccional.
 **ID:** FLUJO-REL | **Versión:** 1.0 | **Agente:** Release-Manager + Git-Workflow-Master
 **Misión:** Releases predecibles, trazables y comunicadas. Sin "qué cambió en esta versión?".
 

@@ -79,15 +79,15 @@ xdd-bundle install my-bundle.xddbundle   # extract to skills/, agents/, workflow
 ## Consequences
 
 ### Positivas
-- ✅ Path claro para que equipos distribuyan sus extensiones
-- ✅ Manifest firmable (HMAC) + license obligatoria → seguridad supply-chain
-- ✅ Compatible con community skills voting (ADR-0020): bundles externos pueden mergear al main X-DD via misma policy
-- ✅ Future-proof: spec versionada, evolución compatible
+- SI Path claro para que equipos distribuyan sus extensiones
+- SI Manifest firmable (HMAC) + license obligatoria → seguridad supply-chain
+- SI Compatible con community skills voting (ADR-0020): bundles externos pueden mergear al main X-DD via misma policy
+- SI Future-proof: spec versionada, evolución compatible
 
 ### Negativas
-- ⚠️ Spec sin runtime = adopción 0 hasta v0.2.0
-- ⚠️ Riesgo de drift con install profiles (Sprint 7) si no se coordinan
-- ⚠️ Signature validation no obligatoria todavía → para v0.2.0 será requisito
+- WARN Spec sin runtime = adopción 0 hasta v0.2.0
+- WARN Riesgo de drift con install profiles (Sprint 7) si no se coordinan
+- WARN Signature validation no obligatoria todavía → para v0.2.0 será requisito
 
 ## Related
 - ADR-0020 Community skills voting (bundles externos pueden contribuir upstream)

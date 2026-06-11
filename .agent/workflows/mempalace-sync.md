@@ -3,6 +3,11 @@ description: Workflow X-DD — Sincronización del Palacio de la Memoria
 ---
 
 # /mempalace-sync
+
+> **Estandar de documentacion:** Todo artefacto que produzca este workflow cumple
+> [`docs/DOC_STANDARD.md`](../../docs/DOC_STANDARD.md): sin emojis, diagramas Mermaid
+> obligatorios, tablas para datos estructurados, Gherkin donde aplique, secciones
+> minimas y trazabilidad bidireccional.
 **ID:** FLUJO-059 | **Versión:** 3.0.0 | **Nivel:** Operativo
 **Módulo Core:** `skill-mempalace-manager`
 

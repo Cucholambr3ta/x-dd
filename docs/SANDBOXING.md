@@ -37,10 +37,10 @@ sandbox:
 
 ## Boundaries
 
-- ❌ Sandbox ≠ authz. Authz decide IF; sandbox decide HOW.
-- ❌ `network: full` deshabilita beneficio principal.
-- ✅ `network: deny` para code untrusted.
-- ✅ Recomendable mínimo `docker` para prod.
+- ADVERTENCIA Sandbox ≠ authz. Authz decide IF; sandbox decide HOW.
+- ADVERTENCIA `network: full` deshabilita beneficio principal.
+- RECOMENDADO `network: deny` para code untrusted.
+- RECOMENDADO mínimo `docker` para prod.
 
 ## Implementación pendiente
 

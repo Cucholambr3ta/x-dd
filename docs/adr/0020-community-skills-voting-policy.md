@@ -38,12 +38,12 @@ X-DD adopta política de **voto comunitario 7 días** para skills contribuidas e
    - 0 vetos = puede mergear pasadas las 168h
 
 4. **Criterios de evaluación:**
-   - ✅ Licencia compatible (MIT, Apache-2.0, ISC; rechazo: GPL, AGPL salvo wrapper externo aprobado)
-   - ✅ Sin dependencias nuevas no declaradas
-   - ✅ Frontmatter completo + descripción clara
-   - ✅ No duplica skill existente (revisión cruzada de `triggers` y `category`)
-   - ✅ Pasa lint (`scripts/lint-workflows.sh` extendido a skills)
-   - ✅ Si tiene `evals/`, los grader tests pasan
+   - SI Licencia compatible (MIT, Apache-2.0, ISC; rechazo: GPL, AGPL salvo wrapper externo aprobado)
+   - SI Sin dependencias nuevas no declaradas
+   - SI Frontmatter completo + descripción clara
+   - SI No duplica skill existente (revisión cruzada de `triggers` y `category`)
+   - SI Pasa lint (`scripts/lint-workflows.sh` extendido a skills)
+   - SI Si tiene `evals/`, los grader tests pasan
 
 ### Proceso de skill auto-generada por /evolve
 
@@ -68,15 +68,15 @@ Skills marcadas con `origin: "x-dd"` en registry NO pasan por voting comunitario
 ## Consequences
 
 ### Positivas
-- ✅ Calidad de skill base community = predecible
-- ✅ Contributors externos tienen path claro a merge
-- ✅ Maintainer overhead acotado (3 approvals, no review exhaustivo unilateral)
-- ✅ Compatible con `/evolve` outputs (mismo proceso para skills generadas)
+- SI Calidad de skill base community = predecible
+- SI Contributors externos tienen path claro a merge
+- SI Maintainer overhead acotado (3 approvals, no review exhaustivo unilateral)
+- SI Compatible con `/evolve` outputs (mismo proceso para skills generadas)
 
 ### Negativas
-- ⚠️ 7 días puede sentir slow para contributors. Mitigación: maintainers pueden fast-track críticos
-- ⚠️ Skills que dependen de provider específico (OpenAI, etc.) requieren disclaimer explícito
-- ⚠️ CODEOWNERS debe mantenerse activo (3 maintainers core min para que voting funcione)
+- WARN 7 días puede sentir slow para contributors. Mitigación: maintainers pueden fast-track críticos
+- WARN Skills que dependen de provider específico (OpenAI, etc.) requieren disclaimer explícito
+- WARN CODEOWNERS debe mantenerse activo (3 maintainers core min para que voting funcione)
 
 ## Implementation
 

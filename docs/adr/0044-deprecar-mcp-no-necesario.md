@@ -31,7 +31,7 @@ usuarios que ya lo configuraron.
 Alcance de esta deprecación (v0.1.x):
 - ADR-0005 → estado **Deprecado por ADR-0044**; ADR-0007 → parte MCP deprecada (adapters
   de copia real siguen vigentes).
-- Avisos `⚠️ DEPRECADO v0.2.0` en `docs/MCP_INTEGRATION.md` y `scripts/xdd-mcp-install-global.sh`.
+- Avisos `WARN DEPRECADO v0.2.0` en `docs/MCP_INTEGRATION.md` y `scripts/xdd-mcp-install-global.sh`.
 - `xdd-doctor.sh`: checks MCP pasan de informativos a marcados como deprecados (no fallan).
 - **NO se toca** `xdd-mcp-server/`, ni los tests MCP, ni los manifests: siguen presentes y
   verdes en v0.1.x.

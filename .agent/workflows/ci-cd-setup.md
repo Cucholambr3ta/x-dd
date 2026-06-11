@@ -3,6 +3,11 @@ description: Automate the configuration of the CI/CD pipeline, establishing a co
 ---
 
 # /ci-cd-setup
+
+> **Estandar de documentacion:** Todo artefacto que produzca este workflow cumple
+> [`docs/DOC_STANDARD.md`](../../docs/DOC_STANDARD.md): sin emojis, diagramas Mermaid
+> obligatorios, tablas para datos estructurados, Gherkin donde aplique, secciones
+> minimas y trazabilidad bidireccional.
 **ID:** FLUJO-000 | **Versión:** 2.3.0
 **Mission:** Automate the configuration of the CI/CD pipeline, establishing a continuous delivery environment that ensures code quality, security, and visual compliance. In version 2.2.0, it enforces "Deployment Interoperability" (Art. 6) to ensure cross-environment synchronization.
 

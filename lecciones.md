@@ -262,3 +262,116 @@ Hacer un workflow `/docs-sync` (post-v0.1.0) que detecte drift automáticamente 
 **Causa raíz:** La autoevaluación validó *presencia* de gates/tests/docs (que existían y eran buenos) pero no *ejecutó las rutas de error* ni desafió sus propios claims. Sesgo de confirmación: revisar el propio trabajo buscando confirmarlo.
 **Lección:** (1) Ninguna release está "impecable"; un informe sin hallazgos indica revisión superficial, no código perfecto. (2) Un framework de gates que crashea parseando su propio artefacto contradice su tesis — los caminos de error del núcleo deben tener tests negativos explícitos, no solo happy-path. (3) Los claims de arquitectura ("single source of truth") deben verificarse contra el mecanismo real, no contra la intención. (4) La revisión crítica vale más cuando la hace un agente distinto al que produjo el trabajo (separación autor/aprobador, ya consagrada en el gate HMAC — extenderla al QA).
 **Aplica a:** Todo `/cierre-fase` y QA de release en X-DD y proyectos generados. Antes de declarar release: ejecutar rutas de error del núcleo, desafiar cada claim de arquitectura, y preferir revisor ≠ autor. Materializado en v0.1.1 (release de hardening).
+
+### [SEGURIDAD] Un regex de seguridad sin test negativo puede no detectar nada — 2026-05-30
+**Contexto:** Al conectar el flujo de hooks (post-v0.1.1), se materializó por primera vez `pre:bash:dangerous-command` en Claude Code. Recién entonces se ejecutó de verdad.
+**Problema:** El patrón anti fork-bomb `:(){.*}` **no detectaba la fork bomb canónica** `:(){ :|:& };:`. En ERE, `()` es un grupo de captura vacío y `{` inicia un cuantificador inválido → el patrón nunca matcheaba la amenaza que decía cubrir. (Bug gemelo: `>\s*/dev/...` usaba `\s`, no portable en ERE POSIX.) El hook llevaba ~5 sprints dando falsa sensación de protección.
+**Causa raíz:** El test del hook (`hooks.bats`) sólo cubría casos que SÍ debían bloquear y que SÍ matcheaban (rm -rf, curl|sh). No había caso para la fork bomb ni un caso negativo (función bash benigna que NO debe bloquear). Regla de seguridad nunca ejercida = regla que no existe. Además el hook estaba definido pero no materializado ([[xdd-hooks-ssot-disconnect]]), así que jamás corría.
+**Lección:** (1) Toda regla de detección de seguridad necesita **dos** tests: un positivo (la amenaza real se bloquea) y un negativo (un caso parecido benigno NO se bloquea). (2) Desconfiar de regex con metacaracteres sin escapar (`()`, `{}`, `\s`) en ERE — verificarlos contra el payload real, no asumir. (3) Un control de seguridad que nunca se ejecutó (porque el SSoT no se materializaba) es indistinguible de uno ausente. Mismo patrón frágil que [[xdd-content-checks-fragile]].
+**Aplica a:** Todos los patrones de `pre-bash-dangerous-command.sh` y cualquier regla de detección (AgentShield, gates de contenido). Fix + tests de regresión (base64 para no exponer el payload) en branch `fix/forkbomb-regex`.
+
+### [HERRAMIENTAS] Hooks globales necesitan guarda "repo-fuente vs proyecto consumidor" — 2026-05-30
+**Contexto:** Tras materializar los hooks en `~/.claude/settings.json` (global), corrieron sobre el propio repo-fuente X-DD al editar archivos.
+**Problema:** Dos hooks asumían "proyecto consumidor" y dañaban el repo-fuente: (1) `post:write:auto-organize` añadió `prompts/ scripts/ templates/ INSTALL.md` a `.gitignore` — esos dirs SON el código versionado del fuente, no copias; de commitearse, git dejaría de trackear el código. (2) `post:edit:mempalace-index` habría minado cualquier repo (ya tenía guarda añadida). Además, el patrón `rm -[fF] /` bloqueaba `rm -f /tmp/x` (cualquier ruta absoluta), falso positivo.
+**Causa raíz:** Hooks escritos para el caso "X-DD instalado en proyecto destino" sin considerar que el settings GLOBAL los activa también en el repo-fuente (y en todos los demás repos). Reglas declarativas (`gitignore_framework_copies`) correctas para consumidor, destructivas para fuente.
+**Lección:** (1) Todo hook global debe tener una guarda de contexto: detectar si `$PWD` es repo X-DD / repo-fuente / proyecto ajeno, y no-op donde no aplica. Marcador del fuente: `agent.yaml` con `name: x-dd` + `templates/`. (2) Patrones de path peligroso deben distinguir raíz/dirs-de-sistema de rutas profundas legítimas (`rm -rf /` y `/etc` sí; `/tmp/x` no). (3) Un hook destructivo sobre `.gitignore` es especialmente peligroso porque su daño es silencioso (deja de trackear, no borra).
+**Aplica a:** Todos los hooks PostToolUse materializados globalmente. Guardas + tests en `hooks.bats`. Relacionado [[xdd-hooks-ssot-disconnect]].
+
+### [DEVOPS] Empaquetar solo scripts/ en el wheel pipx dejó manifests/VERSION fuera → version stale y perfiles rotos — 2026-06-02
+**Contexto:** X-DD v0.2.0 distribuido vía pipx. El comando `xdd` reportaba `0.1.0-dev` y `xdd init --list-profiles` imprimía "manifest no disponible" aunque pipx decía `x-dd 0.2.0`.
+**Problema:** `pyproject.toml` solo empaquetaba `scripts/` en el wheel (`force-include`). Los scripts bash calculan `XDD_ROOT` como `dirname(BASH_SOURCE)/../`, que en pipx apunta a `xdd_cli/` (directorio del paquete instalado), donde `../VERSION` y `../manifests/` no existen. Resultado: fallback `"0.1.0-dev"` en VERSION y "manifest no disponible" en list-profiles.
+**Causa raíz:** El pattern "empaquetar solo el código ejecutable" funciona para proyectos Python puros. X-DD es un framework data-heavy: sus scripts bash consumen manifests/, templates/, .agent/hooks/, skills/ y VERSION como "source of truth". Si esos dirs no están en el wheel, la instalación pip es funcionalmente incompleta aunque el metadata diga la versión correcta.
+**Lección:** (1) Cualquier framework con data dirs versionados (manifests, templates, prompts, skills) DEBE incluirlos explícitamente en `pyproject.toml` (`force-include` en hatchling o `package_data` en setuptools). (2) Añadir `_data_dir()` en el entry-point Python con la misma lógica de 3 niveles (env var > editable > bundled) e inyectarla como `XDD_DATA_DIR` al env de scripts bash invocados. (3) Verificar tras cada nueva versión: `xdd --version` debe coincidir con `VERSION`, y `xdd init --list-profiles` debe listar perfiles reales. (4) Criterio de DoD para pyproject.toml: `python -c "from xdd_cli import _data_dir; assert (_data_dir()/'manifests').is_dir()"` verde en instalación pip.
+**Aplica a:** pyproject.toml, src/xdd_cli/__init__.py, todos los scripts bash con `XDD_ROOT`. Patrón reusable para Evol-DD y cualquier framework similar.
+
+### [HERRAMIENTAS] Deps externas opt-in deben seguir patrón GitNexus: env var + guard + doctor — 2026-06-03
+**Contexto:** Al integrar `agent-browser` (CLI Rust de vercel-labs) como skill nativa de X-DD, la primera versión del workflow asumía que el CLI estaba instalado y fallaba sin mensaje claro si no lo estaba.
+**Problema:** Dep externa requerida sin opt-in explícito = fricción silenciosa. Usuarios sin `agent-browser` instalado recibían error críptico del shell, no un mensaje accionable. Además, X-DD ya tenía un patrón establecido (GitNexus: `XDD_GITNEXUS=1`) que no se aplicó por defecto.
+**Causa raíz:** Se creó la skill documentando "instalar si no disponible" en Prerrequisitos, pero sin guard de runtime ni detección en `xdd-doctor.sh`. El patrón GitNexus existía pero no se buscó activamente antes de diseñar el workflow.
+**Lección:** Toda dep externa opt-in en X-DD sigue este protocolo: (1) env var `XDD_<TOOL>=1` para activar; (2) guard al inicio del workflow (abort limpio si OFF, error accionable si CLI faltante); (3) detección en `xdd-doctor.sh` con status en texto y JSON; (4) documentar en SKILL.md como "opt-in igual que GitNexus". Antes de integrar cualquier dep nueva, buscar si ya hay patrón establecido en el framework.
+**Aplica a:** Cualquier integración de herramienta externa en X-DD (IDEs, CLIs, servidores MCP). Patrón: `XDD_<TOOL>=1` → guard → doctor → SKILL.md documenta opt-in.
+
+### [ARQUITECTURA] Skills nativas NO son wrappers — lógica completa en SKILL.md, integración en workflows existentes — 2026-06-03
+**Contexto:** Al integrar 5 skills externas (grill-me, fact-check, idea-refine, prompt-master, agent-browser), la primera pregunta fue si invocarlas vía API/CLI externos o hacerlas nativas.
+**Problema:** Wrappers que llaman al original crean dependencia de red, versionado externo y posibles incompatibilidades de schema. Además, el valor de X-DD es integrar al pipeline gated, no delegar a terceros.
+**Causa raíz:** Tentación de reusar código externo directamente en lugar de abstraer el concepto y reimplementar en el idioma del framework.
+**Lección:** Al ingestar una skill/herramienta externa en X-DD: (1) leer el original completo, extraer el concepto/protocolo; (2) reimplementar en SKILL.md con lógica X-DD nativa (integración con gates, agents, memoria, DOC_STANDARD); (3) documentar atribución en NOTICE + frontmatter `inspired_by`; (4) conectar a workflows existentes (desde y hacia). El resultado debe ser indistinguible de una skill creada internamente. El usuario no necesita conocer el original para usar la skill.
+**Aplica a:** Cualquier ingesta de skill/workflow/herramienta externa al ecosystem X-DD. Ver skills xdd-grill-me, xdd-fact-check, xdd-idea-refine, xdd-prompt-master, xdd-agent-browser como referencia.
+
+### [PROCESO] El estándar de docs no se propaga solo — materializar en SSoT + puntos de generación + gate de QA — 2026-06-02
+**Contexto:** X-DD tenía política "0% emoji" en el workflow `/technical-documentation` y prompts fuertes de DDD/STRIDE/Gherkin, pero el nivel de detalle variaba por workflow y el agente technical-writer tenía emojis en su propio frontmatter.
+**Problema:** El estándar vivía en comentarios de workflows individuales, no en un documento único. Cada workflow especificaba su propio nivel de detalle (algunos altamente prescriptivos, otros vagos). Faltaban templates para SPEC/DOMAIN/THREATS/FEATURES. El agente `engineering-technical-writer` no tenía las reglas hard-coded en su prompt.
+**Causa raíz:** "Política implícita" vs. "ley explícita". Un estándar que no está en un documento referenciable por todos los actores (agentes, workflows, gate) no existe operativamente; cada actor lo interpreta diferente.
+**Lección:** (1) Todo estándar de calidad necesita una SSoT (en este caso `docs/DOC_STANDARD.md`) referenciada explícitamente desde TODOS los puntos de generación: agente, workflows, templates, gate QA. (2) Las reglas deben estar hard-coded en el prompt del agente que las ejecuta, no solo en el workflow que lo invoca. (3) El gate QA (Tier 1) debe tener un chequeo automatizado verificable (grep de emojis, presencia de bloque Mermaid). (4) Los templates con secciones mínimas y Definition of Done por artefacto son el mecanismo más efectivo de enforcement: el agente no puede "olvidar" una sección si el template la requiere.
+**Aplica a:** Cualquier estándar de calidad en X-DD y proyectos generados. Patrón: SSoT → propagación masiva → gate automático → template con DoD.
+
+### [SEGURIDAD] Gate bloqueante real = guards FSM (cadena + segregacion), no solo firma — 2026-06-04
+**Contexto:** Replicar el flujo estrictamente bloqueante del sistema de un tercero (FSM formal con guards): ninguna fase se salta, autor no aprueba su propio trabajo
+**Problema:** El gate X-DD firmaba HMAC y validaba artefactos, pero approve de una fase funcionaba aunque las previas nunca se aprobaran. El orden adyacente solo se chequeaba en transition, no en approve. Separacion autor/aprobador estaba sugerida pero no enforced
+**Causa raiz:** Gate disenado como validador por-fase aislado, no como maquina de estados con cadena. Faltaba registrar el autor del artefacto para poder comparar contra el aprobador
+**Leccion:** Un pipeline estrictamente bloqueante necesita 2 guards en approve, no solo firma: (1) CADENA — verificar que todas las fases previas esten APROBADO+validas (reusar el validador existente); (2) SEGREGACION — registrar autor (set-author escribe .author) y bloquear si approver==author. Ambos con escape hatch env var documentado (XDD_SKIP_CHAIN, XDD_SKIP_SEGREGATION) para dev-solo. Es el patron worker->auditor a nivel de fase: quien produce no aprueba
+**Aplica a:** xdd-gate.py cmd_approve. Heredar a evol-gate.py (Inc 2). Patron reusable para cualquier gate de pipeline multi-fase
+**Fix aplicado:** _enforce_phase_chain + _enforce_segregation + cmd_set_author en xdd-gate.py. status muestra autor/aprobador/cadena. 9 tests en test_gate_fsm.py
+
+### [HERRAMIENTAS] argparse global args deben ir ANTES del subcomando — CLI confusa si no — 2026-06-04
+**Contexto:** Inc 5 — nuevo subcomando `sprint-close` en xdd-memory.py. Argumentos globales definidos antes del subparser (--project, --json).
+**Problema:** `xdd-memory.py sprint-close --sprint=01 --project=.` falla con "unrecognized arguments: --project=.". El arg global debe ir ANTES del subcomando: `xdd-memory.py --project=. sprint-close --sprint=01`.
+**Causa raiz:** argparse procesa subcomandos secuencialmente — args definidos en el parser principal no se heredan al namespace del subparser si se pasan despues del subcomando.
+**Leccion:** En CLIs con subcomandos argparse: documentar en help que args globales van ANTES del subcomando. Considerar add_help_on_each_subparser o parents=[common_parser] para propagar. Tests que usan la funcion directamente no detectan este bug — necesitan tambien probar via subprocess o argv.
+**Aplica a:** xdd-memory.py, xdd-gate.py, cualquier CLI con argparse + subparsers en X-DD. Fix: añadir nota en --help y considerar add_subparsers(parser_class) con parents comunes.
+
+### [PROCESO] Memoria/lecciones monoliticas escalan mal — separar por sprint desde inicio — 2026-06-04
+**Contexto:** Inc 5 — el usuario noto que memoria.md y lecciones.md eran archivos monoliticos que crecian sin estructura temporal. El sistema xdd-memory.py ya tenia el patron MEMORY.md + memory/YYYY-MM-DD.md pero no se aplicaba a lecciones del proyecto.
+**Problema:** Un solo archivo lecciones.md con 300+ lineas hace imposible buscar por sprint, correlacionar con errores especificos, o comparar velocidad de aprendizaje entre sprints. Mismo problema con memoria.md.
+**Causa raiz:** Patron de journal diario existia para memoria conversacional (xdd-memory.py) pero no se extrapoló a los artefactos de proyecto hasta que el relato del sistema externo lo hizo explicito.
+**Leccion:** Desde el inicio de un proyecto: lecciones y memoria separadas por sprint (acuerdos/lecciones/sprint-NN.md, acuerdos/memoria/sprint-NN.md). MEMORY.md para hechos persistentes. INDEX.md como indice navegable. El mismo patron del journal diario aplicado a granularidad de sprint. Backward compat: mantener root lecciones.md/memoria.md hasta migracion completa.
+**Aplica a:** Todos los proyectos generados por X-DD via xdd-init.sh. xdd-memory.py sprint-close es el comando de cierre. cierre-fase v1.4 lo integra.
+
+### [DOMINIO] Briefing como arbol bloqueante 16D — wireframes viven DENTRO del briefing, no en fase separada — 2026-06-04
+**Contexto:** Inc 3 — modelar el briefing inspirado en sistema externo donde 43 docs granulares emergen de un briefing exhaustivo. El diseño inicial de X-DD tenia wireframes como etapa post-briefing.
+**Problema:** Separar wireframes del briefing crea un gap temporal: el agente de build puede arrancar sin tener claro el diseno visual, generando componentes que luego rompen al aprobar los wireframes.
+**Causa raiz:** Wireframes vistos como "documentacion de diseno" separada de la "definicion del producto". En realidad son el acuerdo mas tangible del briefing — sin ellos el briefing no esta cerrado.
+**Leccion:** Wireframes son Dimension 16 del briefing (no etapa posterior). El briefing cierra SOLO cuando todas las 16 dimensiones tienen respuesta Y cada pantalla tiene HTML aprobado con tokens reales de D15. El HTML aprobado es la regla de diseno inmutable para el agente de build. Secuencia correcta: D15 (Design System → tokens) → D16 (wireframes con esos tokens) → gate cierre → doc-granular.
+**Aplica a:** .agent/workflows/briefing.md y cualquier proyecto generado con X-DD. El artefacto acuerdos/wireframes/<pantalla>.html es prerequisito de build (validado por _validate_phase).
+
+### [ARQUITECTURA] Gate checksum no debe incluir sus propios metarchivos — circular y no semantico — 2026-06-04
+**Contexto:** Al ejecutar cierre-fase post-Inc 3+4, el gate validate reporto checksum mismatch en build aunque la fase estaba APROBADO. Investigacion revelo que el checksum de .xdd/build/ incluia .approvers, .checksums, .signature — archivos que el propio gate modifica al aprobar.
+**Problema:** Cada `approve` modifica .approvers (append) y recalcula .checksums y .signature → el checksum almacenado queda invalido en la proxima validacion. Mismatch permanente e irreparable sin re-aprobar.
+**Causa raiz:** La funcion `checksum(path)` para directorios usaba `rglob("*")` sin filtrar metarchivos del gate. Diseno correcto: el checksum debe cubrir el CONTENIDO semantico (artefactos del proyecto), no los metadatos del gate mismo.
+**Leccion:** La funcion checksum de directorio debe excluir explicitamente los metarchivos del gate: .status, .checksums, .signature, .approvers, .author. Son metadatos de gobernanza, no artefactos verificables. Fix: `_GATE_META = {".status", ".checksums", ".signature", ".approvers", ".author"}` y filtrar en `rglob`.
+**Aplica a:** scripts/xdd-gate.py funcion `checksum()`. Heredar fix a evol-gate.py si usa mismo patron. Verificar en test: approve multiple veces sobre misma fase no debe invalidar checksum.
+
+### [PROCESO] doc-granular worker→auditor — N docs decididos por proyecto, no por plantilla — 2026-06-04
+**Contexto:** Inc 4 — implementar el patron de documentacion granular inspirado en sistema externo (43 docs en proyecto mediano, 93 en complejo). Primera propuesta fue una lista fija de dominios.
+**Problema:** Lista fija subrepresenta proyectos complejos y sobredocumenta proyectos simples. El sistema de referencia tenia el agente decidiendo el numero y granularidad de docs segun complejidad real del proyecto, no segun una plantilla.
+**Causa raiz:** Tentacion de dar estructura predecible vs. dejar al agente razonar sobre la complejidad real. La plantilla fija es mas controlable pero introduce evaluacion implicita ("esto no necesita doc propio") que X-DD rechaza.
+**Leccion:** Principio cero deuda tecnica aplicado a docs: "si es un dominio tecnico del proyecto, tiene doc". Sin evaluacion, sin "esto es obvio", sin limite de numero. El agente analiza TODOS los artefactos del briefing e identifica dominios con criterio: ¿hay suficiente complejidad para que un sub-agente necesite este doc como referencia independiente? El numero emerge del proyecto. Proyectos simples: 15-20 docs. Complejos: 50-100+.
+**Aplica a:** .agent/workflows/doc-granular.md y cualquier instancia del patron. El INDEX.md lo genera el agente tras analizar el briefing completo — no viene de una lista predefinida.
+
+### [HERRAMIENTAS] sed no maneja emojis Unicode multibyte — usar Python — 2026-06-04
+**Contexto:** Purga masiva emojis en 52 docs/ de X-DD.
+**Problema:** sed falla con "expresion sin terminar" para emojis ZWJ (✅, ⚠️). Caracter FE0F rompe el parser.
+**Causa raiz:** sed procesa bytes, no codepoints. Emojis con variacion FE0F son multibyte; sed interpreta FE0F como delimitador regex.
+**Leccion:** Para operaciones masivas Unicode: Python con `re.compile(pattern, re.UNICODE)`. sed solo para ASCII puro.
+**Aplica a:** Cualquier purga de caracteres Unicode en X-DD y proyectos generados.
+
+### [ARQUITECTURA] Atomicidad != granularidad — dimensiones ortogonales de calidad documental — 2026-06-04
+**Contexto:** Discusion sobre nivel de detalle en docs generados por X-DD.
+**Problema:** X-DD usaba "granularidad" como criterio pero la metrica correcta es "atomicidad": 1 doc = 1 unidad semantica indivisible.
+**Causa raiz:** Granularidad = profundidad dentro del doc. Atomicidad = cohesion del scope. X-DD_Integration_Guide.md viola atomicidad al mezclar 9 disciplinas en 1 doc.
+**Leccion:** 1 doc = 1 dominio tecnico, sin mezclar responsabilidades. X-DD_Integration_Guide.md debe dividirse en 9 docs (SDD.md, FDD.md, DDD.md...). Tambien aplica a workflows: 1 workflow = 1 operacion.
+**Aplica a:** doc-granular workflow, DOC_STANDARD.md, discipline-check.
+
+### [PROCESO] Docs del framework vs docs del proyecto — scope distinto — 2026-06-04
+**Contexto:** Audit buscando FUNCIONALES.md en X-DD.
+**Problema:** FUNCIONALES.md es artefacto generado POR X-DD para proyectos, no del framework mismo.
+**Causa raiz:** X-DD tiene dos niveles: (1) docs del framework (constitucion, GATE, ARQUITECTURA) y (2) artefactos generados (SPEC.md, DOMAIN.md, FUNCIONALES.md).
+**Leccion:** Distinguir nivel framework (docs/) vs nivel proyecto (acuerdos/proyecto/). Checklist de auditoria debe especificar el nivel objetivo.
+**Aplica a:** Futuras auditorias de X-DD y evol-dd.
+
+### [HERRAMIENTAS] Labels Mermaid: \n, comillas simples y parentesis sin comillas rompen el render — 2026-06-05
+**Contexto:** Render de los diagramas del registro de disciplinas (INDEX.md + fichas) en el preview de VSCode (extension bierner.markdown-mermaid, bundle Mermaid 11.12).
+**Problema:** "No diagram type detected matching given configuration" — el parser fallaba y no pintaba el diagrama. Tres causas encadenadas, descubiertas en pasadas sucesivas: (1) `\n` literal en labels `["a\nb"]`; (2) comillas simples embebidas `["...'x'..."]`; (3) labels de `subgraph X[...]` con `(parentesis)` o `—` em-dash SIN comillas.
+**Causa raiz:** El bundle browser de Mermaid es mas estricto que `mmdc` CLI (11.14/11.15), que toleraba (1) y (2) y me despisto al renderizar "OK". `\n` no es salto valido (necesita `<br/>`). Comillas/parentesis sin escape desincronizan el lexer. En `subgraph`, el label DEBE ir entre comillas dobles si tiene caracteres especiales.
+**Leccion:** Para labels Mermaid: salto = `<br/>` (nunca `\n`); todo label con caracteres especiales `() / — ' "` va entre comillas dobles `["..."]`, incluido `subgraph ID["..."]`. Verificar con el MISMO engine del consumidor, no solo `mmdc` (CLI es mas permisivo). Para barrido masivo: extraer todos los bloques ```mermaid``` y renderizar 1 a 1; el primer bloque que no produce SVG es el culpable, con su `Parse error on line N` relativo al bloque.
+**Aplica a:** Todo doc con Mermaid en X-DD y proyectos generados; doc-granular, INDEX de disciplinas, guias dev.

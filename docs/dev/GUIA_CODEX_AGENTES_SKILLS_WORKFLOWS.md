@@ -4,7 +4,7 @@
 **IDE:** Codex (OpenAI CLI)  
 **Versión doc:** 1.0  
 **Fecha:** 2026-05-28  
-**Estado adapter:** ✅ Implementado en `scripts/xdd-adapt.sh` (`adapt_codex`, líneas 433-577) — patrón orchestrator + skills globales (ADR-0036)  
+**Estado adapter:** SI Implementado en `scripts/xdd-adapt.sh` (`adapt_codex`, líneas 433-577) — patrón orchestrator + skills globales (ADR-0036)  
 **Referencias internas:** **ADR-0036** (decisión específica), ADR-0034, ADR-0035, ADR-0037, `docs/IDE_SETUP.md`, `docs/MCP_INTEGRATION.md`
 
 ---

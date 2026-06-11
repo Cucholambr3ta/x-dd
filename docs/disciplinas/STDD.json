@@ -1,0 +1,33 @@
+{
+  "doc": "STDD.md",
+  "dominio": "disciplinas",
+  "subdominio": "STDD",
+  "resumen": "**Version:** 1.0 | **Fecha:** 2026-06-04 | **Gobernanza:** Constitucion X-DD v1.5",
+  "secciones": [
+    "indice",
+    "que-es-stdd-en-x-dd",
+    "el-ciclo-stdd-extendido",
+    "mapeo-stride-a-stubs-de-security-tests",
+    "cuando-aplica-stdd",
+    "stdd-en-el-pipeline",
+    "estructura-de-tests-de-seguridad",
+    "definition-of-done-stdd",
+    "agentes-involucrados",
+    "fuentes"
+  ],
+  "entidades": [],
+  "trazabilidad": {
+    "origen": [],
+    "relacionados": []
+  },
+  "fuentes": [
+    "https://owasp.org/www-project-web-security-testing-guide/",
+    "https://owasp.org/www-project-application-security-verification-standard/",
+    "https://owasp.org/www-project-top-ten/"
+  ],
+  "tokens_md": 2564,
+  "lineas": 259,
+  "checksum_md": "dd5caf2464102eaf",
+  "actualizado": "2026-06-05T15:38:54.248737+00:00",
+  "tokens_json": 131
+}

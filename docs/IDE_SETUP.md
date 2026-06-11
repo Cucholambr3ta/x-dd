@@ -19,15 +19,15 @@ XDD_NO_ADAPT=1 bash scripts/xdd-init.sh /tu/proyecto
 
 | IDE | Trigger | Mecanismo | Archivos generados |
 |---|---|---|---|
-| **Claude Code** | `/helios` slash ✅ | slash command real | `.claude/commands/*.md` + `.mcp.json` |
-| **OpenCode** | `/helios` slash ✅ | command + workflows | `.opencode/command/*.md` + `AGENTS.md` |
-| **VSCode + Copilot** | `/helios` slash ✅ | prompt files | `.github/prompts/*.prompt.md` + `.vscode/mcp.json` |
-| **Cursor** | `@helios` + MCP ⚠️ | rules + MCP | `.cursor/rules/*.mdc` + `.cursor/mcp.json` |
-| **Windsurf** | MCP tool ⚠️ | rules + MCP | `.windsurf/rules/*.md` + `.windsurf/mcp.json` |
-| **Antigravity** | MCP tool ❌ | MCP only | `~/.gemini/config/mcp_config.json` (merge) + `.agents/skills/` |
-| **Codex** | `/<trigger>` (description-based) ✅ | global skills | `~/.codex/skills/<trigger>-orchestrator/` (SKILL.md + agents-index.json) |
+| **Claude Code** | `/helios` slash SI | slash command real | `.claude/commands/*.md` + `.mcp.json` |
+| **OpenCode** | `/helios` slash SI | command + workflows | `.opencode/command/*.md` + `AGENTS.md` |
+| **VSCode + Copilot** | `/helios` slash SI | prompt files | `.github/prompts/*.prompt.md` + `.vscode/mcp.json` |
+| **Cursor** | `@helios` + MCP WARN | rules + MCP | `.cursor/rules/*.mdc` + `.cursor/mcp.json` |
+| **Windsurf** | MCP tool WARN | rules + MCP | `.windsurf/rules/*.md` + `.windsurf/mcp.json` |
+| **Antigravity** | `/<trigger>` o MCP SI | MCP + local skills | `~/.gemini/config/mcp_config.json` (merge) + `.agents/skills/` |
+| **Codex** | `/<trigger>` (description-based) SI | global skills | `~/.codex/skills/<trigger>-orchestrator/` (SKILL.md + agents-index.json) |
 
-> ⚠️ **Verdad técnica:** `/helios` slash idéntico NO existe en todos los IDEs. Claude Code, OpenCode, VSCode Copilot soportan slash commands de archivos. Cursor/Windsurf/Antigravity NO — usan MCP tools (`xdd_invoke_workflow`) o @-mention. Limitación de cada IDE, no de X-DD.
+> WARN **Verdad técnica:** La ejecución nativa de scripts de terminal mediante slash commands locales directos solo está soportada en Claude Code, OpenCode y VSCode Copilot. Cursor y Windsurf usan MCP tools u `@-mention`. Antigravity emula la experiencia de slash commands en el chat mediante el sistema de triggers conversacionales definidos en `.agents/skills/*.md`.
 
 ## Por IDE
 
@@ -58,8 +58,9 @@ bash scripts/xdd-adapt.sh cursor --dest=/proyecto
 ```bash
 bash scripts/xdd-adapt.sh antigravity --dest=/proyecto
 ```
-- `.antigravity/mcp.json` → importar en Antigravity Settings → MCP
-- **NO hay slash** — invoca tools MCP: `xdd_invoke_workflow` name="xdd"
+- Configuración global de MCP mergeada en `~/.gemini/config/mcp_config.json`.
+- Skills locales materializadas en `.agents/skills/`.
+- **Triggers conversacionales:** Activa las skills en la CLI/chat de Cascade usando sus triggers (ej. escribiendo `/<trigger>` o `/compact`). También puedes invocar herramientas de contexto vía MCP (`xdd_invoke_workflow`).
 
 ## MCP server (denominador común)
 

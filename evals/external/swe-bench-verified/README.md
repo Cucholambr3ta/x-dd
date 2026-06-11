@@ -20,6 +20,6 @@ python3 scripts/xdd-eval.py run --suite=external/swe-bench-verified --runs=1
 
 ## Files
 - `cases.jsonl`: placeholder con instance_ids (populated by adapter)
-- `grader.yaml`: `type: pass_at_one_external`
+- `grader.json`: `type: pass_at_one_external`
 - `subset.json`: 50 instance_ids subset
 - `README.md`

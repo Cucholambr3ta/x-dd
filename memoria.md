@@ -16,15 +16,15 @@
 - **Plan macro:** MAXIMALISTA EXTENDIDO. 23.5d (S0-13) + ~34d (S14-23) = ~57.5d invertidos. Restan ~0.5d (release).
 - **Último hito:** GitNexus tier-1 companion mergeado (PR #32) — paralelo MemPalace en xdd-doctor + xdd-start + ADR-0033.
 - **Workspace global:** instalado en `<workspace>/` (post-purga framework legacy). Backup tar.gz en `~/<workspace>-backup.tar.gz`.
-- **Próximo paso:** sync docs (este branch) → Release v0.1.0 cuando user autorice.
+- **Próximo paso:** Incremento 2 — heredar gate FSM (cadena + segregación) a Evol-DD + publicar.
 
 ## Stats actuales (post-PR #40 + Codex adapter)
 - **~330+ tests verdes** (S14-25 cumulativos)
 - **40+ PRs cerrados** preservados (delete_branch_on_merge=false estricto)
-- **55 workflows** X-DD
+- **60 workflows** X-DD (+5 native skills: grill-me, fact-check, idea-refine, prompt-master, agent-browser)
 - **180 agentes** (1 renombrado security-pentest-operator)
 - **5 composition_patterns**
-- **6 skills** propios (xdd-talk-compact, agent-eval, xdd-ai-review, xdd-compact, xdd-fs-context, xdd-sandbox)
+- **11 skills** propios (xdd-talk-compact, agent-eval, xdd-ai-review, xdd-compact, xdd-fs-context, xdd-sandbox + xdd-grill-me, xdd-fact-check, xdd-idea-refine, xdd-prompt-master, xdd-agent-browser)
 - **14 hooks** event-driven (8 base + 6 stage middleware S18)
 - **6 install profiles** + **24 modules** (14 base + 10 nuevos PR #39 Sprints 13-25)
 - **36 ADRs** Nygard (10 base + 26 nuevos S14-25 + 0033 GitNexus + 0034 Universal IDE + 0035 Global install + 0036 Codex)
@@ -55,6 +55,98 @@
 ---
 
 ## Bitácora de Sesiones
+
+### Sesion 2026-06-04 — Inc 5+6: memoria/lecciones por sprint + /xdd historias (feature/sprint-memoria-lecciones)
+- **Meta:** Capa de ejecucion del pipeline: memoria granular por sprint y generacion de historias de usuario completas.
+- **Hitos Inc 5 (xdd-memory.py sprint-close):**
+  - Nuevo subcomando sprint-close: crea acuerdos/memoria/sprint-NN.md + acuerdos/lecciones/sprint-NN.md
+  - INDEX.md idempotente, MEMORY.md inicializado en primer close
+  - xdd-init.sh genera MEMORY.md + INDEX.md en bootstrap
+  - cierre-fase.md v1.4: usa sprint-close, guarda XDD_NO_ORGANIZE para repo-fuente
+  - 11 tests nuevos (384 total)
+- **Hitos Inc 6 (/xdd historias):**
+  - Workflow completo: lee acuerdos/proyecto/ + wireframes, identifica TODAS las historias (HU/HT/HS)
+  - 4 artefactos por historia: propuesta, requisitos-escenarios (Gherkin), escenario-tecnico (Mermaid), checklist (>=50 tareas)
+  - Pipeline worker→auditor: auditor verifica checklist min 50 + cobertura STDD, registra gaps en lecciones
+  - acuerdos/sprint.md con plan de sprints, DoD, estimaciones
+- **Bug detectado:** argparse --project debe ir ANTES del subcomando — tests directos no capturan
+- **QA:** 384 tests verdes, shield 0 CRITICAL, lint 0 errores
+- **Commits:** e34c236 (Inc 5) + 29f4015 (Inc 6) en feature/sprint-memoria-lecciones
+- **Proxima sesion:** Inc 7 (xdd-gitflow.sh) + Inc 8 (xdd-sprint.md) + Inc 9 (discipline-check)
+
+### Sesión 2026-06-05 — Upgrade 31 metodologías + merge develop + fix Mermaid (feature/disciplinas-31-metodologias → develop)
+- **Meta:** Integrar las 22 metodologías de `ultimate-update.md` al sistema (registro de disciplinas), mergear a develop, explicar el sistema y arreglar el render Mermaid.
+- **Hitos disciplinas (Lotes A-E, mergeados a develop con merge commit `8ddda84`):**
+  - Registro `docs/disciplinas/` extendido 9→31 fichas (9 base + 22 nuevas), 0 colisiones de ID. Cada ficha: propósito, cuándo aplicar, I/O, pipeline Mermaid, integración, criterios, DoD, agentes, Fuentes.
+  - Sección **Fuentes** en las 9 base + 22 nuevas; sidecars con `fuentes[]` (116 URLs). `xdd-doc-sync.py` con `_extract_sources()`.
+  - 6 skills gap (`/xdd ux-driven|event-sourcing|api-versioning|iac-driven|debt-budget|use-case-driven`); catálogo 29→35.
+  - 4 workflows extendidos: dr-drill (Chaos), data-pipeline (EDA+CDCDD), privacy-review (Compliance), dependency-update (DeprecationDD).
+  - `xdd.profile.yml` bloque `methodologies:` + orquestador (`/xdd`+`/anmax`) inyección por profile + DAG; Constitución 9→31; DOC_STANDARD 1.7 (citar fuente web); `validate-disciplinas.py` (31/31 strict, bloquea `fuentes[]` vacío).
+- **Activación por caso de uso:** el proyecto declara subset en `methodologies:`; el orquestador inyecta solo esas capas en su fase, resuelve el DAG (ej. chaos exige odd_obs+threat), aplica criterios como sub-gate. No inyecta lo no declarado.
+- **Fix Mermaid (3 commits develop):** `97932a6` (\n→<br/> en 7 fichas base + INDEX), `7af157a` (comillas simples en labels), `1c19d4b` (subgraph labels con ()/— sin comillas en GUIA_VSCODE dev-doc). Ground truth: 127 bloques renderizados con mmdc, solo 1 fallaba (el dev-doc). Disciplinas quedó limpio. Lección registrada en lecciones.md.
+- **Herencia Evol-DD (Lote F, v0.3.2):** port completo con branding evol; 31 fichas, 6 skills `/evol`, 4 extensiones, validador, DOC_STANDARD 1.7. Mergeado a develop + mismos 2 fixes Mermaid.
+- **QA:** validate-disciplinas 31/31 strict (ambos repos); lint X-DD 0/0, Evol-DD 87 OK; sin drift de sidecars post-resync.
+- **Estado:** develop con 9 commits sin pushear (X-DD) / 5+ (Evol-DD). 0 agentes permanentes nuevos (Evol sigue en 16 + efímeros).
+- **Próxima sesión:** push de ambos develop; decidir release (X-DD pendiente v0.1.0, Evol-DD v0.3.2); revisar dev-docs restantes por mismo patrón Mermaid.
+
+### Sesión 2026-06-04 — Incrementos 3+4: Briefing 16D + doc-granular worker→auditor (feature/briefing-acuerdos)
+- **Meta:** Completar los 4 incrementos del plan "Pipeline estrictamente bloqueante". Inc 3: briefing como arbol bloqueante 16 dimensiones + estructura /acuerdos. Inc 4: documentacion granular automatica con patron worker→auditor.
+- **Hitos Inc 3 (.agent/workflows/briefing.md):**
+  - 16 dimensiones como arbol bloqueante: Identidad, Usuarios, Plataformas, Stack, Arquitectura, Integraciones, Auth, Seguridad, Calidad, Datos-Privacidad, Observabilidad, CI/CD, Operaciones, Proceso, Design System, Pantallas
+  - D15 (Design System): genera acuerdos/design/tokens.md + components.md + assets.md
+  - D16 (Pantallas+Wireframes): wireframes HTML con tokens reales, parte del briefing (no etapa separada)
+  - Gate cierre: 14 artefactos idea/ + 3 design/ + N wireframes HTML — briefing no cierra hasta todos aprobados
+  - acuerdos/ creada automaticamente en bootstrap (7 subcarpetas): xdd-init.sh actualizado
+- **Hitos Inc 4 (.agent/workflows/doc-granular.md):**
+  - Principio cero deuda tecnica: sin evaluacion, si es dominio tecnico del proyecto tiene doc
+  - Pipeline 5 pasos: INVESTIGA (researcher) → VALIDA CLAIMS (fact-check) → ESCRIBE (technical-writer) → AUDITA (reviewer ≠ writer) → INDEXA (INDEX.md bidireccional)
+  - Orquestacion: xdd-orchestrate parallel_then_sync (documentos en paralelo, INDEX en sync)
+  - Gate: set-author writer, approve reviewer (segregacion Inc 1 reutilizada)
+  - N docs decididos por el agente segun complejidad del proyecto (15-20 simple, 50-100+ complejo)
+- **Fix gate (cierre-fase):** checksum() excluia metarchivos del gate (.approvers/.checksums/.signature/.author) — circular. Fix: _GATE_META filter en checksum() para directorios
+- **Heredado a Evol-DD:** briefing.md + doc-granular.md portados con evol- prefixes; acuerdos/ en evol-init.sh; publicado v0.2.5 (briefing) y v0.2.6 (doc-granular)
+- **QA:** gates todos APROBADO y validos post-fix checksum; tests gate verdes
+- **Commits:** 720353d (briefing) + 178cb54 (doc-granular) en feature/briefing-acuerdos
+- **Bloqueos:** bug gate checksum circular (metarchivos incluidos en hash del directorio) — resuelto en esta sesion
+- **Proxima sesion:** Merge feature/gate-fsm + feature/briefing-acuerdos a develop; /xdd historias workflow; potencial release con los 4 incrementos
+
+### Sesión 2026-06-04 — Gate FSM enforcement (feature/gate-fsm) — Incremento 1
+- **Meta:** Pipeline estrictamente bloqueante (FSM con guards), inspirado en el flujo
+  de un sistema de referencia (evol-agent): ninguna fase se salta, autor≠aprobador.
+- **Contexto:** Plan diluido en 4 incrementos independientes (gate verde obligatorio
+  por incremento, sin deuda). Esta sesión: SOLO Incremento 1 en X-DD.
+- **Hitos (scripts/xdd-gate.py):**
+  - I1.1 `_enforce_phase_chain`: approve fase N exige fases 0..N-1 APROBADO+válidas
+    (reusa _validate_phase). Escape hatch XDD_SKIP_CHAIN=1
+  - I1.2 `_enforce_segregation` + comando `set-author`: registra autor del artefacto
+    (.xdd/<fase>/.author), approve bloquea si approver==author. Escape hatch
+    XDD_SKIP_SEGREGATION=1. Es el patrón worker→auditor a nivel de fase
+  - I1.3 status ampliado: muestra autor, aprobador, cadena intacta
+  - I1.4 tests/test_gate_fsm.py (9 casos) + docs/GATE.md sección Enforcement FSM
+- **QA:** 29 tests gate verdes (9 nuevos + 20 existentes), shield 0 CRITICAL
+- **Commit:** 290dc29 en feature/gate-fsm (renombrado de feat/ por hook GitFlow)
+- **Diferidos:** Inc 2 (heredar a Evol-DD), Inc 3 (/acuerdos + wireframe-freeze),
+  Inc 4 (doc-granular worker→auditor→índice). Documentados en plan
+- **Próxima sesión:** Incremento 2 — heredar gate FSM a Evol-DD + publicar
+
+### Sesión 2026-06-03 — 5 skills nativas + 5 workflows (feat/security-native)
+- **Meta:** Incorporar 5 herramientas externas como skills y workflows 100% nativos X-DD.
+- **Skills creadas (skills/):**
+  - `xdd-grill-me` — Interrogatorio implacable de planes (inspirado en mattpocock/skills grill-me MIT)
+  - `xdd-fact-check` — Verificación SIFT+CRAAP+MFS 11 pasos (inspirado en petar-nauka/fact-check-skill)
+  - `xdd-idea-refine` — Refinamiento divergente→convergente (inspirado en addyosmani/agent-skills MIT)
+  - `xdd-prompt-master` — Prompt engineering 30+ tools, routing anti-CoT (inspirado en nidhinjs/prompt-master)
+  - `xdd-agent-browser` — Browser automation CLI Rust CDP (inspirado en vercel-labs/agent-browser)
+- **Workflows creados (.agent/workflows/ + .claude/commands/ copias reales):**
+  - `/grill-me`, `/fact-check`, `/idea-refine`, `/prompt-master`, `/agent-browser`
+- **Catálogo actualizado:** `prompts/workflows/03_workflows_catalog.md` — Sección 12 Native Skills
+- **Lint:** 0 errores, 0 warnings post-integración
+- **Decisiones:**
+  - Skills son nativas (no wrappers que llaman externos) — lógica completa en SKILL.md
+  - `.claude/commands/` usa copias reales (lección symlinks, Sprints 24-27)
+  - `xdd-prompt-master` complementa `/mejorar-prompt` (internos X-DD) — no lo reemplaza
+  - `xdd-agent-browser` requiere `agent-browser` CLI instalado; skill documenta install
+- **Integración workflows existentes:** grill-me↔clarify+brainstorm, fact-check↔research+security-audit, idea-refine↔brainstorm+ux-discovery, prompt-master↔mejorar-prompt+evolve, agent-browser↔pruebas-humo+a11y-audit+deploy-prod
 
 ### Sesión 2026-05-28 — Codex adapter (7° IDE) + ADR-0036
 - **Meta:** Soporte Codex (OpenAI CLI) per guía oficial provista user. Skills GLOBAL + orchestrator pattern + agents-index (NO N skills).
@@ -291,3 +383,15 @@
 - **Decisiones:** ver tabla arriba (ADR-0000 a 0009).
 - **Bloqueos:** ninguno.
 - **Próxima sesión:** Sprint 1 — declarar MemPalace como dep externa, reescribir sección README, crear `DEPENDENCIES.md`, producir `.xdd/spec/DOMAIN.md` y `.xdd/spec/THREATS.md`.
+
+### Sesion 2026-06-04 — DOC_STANDARD v2.0 + purga emojis + docs criticos (feature/docs-granular-standard)
+- **Meta:** Elevar calidad documental de X-DD al nivel del pipeline doc-granular implementado.
+- **Hitos:**
+  - DOC_STANDARD.md v2.0: criterios cuantitativos (umbrales lineas, criterios rechazo, FSM worker-auditor)
+  - constitucion.md: 69→388 lineas — 9 articulos + Mermaid pipeline + schema memoria.md
+  - GATE.md: 188→555 lineas — FSM, HMAC protocol, threat model, recovery procedures
+  - ARQUITECTURA.md: nuevo (309 lineas) — C4 Context/Container/Component, ADR table, riesgos
+  - Purga emojis: 0 en 52 docs/ via Python unicode-safe
+- **Discusion:** atomicidad vs granularidad — X-DD_Integration_Guide.md viola atomicidad (9 disciplinas en 1 doc)
+- **QA:** 409 tests verdes, shield 0 CRITICAL
+- **Proxima sesion:** Refactorizar Integration_Guide.md en 9 docs atomicos + heredar a evol-dd

@@ -3,6 +3,11 @@ description: Workflow X-DD
 ---
 
 # /refactor-area
+
+> **Estandar de documentacion:** Todo artefacto que produzca este workflow cumple
+> [`docs/DOC_STANDARD.md`](../../docs/DOC_STANDARD.md): sin emojis, diagramas Mermaid
+> obligatorios, tablas para datos estructurados, Gherkin donde aplique, secciones
+> minimas y trazabilidad bidireccional.
 **ID:** FLUJO-012 | **Versión:** 2.3.0 | **Nivel:** Táctico
 **Orquestador:** X-DD Orchestrator (00)
 **Subagentes:** Swarm de Ejecución (03), Swarm de QA (04), Swarm de Consolidación (05)

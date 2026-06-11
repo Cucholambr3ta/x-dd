@@ -42,10 +42,10 @@ workspace:
 
 ## Cuándo usar workspace mode
 
-- ✅ Monorepo light: api + web + worker en un repo
-- ✅ Multi-app projects: 3 microservices en 3 carpetas
-- ✅ Mobile + backend: app/ + backend/ + admin/
-- ❌ Monorepo grande con miles de packages → ver [docs/MONOREPO.md](MONOREPO.md) (Sprint 15)
+- SI Monorepo light: api + web + worker en un repo
+- SI Multi-app projects: 3 microservices en 3 carpetas
+- SI Mobile + backend: app/ + backend/ + admin/
+- NO Monorepo grande con miles de packages → ver [docs/MONOREPO.md](MONOREPO.md) (Sprint 15)
 
 ## Limitaciones actuales
 

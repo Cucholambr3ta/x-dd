@@ -1,6 +1,6 @@
 # ⚙️ Catálogo Maestro de Workflows: Ecosistema X-DD
 
-Este documento describe los **29 workflows operativos** configurados en `.agent/workflows/`, explicando cómo guían el ciclo de vida del desarrollo agéntico e interactúan con la memoria local de **MemPalace**.
+Este documento describe los **35 workflows operativos** configurados en `.agent/workflows/`, explicando cómo guían el ciclo de vida del desarrollo agéntico e interactúan con la memoria local de **MemPalace**. Incluye las 6 skills de disciplinas extendidas (sección 8.5) que materializan las metodologías del registro `docs/disciplinas/`.
 
 ---
 
@@ -47,6 +47,7 @@ Los workflows son guías ejecutables en formato Markdown que definen flujos paso
 
 ### 7. Documentación y Utilería de Soporte
 *   **`/technical-documentation` (`technical-documentation.md`)**: Generación de documentación técnica detallada en base a la arquitectura del código.
+*   **`/crear-skill` (`crear-skill.md`)**: Loop iterativo completo para crear o mejorar skills: captura intencion → draft SKILL.md → evals cuantitativos/cualitativos con runs paralelos (with-skill vs baseline) → iteracion basada en feedback → optimizacion de description para triggering accuracy → portabilidad a los 7 IDEs via xdd-adapt.sh. Patron inspirado en anthropics/skills/skill-creator.
 *   **`/skill-template-generator` (`skill-template-generator.md`)**: Plantillas y automatización para mantener la coherencia absoluta entre el código de las skills y su documentación (`SKILL.md`).
 *   **`/design-system-builder` (`design-system-builder.md`)**: Generación automatizada de tokens de diseño CSS para mantener la consistencia estética.
 *   **`/generar-flujo` (`generar-flujo.md`)**: Generador de archivos de flujos visuales `.canvas`.
@@ -82,8 +83,18 @@ Los workflows son guías ejecutables en formato Markdown que definen flujos paso
 *   **`/data-pipeline` (`data-pipeline.md`)**: Pipeline de datos con contratos, SLAs, DLQ, calidad y lineage.
 *   **`/ml-eval` (`ml-eval.md`)**: Evaluación de modelos ML/LLM. Golden sets, drift detection, A/B con feature flags.
 
+#### 8.5 Disciplinas extendidas — gaps (activación por `methodologies:` en `xdd.profile.yml`)
+Skills que materializan disciplinas del registro `docs/disciplinas/` sin cobertura previa. Ver [`docs/disciplinas/INDEX.md`](../../docs/disciplinas/INDEX.md).
+*   **`/xdd ux-driven` (`ux-driven.md`)**: UX-Driven (UXDD). User journeys, mensajes de UI sin jerga y microinteracciones, en Briefing. Disciplina `UXDD.md`.
+*   **`/xdd event-sourcing` (`event-sourcing.md`)**: Event Sourcing (ESDD). Event store + aggregates con replay determinista, en Spec. Disciplina `ESDD.md`.
+*   **`/xdd api-versioning` (`api-versioning.md`)**: API Versioning (APIVDD). Estrategia de versionado + deprecation schedule, en Plan. Disciplina `APIVDD.md`.
+*   **`/xdd iac-driven` (`iac-driven.md`)**: Infrastructure-as-Code (IODD). Recursos como codigo modular recreable, en Spec. Disciplina `IODD.md`.
+*   **`/xdd debt-budget` (`debt-budget.md`)**: Technical Debt Budgeting (DebtBudgetDD). Presupuesto + ledger de deuda, en Plan. Disciplina `DebtBudgetDD.md`.
+*   **`/xdd use-case-driven` (`use-case-driven.md`)**: Use-Case-Driven (UDD). Casos de uso como unidad de diseno, en Briefing. Disciplina `UDD.md`.
+
 ### 9. Continuous Learning (Sprint 9)
 *   **`/evolve` (`evolve.md`)**: Cluster instincts acumulados en SQLite (`~/.xdd/state.db`) → propone skills/agents/commands nuevos. Humano aprueba (T6.1) antes de promover. Inspirado en ECC `/evolve`.
+*   **`/research` (`research.md`)**: Investigacion autonoma del ecosistema (skills Claude Code en GitHub, changelogs, metodologias, papers) → propone mejoras rankeadas en `RESEARCH.md` + tabla `research_proposals` (SQLite). Humano aprueba (Art. 2) antes de implementar. Offline/determinista por defecto.
 
 ### 10. Multi-Agent Orchestration (Sprint 11)
 *   **`/orchestrate` (`orchestrate.md`)**: Runtime que ejecuta composition_patterns del registry (sequential/parallel/parallel_then_sync). Modo dry-run + exec. Reusa MCP server (Sprint 6) para invocaciones reales.
@@ -93,6 +104,24 @@ Los workflows son guías ejecutables en formato Markdown que definen flujos paso
 *   **`/cross-validate` (`cross-validate.md`)**: Detecta drift entre pares de artefactos (MISSING/CONFLICT/ORPHAN). Bloquea gate si MISSING o CONFLICT.
 *   **`/brainstorm` (`brainstorm.md`)**: Genera ideas sin filtrar para problem space exploration. Invoca party mode (Sprint 17). Inspirado en BMAD.
 *   **`/code-as-tool` (`code-as-tool.md`)**: Pattern Code Execution with MCP. Wrap N tool calls homogéneos en 1 script (98%+ reducción tokens).
+
+### 14. Setup inicial (feature/relato-gaps)
+
+*   **`/xdd setup-repo` (`setup-repo.md`)**: Paso 0 del pipeline, ANTES del briefing. Pregunta una a una: ubicacion del repo (existente / crear en nube via `gh repo create` / solo local) y modo (dev-solo PR auto-merge / colaborativo PR con reviewer). Configura GitFlow main-develop. ADR-0052. Crea repos en la nube autonomamente (private por default, gh-gated).
+*   **`/xdd idea` (`idea.md`)**: Paso 0.5, despues de setup-repo, antes de discovery. Decanta la idea cruda del usuario (prompt + links + archivos) en atomos `acuerdos/idea/<tema>.md` — 1 por tema/proyecto/link. Adaptativo: cita la solicitud, preserva input estructurado, NO genera idea.md monolitico. Genera INDEX.md + INDEX.json. Cada atomo apunta a su artefacto de discovery.
+*   **`/xdd discovery` (`discovery.md`)**: Paso 0.7, research PRE-briefing. Por cada atomo de idea investiga el tema/link (pipeline researcher->fact-check->writer) para ENTENDER que es, que aporta, como funciona. Produce `acuerdos/discovery/<tema>/investigacion.md` + sintesis `INDEX.md`. RECIEN entonces se habilita el briefing. Distinto de `/ux-discovery` (UX) y del research post-briefing en doc-granular (como construir).
+
+### 13. Pipeline de Ejecucion (feature/sprint-memoria-lecciones + Inc 5-6)
+
+*   **`/xdd historias` (`xdd-historias.md`)**: Genera historias de usuario completas post-doc-granular. Lee `acuerdos/proyecto/` + wireframes e identifica TODAS las historias (HU/HT/HS). Por cada una crea 4 artefactos (propuesta, requisitos-escenarios, escenario-tecnico, checklist 50+ tareas) via pipeline worker-auditor. Genera `acuerdos/sprint.md` con plan de sprints. Auditor registra gaps en `acuerdos/lecciones/sprint-00.md`.
+*   **`/xdd sprint` (`xdd-sprint.md`)**: Orquestador del ciclo completo de un sprint. Compone equipo dinamico de subagentes segun componentes tecnicos detectados en `escenario-tecnico.md`. Ejecuta checklist atomico con auditor permanente (engineering-code-reviewer). Evaluacion pre-push (tests + shield + gitignore). GitFlow via `xdd-gitflow.sh`. Post-sprint lee lecciones y propone fixes o actualiza MEMORY.md.
+
+### 12. Native Skills (feat/security-native + S26)
+*   **`/grill-me` (`grill-me.md`)**: Interrogatorio implacable de planes y diseños. Recorre árbol de decisiones rama a rama hasta que no quedan supuestos sin validar. Skill `xdd-grill-me`. Inspirado en mattpocock/skills grill-me (MIT).
+*   **`/fact-check` (`fact-check.md`)**: Verificación de claims externos con pipeline SIFT + CRAAP + MFS scoring (11 pasos). Produce Fact-Check Report auditado. Skill `xdd-fact-check`. Integrado en `/research` y `/security-audit`.
+*   **`/idea-refine` (`idea-refine.md`)**: Refinamiento divergente→convergente de ideas brutas en propuestas accionables. Complementa `/brainstorm` con convergencia y lista "No Hacemos" explícita. Skill `xdd-idea-refine`.
+*   **`/prompt-master` (`prompt-master.md`)**: Generación de prompts optimizados para 30+ herramientas de IA. Routing por tool conventions, reglas hard anti-CoT en modelos de razonamiento. Complementa `/mejorar-prompt` para targets externos. Skill `xdd-prompt-master`.
+*   **`/agent-browser` (`agent-browser.md`)**: Automatización browser nativa via CLI Rust (CDP directo, sin Node.js). Navegación, interacción por refs del accessibility tree, screenshots, auth vault. Integrado en `/pruebas-humo`, `/a11y-audit`, `/deploy-prod`. Skill `xdd-agent-browser`.
 
 ---
 

@@ -15,6 +15,16 @@ set +e
 # Skip si opt-out activo
 [ "${XDD_NO_ORGANIZE:-0}" = "1" ] && exit 0
 
+# Guarda repo-fuente: las reglas de auto-organize (gitignore_framework_copies)
+# ignoran prompts/scripts/templates/ asumiendo que son COPIAS en un proyecto
+# consumidor. En el repo-fuente X-DD esos dirs SON el código versionado → no
+# tocarlos. Marcador único del fuente: agent.yaml con name: x-dd + las plantillas
+# de organize. (Un proyecto generado tiene su propio name.)
+if [ -f agent.yaml ] && grep -qE '^name:[[:space:]]*x-dd[[:space:]]*$' agent.yaml \
+   && [ -f templates/auto-organize.template.yml ]; then
+  exit 0
+fi
+
 # Resolver path del repo X-DD source (script xdd-organize vive ahí)
 XDD_ORGANIZE=""
 if [ -x ./scripts/xdd-organize.sh ]; then

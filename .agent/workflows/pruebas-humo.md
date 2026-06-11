@@ -3,6 +3,11 @@ description: Workflow X-DD
 ---
 
 # /pruebas-humo
+
+> **Estandar de documentacion:** Todo artefacto que produzca este workflow cumple
+> [`docs/DOC_STANDARD.md`](../../docs/DOC_STANDARD.md): sin emojis, diagramas Mermaid
+> obligatorios, tablas para datos estructurados, Gherkin donde aplique, secciones
+> minimas y trazabilidad bidireccional.
 **ID:** FLUJO-037 | **Versión:** 2.3.0 (NDJSON & Tiered Testing) | **Nivel:** Operativo
 **Orquestador:** X-DD Orchestrator (00)
 **Asistentes Operativos (Swarm):** Swarm de QA (04 Clones)

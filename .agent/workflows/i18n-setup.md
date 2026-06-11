@@ -2,6 +2,11 @@
 description: Configura internacionalización del proyecto. Extracción, locales, RTL, formato de fechas/números.
 ---
 # /i18n-setup
+
+> **Estandar de documentacion:** Todo artefacto que produzca este workflow cumple
+> [`docs/DOC_STANDARD.md`](../../docs/DOC_STANDARD.md): sin emojis, diagramas Mermaid
+> obligatorios, tablas para datos estructurados, Gherkin donde aplique, secciones
+> minimas y trazabilidad bidireccional.
 **ID:** FLUJO-I18N | **Versión:** 1.0 | **Agente:** I18n-Engineer + Frontend-Developer
 **Misión:** Habilitar el producto para múltiples idiomas y regiones sin retrabajos.
 

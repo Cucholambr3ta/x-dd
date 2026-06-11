@@ -2,6 +2,11 @@
 description: Gestión de migraciones de BD en Fase 4. Genera migración up/down, seed y verifica rollback.
 ---
 # /db-migrate
+
+> **Estandar de documentacion:** Todo artefacto que produzca este workflow cumple
+> [`docs/DOC_STANDARD.md`](../../docs/DOC_STANDARD.md): sin emojis, diagramas Mermaid
+> obligatorios, tablas para datos estructurados, Gherkin donde aplique, secciones
+> minimas y trazabilidad bidireccional.
 **ID:** FLUJO-DB-MIG | **Versión:** 1.0 | **Agente:** Database-Optimizer + Senior-Developer
 **Misión:** Toda evolución de schema atraviesa migración versionada, reversible y probada.
 

@@ -333,7 +333,7 @@ White-labeling (Sprint 13) + xdd-talk-compact (Sprint 10) = combinable 4×4 matr
 
 ```mermaid
 flowchart LR
-    XDD["🧠 X-DD"] --> MCP["📡 xdd-mcp-server<br/>6 tools"]
+    XDD["🧠 X-DD"] --> SK[".agents/skills/<br/>/trigger + skills"]
     XDD --> A1["xdd-adapt claude-code"]
     XDD --> A2["xdd-adapt opencode"]
 

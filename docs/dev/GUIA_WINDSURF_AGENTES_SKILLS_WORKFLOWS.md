@@ -4,7 +4,7 @@
 **IDE:** Windsurf (Codeium)  
 **Versión doc:** 1.0  
 **Fecha:** 2026-05-28  
-**Estado adapter:** ✅ Implementación completa (Sprint 26 / ADR-0037) en `scripts/xdd-adapt.sh` (`adapt_windsurf`)  
+**Estado adapter:** SI Implementación completa (Sprint 26 / ADR-0037) en `scripts/xdd-adapt.sh` (`adapt_windsurf`)  
 **Referencias internas:** ADR-0034, ADR-0035, ADR-0036, **ADR-0037**, `docs/IDE_SETUP.md`, `docs/MCP_INTEGRATION.md`
 
 ---
@@ -32,14 +32,14 @@ Windsurf **no es** Claude Code ni Cursor. Antes de diseñar el adapter hay que i
 
 | Capacidad | Claude Code / OpenCode / Copilot | Cursor | **Windsurf** |
 |-----------|----------------------------------|--------|--------------|
-| Slash commands custom (`/workflow`) | ✅ vía archivos en carpetas IDE | ❌ **No existe** | ✅ **SÍ existe** |
-| Registro automático de N workflows | ✅ copia a commands/prompts | ❌ **No existe** | ✅ **SÍ existe** (`.windsurf/workflows/`) |
-| Catálogo nativo de agentes | ❌ (X-DD lo resuelve) | ❌ | ❌ |
-| Rules con @mention | ✅ | ✅ **Mecanismo principal** | ✅ **Mecanismo principal** |
-| Skills auto-descubiertas | Vía convención IDE | ✅ `.cursor/skills/` | ❌ **No documentado** |
-| MCP tools | ✅ | ✅ `.cursor/mcp.json` | ✅ `~/.codeium/mcp_config.json` |
-| Subagents paralelos | Limitado | ✅ Task tool nativo | ✅ Devin Local Agent |
-| Workflows system nativo | ✅ | ❌ | ✅ **Windsurf Workflows** |
+| Slash commands custom (`/workflow`) | SI vía archivos en carpetas IDE | NO **No existe** | SI **SÍ existe** |
+| Registro automático de N workflows | SI copia a commands/prompts | NO **No existe** | SI **SÍ existe** (`.windsurf/workflows/`) |
+| Catálogo nativo de agentes | NO (X-DD lo resuelve) | NO | NO |
+| Rules con @mention | SI | SI **Mecanismo principal** | SI **Mecanismo principal** |
+| Skills auto-descubiertas | Vía convención IDE | SI `.cursor/skills/` | NO **No documentado** |
+| MCP tools | SI | SI `.cursor/mcp.json` | SI `~/.codeium/mcp_config.json` |
+| Subagents paralelos | Limitado | SI Task tool nativo | SI Devin Local Agent |
+| Workflows system nativo | SI | NO | SI **Windsurf Workflows** |
 
 **Consecuencia de diseño:** Windsurf tiene workflows nativos (`.windsurf/workflows/*.md` invocables con `/name`), lo que lo acerca más a Claude Code/OpenCode que a Cursor. **Sprint 26 / ADR-0037:** `adapt_windsurf()` ahora copia workflows SSoT → `.windsurf/workflows/` (paridad con `adapt_claude_code()`/`adapt_opencode()`) y mergea MCP en `~/.codeium/mcp_config.json` global (paridad con `adapt_antigravity()`).
 
@@ -180,11 +180,11 @@ adapt_windsurf() {
 ```
 
 **Output generado:**
-1. ✅ `.windsurf/workflows/*.md` — workflows SSoT copiados, slash nativos `/xdd`, `/fase-requisitos`, etc.
-2. ✅ `.windsurf/rules/<trigger>.md` — rule para @mention
-3. ✅ `~/.codeium/mcp_config.json` — MCP MERGE no destructivo (key `mcpServers`)
-4. ✅ `.windsurf/mcp.json` — stub project-local con comentario explicativo
-5. ✅ `.windsurf/README-xdd.md` — doc local arquitectura + uso
+1. SI `.windsurf/workflows/*.md` — workflows SSoT copiados, slash nativos `/xdd`, `/fase-requisitos`, etc.
+2. SI `.windsurf/rules/<trigger>.md` — rule para @mention
+3. SI `~/.codeium/mcp_config.json` — MCP MERGE no destructivo (key `mcpServers`)
+4. SI `.windsurf/mcp.json` — stub project-local con comentario explicativo
+5. SI `.windsurf/README-xdd.md` — doc local arquitectura + uso
 
 **Override portabilidad:** `XDD_WINDSURF_HOME` env var redirige config global (default `$HOME/.codeium`).
 **Wrapper global (Sprint 25):** si `~/.local/bin/xdd-mcp-server` instalado → MCP entry usa wrapper sin `cwd` fijo.
@@ -212,12 +212,12 @@ La rule `.windsurf/rules/<trigger>.md` instruye al agente a consultar MCP tools 
 
 ### 5.5 Anti-patterns workflows en Windsurf
 
-- ✅ ~~Esperar `/plan-fases` como slash nativo hoy~~ **Resuelto Sprint 26** — workflows copiados automático
-- ❌ Crear 54 rules `.md` (una por workflow) — satura el rule picker
-- ❌ Duplicar workflows fuera de `.agent/workflows/` (SSoT violation)
-- ❌ Symlinks en paths de config (Windsurf puede rechazarlos)
-- ❌ Editar `.windsurf/workflows/*.md` directo (overwrite en próximo `xdd-adapt`) — edita SSoT en `.agent/workflows/`
-- ❌ Workflows > 12000 chars (Windsurf trunca o ignora — adapter WARN al exceder)
+- SI ~~Esperar `/plan-fases` como slash nativo hoy~~ **Resuelto Sprint 26** — workflows copiados automático
+- NO Crear 54 rules `.md` (una por workflow) — satura el rule picker
+- NO Duplicar workflows fuera de `.agent/workflows/` (SSoT violation)
+- NO Symlinks en paths de config (Windsurf puede rechazarlos)
+- NO Editar `.windsurf/workflows/*.md` directo (overwrite en próximo `xdd-adapt`) — edita SSoT en `.agent/workflows/`
+- NO Workflows > 12000 chars (Windsurf trunca o ignora — adapter WARN al exceder)
 
 ---
 
@@ -234,7 +234,7 @@ La rule `.windsurf/rules/<trigger>.md` instruye al agente a consultar MCP tools 
 name: Backend Architect
 description: Senior backend architect specializing in scalable system design...
 color: blue
-emoji: 🏗️
+emoji: 
 ---
 ```
 
@@ -322,10 +322,10 @@ El orquestador X-DD (vía workflow `/xdd`) consulta `xdd_list_agents`, seleccion
 
 ### 6.4 Anti-patterns agentes en Windsurf
 
-- ❌ Esperar UI nativa de selección de agentes (Windsurf no tiene)
-- ❌ Crear registry paralelo Windsurf-specific
-- ❌ Ignorar `ide_compat: ["windsurf"]` en registry
-- ❌ Duplicar prompts de agentes fuera de `prompts/agents/`
+- NO Esperar UI nativa de selección de agentes (Windsurf no tiene)
+- NO Crear registry paralelo Windsurf-specific
+- NO Ignorar `ide_compat: ["windsurf"]` en registry
+- NO Duplicar prompts de agentes fuera de `prompts/agents/`
 
 ---
 
@@ -388,9 +388,9 @@ adapt_windsurf() {
 
 ### 7.5 Anti-patterns skills en Windsurf
 
-- ❌ Inventar convención de skills Windsurf sin documentación oficial
-- ❌ Crear directorio `.windsurf/skills/` no soportado
-- ❌ Duplicar skills X-DD sin propósito (Windsurf no tiene sistema skills)
+- NO Inventar convención de skills Windsurf sin documentación oficial
+- NO Crear directorio `.windsurf/skills/` no soportado
+- NO Duplicar skills X-DD sin propósito (Windsurf no tiene sistema skills)
 
 ---
 
@@ -480,11 +480,11 @@ bash scripts/xdd-adapt.sh all --dest=/ruta/proyecto
 
 **Características del MERGE (no destructivo):**
 
-- ✅ Preserva otros `mcpServers` existentes del usuario (otras integraciones MCP)
-- ✅ Crea archivo si no existe (`mkdir -p` del dir parent)
-- ✅ ABORT con mensaje claro si JSON corrupto (no destruye archivo)
-- ✅ Idempotente: ejecuta N veces, resultado consistente
-- ✅ Stub `.windsurf/mcp.json` project-local con `_comment` apuntando a config global
+- SI Preserva otros `mcpServers` existentes del usuario (otras integraciones MCP)
+- SI Crea archivo si no existe (`mkdir -p` del dir parent)
+- SI ABORT con mensaje claro si JSON corrupto (no destruye archivo)
+- SI Idempotente: ejecuta N veces, resultado consistente
+- SI Stub `.windsurf/mcp.json` project-local con `_comment` apuntando a config global
 
 **Patrón replicado:** `adapt_antigravity()` (líneas 342+ de `scripts/xdd-adapt.sh`) — misma técnica merge, sin Cascade `$typeName` específico.
 
@@ -604,15 +604,15 @@ sequenceDiagram
 
 | Aspecto | Cursor | **Windsurf (Sprint 26)** | Codex | Antigravity |
 |---------|--------|----------|-------|-------------|
-| **Slash commands nativos** | ❌ No | ✅ SÍ (workflows) | ✅ SÍ (description) | ❌ No |
-| **Adapter copia workflows** | ❌ No (backlog) | **✅ SÍ (Sprint 26)** | ❌ No (orchestrator pattern) | ❌ No |
+| **Slash commands nativos** | NO No | SI SÍ (workflows) | SI SÍ (description) | NO No |
+| **Adapter copia workflows** | NO No (backlog) | **SI SÍ (Sprint 26)** | NO No (orchestrator pattern) | NO No |
 | **MCP config path** | `.cursor/mcp.json` (project) | **`~/.codeium/mcp_config.json` (global, MERGE)** | N/A | `~/.gemini/config/mcp_config.json` (global) |
 | **MCP config key** | `mcpServers` | **`mcpServers` (estándar)** | N/A | `$typeName` (Cascade) |
-| **Skills nativos** | ✅ `.cursor/skills/` | ❌ No documentado | ✅ `~/.codex/skills/` (global) | ✅ `.agents/skills/` (plural) |
-| **Adapter copia skills** | ❌ No (backlog) | ❌ N/A (sin convención oficial) | ✅ SÍ (global) | ✅ SÍ (project) |
+| **Skills nativos** | SI `.cursor/skills/` | NO No documentado | SI `~/.codex/skills/` (global) | SI `.agents/skills/` (plural) |
+| **Adapter copia skills** | NO No (backlog) | NO N/A (sin convención oficial) | SI SÍ (global) | SI SÍ (project) |
 | **Trigger principal** | `@trigger` + MCP | **`/trigger` + `@trigger` + MCP** | `/trigger` (description) | MCP tool |
-| **Rule generada** | ✅ `.cursor/rules/<trigger>.mdc` | ✅ `.windsurf/rules/<trigger>.md` | ❌ No | ❌ No |
-| **README local** | ❌ No | **✅ `.windsurf/README-xdd.md` (Sprint 26)** | ✅ `.codex/README-xdd.md` | ✅ `.antigravity/README-xdd.md` |
+| **Rule generada** | SI `.cursor/rules/<trigger>.mdc` | SI `.windsurf/rules/<trigger>.md` | NO No | NO No |
+| **README local** | NO No | **SI `.windsurf/README-xdd.md` (Sprint 26)** | SI `.codex/README-xdd.md` | SI `.antigravity/README-xdd.md` |
 | **Estado** | Adapter delgado (rule + MCP only) | **Paridad completa con Claude Code + Antigravity** | Skills global con orchestrator | MCP global + skills project |
 
 **Conclusión post-Sprint 26:** Windsurf alcanzó **paridad completa** con Claude Code/OpenCode (workflows nativos) + Antigravity (MCP merge global). Backlog restante = skills (depende doc oficial Windsurf).

@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "X-DD Bundle Manifest",
+  "description": "Schema del manifest.json de un bundle X-DD (.xddbundle). ADR-0017.",
+  "type": "object",
+  "required": ["spec_version", "name", "version", "author", "license"],
+  "properties": {
+    "spec_version": {"type": "string", "pattern": "^\\d+\\.\\d+$"},
+    "name": {"type": "string", "minLength": 1},
+    "version": {"type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+"},
+    "author": {"type": "string", "minLength": 1},
+    "license": {"type": "string", "enum": ["MIT", "Apache-2.0", "BSD-2-Clause", "BSD-3-Clause", "ISC", "MPL-2.0"]},
+    "description": {"type": "string"},
+    "signature": {"type": "string"},
+    "files": {"type": "array", "items": {"type": "string"}},
+    "created_at": {"type": "string"}
+  },
+  "additionalProperties": false
+}

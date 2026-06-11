@@ -51,4 +51,32 @@ if [ -d "$ROOT/.xdd" ]; then
     fi
 fi
 
+# Heurística 3 (S11): analiza traces OTel de la sesión → patrones de tool calls
+TRACES_DIR="${XDD_OTEL_DIR:-$ROOT/.xdd/traces/spans}"
+if [ -d "$TRACES_DIR" ]; then
+    TOOL_PATTERN=$(python3 - <<PYEOF 2>/dev/null
+import json, sys, pathlib, collections
+traces_dir = pathlib.Path("$TRACES_DIR")
+tool_counts = collections.Counter()
+for f in sorted(traces_dir.glob("*.json"))[-50:]:
+    try:
+        s = json.loads(f.read_text(encoding="utf-8"))
+        if s.get("kind") == "tool.call":
+            tool_counts[s.get("attributes", {}).get("tool_name", "unknown")] += 1
+    except (json.JSONDecodeError, OSError, KeyError):
+        continue
+if tool_counts:
+    top = tool_counts.most_common(3)
+    print(",".join(f"{t}:{n}" for t,n in top))
+PYEOF
+)
+    if [ -n "$TOOL_PATTERN" ]; then
+        python3 "$STATE_SCRIPT" record-instinct \
+          --pattern "frequent tools: $TOOL_PATTERN" \
+          --category tool_use \
+          --context "session=$SESSION_ID" \
+          --session-id "$SESSION_ID" >>"$HOME/.xdd/learning.log" 2>&1 &
+    fi
+fi
+
 exit 0

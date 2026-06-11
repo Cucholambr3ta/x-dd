@@ -15,7 +15,7 @@ Sprint 29 implementó `scripts/xdd-global-install.sh` para registrar el orquesta
 El usuario ejecutó:
 ```bash
 bash scripts/xdd-global-install.sh --trigger=anmax --check
-# ✓ vscode-copilot: ~/.config/Code/User/prompts/anmax.prompt.md
+# OK vscode-copilot: ~/.config/Code/User/prompts/anmax.prompt.md
 ```
 
 Pero al abrir VSCode y escribir `/anmax`, **el autocomplete NO mostraba el slash command**, mientras que `/xdd` (project-local `.github/prompts/xdd.prompt.md`) sí aparecía.
@@ -39,12 +39,12 @@ Sprint 29 escribía el prompt file pero NO configuraba la setting. Resultado: ar
 
 | IDE | Prompts global path | Auto-discover por default |
 |---|---|---|
-| Claude Code | `~/.claude/commands/` | ✅ Sí |
-| OpenCode | `~/.config/opencode/command/` | ✅ Sí |
-| Cursor | `~/.cursor/rules/` | ✅ Sí (rules picker) |
-| Windsurf | `~/.codeium/workflows/` | ✅ Sí |
-| **VSCode + Copilot** | `~/.config/Code/User/prompts/` | ❌ **NO — requiere setting** |
-| Codex | `~/.codex/skills/` | ✅ Sí (descripción matching) |
+| Claude Code | `~/.claude/commands/` | SI Sí |
+| OpenCode | `~/.config/opencode/command/` | SI Sí |
+| Cursor | `~/.cursor/rules/` | SI Sí (rules picker) |
+| Windsurf | `~/.codeium/workflows/` | SI Sí |
+| **VSCode + Copilot** | `~/.config/Code/User/prompts/` | NO **NO — requiere setting** |
+| Codex | `~/.codex/skills/` | SI Sí (descripción matching) |
 
 VSCode es el único que requiere registro explícito del path en settings.
 

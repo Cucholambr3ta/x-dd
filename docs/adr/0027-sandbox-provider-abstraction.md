@@ -35,15 +35,15 @@ Sprint 21 introduce `skills/xdd-sandbox/SKILL.md`:
 ## Consequences
 
 ### Positivas
-- ✅ Code untrusted (LLM-generated, eval, etc.) ejecuta aislado
-- ✅ Provider-agnostic: equipos eligen tradeoff cost/privacy/perf
-- ✅ Auto-trigger por intent classification (xdd-intent + auto_for_intents)
-- ✅ Compat con authz: `xdd-authz` decide IF, `xdd-sandbox` decide HOW
+- SI Code untrusted (LLM-generated, eval, etc.) ejecuta aislado
+- SI Provider-agnostic: equipos eligen tradeoff cost/privacy/perf
+- SI Auto-trigger por intent classification (xdd-intent + auto_for_intents)
+- SI Compat con authz: `xdd-authz` decide IF, `xdd-sandbox` decide HOW
 
 ### Negativas
-- ⚠️ Skill es spec, no runtime. Implementación per-backend pendiente para v0.2.0
-- ⚠️ `none` default es inseguro — recomendar `docker` mínimo en docs
-- ⚠️ Network deny estricto puede romper workflows legítimos (curl APIs)
+- WARN Skill es spec, no runtime. Implementación per-backend pendiente para v0.2.0
+- WARN `none` default es inseguro — recomendar `docker` mínimo en docs
+- WARN Network deny estricto puede romper workflows legítimos (curl APIs)
 
 ## Related
 - ADR-0028 Permission model (xdd-intent + xdd-authz, companion)

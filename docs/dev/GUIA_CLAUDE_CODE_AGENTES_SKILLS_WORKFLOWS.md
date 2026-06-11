@@ -4,7 +4,7 @@
 **IDE:** Claude Code (Anthropic)  
 **Versión doc:** 1.0  
 **Fecha:** 2026-05-28  
-**Estado adapter:** ✅ Implementado en `scripts/xdd-adapt.sh` (`adapt_claude_code`, líneas 185-194) — **orquestador primario**  
+**Estado adapter:** SI Implementado en `scripts/xdd-adapt.sh` (`adapt_claude_code`, líneas 185-194) — **orquestador primario**  
 **Referencias internas:** ADR-0034, ADR-0035, ADR-0036, ADR-0037, `docs/IDE_SETUP.md`, `docs/MCP_INTEGRATION.md`
 
 ---
@@ -36,13 +36,13 @@ Claude Code es la **referencia funcional** del adapter X-DD — es el IDE con ca
 
 | Capacidad | Claude Code | Cursor | Windsurf | Antigravity |
 |-----------|-------------|--------|----------|-------------|
-| Slash commands custom (`/workflow`) | ✅ `.claude/commands/*.md` nativo | ❌ | ✅ `.windsurf/workflows/` | ❌ |
-| Registro automático de N workflows | ✅ copia real desde SSoT | ❌ rule única | ✅ workflows nativos | ❌ MCP only |
-| Subagents paralelos | ✅ **Task tool nativo** | ✅ | Limitado | Limitado |
-| Skills convención | ✅ `.claude/skills/<name>/SKILL.md` | ✅ `.cursor/skills/` | ⚠️ (vía MCP) | ✅ `.agents/skills/` |
-| MCP tools | ✅ `.mcp.json` project-local | ✅ | ✅ (global `~/.codeium/`) | ✅ (global `~/.gemini/`) |
-| Governance manifest | ✅ `CLAUDE.md` (lectura automática) | Parcial | Parcial | Vía skills |
-| Symlinks en config | ❌ **RECHAZADOS** (ADR-0034 root cause) | ❌ | ❌ | ❌ |
+| Slash commands custom (`/workflow`) | SI `.claude/commands/*.md` nativo | NO | SI `.windsurf/workflows/` | NO |
+| Registro automático de N workflows | SI copia real desde SSoT | NO rule única | SI workflows nativos | NO MCP only |
+| Subagents paralelos | SI **Task tool nativo** | SI | Limitado | Limitado |
+| Skills convención | SI `.claude/skills/<name>/SKILL.md` | SI `.cursor/skills/` | WARN (vía MCP) | SI `.agents/skills/` |
+| MCP tools | SI `.mcp.json` project-local | SI | SI (global `~/.codeium/`) | SI (global `~/.gemini/`) |
+| Governance manifest | SI `CLAUDE.md` (lectura automática) | Parcial | Parcial | Vía skills |
+| Symlinks en config | NO **RECHAZADOS** (ADR-0034 root cause) | NO | NO | NO |
 
 **Consecuencia de diseño:** Claude Code recibe el output **más completo** del adapter — slash commands reales + MCP project-local + `CLAUDE.md` governance. Es el baseline que el resto de adapters intenta replicar.
 
@@ -105,7 +105,7 @@ flowchart TB
 
 | Concepto X-DD | **Claude Code** | OpenCode | Cursor | Windsurf | VSCode+Copilot | Codex | Antigravity |
 |---|---|---|---|---|---|---|---|
-| **Trigger orquestador** | **`/trigger` slash nativo ✅** | `/trigger` | `@trigger` + MCP | `/trigger` workflow | `/trigger` Copilot Chat | `/trigger` description | MCP tool |
+| **Trigger orquestador** | **`/trigger` slash nativo SI** | `/trigger` | `@trigger` + MCP | `/trigger` workflow | `/trigger` Copilot Chat | `/trigger` description | MCP tool |
 | **Workflows materializados** | **`.claude/commands/*.md`** | `.opencode/command/*.md` | No (SSoT+MCP) | `.windsurf/workflows/*.md` | `.github/prompts/*.prompt.md` | `references/workflows-index.md` | No (MCP) |
 | **Agentes indexados** | **MCP + prompts SSoT** | `docs/equipo.md` | MCP + prompts | MCP + prompts | MCP + prompts | `agents-index.json` | MCP |
 | **Skills sincronizadas** | **`.claude/skills/` (manual hoy)** | Manual | `.cursor/skills/` (gap) | (vía MCP) | (vía MCP) | `~/.codex/skills/` global | `.agents/skills/` auto |
@@ -206,10 +206,10 @@ copy_commands() {
 
 ### 5.4 Anti-patterns workflows en Claude Code
 
-- ❌ **Symlinks** en `.claude/commands/` — Claude Code los rechaza ("No matching commands", ADR-0034 root cause lección)
-- ❌ Editar `.claude/commands/*.md` directamente — son copias materializadas; editar SSoT en `.agent/workflows/` y re-correr adapter
-- ❌ Más de un README en el SSoT con cabecera `# /xxx` que confunda el menú
-- ❌ Rutas absolutas del host en el contenido del workflow (Constitución, "Portabilidad Absoluta")
+- NO **Symlinks** en `.claude/commands/` — Claude Code los rechaza ("No matching commands", ADR-0034 root cause lección)
+- NO Editar `.claude/commands/*.md` directamente — son copias materializadas; editar SSoT en `.agent/workflows/` y re-correr adapter
+- NO Más de un README en el SSoT con cabecera `# /xxx` que confunda el menú
+- NO Rutas absolutas del host en el contenido del workflow (Constitución, "Portabilidad Absoluta")
 
 ### 5.5 Re-sync tras editar SSoT
 
@@ -385,10 +385,10 @@ triggers:
 
 | IDE | `xdd-adapt` sincroniza skills SSoT |
 |-----|-------------------------------------|
-| Antigravity | ✅ `skills/` → `.agents/skills/` (ADR-0035) |
-| Codex | ✅ `skills/` → `~/.codex/skills/` (ADR-0036) |
-| **Claude Code** | ❌ **No implementado** — manual hoy |
-| Cursor | ❌ idem |
+| Antigravity | SI `skills/` → `.agents/skills/` (ADR-0035) |
+| Codex | SI `skills/` → `~/.codex/skills/` (ADR-0036) |
+| **Claude Code** | NO **No implementado** — manual hoy |
+| Cursor | NO idem |
 
 **Workaround manual:**
 
@@ -401,11 +401,11 @@ cp -r skills/* .claude/skills/
 
 ### 7.6 Anti-patterns skills en Claude Code
 
-- ❌ Crear 180 skills (una por agente) — satura discovery (lección Codex ADR-0036:42 aplicable)
-- ❌ `disable-model-invocation: true` en skills que deben auto-dispararse
-- ❌ Description vaga ("Helps with code") — el agente no las descubre por triggers
-- ❌ Description en primera persona ("I can help you...") — convención IDE = tercera persona
-- ❌ Symlinks en `.claude/skills/` — Claude Code los rechaza (misma lección que `.claude/commands/`)
+- NO Crear 180 skills (una por agente) — satura discovery (lección Codex ADR-0036:42 aplicable)
+- NO `disable-model-invocation: true` en skills que deben auto-dispararse
+- NO Description vaga ("Helps with code") — el agente no las descubre por triggers
+- NO Description en primera persona ("I can help you...") — convención IDE = tercera persona
+- NO Symlinks en `.claude/skills/` — Claude Code los rechaza (misma lección que `.claude/commands/`)
 
 ---
 
@@ -619,14 +619,14 @@ Al crear artefactos en `personal/x-dd/`, aplicar para que **todos** los IDEs los
 
 | Feature | **Claude Code (HOY)** | OpenCode | Cursor | Windsurf | Antigravity | Codex |
 |---------|-----------------------|----------|--------|----------|-------------|-------|
-| Slash commands materializados | ✅ `.claude/commands/*.md` copia real | ✅ `.opencode/command/*.md` | ❌ | ✅ `.windsurf/workflows/*.md` | ❌ | ❌ (description-based) |
-| MCP config | ✅ project `.mcp.json` `mcpServers` | (vía MCP) | ✅ `.cursor/mcp.json` | ✅ merge global `~/.codeium/` | ✅ merge global `~/.gemini/` | N/A |
-| Wrapper global Sprint 25 detect | ❌ pendiente | N/A | ❌ pendiente | ✅ ADR-0037 | ✅ ADR-0035 | N/A |
-| Governance manifest | ✅ `CLAUDE.md` skip-si-existe | ✅ `AGENTS.md` | rule `.mdc` | rule `.md` | (via skills) | SKILL orchestrator |
-| Sync skills SSoT | ❌ manual | ❌ manual | ❌ manual | ❌ (vía MCP) | ✅ `.agents/skills/` | ✅ `~/.codex/skills/` |
-| Agents index local | ❌ MCP only | ✅ `docs/equipo.md` | ❌ MCP only | ❌ MCP only | (via skills) | ✅ `agents-index.json` |
-| README local | ❌ | ❌ | ❌ | ✅ `.windsurf/README-xdd.md` | ✅ `.antigravity/README-xdd.md` | ✅ `.codex/README-xdd.md` |
-| Subagents Task tool paralelo | ✅ **nativo** | Limitado | ✅ | Limitado | Limitado | Limitado |
+| Slash commands materializados | SI `.claude/commands/*.md` copia real | SI `.opencode/command/*.md` | NO | SI `.windsurf/workflows/*.md` | NO | NO (description-based) |
+| MCP config | SI project `.mcp.json` `mcpServers` | (vía MCP) | SI `.cursor/mcp.json` | SI merge global `~/.codeium/` | SI merge global `~/.gemini/` | N/A |
+| Wrapper global Sprint 25 detect | NO pendiente | N/A | NO pendiente | SI ADR-0037 | SI ADR-0035 | N/A |
+| Governance manifest | SI `CLAUDE.md` skip-si-existe | SI `AGENTS.md` | rule `.mdc` | rule `.md` | (via skills) | SKILL orchestrator |
+| Sync skills SSoT | NO manual | NO manual | NO manual | NO (vía MCP) | SI `.agents/skills/` | SI `~/.codex/skills/` |
+| Agents index local | NO MCP only | SI `docs/equipo.md` | NO MCP only | NO MCP only | (via skills) | SI `agents-index.json` |
+| README local | NO | NO | NO | SI `.windsurf/README-xdd.md` | SI `.antigravity/README-xdd.md` | SI `.codex/README-xdd.md` |
+| Subagents Task tool paralelo | SI **nativo** | Limitado | SI | Limitado | Limitado | Limitado |
 
 **Lectura clave:** Claude Code es **el más completo en slash + MCP + governance**, pero **comparte con Cursor el gap de skills sync**. Backlog adapter prioritario: sección 15.
 

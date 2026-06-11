@@ -40,17 +40,17 @@ Comandos:
 ## Consequences
 
 ### Positivas
-- ✅ Costo controlado: defaults basados en cost/quality tradeoff óptimo
-- ✅ Privacy by design: `embedding` y `bulk_extraction` default a `local`
-- ✅ Skills agnóstic: pueden invocar router en vez de hardcodear provider
-- ✅ Stdlib pure (yaml opcional): sin dep nuevas
-- ✅ Fallback chain automática → resiliencia
+- SI Costo controlado: defaults basados en cost/quality tradeoff óptimo
+- SI Privacy by design: `embedding` y `bulk_extraction` default a `local`
+- SI Skills agnóstic: pueden invocar router en vez de hardcodear provider
+- SI Stdlib pure (yaml opcional): sin dep nuevas
+- SI Fallback chain automática → resiliencia
 
 ### Negativas
-- ⚠️ No mide latencia/costo real — sugerencias basadas en static defaults
-- ⚠️ Local provider requiere Ollama configurado (out-of-band setup)
-- ⚠️ No incluye load balancing entre providers (round-robin futuro)
-- ⚠️ Skills que ya hardcodean provider no migran automáticamente (manual update)
+- WARN No mide latencia/costo real — sugerencias basadas en static defaults
+- WARN Local provider requiere Ollama configurado (out-of-band setup)
+- WARN No incluye load balancing entre providers (round-robin futuro)
+- WARN Skills que ya hardcodean provider no migran automáticamente (manual update)
 
 ## Implementation Sprint 17
 

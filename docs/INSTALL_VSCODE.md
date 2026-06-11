@@ -72,7 +72,7 @@ X-DD detecta `mempalace` en `xdd-doctor` + `xdd-start` automáticamente. Sin él
 
 Ver [ADR-0004](adr/0004-mempalace-dep-externa-no-fork.md).
 
-## 3) GitNexus — code intelligence (recomendado, ⚠️ PolyForm Noncomm)
+## 3) GitNexus — code intelligence (recomendado, WARN PolyForm Noncomm)
 
 ```bash
 npm install -g gitnexus
@@ -81,7 +81,7 @@ npx gitnexus
 gitnexus --version
 ```
 
-> ⚠️ **License PolyForm Noncommercial 1.0.0** — uso personal/research/non-profit gratis. Comercial requiere paid (akonlabs.com). Ver [ADR-0033](adr/0033-gitnexus-tier1-companion.md) + [DEPENDENCIES.md](../DEPENDENCIES.md).
+> WARN **License PolyForm Noncommercial 1.0.0** — uso personal/research/non-profit gratis. Comercial requiere paid (akonlabs.com). Ver [ADR-0033](adr/0033-gitnexus-tier1-companion.md) + [DEPENDENCIES.md](../DEPENDENCIES.md).
 
 ```bash
 gitnexus analyze .   # indexa el repo (3-5s codebase mediano)
@@ -158,7 +158,7 @@ export ANTHROPIC_API_KEY="sk-ant-..."
 export OPENAI_API_KEY="sk-..."
 ```
 
-⚠️ **NO commitear** `.env` con keys. Usa env vars del shell o secret manager (1Password CLI, Bitwarden, etc.).
+WARN **NO commitear** `.env` con keys. Usa env vars del shell o secret manager (1Password CLI, Bitwarden, etc.).
 
 ## 7) Hooks pre-commit
 

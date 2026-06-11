@@ -35,6 +35,38 @@
         ],
         "exit_on_match": 0,
         "script": ".agent/hooks/scripts/pre-write-doc-warning.sh"
+      },
+      {
+        "id": "pre:tool:temporal-awareness",
+        "matcher": "*",
+        "description": "S13 v0.2: inyecta contexto temporal del sprint activo antes de cada tool call. Opt-out: XDD_TEMPORAL_AWARENESS=0.",
+        "profile": [
+          "standard",
+          "strict"
+        ],
+        "exit_on_match": 0,
+        "script": ".agent/hooks/scripts/pre-tool-temporal-awareness.sh"
+      },
+      {
+        "id": "pre:commit:gitflow",
+        "matcher": "Bash",
+        "description": "Enforces GitFlow branch naming: feature/*, fix/*, hotfix/*, release/*, chore/*, docs/*, refactor/*. Bloquea commit en branches con nombre invalido.",
+        "profile": [
+          "standard",
+          "strict"
+        ],
+        "exit_on_match": 2,
+        "script": ".agent/hooks/scripts/pre-commit-gitflow.sh"
+      },
+      {
+        "id": "pre:build:security-scan",
+        "matcher": "Bash",
+        "description": "Escanea codigo fuente antes del gate Build (Fase 4). Bloquea si hay CRITICAL. Advierte si HIGH. Activar XDD_SEC_BLOCK_ON_HIGH=1 para modo estricto.",
+        "profile": [
+          "strict"
+        ],
+        "exit_on_match": 2,
+        "script": ".agent/hooks/scripts/pre-build-scan.sh"
       }
     ],
     "PostToolUse": [
@@ -83,6 +115,18 @@
           "strict"
         ],
         "script": ".agent/hooks/scripts/session-start-context-load.sh"
+      },
+      {
+        "id": "session:start:reme-load",
+        "matcher": "*",
+        "description": "ReMe opt-in (XDD_REME=1): carga MEMORY.md + journal del dia anterior al iniciar sesion.",
+        "profile": [
+          "minimal",
+          "standard",
+          "strict"
+        ],
+        "async": true,
+        "script": ".agent/hooks/scripts/session-start-reme-load.sh"
       }
     ],
     "Stop": [
@@ -106,6 +150,18 @@
         ],
         "async": true,
         "script": ".agent/hooks/scripts/stop-pattern-extraction.sh"
+      },
+      {
+        "id": "stop:reme-summary",
+        "matcher": "*",
+        "description": "ReMe opt-in (XDD_REME=1): persiste sesion en memory/YYYY-MM-DD.md al cerrar.",
+        "profile": [
+          "minimal",
+          "standard",
+          "strict"
+        ],
+        "async": true,
+        "script": ".agent/hooks/scripts/stop-reme-summary.sh"
       }
     ],
     "before_agent": [

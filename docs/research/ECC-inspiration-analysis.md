@@ -95,14 +95,14 @@ ECC tiene `SOUL.md` ("Core Identity"). X-DD lo cubre en `agent.yaml` +
 
 | Capacidad | X-DD | ECC |
 |---|---|---|
-| Pipeline gated formal de 6 fases | ✅ | ❌ (ad-hoc) |
-| Firma HMAC-SHA256 en gates | ✅ (Sprint 4) | ❌ |
-| `DOMAIN.md` + `THREATS.md` como artefactos de Fase 2 | ✅ | ❌ |
-| 10 ADRs Nygard | ✅ | parcial |
-| Dogfooding visible (`.xdd/`) | ✅ | ❌ |
-| MCP server propio con whitelist de paths | ✅ (Sprint 6) | parcial |
-| Constitución explícita del framework | ✅ | ❌ |
-| Threat model STRIDE de 23 amenazas | ✅ | implícito |
+| Pipeline gated formal de 6 fases | SI | NO (ad-hoc) |
+| Firma HMAC-SHA256 en gates | SI (Sprint 4) | NO |
+| `DOMAIN.md` + `THREATS.md` como artefactos de Fase 2 | SI | NO |
+| 10 ADRs Nygard | SI | parcial |
+| Dogfooding visible (`.xdd/`) | SI | NO |
+| MCP server propio con whitelist de paths | SI (Sprint 6) | parcial |
+| Constitución explícita del framework | SI | NO |
+| Threat model STRIDE de 23 amenazas | SI | implícito |
 
 ## Métricas comparativas
 

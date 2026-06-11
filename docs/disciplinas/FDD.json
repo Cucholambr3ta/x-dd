@@ -1,0 +1,34 @@
+{
+  "doc": "FDD.md",
+  "dominio": "disciplinas",
+  "subdominio": "FDD",
+  "resumen": "**Version:** 1.0 | **Fecha:** 2026-06-04 | **Gobernanza:** Constitucion X-DD v1.5",
+  "secciones": [
+    "indice",
+    "que-es-fdd",
+    "catalogo-de-features-featuresmd",
+    "epica-nombre",
+    "fdd-en-el-pipeline",
+    "formato-feat-nnn",
+    "priorizacion-rice-y-moscow",
+    "plan-por-features-verticales",
+    "definition-of-done-fdd",
+    "agentes-involucrados",
+    "fuentes"
+  ],
+  "entidades": [],
+  "trazabilidad": {
+    "origen": [],
+    "relacionados": []
+  },
+  "fuentes": [
+    "https://en.wikipedia.org/wiki/Feature-driven_development",
+    "https://www.oreilly.com/library/view/a-practical-guide/9780130676153/",
+    "https://www.intercom.com/blog/rice-simple-prioritization-for-product-managers/"
+  ],
+  "tokens_md": 2315,
+  "lineas": 244,
+  "checksum_md": "f455b498698111a8",
+  "actualizado": "2026-06-05T15:23:01.789182+00:00",
+  "tokens_json": 135
+}

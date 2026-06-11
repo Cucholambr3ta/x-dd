@@ -2,6 +2,11 @@
 description: Proceso de ingesta universal de documentos para el ecosistema X-DD.
 ---
 # /xdd-ingest
+
+> **Estandar de documentacion:** Todo artefacto que produzca este workflow cumple
+> [`docs/DOC_STANDARD.md`](../../docs/DOC_STANDARD.md): sin emojis, diagramas Mermaid
+> obligatorios, tablas para datos estructurados, Gherkin donde aplique, secciones
+> minimas y trazabilidad bidireccional.
 **ID:** FLUJO-INGEST | **Versión:** 1.0 | **Agente:** Architect
 **Misión:** Convertir documentos heterogéneos (PDF, XLSX, DOCX) en conocimiento estructurado Markdown.
 

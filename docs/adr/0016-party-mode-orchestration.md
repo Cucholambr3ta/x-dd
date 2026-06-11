@@ -32,14 +32,14 @@ Implementación: `scripts/xdd-orchestrate.py:run_party()`.
 ## Consequences
 
 ### Positivas
-- ✅ Brainstorm + exploración tienen runtime nativo
-- ✅ Compatible con composition_patterns existentes (`party` es solo otro `orchestration`)
-- ✅ Moderator opcional permite síntesis sin imponer
+- SI Brainstorm + exploración tienen runtime nativo
+- SI Compatible con composition_patterns existentes (`party` es solo otro `orchestration`)
+- SI Moderator opcional permite síntesis sin imponer
 
 ### Negativas
-- ⚠️ Sin lead = sin handoff explícito → resultados pueden contradecirse
-- ⚠️ N agents = costo lineal en cloud providers
-- ⚠️ Consensus_required no implementa nada todavía (placeholder schema)
+- WARN Sin lead = sin handoff explícito → resultados pueden contradecirse
+- WARN N agents = costo lineal en cloud providers
+- WARN Consensus_required no implementa nada todavía (placeholder schema)
 
 ## Related
 - ADR-0017 Web bundles (BMAD también)

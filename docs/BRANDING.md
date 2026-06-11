@@ -52,8 +52,8 @@ Ver [`templates/xdd.profile.with-branding.yml`](../templates/xdd.profile.with-br
 | Persona | Ejemplo cierre de sprint |
 |---|---|
 | `technical` | "Sprint 4 cerrado. 17/17 tests passed. Gate firmado HMAC. Continúa con Sprint 5." |
-| `friendly` | "✨ ¡Cerramos Sprint 4! Los 17 tests pasaron y el gate quedó firmado con HMAC. ¿Arrancamos Sprint 5?" |
-| `casual` | "Listo el sprint 4 ✅. Tests verdes, gate firmado, branch ok. ¿Vamos al 5?" |
+| `friendly` | "¡Cerramos Sprint 4! Los 17 tests pasaron y el gate quedó firmado con HMAC. ¿Arrancamos Sprint 5?" |
+| `casual` | "Listo el sprint 4. Tests verdes, gate firmado, branch ok. ¿Vamos al 5?" |
 | `formal` | "Se ha completado la fase 4. La suite de pruebas (17 casos) ha sido ejecutada satisfactoriamente. Procédase a la fase 5." |
 | `custom` | Tu prompt — path en `orchestrator_persona.custom_prompt` |
 

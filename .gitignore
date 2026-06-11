@@ -44,3 +44,6 @@ Thumbs.db
 .gitnexus
 .claude/skills/
 .codex/
+__pycache__/
+*.pyc
+*.pyo

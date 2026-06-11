@@ -18,4 +18,4 @@ python3 scripts/xdd-eval.py run --suite=external/longmemeval --runs=1
 
 ## Files
 - `cases.jsonl`: queries + expected recalled items
-- `grader.yaml`: usa `inspect_ai_compat` con scorer `includes` (recall-style)
+- `grader.json`: usa `inspect_ai_compat` con scorer `includes` (recall-style)

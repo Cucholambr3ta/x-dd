@@ -79,8 +79,73 @@ def cmd_emit(args):
     return 0
 
 
+def _orchestrate_step_to_agui(step: dict, turn_id: int) -> list[dict]:
+    """Mapper S15: convierte un step de xdd-orchestrate a 1-N eventos AG-UI con
+    validación de campos requeridos. Emite turn_start + payload + turn_end."""
+    events = []
+    role = step.get("role", "?")
+    result = step.get("result", {})
+
+    # turn_start siempre
+    try:
+        events.append(emit_event("turn_start", {"turn_id": turn_id, "role": role}))
+    except ValueError:
+        return []  # si falla el schema, skip completo
+
+    if role in ("lead", "specialist", "participant"):
+        agent_id = result.get("agent_id") or result.get("name") or "?"
+        invocation = result.get("invocation", "DRY-RUN")
+        # tool_call si hay invocación real de agente
+        try:
+            events.append(emit_event("tool_call", {
+                "turn_id": turn_id,
+                "tool_name": agent_id,
+                "args": {"invocation": invocation, "run_id": result.get("run_id", "")},
+            }))
+        except ValueError:
+            pass
+        # Si hay response_preview (REAL_LLM), emite content_chunk
+        if result.get("response_preview"):
+            try:
+                events.append(emit_event("content_chunk", {
+                    "turn_id": turn_id,
+                    "content": result["response_preview"],
+                }))
+            except ValueError:
+                pass
+    elif role == "sync_point":
+        try:
+            events.append(emit_event("content_chunk", {
+                "turn_id": turn_id,
+                "content": f"[sync_point] {step.get('sync_at','?')} → {step.get('sync_status','?')}",
+            }))
+        except ValueError:
+            pass
+    elif role == "hitl_checkpoint":
+        try:
+            events.append(emit_event("hitl_request", {
+                "turn_id": turn_id,
+                "prompt": step.get("prompt", "Continuar?"),
+                "required": step.get("required", True),
+            }))
+        except ValueError:
+            pass
+
+    # turn_end
+    try:
+        events.append(emit_event("turn_end", {"turn_id": turn_id, "role": role}))
+    except ValueError:
+        pass
+
+    return events
+
+
 def cmd_stream(args):
-    """Lee stdin (output xdd-orchestrate) y emite AG-UI events."""
+    """Lee stdin (output xdd-orchestrate JSON) y emite AG-UI events.
+
+    S15: mapper completo con turn_start/turn_end, tool_call, content_chunk,
+    hitl_request. Valida campos requeridos de cada event type.
+    """
     for line in sys.stdin:
         line = line.strip()
         if not line:
@@ -89,22 +154,10 @@ def cmd_stream(args):
             data = json.loads(line)
         except json.JSONDecodeError:
             continue
-        # Heurística: convertir orchestrate steps a AG-UI events
         if "steps" in data:
             for i, step in enumerate(data["steps"]):
-                role = step.get("role", "?")
-                ev_type = "tool_call" if role == "specialist" else "content_chunk"
-                turn_id = i + 1
-                try:
-                    out_event = emit_event(ev_type, {
-                        "turn_id": turn_id,
-                        "tool_name": step.get("result", {}).get("name", "?") if ev_type == "tool_call" else None,
-                        "args": step.get("result", {}) if ev_type == "tool_call" else None,
-                        "content": json.dumps(step) if ev_type == "content_chunk" else None,
-                    })
-                    print(json.dumps(out_event))
-                except ValueError:
-                    continue
+                for ev in _orchestrate_step_to_agui(step, i + 1):
+                    print(json.dumps(ev))
     return 0
 
 

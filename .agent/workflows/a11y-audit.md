@@ -2,6 +2,11 @@
 description: Auditoría de accesibilidad WCAG 2.1 AA. Automatizada en CI + revisión humana de flujos críticos.
 ---
 # /a11y-audit
+
+> **Estandar de documentacion:** Todo artefacto que produzca este workflow cumple
+> [`docs/DOC_STANDARD.md`](../../docs/DOC_STANDARD.md): sin emojis, diagramas Mermaid
+> obligatorios, tablas para datos estructurados, Gherkin donde aplique, secciones
+> minimas y trazabilidad bidireccional.
 **ID:** FLUJO-A11Y | **Versión:** 1.0 | **Agente:** Frontend-Developer + Accessibility-Auditor
 **Misión:** Producto usable para personas con discapacidad. WCAG 2.1 AA mínimo, AAA donde sea razonable.
 

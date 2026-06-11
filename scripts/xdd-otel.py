@@ -16,7 +16,6 @@ Path persistente: $XDD_OTEL_DIR (default: .xdd/traces/spans/)
 """
 from __future__ import annotations
 
-import argparse
 import json
 import os
 import sys
@@ -26,7 +25,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from _xdd_common import read_version, utcnow_iso_us as utcnow_iso  # noqa: E402
+from _xdd_common import make_parser, read_version, utcnow_iso_us as utcnow_iso  # noqa: E402
 
 __version__ = read_version()
 
@@ -181,9 +180,7 @@ def cmd_export(args):
 
 
 def build_parser():
-    p = argparse.ArgumentParser(prog="xdd-otel", description=__doc__,
-                                 formatter_class=argparse.RawDescriptionHelpFormatter)
-    p.add_argument("--version", action="version", version=f"xdd-otel {__version__}")
+    p, _ = make_parser("xdd-otel", __doc__, with_subcommands=False, raw_description=True, short_version_flag=False)
     p.add_argument("--dir", help=f"Spans dir (default: {DEFAULT_DIR})")
     sub = p.add_subparsers(dest="command", required=True)
 

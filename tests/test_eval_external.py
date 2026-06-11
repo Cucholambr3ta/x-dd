@@ -147,5 +147,5 @@ def test_external_evals_have_required_files():
         d = base / suite
         assert d.exists(), f"missing dir: {d}"
         assert (d / "cases.jsonl").exists(), f"missing cases.jsonl in {suite}"
-        assert (d / "grader.yaml").exists(), f"missing grader.yaml in {suite}"
+        assert (d / "grader.json").exists(), f"missing grader.json in {suite}"
         assert (d / "README.md").exists(), f"missing README.md in {suite}"

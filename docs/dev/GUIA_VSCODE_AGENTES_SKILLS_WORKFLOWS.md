@@ -4,7 +4,7 @@
 **IDE:** VSCode + Copilot Chat
 **Versión doc:** 1.1
 **Fecha:** 2026-05-28
-**Estado adapter:** ✅ Implementado en `scripts/xdd-adapt.sh` (`adapt_vscode_copilot`, líneas 277-340)
+**Estado adapter:** SI Implementado en `scripts/xdd-adapt.sh` (`adapt_vscode_copilot`, líneas 277-340)
 **Referencias internas:** ADR-0034, ADR-0035, ADR-0036, ADR-0037, `docs/IDE_SETUP.md`, `docs/MCP_INTEGRATION.md`
 
 ---
@@ -23,10 +23,10 @@ Resumen: VSCode + Copilot Chat soporta prompt files, custom agents and MCP serve
 
 | Capacidad | Claude Code / OpenCode | VSCode + Copilot Chat |
 |---|---:|---|
-| Slash commands custom (`/trigger`) | ✅ (file-based) | ✅ via prompt files in `.github/prompts/*.prompt.md` (Copilot Chat) |
+| Slash commands custom (`/trigger`) | SI (file-based) | SI via prompt files in `.github/prompts/*.prompt.md` (Copilot Chat) |
 | MCP server config key | `mcpServers` (Claude/others) | `servers` (Copilot/VSCode convention used by adapters) — see Microsoft docs: https://code.visualstudio.com/docs/copilot/customization/mcp-servers |
-| Auto-discovery across parent repos | Partial (setting available) | ✅ `chat.useCustomizationsInParentRepositories` enables parent discovery (see docs) |
-| Agent plugin marketplace | Varies | ✅ Agent Customizations editor (preview) |
+| Auto-discovery across parent repos | Partial (setting available) | SI `chat.useCustomizationsInParentRepositories` enables parent discovery (see docs) |
+| Agent plugin marketplace | Varies | SI Agent Customizations editor (preview) |
 | Skills convention | `skills/*/SKILL.md` (SSoT) | `skills/*/SKILL.md` (SSoT, sin destino IDE-local nativo documentado por VSCode + Copilot Chat). Adapter actual NO los copia. |
 
 Fuente oficial (Copilot customizations, MCP servers): https://code.visualstudio.com/docs/copilot/customization/mcp-servers
@@ -35,14 +35,14 @@ Fuente oficial (Copilot customizations, MCP servers): https://code.visualstudio.
 
 ```mermaid
 flowchart TB
-  subgraph SSoT[SSoT — repo X-DD]
+  subgraph SSoT["SSoT — repo X-DD"]
     WF[".agent/workflows/*.md"]
     AG["prompts/agents/**/*.md"]
     REG["prompts/agents/registry.json"]
     SK["skills/*/SKILL.md"]
   end
 
-  subgraph Adapter[VSCode adapter (xdd-adapt)]
+  subgraph Adapter["VSCode adapter (xdd-adapt)"]
     PROMPT[".github/prompts/*.prompt.md (Copilot)"]
     VS_MCP[".vscode/mcp.json (key: servers)"]
     VSTASKS[".vscode/tasks.json"]

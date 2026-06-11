@@ -15,6 +15,11 @@ adr: docs/adr/0014-sdd-parity-clarify-cross-validate-constitution.md
 
 # /cross-validate — Consistencia entre artefactos
 
+> **Estandar de documentacion:** Todo artefacto que produzca este workflow cumple
+> [`docs/DOC_STANDARD.md`](../../docs/DOC_STANDARD.md): sin emojis, diagramas Mermaid
+> obligatorios, tablas para datos estructurados, Gherkin donde aplique, secciones
+> minimas y trazabilidad bidireccional.
+
 ## Propósito
 Detectar drift, contradicciones y omisiones entre artefactos relacionados que deberían ser coherentes. Ejemplos típicos:
 - SPEC.md menciona "OAuth login" pero THREATS.md no modela auth threats

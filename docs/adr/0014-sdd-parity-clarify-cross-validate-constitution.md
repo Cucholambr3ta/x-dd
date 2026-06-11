@@ -44,15 +44,15 @@ Sprint 16 incorpora los 3 mecanismos como **first-class** en X-DD:
 ## Consequences
 
 ### Positivas
-- ✅ Paridad funcional con Spec-Kit en las 3 capacidades más valoradas
-- ✅ `/clarify` cierra brecha del Art. 7 "Ambigüedad Cero" — ahora ejecutable, no aspiracional
-- ✅ `/cross-validate` cierra brecha del Art. 6 "Trazabilidad bidireccional"
-- ✅ Plantilla constitución habilita gobernanza formal para proyectos consumidores
-- ✅ Workflows son markdown puros (sin runtime extra) — alineado con ADR-0007
+- SI Paridad funcional con Spec-Kit en las 3 capacidades más valoradas
+- SI `/clarify` cierra brecha del Art. 7 "Ambigüedad Cero" — ahora ejecutable, no aspiracional
+- SI `/cross-validate` cierra brecha del Art. 6 "Trazabilidad bidireccional"
+- SI Plantilla constitución habilita gobernanza formal para proyectos consumidores
+- SI Workflows son markdown puros (sin runtime extra) — alineado con ADR-0007
 
 ### Negativas
-- ⚠️ Workflows son guías, no scripts ejecutables — semántica depende del orquestador agéntico
-- ⚠️ Constitution template añade fricción inicial — mitigado: opt-in, no obligatorio
+- WARN Workflows son guías, no scripts ejecutables — semántica depende del orquestador agéntico
+- WARN Constitution template añade fricción inicial — mitigado: opt-in, no obligatorio
 
 ## Related
 

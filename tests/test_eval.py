@@ -120,15 +120,37 @@ def test_run_suite_xdd_talk_compact():
     assert report["total"] >= 5
 
 
-# ---------- load_yaml_simple ----------
+# ---------- load_grader (S2: JSON reemplaza al parser YAML naive) ----------
 
-def test_load_yaml_types(tmp_path):
-    f = tmp_path / "test.yaml"
-    f.write_text("type: token_count_reduction\nthreshold_pct: 50\nignore_code_blocks: true\n# comment\nempty:\n")
-    out = xdd_eval.load_yaml_simple(f)
+def test_load_grader_json_preferido(tmp_path):
+    (tmp_path / "grader.json").write_text(
+        '{"type": "token_count_reduction", "threshold_pct": 50, "ignore_code_blocks": true}')
+    out = xdd_eval.load_grader(tmp_path)
     assert out["type"] == "token_count_reduction"
     assert out["threshold_pct"] == 50
     assert out["ignore_code_blocks"] is True
+
+
+def test_load_grader_estructura_compleja(tmp_path):
+    """Regresión: el parser YAML naive NO soportaba listas/nesting; JSON sí."""
+    (tmp_path / "grader.json").write_text(
+        '{"type": "inspect_ai_compat", "scorers": ["includes", "match"], '
+        '"opts": {"nested": {"k": 1}}, "desc": "multi\\nlinea"}')
+    out = xdd_eval.load_grader(tmp_path)
+    assert out["scorers"] == ["includes", "match"]       # lista preservada
+    assert out["opts"]["nested"]["k"] == 1               # nesting preservado
+    assert "\n" in out["desc"]                            # multiline preservado
+
+
+def test_load_grader_ausente_devuelve_none(tmp_path):
+    assert xdd_eval.load_grader(tmp_path) is None
+
+
+def test_load_grader_json_gana_a_yaml(tmp_path):
+    """Si coexisten, grader.json tiene prioridad."""
+    (tmp_path / "grader.json").write_text('{"type": "from_json"}')
+    (tmp_path / "grader.yaml").write_text("type: from_yaml\n")
+    assert xdd_eval.load_grader(tmp_path)["type"] == "from_json"
 
 
 # ---------- skills registry ----------

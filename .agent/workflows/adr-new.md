@@ -2,6 +2,11 @@
 description: Crea un Architecture Decision Record numerado en docs/adr/. Formato Nygard.
 ---
 # /adr-new
+
+> **Estandar de documentacion:** Todo artefacto que produzca este workflow cumple
+> [`docs/DOC_STANDARD.md`](../../docs/DOC_STANDARD.md): sin emojis, diagramas Mermaid
+> obligatorios, tablas para datos estructurados, Gherkin donde aplique, secciones
+> minimas y trazabilidad bidireccional.
 **ID:** FLUJO-ADR | **Versión:** 1.0 | **Agente:** Software-Architect
 **Misión:** Toda decisión arquitectónica significativa queda capturada con su contexto, alternativas y consecuencias.
 

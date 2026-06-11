@@ -19,14 +19,13 @@ Comandos:
 """
 from __future__ import annotations
 
-import argparse
 import json
 import re
 import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from _xdd_common import read_version  # noqa: E402
+from _xdd_common import make_parser, read_version  # noqa: E402
 
 __version__ = read_version()
 
@@ -177,9 +176,7 @@ def cmd_taxonomy(args):
 
 
 def build_parser():
-    p = argparse.ArgumentParser(prog="xdd-intent", description=__doc__,
-                                 formatter_class=argparse.RawDescriptionHelpFormatter)
-    p.add_argument("--version", action="version", version=f"xdd-intent {__version__}")
+    p, _ = make_parser("xdd-intent", __doc__, with_subcommands=False, raw_description=True, short_version_flag=False)
     sub = p.add_subparsers(dest="command", required=True)
 
     p_c = sub.add_parser("classify", help="Classify a tool call")

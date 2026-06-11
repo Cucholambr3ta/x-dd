@@ -1,0 +1,21 @@
+{
+  "suite": "subagent-performance",
+  "grader_type": "structural",
+  "total": 2,
+  "passed": 2,
+  "failed": 0,
+  "all_passed": true,
+  "results": [
+    {
+      "input": "Subagente con checklist 100% completo, audit pass 95%, 0 rework",
+      "passed": true,
+      "reason": "regex matched"
+    },
+    {
+      "input": "Subagente con desempeno aceptable",
+      "passed": true,
+      "reason": "regex matched"
+    }
+  ],
+  "timestamp": "2026-06-05T03:36:37Z"
+}

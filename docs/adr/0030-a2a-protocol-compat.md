@@ -30,14 +30,14 @@ Implementación HTTP server completa diferida a v0.2.0. v0.1.0 entrega: Agent Ca
 ## Consequences
 
 ### Positivas
-- ✅ X-DD discoverable via A2A standard
-- ✅ Composition_patterns expuestos sin reimplementar
-- ✅ Agent Card serializable + reproducible
-- ✅ Compat con Sprint 23 plan_and_act + adapt_orch patterns
+- SI X-DD discoverable via A2A standard
+- SI Composition_patterns expuestos sin reimplementar
+- SI Agent Card serializable + reproducible
+- SI Compat con Sprint 23 plan_and_act + adapt_orch patterns
 
 ### Negativas
-- ⚠️ v0.1.0 = stub. HTTP server real es v0.2.0
-- ⚠️ Spec A2A todavía evoluciona — drift de upstream esperado
+- WARN v0.1.0 = stub. HTTP server real es v0.2.0
+- WARN Spec A2A todavía evoluciona — drift de upstream esperado
 
 ## Implementation Sprint 23
 

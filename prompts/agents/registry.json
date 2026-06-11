@@ -3422,6 +3422,100 @@
       "constraints": [],
       "triggers": [],
       "fallback_agent": null
+    },
+    {
+      "id": "specialized-researcher",
+      "name": "Researcher",
+      "category": "specialized",
+      "description": "Autonomous research agent that proactively investigates new Claude Code skills on GitHub, emerging agentic methodologies, dependency changelogs, and relevant papers, then proposes ranked, evidence-backed improvements. Every proposal requires human approval before it is applied.",
+      "color": "indigo",
+      "vibe": "Brings the outside world in. Finds what is new, judges what fits, proposes what matters.",
+      "prompt_file": "prompts/agents/specialized/specialized-researcher.md",
+      "ide_compat": [
+        "claude-code",
+        "opencode",
+        "mcp"
+      ],
+      "skills": [],
+      "constraints": [],
+      "triggers": [
+        "command:research",
+        "phase:retro"
+      ],
+      "fallback_agent": null
+    },
+    {
+      "id": "engineering-data-engineer-ecommerce",
+      "name": "Data Engineer Ecommerce",
+      "category": "engineering",
+      "description": "Data engineer specialized in ecommerce platforms. Designs and operates Spark batch and streaming pipelines ingesting Kafka event streams into a Redshift data warehouse. Focuses on order, product, and customer domains with near-real-time freshness requirements.",
+      "color": "amber",
+      "vibe": "Turns every click, add-to-cart, and checkout into trusted warehouse rows that the business can act on.",
+      "prompt_file": "prompts/agents/engineering/engineering-data-engineer-ecommerce.md",
+      "ide_compat": [
+        "claude-code",
+        "opencode",
+        "mcp"
+      ],
+      "skills": [],
+      "constraints": [],
+      "triggers": [],
+      "fallback_agent": "engineering-data-engineer"
+    },
+    {
+      "id": "specialized-legal-saas-reviewer",
+      "name": "Legal SaaS Reviewer",
+      "category": "specialized",
+      "description": "Especialista en contratos SaaS para proyectos de software — revisa terminos y condiciones, identifica clausulas de riesgo para proveedores y clientes enterprise, y propone cambios concretos negociables.",
+      "color": "teal",
+      "vibe": "Cada clausula ambigua es una bomba de tiempo. La detecta antes de que el cliente la firme.",
+      "prompt_file": "prompts/agents/specialized/specialized-legal-saas-reviewer.md",
+      "ide_compat": [
+        "claude-code",
+        "opencode",
+        "mcp"
+      ],
+      "skills": [],
+      "constraints": [],
+      "triggers": [
+        "keyword:contrato saas",
+        "keyword:terminos y condiciones",
+        "keyword:clausula de riesgo",
+        "keyword:msa enterprise",
+        "keyword:revisar contrato"
+      ],
+      "fallback_agent": "specialized-legal-document-review"
+    },
+    {
+      "id": "ephemeral-wcag-sprint-auditor",
+      "name": "WCAG 2.1 Sprint Auditor",
+      "category": "testing",
+      "description": "Agente efimero para auditar la accesibilidad WCAG 2.1 AA de los componentes UI del Sprint 3. Activo solo esta semana.",
+      "color": "#005A9C",
+      "vibe": "Cada barrera de accesibilidad que no se detecta esta semana vivira en produccion indefinidamente.",
+      "prompt_file": "prompts/agents/ephemeral/2026-06-02-wcag-auditor.md",
+      "ide_compat": [
+        "claude-code",
+        "opencode",
+        "mcp"
+      ],
+      "skills": [
+        "a11y-audit"
+      ],
+      "constraints": [
+        "scope:sprint-3-ui-components",
+        "standard:wcag-2.1-aa"
+      ],
+      "triggers": [
+        "keyword:wcag sprint 3",
+        "keyword:auditoria accesibilidad sprint",
+        "keyword:a11y sprint 3"
+      ],
+      "fallback_agent": "testing-accessibility-auditor",
+      "ephemeral": true,
+      "created_for_task": "Auditar accesibilidad WCAG 2.1 AA de los componentes UI del Sprint 3 — semana del 2026-06-02",
+      "expires_after_days": 7,
+      "created_at": "2026-06-02T00:00:00Z"
     }
   ],
   "composition_patterns": [
